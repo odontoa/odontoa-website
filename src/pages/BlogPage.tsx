@@ -1,156 +1,428 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, User, ArrowRight, Tag } from "lucide-react";
+import { Calendar, Clock, User, ArrowRight, Tag, Search } from "lucide-react";
+import { useState } from "react";
+import { Helmet } from "react-helmet";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface BlogPost {
   id: number;
   title: string;
-  excerpt: string;
+  description: string;
   content: string;
   image: string;
-  author: string;
+  author: {
+    name: string;
+    title: string;
+    avatar?: string;
+  };
   date: string;
   readTime: string;
   category: string;
-  tags: string[];
+  featured?: boolean;
+  sections: {
+    title: string;
+    icon: string;
+    content: string;
+  }[];
+  quote?: {
+    text: string;
+    author: string;
+  };
+  stats?: {
+    label: string;
+    value: string;
+  }[];
+  ctaLink: string;
+  ctaText: string;
 }
 
-const blogPosts: BlogPost[] = [
+const categories = ['Sve', 'Tehnologija', 'Upravljanje', 'Sigurnost', 'Administracija', 'Softver'];
+
+export const allPosts: BlogPost[] = [
   {
     id: 1,
-    title: "Digitalizacija stomatoloških ordinacija: Vodič za 2024. godinu",
-    excerpt: "Saznajte kako digitalni alati mogu transformisati vašu praksu i poboljšati iskustvo pacijenata kroz moderne tehnologije.",
-    content: "Digitalizacija zdravstva postaje sve važnija, a stomatološke ordinacije nisu izuzetak...",
-    image: "/images/doktori-dashboard.png",
-    author: "Dr. Marija Petrović",
-    date: "15. Decembar 2024",
+    title: "Digitalizacija stomatoloških ordinacija: Vodič za 2025. godinu",
+    description: "Saznajte kako digitalni alati mogu transformisati vašu praksu i poboljšati iskustvo pacijenata kroz modernu tehnologiju.",
+    content: `
+## Zašto je digitalizacija ključna za moderne stomatološke ordinacije?
+
+U 2025. godini, sve više ordinacija u Srbiji prelazi sa papirne dokumentacije na digitalne alate. Ovaj trend nije stvar mode — on donosi konkretnu efikasnost i sigurnost u svakodnevnom radu.
+    `,
+    image: "/images/blog1.png",
+    author: {
+      name: "Dr. Marija Petrović",
+      title: "Specijalista stomatološke protetike",
+      avatar: "/images/avatars/marija.jpg"
+    },
+    date: "12. Januar 2025",
     readTime: "8 min čitanja",
     category: "Tehnologija",
-    tags: ["digitalizacija", "tehnologija", "ordinacija"]
+    featured: true,
+    quote: {
+      text: "Digitalizacija nije luksuz. Ona je alat koji nam štedi vreme i smanjuje greške.",
+      author: "Dr. Marija Petrović"
+    },
+    sections: [
+      {
+        title: "Zakazivanje termina bez stresa",
+        icon: "📅",
+        content: "- Automatski podsetnici putem SMS-a i mejla\n- Jasna raspodela po doktorima i smenama\n- Manje otkazanih termina"
+      },
+      {
+        title: "Digitalna evidencija pacijenata",
+        icon: "🗂",
+        content: "- Kompletna istorija pregleda dostupna u par klikova\n- Bolja priprema pre svakog termina\n- Dokumentacija dostupna sa bilo kog uređaja"
+      },
+      {
+        title: "Upravljanje timom",
+        icon: "👥",
+        content: "- Jasna uloga svakog člana tima\n- Dodeljivanje obaveza i interno beleženje\n- Lakša organizacija smena"
+      },
+      {
+        title: "Zalihe i administracija",
+        icon: "📦",
+        content: "- Praćenje potrošnje po kabinetima\n- Automatski podsetnici za poručivanje\n- Nema više nestanka materijala u sred radnog dana"
+      },
+      {
+        title: "Statistika i analitika",
+        icon: "📊",
+        content: "- Pregled prihoda i broja pacijenata po periodu\n- Prepoznavanje najposećenijih dana u nedelji\n- Merenje efikasnosti po doktorima"
+      }
+    ],
+    stats: [
+      {
+        label: "Ušteda vremena na administraciji nedeljno",
+        value: "6+ sati"
+      },
+      {
+        label: "Smanjenje otkazanih termina",
+        value: "40%"
+      }
+    ],
+    ctaLink: "/demo",
+    ctaText: "Zakažite demo"
   },
   {
     id: 2,
-    title: "GDPR i zaštita podataka pacijenata u stomatologiji",
-    excerpt: "Sve što trebate da znate o GDPR propisima i kako da zaštitite medicinske podatke vaših pacijenata u digitalnom dobu.",
-    content: "Zaštita podataka pacijenata je od krucijalnog značaja za svaku stomatološku ordinaciju...",
-    image: "/images/1dentist-smiling.jpg",
-    author: "Dr. Stefan Nikolić",
-    date: "10. Decembar 2024",
-    readTime: "6 min čitanja",
-    category: "Sigurnost",
-    tags: ["GDPR", "privatnost", "sigurnost"]
+    title: "Kako efikasnije zakazivati termine u timovima",
+    description: "Koji digitalni alati pomažu pri rasporedu rada i kako ih koristiti uz manji broj otkazivanja?",
+    content: "Sadržaj će biti dodat...",
+    image: "/images/kalendar.png",
+    author: {
+      name: "Dr. Ana Jovanović",
+      title: "Specijalista stomatološke protetike",
+      avatar: "/images/avatars/ana.jpg"
+    },
+    date: "2. Januar 2025",
+    readTime: "5 min čitanja",
+    category: "Upravljanje",
+    sections: [
+      {
+        title: "Planiranje rasporeda",
+        icon: "📅",
+        content: "- Efikasno planiranje\n- Optimizacija vremena\n- Smanjenje preklapanja"
+      }
+    ],
+    quote: {
+      text: "Dobro organizovan raspored je ključ uspešne ordinacije",
+      author: "Dr. Ana Jovanović"
+    },
+    stats: [
+      {
+        label: "Povećanje efikasnosti",
+        value: "30%"
+      }
+    ],
+    ctaLink: "/demo",
+    ctaText: "Isprobajte Odontoa"
   },
   {
     id: 3,
-    title: "Kako povećati efikasnost ordinacije kroz bolje upravljanje terminima",
-    excerpt: "Praktični saveti za optimizaciju rasporededa termina i smanjenje čekanja pacijenata kroz digitalna rešenja.",
-    content: "Efikasno upravljanje terminima je ključ uspešne stomatološke prakse...",
-    image: "/images/kalendar.png",
-    author: "Dr. Ana Jovanović",
-    date: "5. Decembar 2024",
+    title: "5 najčešćih grešaka kod evidencije pacijenata",
+    description: "Kroz iskustva ordinacija otkrivamo na šta posebno treba obratiti pažnju u vođenju digitalnih kartona.",
+    content: "Sadržaj će biti dodat...",
+    image: "/images/1dentist-smiling.jpg",
+    author: {
+      name: "Dr. Jelena Marković",
+      title: "Specijalista stomatološke protetike",
+      avatar: "/images/avatars/jelena.jpg"
+    },
+    date: "10. Januar 2025",
+    readTime: "6 min čitanja",
+    category: "Sigurnost",
+    sections: [
+      {
+        title: "Digitalna evidencija",
+        icon: "📋",
+        content: "- Pravilno vođenje kartona\n- Sigurnost podataka\n- Redovno ažuriranje"
+      }
+    ],
+    quote: {
+      text: "Precizna evidencija je osnova kvalitetne stomatološke usluge",
+      author: "Dr. Jelena Marković"
+    },
+    stats: [
+      {
+        label: "Smanjenje grešaka",
+        value: "45%"
+      }
+    ],
+    ctaLink: "/demo",
+    ctaText: "Saznajte više"
+  },
+  {
+    id: 4,
+    title: "Da li je vreme da pređete sa Excela na softver?",
+    description: "Prikaz prednosti i mane oba pristupa — uz konkretne savete za prelazak bez stresa.",
+    content: "Sadržaj će biti dodat...",
+    image: "/images/dashboard-dent.png",
+    author: {
+      name: "Dr. Nikola Pavlović",
+      title: "Specijalista stomatološke protetike",
+      avatar: "/images/avatars/nikola.jpg"
+    },
+    date: "18. Januar 2025",
+    readTime: "4 min čitanja",
+    category: "Tehnologija",
+    sections: [
+      {
+        title: "Prelazak na softver",
+        icon: "💻",
+        content: "- Analiza potreba\n- Izbor rešenja\n- Implementacija"
+      }
+    ],
+    quote: {
+      text: "Moderno poslovanje zahteva moderna rešenja",
+      author: "Dr. Nikola Pavlović"
+    },
+    stats: [
+      {
+        label: "Ušteda vremena",
+        value: "50%"
+      }
+    ],
+    ctaLink: "/demo",
+    ctaText: "Započnite prelazak"
+  },
+  {
+    id: 5,
+    title: "Kako pripremiti ordinaciju za akreditaciju?",
+    description: "Administrativni checklist i softverski alati koji pomažu pri inspekciji i evaluaciji kvaliteta.",
+    content: "Sadržaj će biti dodat...",
+    image: "/images/akreditacija.png",
+    author: {
+      name: "Dr. Ivana Ristić",
+      title: "Specijalista stomatološke protetike",
+      avatar: "/images/avatars/ivana.jpg"
+    },
+    date: "22. Januar 2025",
     readTime: "7 min čitanja",
-    category: "Upravljanje",
-    tags: ["termini", "efikasnost", "organizacija"]
+    category: "Administracija",
+    sections: [
+      {
+        title: "Priprema za akreditaciju",
+        icon: "✅",
+        content: "- Dokumentacija\n- Procedure\n- Standardi"
+      }
+    ],
+    quote: {
+      text: "Akreditacija je potvrda kvaliteta vaše ordinacije",
+      author: "Dr. Ivana Ristić"
+    },
+    stats: [
+      {
+        label: "Uspešnost akreditacije",
+        value: "95%"
+      }
+    ],
+    ctaLink: "/demo",
+    ctaText: "Pripremite se"
+  },
+  {
+    id: 6,
+    title: "GDPR i zaštita podataka pacijenata u stomatologiji",
+    description: "Sve što trebate da znate o GDPR propisima i kako da zaštitite medicinske podatke vaših pacijenata.",
+    content: "Sadržaj će biti dodat...",
+    image: "/images/1dentist-smiling.jpg",
+    author: {
+      name: "Dr. Stefan Nikolić",
+      title: "Specijalista stomatološke protetike",
+      avatar: "/images/avatars/stefan.jpg"
+    },
+    date: "28. Januar 2025",
+    readTime: "6 min čitanja",
+    category: "Sigurnost",
+    sections: [
+      {
+        title: "GDPR usklađenost",
+        icon: "🔒",
+        content: "- Zaštita podataka\n- Pravna regulativa\n- Implementacija"
+      }
+    ],
+    quote: {
+      text: "Privatnost pacijenata mora biti prioritet",
+      author: "Dr. Stefan Nikolić"
+    },
+    stats: [
+      {
+        label: "Sigurnost podataka",
+        value: "100%"
+      }
+    ],
+    ctaLink: "/demo",
+    ctaText: "Osigurajte podatke"
   }
 ];
 
 const BlogPage = () => {
-  const handleReadMore = (postId: number) => {
-    // In a real app, this would navigate to individual blog post
-    console.log(`Navigate to blog post ${postId}`);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Sve");
+  const [visiblePosts, setVisiblePosts] = useState(6);
+
+  const featuredPost = allPosts.find(post => post.featured);
+
+  const filteredPosts = allPosts.filter(post => {
+    const matchesSearch = 
+      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.description.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCategory = selectedCategory === "Sve" || post.category === selectedCategory;
+    
+    return matchesSearch && matchesCategory;
+  });
+
+  const handleLoadMore = () => {
+    setVisiblePosts(prev => prev + 6);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 w-full">
-      <Navigation />
-      
-      {/* Hero Section - Redesigned to be more compact and elegant */}
-      <section className="relative py-16 px-6 bg-gradient-to-br from-white via-gray-50 to-blue-50">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Small decorative element */}
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-[#4a9489]/10 border border-[#4a9489]/20 mb-6">
-            <Tag className="w-4 h-4 text-[#4a9489] mr-2" />
-            <span className="text-sm font-medium text-[#4a9489]">Blog</span>
-          </div>
-          
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
-            Odontoa <span className="text-[#4a9489]">Blog</span>
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Korisni saveti, novosti iz sveta digitalne stomatologije i praktični vodiči 
-            za uspešno vođenje vaše ordinacije.
-          </p>
-        </div>
-        
-        {/* Subtle decorative elements */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#4a9489]/5 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-blue-500/5 to-transparent rounded-full blur-2xl"></div>
-      </section>
+    <div className="min-h-screen bg-gray-50">
+      <Helmet>
+        <title>Odontoa Blog | Vodiči i saveti za digitalnu stomatologiju</title>
+        <meta name="description" content="Praktični saveti i vodiči za digitalno vođenje stomatološke ordinacije. Najnoviji trendovi u digitalnoj stomatologiji." />
+        <link rel="canonical" href="https://odontoa.com/blog" />
+      </Helmet>
 
-      {/* Featured Post */}
-      <section className="py-16 px-6">
-        <div className="max-w-screen-xl mx-auto">
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Izdvojeno</h2>
-            <p className="text-gray-600">Najnoviji članak iz našeg bloga</p>
+      <Navigation />
+
+      {/* Hero with Featured Post */}
+      <section className="py-16 px-6 bg-gradient-to-br from-white via-gray-50 to-blue-50 relative">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-[#4a9489]/10 border border-[#4a9489]/20 mb-6">
+              <Tag className="w-4 h-4 text-[#4a9489] mr-2" />
+              <span className="text-sm font-medium text-[#4a9489]">Blog</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Odontoa <span className="text-[#4a9489]">Blog</span>
+            </h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+              Korisni saveti i vodiči za digitalno vođenje stomatološke ordinacije.
+            </p>
           </div>
-          
-          <div className="bg-white border border-gray-200 rounded-3xl overflow-hidden hover:shadow-xl hover:border-[#4a9489]/30 transition-all duration-300 shadow-lg">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-              <div className="relative h-64 lg:h-auto">
-                <img 
-                  src={blogPosts[0].image} 
-                  alt={blogPosts[0].title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-4 left-4">
-                  <span className="bg-[#4a9489] text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg">
-                    {blogPosts[0].category}
-                  </span>
+
+          {featuredPost && (
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-12">
+              <div className="grid md:grid-cols-2 gap-0">
+                <div className="relative h-64 md:h-auto">
+                  <img 
+                    src={featuredPost.image} 
+                    alt={featuredPost.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <span className="bg-[#4a9489] text-white px-3 py-1 rounded-full text-sm font-medium">
+                      Featured
+                    </span>
+                  </div>
+                </div>
+                <div className="p-8 md:p-12 flex flex-col justify-center">
+                  <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+                    <span className="flex items-center gap-1">
+                      <Calendar size={14} /> {featuredPost.date}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock size={14} /> {featuredPost.readTime}
+                    </span>
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                    {featuredPost.title}
+                  </h2>
+                  <p className="text-gray-600 mb-6">
+                    {featuredPost.description}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <button className="flex items-center gap-2 text-sm text-gray-600">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={featuredPost.author.avatar} />
+                            <AvatarFallback>{featuredPost.author.name[0]}</AvatarFallback>
+                          </Avatar>
+                          <span>{featuredPost.author.name}</span>
+                        </button>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-80">
+                        <div className="flex justify-between space-x-4">
+                          <Avatar className="h-12 w-12">
+                            <AvatarImage src={featuredPost.author.avatar} />
+                            <AvatarFallback>{featuredPost.author.name[0]}</AvatarFallback>
+                          </Avatar>
+                          <div className="space-y-1">
+                            <h4 className="text-sm font-semibold">{featuredPost.author.name}</h4>
+                            <p className="text-sm text-gray-600">{featuredPost.author.title}</p>
+                            <div className="flex items-center pt-2">
+                              <Button variant="link" className="h-8 text-xs text-[#4a9489]">
+                                Pogledaj sve članke
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </HoverCardContent>
+                    </HoverCard>
+                    <Button 
+                      onClick={() => window.location.href = `/blogovi/${featuredPost.id}`}
+                      className="bg-[#4a9489] text-white hover:bg-[#3b766d]"
+                    >
+                      Čitaj više
+                      <ArrowRight className="ml-2" size={16} />
+                    </Button>
+                  </div>
                 </div>
               </div>
-              
-              <div className="p-8 lg:p-12 flex flex-col justify-center">
-                <div className="flex items-center space-x-6 text-sm text-gray-500 mb-4">
-                  <div className="flex items-center space-x-2">
-                    <Calendar size={16} />
-                    <span>{blogPosts[0].date}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Clock size={16} />
-                    <span>{blogPosts[0].readTime}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <User size={16} />
-                    <span>{blogPosts[0].author}</span>
-                  </div>
-                </div>
-                
-                <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4 leading-tight">
-                  {blogPosts[0].title}
-                </h3>
-                
-                <p className="text-gray-600 text-lg leading-relaxed mb-6">
-                  {blogPosts[0].excerpt}
-                </p>
-                
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {blogPosts[0].tags.map((tag, index) => (
-                    <span key={index} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm border">
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-                
-                <Button 
-                  onClick={() => handleReadMore(blogPosts[0].id)}
-                  className="bg-[#1976D2] text-white hover:bg-[#1565C0] transition-colors duration-200 font-semibold w-fit shadow-lg hover:shadow-xl"
-                  style={{borderRadius: '12px'}}
-                >
-                  Čitaj više
-                  <ArrowRight className="ml-2" size={16} />
-                </Button>
+            </div>
+          )}
+
+          {/* Search and Filters */}
+          <div className="flex flex-col gap-6 max-w-4xl mx-auto">
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+              <div className="relative flex-1 w-full">
+                <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Pretraži članke..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#4a9489] outline-none"
+                />
+              </div>
+              <div className="flex gap-2 overflow-x-auto pb-2 w-full md:w-auto">
+                {categories.map((category) => (
+                  <Button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`whitespace-nowrap ${
+                      selectedCategory === category 
+                        ? "bg-[#4a9489] text-white hover:bg-[#3b766d]" 
+                        : "bg-white text-gray-600 hover:bg-[#4a9489] hover:text-white"
+                    }`}
+                  >
+                    {category}
+                  </Button>
+                ))}
               </div>
             </div>
           </div>
@@ -158,107 +430,91 @@ const BlogPage = () => {
       </section>
 
       {/* Blog Grid */}
-      <section className="py-16 px-6 bg-white">
+      <section className="py-16 px-6">
         <div className="max-w-screen-xl mx-auto">
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Najnoviji članci</h2>
-            <p className="text-gray-600">Ostali korisni sadržaji za vašu praksu</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {blogPosts.slice(1).map((post) => (
-              <article key={post.id} className="bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-[#4a9489]/30 transition-all duration-300 group">
-                <div className="relative h-48">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredPosts.slice(0, visiblePosts).map(post => (
+              <article 
+                key={post.id} 
+                className="bg-white border border-gray-200 rounded-2xl shadow hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer" 
+                onClick={() => window.location.href = `/blogovi/${post.id}`}
+              >
+                <div className="relative">
                   <img 
                     src={post.image} 
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    alt={post.title} 
+                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105" 
                   />
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-[#1976D2] text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg">
-                      {post.category}
-                    </span>
-                  </div>
+                  <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                 </div>
-                
-                <div className="p-6 bg-white">
-                  <div className="flex items-center space-x-4 text-sm text-gray-500 mb-3">
-                    <div className="flex items-center space-x-1">
-                      <Calendar size={14} />
-                      <span>{post.date}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Clock size={14} />
-                      <span>{post.readTime}</span>
-                    </div>
+                <div className="p-6">
+                  <div className="flex items-center text-sm text-gray-500 mb-2 gap-4">
+                    <span className="flex items-center gap-1"><Calendar size={14} /> {post.date}</span>
+                    <span className="flex items-center gap-1"><Clock size={14} /> {post.readTime}</span>
                   </div>
-                  
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 leading-tight group-hover:text-[#4a9489] transition-colors">
-                    {post.title}
-                  </h3>
-                  
-                  <p className="text-gray-600 mb-4 leading-relaxed">
-                    {post.excerpt}
-                  </p>
-                  
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {post.tags.map((tag, index) => (
-                      <span key={index} className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs border">
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2 text-sm text-gray-500">
-                      <User size={14} />
-                      <span>{post.author}</span>
-                    </div>
-                    
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#4a9489] transition-colors">{post.title}</h3>
+                  <p className="text-gray-600 mb-6">{post.description}</p>
+                  <div className="flex justify-between items-center text-sm text-gray-500">
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <button 
+                          className="flex items-center gap-2" 
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={post.author.avatar} />
+                            <AvatarFallback>{post.author.name[0]}</AvatarFallback>
+                          </Avatar>
+                          <span>{post.author.name}</span>
+                        </button>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-80">
+                        <div className="flex justify-between space-x-4">
+                          <Avatar className="h-12 w-12">
+                            <AvatarImage src={post.author.avatar} />
+                            <AvatarFallback>{post.author.name[0]}</AvatarFallback>
+                          </Avatar>
+                          <div className="space-y-1">
+                            <h4 className="text-sm font-semibold">{post.author.name}</h4>
+                            <p className="text-sm text-gray-600">{post.author.title}</p>
+                            <div className="flex items-center pt-2">
+                              <Button 
+                                variant="link" 
+                                className="h-8 text-xs text-[#4a9489]"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                Pogledaj sve članke
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </HoverCardContent>
+                    </HoverCard>
                     <Button 
-                      onClick={() => handleReadMore(post.id)}
-                      variant="ghost"
-                      size="sm"
-                      className="text-[#4a9489] hover:text-white hover:bg-[#4a9489] transition-colors"
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-[#4a9489] hover:text-white hover:bg-[#4a9489] transition-colors pointer-events-none"
                     >
-                      Čitaj više
-                      <ArrowRight className="ml-1" size={14} />
+                      Čitaj više <ArrowRight size={14} className="ml-1" />
                     </Button>
                   </div>
                 </div>
               </article>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* Newsletter Section */}
-      <section className="py-16 px-6 bg-gray-50">
-        <div className="max-w-screen-xl mx-auto">
-          <div className="bg-gradient-to-r from-[#1976D2] to-[#4a9489] rounded-3xl p-12 text-center shadow-2xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Budite u toku sa najnovijim trendovima
-            </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Prijavite se na naš newsletter i redovno dobijajte korisne savete 
-              o digitalizaciji stomatoloških ordinacija.
-            </p>
-            
-            <div className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
-              <input 
-                type="email" 
-                placeholder="Vaša email adresa"
-                className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/70 focus:outline-none focus:border-white/40 backdrop-blur-sm"
-              />
-              <Button className="bg-white text-[#1976D2] hover:bg-gray-100 transition-colors duration-200 font-semibold px-6 py-3 shadow-lg hover:shadow-xl" style={{borderRadius: '12px'}}>
-                Prijavite se
+          {/* Load More Button */}
+          {filteredPosts.length > visiblePosts && (
+            <div className="text-center mt-12">
+              <Button
+                onClick={handleLoadMore}
+                variant="outline"
+                className="text-[#4a9489] border-[#4a9489] hover:bg-[#4a9489] hover:text-white"
+              >
+                Učitaj još članaka
               </Button>
             </div>
-            
-            <p className="text-sm text-white/70 mt-4">
-              Bez spama. Možete se odjaviti u bilo kom trenutku.
-            </p>
-          </div>
+          )}
         </div>
       </section>
 
