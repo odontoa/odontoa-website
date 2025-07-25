@@ -9,7 +9,7 @@ import FeatureSection from "@/components/FeatureSection";
 import AiPresenceSection from "@/components/AiPresenceSection";
 import GetStartedSection from "@/components/GetStartedSection";
 import Footer from "@/components/Footer";
-import AlternatePricingSection from "@/components/AlternatePricingSection";
+import PricingSection from "@/components/PricingSection";
 import CtaSection from "@/components/CtaSection";
 
 const Index = () => {
@@ -22,7 +22,7 @@ const Index = () => {
       <FeatureSection />
       <GetStartedSection />
       <AiPresenceSection />
-      <AlternatePricingSection />
+      <PricingSection />
       <CtaSection />
       <Footer />
     </div>

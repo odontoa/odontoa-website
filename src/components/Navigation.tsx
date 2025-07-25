@@ -53,6 +53,12 @@ const Navigation = () => {
             >
               Blogovi
             </button>
+            <button 
+              onClick={() => navigate('/recnik')}
+              className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium"
+            >
+              Rečnik
+            </button>
           </div>
 
           {/* Mobile menu button */}
@@ -99,6 +105,12 @@ const Navigation = () => {
                 className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium text-left"
               >
                 Blogovi
+              </button>
+              <button 
+                onClick={() => { navigate('/recnik'); setIsMenuOpen(false); }}
+                className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium text-left"
+              >
+                Rečnik
               </button>
               <Button variant="outline" size="sm" className="bg-[#1976D2] border border-[#1976D2] text-[#FFFFFF] hover:bg-[#1565C0] transition-colors duration-200 shadow-sm w-fit" style={{borderRadius: '8px'}}>
                 Uloguj se

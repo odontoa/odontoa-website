@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap } from "lucide-react";
+import { ArrowRight, Zap, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 
 const HeroSection = () => {
@@ -50,7 +50,7 @@ const HeroSection = () => {
           </motion.p>
           
           <motion.div 
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
             variants={itemVariants}
           >
             <Button size="lg" className="bg-[#1565C0] text-white hover:bg-[#0D47A1] px-8 py-4 shadow-sm transition-colors duration-200" style={{borderRadius: '8px'}}>
@@ -62,6 +62,14 @@ const HeroSection = () => {
               <Zap className="mr-2 h-4 w-4" />
               Zakaži demo
             </Button>
+          </motion.div>
+
+          <motion.div
+            className="flex items-center justify-center text-[#a1a1aa] text-sm"
+            variants={itemVariants}
+          >
+            <Shield className="w-4 h-4 mr-2 text-[#1565C0]" />
+            <span>Koristi ga 40+ ordinacija u Srbiji</span>
           </motion.div>
         </motion.div>
       </div>

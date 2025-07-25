@@ -40,7 +40,7 @@ const AlternatePricingSection = () => {
             <div className="absolute left-8 top-8 w-[311.34px] h-[92.80px] overflow-hidden">
               <div className="absolute left-0 top-0 w-[86.13px] h-9 text-white text-2xl font-bold leading-9 font-inter">Solo</div>
               <div className="absolute left-0 top-[46.50px] w-[245.75px] h-[45.40px] text-[#717179] text-lg font-normal leading-[23.40px] font-inter">
-                Za samostalne stomatologe i<br />male ordinacije
+                Za samostalne stomatologe i<br />male ordinacije sa 1 lokacijom
               </div>
             </div>
             
@@ -113,7 +113,7 @@ const AlternatePricingSection = () => {
             <div className="absolute left-8 top-8 w-[311.34px] h-[92.80px] overflow-hidden">
               <div className="absolute left-0 top-0 w-[84.52px] h-9 text-white text-2xl font-bold leading-9 font-inter">Plus</div>
               <div className="absolute left-0 top-[46.50px] w-[252.28px] h-[45.40px] text-[#717179] text-lg font-normal leading-[23.40px] font-inter">
-                Za ordinacije sa više<br />stomatologa
+                Za ordinacije sa više stomatologa<br />i do 3 lokacije
               </div>
             </div>
             
@@ -182,7 +182,7 @@ const AlternatePricingSection = () => {
             <div className="absolute left-8 top-8 w-[311.34px] h-[92.80px] overflow-hidden">
               <div className="absolute left-0 top-0 w-[118.13px] h-9 text-white text-2xl font-bold leading-9 font-inter">Pro</div>
               <div className="absolute left-0 top-[46.50px] w-[267.19px] h-[45.40px] text-[#717179] text-lg font-normal leading-[23.40px] font-inter">
-                Za mreže ordinacija i<br />poliklinike
+                Za mreže ordinacija i<br />poliklinike sa 4+ lokacije
               </div>
             </div>
             
