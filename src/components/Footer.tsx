@@ -73,6 +73,7 @@ const Footer = () => {
               <li><a href="/privatnost" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Politika privatnosti</a></li>
               <li><a href="/uslovi" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Uslovi korišćenja</a></li>
               <li><a href="/gdpr" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">GDPR</a></li>
+              <li><a href="/admin-panel" className="text-[#717179] text-xs hover:text-[#a1a1aa] transition-colors">Admin</a></li>
             </ul>
           </div>
         </div>
