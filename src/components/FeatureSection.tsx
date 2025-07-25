@@ -10,46 +10,46 @@ import {
   Package
 } from "lucide-react";
 
-const FeatureSection = () => {
-  const features = [
-    {
-      title: "Kontrolna tabla",
-      description: "Pregled poslovanja u realnom vremenu: zakazivanja, dolasci, prihodi i tim — sve na jednom mestu, bez papira i Excela.",
-      link: "#kontrolna-tabla",
-      icon: LayoutDashboard
-    },
-    {
-      title: "Analiza tretmana i termina",
-      description: "Statistika najčešćih intervencija, trajanja procedura i iskorišćenosti termina — za precizno planiranje.",
-      link: "#analize",
-      icon: LineChart
-    },
-    {
-      title: "Pametni workflow",
-      description: "Automatski podsetnici, zadaci i evidencija zaliha — sistem sam vodi brigu o operativi.",
-      link: "#workflow",
-      icon: Workflow
-    },
-    {
-      title: "Timska koordinacija",
-      description: "Sinhronizovani kalendari i deljene beleške za timski rad bez greške, čak i u više smena.",
-      link: "#tim",
-      icon: Users
-    },
-    {
-      title: "Digitalni karton pacijenta",
-      description: "Sve na dohvat ruke: istorija tretmana, napomene, dokumenti i slike — brzo dostupni i bez papirologije.",
-      link: "#karton",
-      icon: FolderOpen
-    },
-    {
-      title: "Evidencija zaliha",
-      description: "Automatsko praćenje potrošnog materijala uz podsetnike za nabavke. Uvek znaš šta fali i kada naručiti.",
-      link: "#zalihe",
-      icon: Package
-    }
-  ];
+const features = [
+  {
+    title: "Kontrolna tabla",
+    description: "Pregled poslovanja u realnom vremenu: zakazivanja, dolasci, prihodi i tim — sve na jednom mestu, bez papira i Excela.",
+    link: "#kontrolna-tabla",
+    icon: LayoutDashboard
+  },
+  {
+    title: "Analiza tretmana i termina",
+    description: "Statistika najčešćih intervencija, trajanja procedura i iskorišćenosti termina — za precizno planiranje.",
+    link: "#analize",
+    icon: LineChart
+  },
+  {
+    title: "Pametni workflow",
+    description: "Automatski podsetnici, zadaci i evidencija zaliha — sistem sam vodi brigu o operativi.",
+    link: "#workflow",
+    icon: Workflow
+  },
+  {
+    title: "Timska koordinacija",
+    description: "Sinhronizovani kalendari i deljene beleške za timski rad bez greške, čak i u više smena.",
+    link: "#tim",
+    icon: Users
+  },
+  {
+    title: "Digitalni karton pacijenta",
+    description: "Sve na dohvat ruke: istorija tretmana, napomene, dokumenti i slike — brzo dostupni i bez papirologije.",
+    link: "#karton",
+    icon: FolderOpen
+  },
+  {
+    title: "Evidencija zaliha",
+    description: "Automatsko praćenje potrošnog materijala uz podsetnike za nabavke. Uvek znaš šta fali i kada naručiti.",
+    link: "#zalihe",
+    icon: Package
+  }
+];
 
+const FeatureSection = () => {
   return (
     <section className="w-full py-20 px-6">
       <div className="max-w-screen-xl mx-auto">
@@ -67,7 +67,6 @@ const FeatureSection = () => {
             Odontoa automatizuje vaše dnevne obaveze: zakazivanja, timsku koordinaciju, zalihe i podsetnike. Fokus ostaje na pacijentu, ne na papirologiji.
           </p>
         </motion.div>
-        
         <div className="relative">
           <HoverEffect items={features} className="max-w-5xl mx-auto" />
         </div>

@@ -1,38 +1,114 @@
-import React from 'react'
-import { motion } from 'framer-motion'
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 
-interface HoverEffectProps {
-  items: Array<{
-    title: string
-    description: string
-    link: string
-    icon: React.ComponentType<{ className?: string }>
-  }>
-  className?: string
-}
+export const HoverEffect = ({
+  items,
+  className,
+}: {
+  items: {
+    title: string;
+    description: string;
+    link: string;
+    icon: React.ComponentType<{ className?: string }>;
+  }[];
+  className?: string;
+}) => {
+  let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-export const HoverEffect: React.FC<HoverEffectProps> = ({ items, className }) => {
   return (
-    <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", className)}>
+    <div
+      className={cn(
+        "grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3  py-10",
+        className
+      )}
+    >
       {items.map((item, idx) => (
-        <motion.div
-          key={idx}
-          className="relative group block p-6 h-full w-full bg-white rounded-xl border border-gray-200 hover:border-blue-300 transition-colors duration-200"
-          whileHover={{ y: -5 }}
-          transition={{ duration: 0.2 }}
+        <a
+          href={item?.link}
+          key={item?.link}
+          className="relative group block p-2 h-full w-full"
+          onMouseEnter={() => setHoveredIndex(idx)}
+          onMouseLeave={() => setHoveredIndex(null)}
         >
-          <div className="space-y-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors duration-200">
-                <item.icon className="h-6 w-6 text-blue-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900">{item.title}</h3>
+          <AnimatePresence>
+            {hoveredIndex === idx && (
+              <motion.span
+                className="absolute inset-0 h-full w-full bg-[#4a9489] dark:bg-[#4a9489] block rounded-3xl"
+                layoutId="hoverBackground"
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: 1,
+                  transition: { duration: 0.15 },
+                }}
+                exit={{
+                  opacity: 0,
+                  transition: { duration: 0.15, delay: 0.2 },
+                }}
+              />
+            )}
+          </AnimatePresence>
+          <Card>
+            <div className="flex items-center justify-center mb-2">
+              <item.icon className="h-8 w-8 text-[#4a9489] group-hover:text-white transition-colors duration-200" />
             </div>
-            <p className="text-gray-600 leading-relaxed">{item.description}</p>
-          </div>
-        </motion.div>
+            <CardTitle>{item.title}</CardTitle>
+            <CardDescription>{item.description}</CardDescription>
+          </Card>
+        </a>
       ))}
     </div>
-  )
-} 
+  );
+};
+
+export const Card = ({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) => {
+  return (
+    <div
+      className={cn(
+        "rounded-2xl h-full w-full p-4 overflow-hidden bg-black border border-transparent dark:border-white/[0.2] group-hover:border-[#4a9489] relative z-20",
+        className
+      )}
+    >
+      <div className="relative z-50">
+        <div className="p-4">{children}</div>
+      </div>
+    </div>
+  );
+};
+export const CardTitle = ({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) => {
+  return (
+    <h4 className={cn("text-zinc-100 font-bold tracking-wide mt-4", className)}>
+      {children}
+    </h4>
+  );
+};
+export const CardDescription = ({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) => {
+  return (
+    <p
+      className={cn(
+        "mt-8 text-zinc-400 tracking-wide leading-relaxed text-sm",
+        className
+      )}
+    >
+      {children}
+    </p>
+  );
+}; 
