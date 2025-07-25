@@ -3,11 +3,85 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom Prose Styles for Blog Content */
+.prose {
+  @apply text-gray-700 leading-8;
+}
+
+.prose h1 {
+  @apply text-3xl font-bold text-gray-900 mt-10 mb-6 leading-tight;
+}
+
+.prose h2 {
+  @apply text-2xl font-bold text-gray-900 mt-10 mb-4 leading-tight;
+}
+
+.prose h3 {
+  @apply text-xl font-semibold text-gray-900 mt-8 mb-3 leading-tight;
+}
+
+.prose h4 {
+  @apply text-lg font-semibold text-gray-900 mt-6 mb-2 leading-tight;
+}
+
+.prose p {
+  @apply text-lg leading-8 mt-4 mb-4;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-blue-300 pl-4 italic text-gray-600 my-6;
+}
+
+.prose img {
+  @apply rounded-lg my-6 shadow-md w-full;
+}
+
+.prose ul {
+  @apply list-disc ml-6 my-4 space-y-2;
+}
+
+.prose ol {
+  @apply list-decimal ml-6 my-4 space-y-2;
+}
+
+.prose li {
+  @apply text-lg leading-8;
+}
+
+.prose a {
+  @apply text-blue-600 hover:text-blue-800 underline;
+}
+
+.prose strong {
+  @apply font-semibold text-gray-900;
+}
+
+.prose em {
+  @apply italic text-gray-700;
+}
+
+.prose code {
+  @apply bg-gray-100 px-2 py-1 rounded text-sm font-mono;
+}
+
+.prose pre {
+  @apply bg-gray-900 text-white p-4 rounded-lg overflow-x-auto my-6;
+}
+
+.prose pre code {
+  @apply bg-transparent p-0 text-white;
+}
+
+/* YouTube Video Embed Styles */
+.prose iframe {
+  @apply w-full aspect-video rounded-lg shadow-md my-6;
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
+    --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
