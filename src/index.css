@@ -3,6 +3,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Custom Prose Styles for Blog Content */
 .prose {
   @apply text-gray-700 leading-8;

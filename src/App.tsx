@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster as SonnerToaster } from 'sonner'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { AdminRoute } from '@/components/AdminRoute'
+import ScrollToTop from '@/components/ScrollToTop'
 
 import Index from "@/pages/Index";
 import BlogPage from "@/pages/BlogPage";
@@ -24,6 +25,7 @@ function App() {
       <AuthProvider>
         <TooltipProvider>
           <Router>
+            <ScrollToTop />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/blogovi" element={<BlogPage />} />
