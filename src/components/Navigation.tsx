@@ -1,64 +1,58 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import Link from "next/link";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate();
-
-  const goToHome = () => {
-    navigate('/');
-    setIsMenuOpen(false);
-  };
 
   return (
     <nav className="w-full border-b border-[#262626] sticky top-0 z-50 bg-black">
       <div className="max-w-screen-xl mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <button onClick={goToHome} className="flex items-center">
+            <Link href="/" className="flex items-center">
               <img 
                 src="/odontoa-logo1.png" 
                 alt="Odontoa Logo" 
                 className="h-8 w-auto mr-3"
               />
               <div className="text-white font-bold text-xl">Odontoa</div>
-            </button>
+            </Link>
           </div>
           
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <button 
-              onClick={goToHome}
+            <Link 
+              href="/"
               className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium"
             >
               Početna
-            </button>
-            <button 
-              onClick={() => navigate('/o-nama')}
+            </Link>
+            <Link 
+              href="/o-nama"
               className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium"
             >
               O nama
-            </button>
-            <button 
-              onClick={() => navigate('/kontakt')}
+            </Link>
+            <Link 
+              href="/kontakt"
               className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium"
             >
               Kontakt
-            </button>
-            <button 
-              onClick={() => navigate('/blogovi')}
+            </Link>
+            <Link 
+              href="/blog"
               className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium"
             >
               Blogovi
-            </button>
-            <button 
-              onClick={() => navigate('/recnik')}
+            </Link>
+            <Link 
+              href="/recnik"
               className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium"
             >
               Rečnik
-            </button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -82,39 +76,41 @@ const Navigation = () => {
         {isMenuOpen && (
           <div className="md:hidden border-t border-[#262626] py-4">
             <div className="flex flex-col space-y-4">
-              <button 
-                onClick={goToHome}
+              <Link 
+                href="/"
                 className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium text-left"
+                onClick={() => setIsMenuOpen(false)}
               >
                 Početna
-              </button>
-              <button 
-                onClick={() => { navigate('/o-nama'); setIsMenuOpen(false); }}
+              </Link>
+              <Link 
+                href="/o-nama"
                 className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium text-left"
+                onClick={() => setIsMenuOpen(false)}
               >
                 O nama
-              </button>
-              <button 
-                onClick={() => { navigate('/kontakt'); setIsMenuOpen(false); }}
+              </Link>
+              <Link 
+                href="/kontakt"
                 className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium text-left"
+                onClick={() => setIsMenuOpen(false)}
               >
                 Kontakt
-              </button>
-              <button 
-                onClick={() => { navigate('/blogovi'); setIsMenuOpen(false); }}
+              </Link>
+              <Link 
+                href="/blog"
                 className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium text-left"
+                onClick={() => setIsMenuOpen(false)}
               >
                 Blogovi
-              </button>
-              <button 
-                onClick={() => { navigate('/recnik'); setIsMenuOpen(false); }}
+              </Link>
+              <Link 
+                href="/recnik"
                 className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium text-left"
+                onClick={() => setIsMenuOpen(false)}
               >
                 Rečnik
-              </button>
-              <Button variant="outline" size="sm" className="bg-[#1976D2] border border-[#1976D2] text-[#FFFFFF] hover:bg-[#1565C0] transition-colors duration-200 shadow-sm w-fit" style={{borderRadius: '8px'}}>
-                Uloguj se
-              </Button>
+              </Link>
             </div>
           </div>
         )}
