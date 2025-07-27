@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { Globe, Bell, TrendingUp, Zap, BarChart3, MousePointer, Calendar, XCircle, Trophy, Play, Wifi, Building2, Shield } from "lucide-react";
 import { motion } from "framer-motion";

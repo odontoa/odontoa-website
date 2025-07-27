@@ -1,4 +1,6 @@
 
+'use client';
+
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
 import { ArrowRight, Calendar, Bell, TrendingUp } from "lucide-react";

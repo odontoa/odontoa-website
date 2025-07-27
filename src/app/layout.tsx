@@ -1,10 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { Toaster as SonnerToaster } from 'sonner'
-import { AuthProvider } from '@/contexts/AuthContext'
+import { Providers } from '@/components/Providers'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import './globals.css'
@@ -65,8 +61,6 @@ export const metadata: Metadata = {
   },
 }
 
-const queryClient = new QueryClient();
-
 export default function RootLayout({
   children,
 }: {
@@ -75,21 +69,15 @@ export default function RootLayout({
   return (
     <html lang="sr">
       <body className={inter.className}>
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <TooltipProvider>
-              <div className="min-h-screen flex flex-col">
-                <Navigation />
-                <main className="flex-1">
-                  {children}
-                </main>
-                <Footer />
-              </div>
-              <Toaster />
-              <SonnerToaster />
-            </TooltipProvider>
-          </AuthProvider>
-        </QueryClientProvider>
+        <Providers>
+          <div className="min-h-screen flex flex-col">
+            <Navigation />
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+          </div>
+        </Providers>
       </body>
     </html>
   )

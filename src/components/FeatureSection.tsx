@@ -1,4 +1,6 @@
 
+'use client';
+
 import { motion } from "framer-motion";
 import { HoverEffect } from "./ui/hover-effect";
 import {

@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Building2, UserPlus, CalendarCheck2 } from "lucide-react";
 import { motion } from "framer-motion";

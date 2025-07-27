@@ -1,5 +1,8 @@
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
+import Link from "next/link";
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -58,9 +61,9 @@ const Footer = () => {
                   Početna strana
                 </button>
               </li>
-              <li><a href="/o-nama" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">O nama</a></li>
-              <li><a href="/kontakt" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Kontakt</a></li>
-              <li><a href="/blogovi" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Blog</a></li>
+              <li><Link href="/o-nama" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">O nama</Link></li>
+              <li><Link href="/kontakt" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Kontakt</Link></li>
+              <li><Link href="/blog" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Blog</Link></li>
             </ul>
           </div>
 
@@ -68,12 +71,12 @@ const Footer = () => {
           <div>
             <h3 className="text-white font-semibold text-sm mb-4">Podrška i pravno</h3>
             <ul className="space-y-2">
-              <li><a href="/pomoc" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Pomoć</a></li>
-              <li><a href="/demo" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Demo</a></li>
-              <li><a href="/privatnost" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Politika privatnosti</a></li>
-              <li><a href="/uslovi" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Uslovi korišćenja</a></li>
-              <li><a href="/gdpr" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">GDPR</a></li>
-              <li><a href="/admin-panel" className="text-[#717179] text-xs hover:text-[#a1a1aa] transition-colors">Admin</a></li>
+              <li><Link href="/pomoc" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Pomoć</Link></li>
+              <li><Link href="/demo" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Demo</Link></li>
+              <li><Link href="/privatnost" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Politika privatnosti</Link></li>
+              <li><Link href="/uslovi" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Uslovi korišćenja</Link></li>
+              <li><Link href="/gdpr" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">GDPR</Link></li>
+              <li><Link href="/admin-panel" className="text-[#717179] text-xs hover:text-[#a1a1aa] transition-colors">Admin</Link></li>
             </ul>
           </div>
         </div>
