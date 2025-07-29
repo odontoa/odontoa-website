@@ -33,6 +33,33 @@ Advanced Dental Practice Management Website with Internal Content Management Sys
 - **Internal linking suggestions**
 - **Responsive design with modern UI**
 
+## 🌿 Branch Management
+
+**VAŽNO:** Main branch je zaštićen! Svi development-i idu na numerisane branch-eve.
+
+### Branch Rules:
+- **Main branch** - zaštićen, nema direktnih push-eva
+- **Development branch-evi** - `NextJS-migrated-version-X` (3, 4, 5, itd.)
+- **Nema tagova** - samo branch-evi za verzioniranje
+
+### Automatsko kreiranje branch-a:
+```bash
+# Kreiraj sledeći branch
+./create-next-branch.sh
+
+# Ili ručno
+git checkout -b NextJS-migrated-version-X
+```
+
+### Workflow:
+1. `./create-next-branch.sh` - kreira novi branch
+2. Radi promene u kodu
+3. `git add . && git commit -m "feat: opis"`
+4. `git push origin NextJS-migrated-version-X`
+5. Merge u main **samo sa dozvolom**
+
+📋 Detaljna pravila: [BRANCHING_RULES.md](./BRANCHING_RULES.md)
+
 ## Prerequisites
 
 - Node.js (version 18 or higher)
