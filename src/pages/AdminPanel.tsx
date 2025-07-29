@@ -163,8 +163,8 @@ export default function AdminPanel() {
             </div>
 
             <Tabs value={glossarySubTab} onValueChange={setGlossarySubTab} className="space-y-6">
-              <TabsList className="grid w-full grid-cols-2 bg-white border border-green-200 rounded-lg">
-                <TabsTrigger value="create" className="data-[state=active]:bg-green-600 data-[state=active]:text-white">
+              <TabsList className="grid w-full grid-cols-2 bg-white border border-gray-200 rounded-lg">
+                <TabsTrigger value="create" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
                   <Edit className="h-4 w-4 mr-2" />
                   Kreiraj Termin
                 </TabsTrigger>

@@ -254,7 +254,10 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
 }) => {
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        // Disable the link extension from StarterKit to avoid duplicate
+        link: false,
+      }),
       Image,
       Link.configure({
         openOnClick: false,
@@ -270,6 +273,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML())
     },
+    immediatelyRender: false,
   })
 
   return (

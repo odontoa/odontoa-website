@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -108,7 +110,7 @@ export const PostLayout: React.FC<PostLayoutProps> = ({ post }) => {
         <div className="max-w-6xl mx-auto px-6">
           {/* Back Button */}
           <div className="mb-8">
-            <Link to="/blogovi">
+            <Link href="/blogovi">
               <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Nazad na blogove
@@ -120,7 +122,7 @@ export const PostLayout: React.FC<PostLayoutProps> = ({ post }) => {
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center gap-3 mb-6">
               {post.tags && post.tags.slice(0, 2).map((tag, index) => (
-                <Link key={index} to={`/blogovi?category=${tag}`}>
+                <Link key={index} href={`/blogovi?category=${tag}`}>
                   <Badge className="bg-green-100 text-green-800 hover:bg-green-200 transition-colors">
                     {tag}
                   </Badge>
@@ -214,7 +216,7 @@ export const PostLayout: React.FC<PostLayoutProps> = ({ post }) => {
                     </h3>
                     <div className="flex flex-wrap gap-2">
                       {post.tags.map((tag, index) => (
-                        <Link key={index} to={`/blogovi?category=${tag}`}>
+                        <Link key={index} href={`/blogovi?category=${tag}`}>
                           <Badge 
                             variant="outline" 
                             className="hover:bg-green-50 hover:text-green-700 hover:border-green-300 transition-colors cursor-pointer"

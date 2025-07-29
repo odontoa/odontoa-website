@@ -21,7 +21,6 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
   const [updating, setUpdating] = useState<string | null>(null)
 
   useEffect(() => {
-    // Use Raw HTTP by default since it works
     console.log('=== INITIAL FETCH TRIGGERED ===')
     console.log('Type:', type, 'FilterPublished:', filterPublished)
     fetchItemsRawHTTP()
@@ -87,32 +86,34 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
 
   const handleDelete = async (id: string) => {
     try {
-      console.log('=== RAW HTTP DELETE START ===')
+      console.log('=== SUPABASE DELETE START ===')
       console.log('Deleting item ID:', id, 'Type:', type)
 
-      const response = await fetch(`https://bjbfmddrekjmactytaky.supabase.co/rest/v1/${type}?id=eq.${id}`, {
-        method: 'DELETE',
-        headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqYmZtZGRyZWtqbWFjdHl0YWt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDA1NjEsImV4cCI6MjA2OTAxNjU2MX0.jkSPsLNdD1pfm5er4TgHm0T6vVdYaXorlnScFe_X99k',
-          'Authorization': `Bearer ${session?.access_token}`,
-          'Content-Type': 'application/json'
-        }
-      })
-
-      console.log('Raw HTTP Delete Response Status:', response.status)
-
-      if (response.ok) {
-        toast.success(`${type.slice(0, -1)} uspešno obrisan!`)
-        fetchItemsRawHTTP()
-        console.log('=== RAW HTTP DELETE SUCCESS ===')
-      } else {
-        const errorData = await response.text()
-        console.error('Raw HTTP Delete Error:', errorData)
-        toast.error(`Raw HTTP greška: ${response.status}`)
+      // Get current session
+      const { data: { session: currentSession } } = await supabase.auth.getSession()
+      
+      if (!currentSession?.access_token) {
+        toast.error('Niste ulogovani. Molimo ulogujte se ponovo.')
+        return
       }
+
+      const { error } = await supabase
+        .from(type)
+        .delete()
+        .eq('id', id)
+
+      if (error) {
+        console.error('Supabase Delete Error:', error)
+        toast.error(`Greška pri brisanju: ${error.message}`)
+        return
+      }
+
+      toast.success(`${type.slice(0, -1)} uspešno obrisan!`)
+      fetchItemsRawHTTP()
+      console.log('=== SUPABASE DELETE SUCCESS ===')
     } catch (err) {
-      console.error('Raw HTTP Delete Exception:', err)
-      toast.error('Greška pri Raw HTTP pozivu')
+      console.error('Supabase Delete Exception:', err)
+      toast.error('Greška pri brisanju')
     }
   }
 
@@ -121,35 +122,35 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
     
     setUpdating(id)
     try {
-      console.log('=== RAW HTTP TOGGLE START ===')
+      console.log('=== SUPABASE TOGGLE START ===')
       console.log('Blog ID:', id, 'Current status:', currentStatus, 'New status:', !currentStatus)
 
-      const response = await fetch(`https://bjbfmddrekjmactytaky.supabase.co/rest/v1/blogs?id=eq.${id}`, {
-        method: 'PATCH',
-        headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqYmZtZGRyZWtqbWFjdHl0YWt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDA1NjEsImV4cCI6MjA2OTAxNjU2MX0.jkSPsLNdD1pfm5er4TgHm0T6vVdYaXorlnScFe_X99k',
-          'Authorization': `Bearer ${session?.access_token}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify({ published: !currentStatus })
-      })
-
-      console.log('Raw HTTP Toggle Response Status:', response.status)
-
-      if (response.ok) {
-        const statusText = !currentStatus ? 'objavljem' : 'sklonim sa sajta'
-        toast.success(`Blog uspešno ${statusText}!`)
-        fetchItemsRawHTTP()
-        console.log('=== RAW HTTP TOGGLE SUCCESS ===')
-      } else {
-        const errorData = await response.text()
-        console.error('Raw HTTP Toggle Error:', errorData)
-        toast.error(`Raw HTTP greška: ${response.status}`)
+      // Get current session
+      const { data: { session: currentSession } } = await supabase.auth.getSession()
+      
+      if (!currentSession?.access_token) {
+        toast.error('Niste ulogovani. Molimo ulogujte se ponovo.')
+        return
       }
+
+      const { error } = await supabase
+        .from('blogs')
+        .update({ published: !currentStatus })
+        .eq('id', id)
+
+      if (error) {
+        console.error('Supabase Toggle Error:', error)
+        toast.error(`Greška pri ažuriranju: ${error.message}`)
+        return
+      }
+
+      const statusText = !currentStatus ? 'objavljem' : 'sklonim sa sajta'
+      toast.success(`Blog uspešno ${statusText}!`)
+      fetchItemsRawHTTP()
+      console.log('=== SUPABASE TOGGLE SUCCESS ===')
     } catch (err) {
-      console.error('Raw HTTP Toggle Exception:', err)
-      toast.error('Greška pri Raw HTTP pozivu')
+      console.error('Supabase Toggle Exception:', err)
+      toast.error('Greška pri ažuriranju')
     } finally {
       setUpdating(null)
     }
@@ -192,61 +193,62 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
   }
 
   const fetchItemsRawHTTP = async () => {
-    console.log('=== RAW HTTP FETCH START ===')
+    console.log('=== SUPABASE FETCH START ===')
     console.log('Type:', type)
     console.log('FilterPublished:', filterPublished)
     console.log('FilterPublished type:', typeof filterPublished)
     console.log('FilterPublished === false:', filterPublished === false)
     console.log('FilterPublished === true:', filterPublished === true)
+    console.log('🔄 Current loading state:', loading)
+    
+    // Get current session
+    const { data: { session: currentSession } } = await supabase.auth.getSession()
+    
+    if (!currentSession?.access_token) {
+      console.error('No session access token available')
+      toast.error('Niste ulogovani. Molimo ulogujte se ponovo.')
+      return
+    }
     
     setLoading(true)
     try {
-      let url = `https://bjbfmddrekjmactytaky.supabase.co/rest/v1/${type}?select=*&order=created_at.desc`
+      let query = supabase
+        .from(type)
+        .select('*')
+        .order('created_at', { ascending: false })
       
       // Apply filter for blogs only
       if (type === 'blogs' && filterPublished !== undefined) {
-        console.log('🔍 Applying published filter via Raw HTTP:', filterPublished)
-        url += `&published=eq.${filterPublished}`
-        console.log('📍 FINAL URL for', filterPublished === false ? 'DRAFTS' : 'PUBLISHED', ':', url)
+        console.log('🔍 Applying published filter:', filterPublished)
+        query = query.eq('published', filterPublished)
       }
 
-      console.log('Raw HTTP URL:', url)
+      const { data, error } = await query
 
-      const response = await fetch(url, {
-        headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqYmZtZGRyZWtqbWFjdHl0YWt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDA1NjEsImV4cCI6MjA2OTAxNjU2MX0.jkSPsLNdD1pfm5er4TgHm0T6vVdYaXorlnScFe_X99k',
-          'Authorization': `Bearer ${session?.access_token}`,
-          'Content-Type': 'application/json'
-        }
-      })
-
-      console.log('Raw HTTP Response Status:', response.status)
-      console.log('Raw HTTP Response OK:', response.ok)
-
-      if (response.ok) {
-        const data = await response.json()
-        console.log('Raw HTTP Data:', data?.length || 0, 'items')
-        console.log('Raw HTTP Items:', data)
-        console.log('📊 DETAILED ITEMS DATA:', data?.map(item => ({
-          id: item.id,
-          title: item.title,
-          published: item.published,
-          created_at: item.created_at
-        })))
-        setItems(data || [])
-        // Remove toast to prevent noise - only show on manual refresh
-        console.log(`✅ Raw HTTP: Loaded ${data?.length || 0} items`)
-      } else {
-        const errorData = await response.text()
-        console.error('Raw HTTP Error:', errorData)
-        toast.error(`Raw HTTP greška: ${response.status}`)
+      if (error) {
+        console.error('Supabase Error:', error)
+        toast.error(`Greška pri učitavanju: ${error.message}`)
+        return
       }
+
+      console.log('Supabase Data:', data?.length || 0, 'items')
+      console.log('📊 DETAILED ITEMS DATA:', data?.map(item => ({
+        id: item.id,
+        title: item.title,
+        published: item.published,
+        created_at: item.created_at
+      })))
+      
+      setItems(data || [])
+      console.log(`✅ Supabase: Loaded ${data?.length || 0} items`)
+      console.log('🔍 Current items state after setItems:', data)
     } catch (err) {
-      console.error('Raw HTTP Exception:', err)
-      toast.error('Greška pri Raw HTTP pozivu')
+      console.error('Supabase Exception:', err)
+      toast.error('Greška pri učitavanju podataka')
     } finally {
+      console.log('🔄 Setting loading to false')
       setLoading(false)
-      console.log('=== RAW HTTP FETCH END ===')
+      console.log('=== SUPABASE FETCH END ===')
     }
   }
 
@@ -414,6 +416,13 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
     )
   }
 
+  console.log('🎨 RENDERING ContentList - items:', items, 'loading:', loading, 'type:', type, 'filterPublished:', filterPublished)
+  
+  // Debug: Check if loading is stuck
+  if (loading) {
+    console.log('⚠️ LOADING IS TRUE - items length:', items.length)
+  }
+  
   return (
     <div className="space-y-6">
       {/* Header */}

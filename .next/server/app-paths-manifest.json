@@ -1,1 +1,6 @@
-{}
+{
+  "/blogovi/[slug]/page": "app/blogovi/[slug]/page.js",
+  "/recnik/page": "app/recnik/page.js",
+  "/recnik/[slug]/page": "app/recnik/[slug]/page.js",
+  "/blogovi/page": "app/blogovi/page.js"
+}

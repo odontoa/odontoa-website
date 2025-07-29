@@ -12,6 +12,12 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
 import { Loader2, Save, BookOpen, Sparkles } from 'lucide-react'
 import { toast } from 'sonner'
+import { 
+  createSEOSlug, 
+  generateMetaDescription, 
+  generateSEOKeywords,
+  generateStructuredData 
+} from '@/lib/utils'
 
 const glossarySchema = z.object({
   term: z.string().min(1, 'Termin je obavezan'),
@@ -20,6 +26,7 @@ const glossarySchema = z.object({
   fullArticle: z.string().min(50, 'Članak mora imati najmanje 50 karaktera'),
   faqSchema: z.string().optional(),
   relatedTerms: z.string().optional(),
+  published: z.boolean().default(false),
 })
 
 type GlossaryFormData = z.infer<typeof glossarySchema>
@@ -58,16 +65,12 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
       fullArticle: '',
       faqSchema: '',
       relatedTerms: '',
+      published: false,
     },
   })
 
   const generateSlug = (term: string) => {
-    return term
-      .toLowerCase()
-      .replace(/[^a-z0-9 ]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/(^-|-$)/g, '')
-      .substring(0, 50)
+    return createSEOSlug(term)
   }
 
   const handleTermChange = (term: string) => {
@@ -171,6 +174,7 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
         full_article: data.fullArticle,
         faq_schema: faqSchemaJson,
         related_terms: relatedTermsArray,
+        published: data.published,
       }
 
       console.log('=== MAKING GLOSSARY RAW HTTP REQUEST ===')
@@ -222,7 +226,7 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header Card */}
-      <Card className="border-0 shadow-lg bg-gradient-to-r from-green-600 to-green-700">
+      <Card className="border-0 shadow-lg bg-gradient-to-r from-blue-600 to-blue-700">
         <CardHeader className="text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -403,7 +407,7 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
                 variant="outline" 
                 onClick={() => form.reset()}
                 disabled={loading}
-                className="order-2 sm:order-1 border-gray-300 text-gray-600 hover:bg-gray-50"
+                className="order-3 sm:order-1 border-gray-300 text-gray-600 hover:bg-gray-50"
               >
                 Poništi
               </Button>
@@ -411,6 +415,7 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
               <Button 
                 type="button"
                 onClick={() => {
+                  form.setValue('published', false)
                   form.handleSubmit(
                     (data) => submitGlossaryRawHTTP(data),
                     (errors) => {
@@ -421,11 +426,32 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
                   )()
                 }}
                 disabled={loading} 
-                className="order-1 sm:order-2 bg-green-600 hover:bg-green-700 text-white px-8 py-3 font-semibold min-w-[160px]"
+                className="order-2 sm:order-2 bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 font-semibold"
               >
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 <Save className="mr-2 h-4 w-4" />
-                Kreiraj Termin
+                Sačuvaj kao skicu
+              </Button>
+              
+              <Button 
+                type="button"
+                onClick={() => {
+                  form.setValue('published', true)
+                  form.handleSubmit(
+                    (data) => submitGlossaryRawHTTP(data),
+                    (errors) => {
+                      console.log('Validation errors:', errors)
+                      setError('Molimo popunite sva obavezna polja ispravno')
+                      toast.error('Molimo popunite sva obavezna polja ispravno')
+                    }
+                  )()
+                }}
+                disabled={loading} 
+                className="order-1 sm:order-3 bg-green-600 hover:bg-green-700 text-white px-8 py-3 font-semibold min-w-[160px]"
+              >
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                <Save className="mr-2 h-4 w-4" />
+                Objavi Termin
               </Button>
             </div>
           </div>

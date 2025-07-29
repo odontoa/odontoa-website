@@ -44,7 +44,7 @@ const Navigation = () => {
               Kontakt
             </Link>
             <Link 
-              href="/blog"
+              href="/blogovi"
               className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium"
             >
               Blogovi
@@ -100,7 +100,7 @@ const Navigation = () => {
                 Kontakt
               </Link>
               <Link 
-                href="/blog"
+                href="/blogovi"
                 className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium text-left"
                 onClick={() => setIsMenuOpen(false)}
               >

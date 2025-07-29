@@ -15,6 +15,12 @@ import { toast } from 'sonner'
 import { RichTextEditor } from './RichTextEditor'
 import { FAQGenerator } from '@/lib/faqGenerator'
 import { LLMSService } from '@/lib/llms'
+import { 
+  createSEOSlug, 
+  generateMetaDescription, 
+  generateSEOKeywords,
+  generateStructuredData 
+} from '@/lib/utils'
 
 const blogSchema = z.object({
   title: z.string().min(1, 'Naslov je obavezan'),
@@ -71,16 +77,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess }) => {
   })
 
   const generateSlug = (title: string) => {
-    const baseSlug = title
-      .toLowerCase()
-      .replace(/[^a-z0-9 ]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/(^-|-$)/g, '')
-      .substring(0, 50)
-    
-    // Add timestamp to make it unique
-    const timestamp = Date.now()
-    return `${baseSlug}-${timestamp}`
+    return createSEOSlug(title)
   }
 
   const handleTitleChange = (title: string) => {
@@ -88,9 +85,11 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess }) => {
     if (!form.getValues('slug') || form.getValues('slug') === generateSlug(form.getValues('title'))) {
       form.setValue('slug', generateSlug(title))
     }
-    // Auto-generate meta description from title
+    // Auto-generate SEO-optimized meta description
     if (!form.getValues('meta_description') && title.length > 0) {
-      form.setValue('meta_description', `${title} - Odontoa blog post o stomatologiji i digitalnoj ordinaciji.`)
+      const content = form.getValues('content')
+      const description = generateMetaDescription(content || title, title)
+      form.setValue('meta_description', description)
     }
   }
 

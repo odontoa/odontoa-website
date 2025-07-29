@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Calendar, Clock, User, ArrowRight } from 'lucide-react'
@@ -141,7 +141,7 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = ({ currentPost }) => {
               key={post.id} 
               className="group cursor-pointer"
             >
-              <Link to={`/blogovi/${post.slug}`} className="block">
+              <Link href={`/blogovi/${post.slug}`} className="block">
                 <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:scale-[1.01]">
                   <div className="relative overflow-hidden">
                     <img 
@@ -200,7 +200,7 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = ({ currentPost }) => {
         </div>
 
         <div className="text-center mt-12">
-          <Link to="/blogovi">
+          <Link href="/blogovi">
             <Button 
               variant="outline"
               size="lg"

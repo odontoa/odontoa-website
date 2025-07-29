@@ -31,24 +31,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    console.log('🔐 AuthContext: Initializing...')
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('🔐 AuthContext: Initial session:', session)
       setSession(session)
       setUser(session?.user ?? null)
       if (session?.user) {
+        console.log('🔐 AuthContext: User found, checking admin status...')
         checkAdminUser(session.user.id)
+      } else {
+        console.log('🔐 AuthContext: No user found')
       }
       setLoading(false)
     })
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('🔐 AuthContext: Auth state change:', event, session)
       setSession(session)
       setUser(session?.user ?? null)
       
       if (session?.user) {
+        console.log('🔐 AuthContext: User in auth change, checking admin status...')
         await checkAdminUser(session.user.id)
       } else {
+        console.log('🔐 AuthContext: No user in auth change')
         setAdminUser(null)
       }
       setLoading(false)
@@ -59,6 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const checkAdminUser = async (userId: string) => {
     try {
+      console.log('🔐 AuthContext: Checking admin user for ID:', userId)
       const { data, error } = await supabase
         .from('admin_users')
         .select('*')
@@ -66,12 +75,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('role', 'admin')
         .single()
 
+      console.log('🔐 AuthContext: Admin check result:', { data, error })
+
       if (error && error.code !== 'PGRST116') {
         console.error('Error checking admin user:', error)
         return
       }
 
       setAdminUser(data || null)
+      console.log('🔐 AuthContext: Admin user set to:', data)
     } catch (error) {
       console.error('Error checking admin user:', error)
       setAdminUser(null)
