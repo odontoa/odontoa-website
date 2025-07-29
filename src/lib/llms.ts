@@ -13,10 +13,11 @@ export class LLMSService {
         .eq('published', true)
         .order('created_at', { ascending: false })
 
-      // Fetch all glossary entries
+      // Fetch published glossary entries
       const { data: glossary } = await supabase
         .from('glossary')
         .select('slug')
+        .eq('published', true)
         .order('created_at', { ascending: false })
 
       let llmsContent = `# Odontoa LLMS.txt
@@ -61,10 +62,11 @@ export class LLMSService {
         .eq('published', true)
         .order('created_at', { ascending: false })
 
-      // Fetch all glossary entries
+      // Fetch published glossary entries
       const { data: glossary } = await supabase
         .from('glossary')
         .select('term, slug, definition, full_article')
+        .eq('published', true)
         .order('created_at', { ascending: false })
 
       let content = `# Odontoa - Stomatološka praksa i CMS

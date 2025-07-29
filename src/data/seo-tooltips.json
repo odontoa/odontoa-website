@@ -1,0 +1,120 @@
+{
+  "blog": {
+    "title": {
+      "icon": "📝",
+      "text": "Naslov stranice koji se koristi za <title> tag – ključno za SEO. Optimalna dužina: 50-60 karaktera."
+    },
+    "slug": {
+      "icon": "🔗",
+      "text": "URL stranice – koristi kratku verziju naslova, bez specijalnih karaktera. Važno za SEO i čitljivost URL-a."
+    },
+    "content": {
+      "icon": "📄",
+      "text": "Glavni sadržaj članka. Minimalno 300 reči za dobar SEO. Koristi naslove (H2, H3) za strukturu."
+    },
+    "excerpt": {
+      "icon": "📋",
+      "text": "Kratki opis koji se prikazuje u listi blogova. Koristi se za preview i meta opis ako summary nije unet."
+    },
+    "summary": {
+      "icon": "📝",
+      "text": "Meta opis koji se prikazuje u rezultatima pretrage (SERP). Optimalna dužina: 150-160 karaktera."
+    },
+    "image_url": {
+      "icon": "🖼️",
+      "text": "URL glavne slike članka. Koristi se za Open Graph i Twitter Cards. Preporučena veličina: 1200x630px."
+    },
+    "alt_text": {
+      "icon": "👁️",
+      "text": "Opis slike – pomaže Google-u da razume kontekst i sadržaj slike. Važno za SEO i pristupačnost."
+    },
+    "tags": {
+      "icon": "🏷️",
+      "text": "Ključne reči vezane za članak. Koriste se za kategorizaciju i interno povezivanje sadržaja."
+    },
+    "related_glossary_terms": {
+      "icon": "🔗",
+      "text": "Povezivanje sa rečnikom – važno za interne linkove i SEO strukturu. Unesi slug-ove odvojeno zarezom."
+    },
+    "faq_schema": {
+      "icon": "❓",
+      "text": "JSON-LD podaci koji omogućavaju prikaz pitanja i odgovora u Google pretrazi. Može se generisati automatski."
+    },
+    "author": {
+      "icon": "👤",
+      "text": "Ime autora članka. Koristi se za schema markup i prikaz u admin panelu."
+    },
+    "meta_description": {
+      "icon": "🔍",
+      "text": "Meta opis za SEO. Ako nije unet, koristi se summary ili excerpt. Optimalna dužina: 150-160 karaktera."
+    },
+    "featured_image": {
+      "icon": "⭐",
+      "text": "Istaknuta slika članka. Koristi se kao fallback ako image_url nije unet."
+    }
+  },
+  "glossary": {
+    "term": {
+      "icon": "📖",
+      "text": "Naziv termina koji se definiše. Koristi se za slug generisanje i prikaz u rečniku."
+    },
+    "slug": {
+      "icon": "🔗",
+      "text": "URL termina u rečniku. Generiše se automatski iz naziva termina. Važno za SEO."
+    },
+    "definition": {
+      "icon": "📝",
+      "text": "Kratka definicija termina – koristi se za SEO i featured snippet. Jasno i koncizno."
+    },
+    "full_article": {
+      "icon": "📄",
+      "text": "Detaljno objašnjenje termina. Minimalno 200 reči za dobar SEO i korisničko iskustvo."
+    },
+    "why_it_matters": {
+      "icon": "💡",
+      "text": "Objašnjenje zašto je termin važan – produžava zadržavanje korisnika i poboljšava engagement."
+    },
+    "related_blog_posts": {
+      "icon": "🔗",
+      "text": "Topic cluster povezivanje sa blogovima – jača autoritet teme. Unesi slug-ove odvojeno zarezom."
+    },
+    "faq_schema": {
+      "icon": "❓",
+      "text": "FAQ schema za termin. Može se generisati automatski na osnovu 'why_it_matters' sekcije."
+    },
+    "related_terms": {
+      "icon": "🔗",
+      "text": "Povezani termini u rečniku. Koristi se za interno povezivanje i navigaciju."
+    },
+    "category": {
+      "icon": "📂",
+      "text": "Kategorija termina. Pomaže u organizaciji rečnika i poboljšava korisničko iskustvo."
+    },
+    "difficulty_level": {
+      "icon": "📊",
+      "text": "Nivo težine termina (početnik, srednji, napredni). Pomaže korisnicima da odaberu odgovarajući sadržaj."
+    }
+  },
+  "common": {
+    "seo_score": {
+      "icon": "🎯",
+      "text": "SEO ocena sadržaja (0-100). Računa se na osnovu dužine, ključnih reči, strukture i kompletnosti."
+    },
+    "reading_time": {
+      "icon": "⏱️",
+      "text": "Procenjeno vreme čitanja sadržaja. Računa se na osnovu broja reči (200 reči/minut)."
+    },
+    "views_count": {
+      "icon": "👁️",
+      "text": "Automatski broj pregleda – koristi se za sortiranje i analitiku. Ažurira se sa svakim posetom."
+    },
+    "last_modified": {
+      "icon": "🕒",
+      "text": "Datum i vreme poslednje izmene. Koristi se za SEO freshness i korisničku informaciju."
+    },
+    "published": {
+      "icon": "🌐",
+      "text": "Status objavljivanja. Objavljeni sadržaj je vidljiv javno, draft je samo u admin panelu."
+    }
+  }
+} 

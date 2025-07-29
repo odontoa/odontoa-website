@@ -32,9 +32,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     console.log('🔐 AuthContext: Initializing...')
+    
+    // Add timeout to prevent infinite loading
+    const timeoutId = setTimeout(() => {
+      console.log('🔐 AuthContext: Timeout reached, setting loading to false')
+      setLoading(false)
+    }, 10000)
+    
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       console.log('🔐 AuthContext: Initial session:', session)
+      clearTimeout(timeoutId)
       setSession(session)
       setUser(session?.user ?? null)
       if (session?.user) {
@@ -42,7 +50,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         checkAdminUser(session.user.id)
       } else {
         console.log('🔐 AuthContext: No user found')
+        setLoading(false)
       }
+    }).catch((error) => {
+      console.error('🔐 AuthContext: Error getting session:', error)
+      clearTimeout(timeoutId)
       setLoading(false)
     })
 
@@ -68,6 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const checkAdminUser = async (userId: string) => {
     try {
       console.log('🔐 AuthContext: Checking admin user for ID:', userId)
+      
       const { data, error } = await supabase
         .from('admin_users')
         .select('*')
@@ -77,16 +90,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       console.log('🔐 AuthContext: Admin check result:', { data, error })
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error checking admin user:', error)
-        return
+      if (error) {
+        if (error.code === 'PGRST116') {
+          // No admin user found - this is normal for non-admin users
+          console.log('🔐 AuthContext: No admin user found for this user ID')
+          setAdminUser(null)
+        } else {
+          console.error('Error checking admin user:', error)
+          setAdminUser(null)
+        }
+      } else {
+        setAdminUser(data)
+        console.log('🔐 AuthContext: Admin user set to:', data)
       }
-
-      setAdminUser(data || null)
-      console.log('🔐 AuthContext: Admin user set to:', data)
+      
+      setLoading(false)
     } catch (error) {
       console.error('Error checking admin user:', error)
       setAdminUser(null)
+      setLoading(false)
     }
   }
 

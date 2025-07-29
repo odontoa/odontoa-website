@@ -10,22 +10,46 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
-import { Loader2, Save, BookOpen, Sparkles } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { 
+  Loader2, 
+  Save, 
+  BookOpen, 
+  Sparkles, 
+  Globe, 
+  Target,
+  Clock,
+  AlertCircle,
+  TrendingUp,
+  Link,
+  Info
+} from 'lucide-react'
 import { toast } from 'sonner'
 import { 
   createSEOSlug, 
   generateMetaDescription, 
   generateSEOKeywords,
-  generateStructuredData 
+  generateStructuredData,
+  calculateReadingTime,
+  calculateSEOScore,
+  generateTopicClusterSuggestions,
+  suggestRelatedContent
 } from '@/lib/utils'
+import { supabase } from '@/lib/supabase'
 
 const glossarySchema = z.object({
   term: z.string().min(1, 'Termin je obavezan'),
   slug: z.string().min(1, 'Slug je obavezan'),
   definition: z.string().min(10, 'Definicija mora imati najmanje 10 karaktera'),
   fullArticle: z.string().min(50, 'Članak mora imati najmanje 50 karaktera'),
+  why_it_matters: z.string().optional(),
+  related_blog_posts: z.string().optional(),
   faqSchema: z.string().optional(),
   relatedTerms: z.string().optional(),
+  category: z.string().optional(),
+  difficulty_level: z.string().default('beginner'),
   published: z.boolean().default(false),
 })
 
@@ -40,6 +64,11 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [generatingFAQ, setGeneratingFAQ] = useState(false)
+  const [seoScore, setSeoScore] = useState(0)
+  const [readingTime, setReadingTime] = useState(0)
+  const [topicSuggestions, setTopicSuggestions] = useState<any[]>([])
+  const [relatedContent, setRelatedContent] = useState<any[]>([])
+  const [activeTab, setActiveTab] = useState('content')
 
   // Early auth check
   if (!user || !session || !isAdmin) {
@@ -63,8 +92,12 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
       slug: '',
       definition: '',
       fullArticle: '',
+      why_it_matters: '',
+      related_blog_posts: '',
       faqSchema: '',
       relatedTerms: '',
+      category: '',
+      difficulty_level: 'beginner',
       published: false,
     },
   })
@@ -78,11 +111,98 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
     if (!form.getValues('slug') || form.getValues('slug') === generateSlug(form.getValues('term'))) {
       form.setValue('slug', generateSlug(term))
     }
+    updateSEOScore()
+  }
+
+  const handleDefinitionChange = (definition: string) => {
+    form.setValue('definition', definition)
+    
+    // Auto-update reading time
+    const time = calculateReadingTime(definition)
+    setReadingTime(time)
+    
+    updateSEOScore()
+    generateTopicSuggestions()
+    generateRelatedContent()
+  }
+
+  const handleFullArticleChange = (fullArticle: string) => {
+    form.setValue('fullArticle', fullArticle)
+    
+    // Auto-update reading time
+    const time = calculateReadingTime(fullArticle)
+    setReadingTime(time)
+    
+    updateSEOScore()
+    generateTopicSuggestions()
+    generateRelatedContent()
+  }
+
+  const updateSEOScore = () => {
+    const formData = form.getValues()
+    const score = calculateSEOScore({
+      term: formData.term,
+      full_article: formData.fullArticle,
+      definition: formData.definition,
+      why_it_matters: formData.why_it_matters,
+      related_blog_posts: formData.related_blog_posts ? formData.related_blog_posts.split(',').map(t => t.trim()) : [],
+      related_terms: formData.relatedTerms ? formData.relatedTerms.split(',').map(t => t.trim()) : [],
+      category: formData.category,
+      difficulty_level: formData.difficulty_level
+    }, 'glossary')
+    setSeoScore(score)
+  }
+
+  const generateTopicSuggestions = async () => {
+    const formData = form.getValues()
+    if (formData.fullArticle && formData.term) {
+      const tags = formData.relatedTerms ? formData.relatedTerms.split(',').map(t => t.trim()) : []
+      const suggestions = generateTopicClusterSuggestions(formData.fullArticle, formData.term, tags)
+      setTopicSuggestions(suggestions)
+    }
+  }
+
+  const generateRelatedContent = async () => {
+    const formData = form.getValues()
+    if (formData.fullArticle) {
+      try {
+        // Fetch existing content for suggestions
+        const { data: existingBlogs } = await supabase
+          .from('blogs')
+          .select('id, title, slug, tags, content')
+          .eq('published', true)
+          .limit(20)
+
+        const { data: existingGlossary } = await supabase
+          .from('glossary')
+          .select('id, term, slug, related_terms, full_article')
+          .eq('published', true)
+          .limit(20)
+
+        const allContent = [
+          ...(existingBlogs || []),
+          ...(existingGlossary || []).map(item => ({
+            id: item.id,
+            title: item.term,
+            slug: item.slug,
+            tags: item.related_terms || [],
+            content: item.full_article
+          }))
+        ]
+
+        const tags = formData.relatedTerms ? formData.relatedTerms.split(',').map(t => t.trim()) : []
+        const suggestions = suggestRelatedContent(formData.fullArticle, tags, allContent)
+        setRelatedContent(suggestions)
+      } catch (error) {
+        console.error('Error generating related content:', error)
+      }
+    }
   }
 
   const generateAutoFAQ = async () => {
     const term = form.getValues('term')
     const definition = form.getValues('definition')
+    const whyItMatters = form.getValues('why_it_matters')
     
     if (!term || !definition) {
       toast.error('Unesite termin i definiciju pre generisanja FAQ-a')
@@ -102,28 +222,45 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
               "@type": "Answer",
               "text": definition
             }
-          },
-          {
-            "@type": "Question", 
-            "name": `Kada se koristi ${term}?`,
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Detaljne informacije o upotrebi možete pronaći u našem stomatološkom vodiču."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": `Da li je ${term} bezbedno?`,
-            "acceptedAnswer": {
-              "@type": "Answer", 
-              "text": "Da, svi naši postupci su bezbedni i odobreni od strane relevantnih medicinskih institucija."
-            }
           }
         ]
       }
+
+      // Add why it matters question if available
+      if (whyItMatters) {
+        faqData.mainEntity.push({
+          "@type": "Question",
+          "name": `Zašto je ${term} važan?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": whyItMatters
+          }
+        })
+      }
+
+      // Add common questions
+      faqData.mainEntity.push(
+        {
+          "@type": "Question", 
+          "name": `Kada se koristi ${term}?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Detaljne informacije o upotrebi možete pronaći u našem stomatološkom vodiču."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": `Da li je ${term} bezbedno?`,
+          "acceptedAnswer": {
+            "@type": "Answer", 
+            "text": "Da, svi naši postupci su bezbedni i odobreni od strane relevantnih medicinskih institucija."
+          }
+        }
+      )
       
       form.setValue('faqSchema', JSON.stringify(faqData, null, 2))
       toast.success('FAQ automatski generisan!')
+      updateSEOScore()
     } catch (error) {
       toast.error('Greška pri generisanju FAQ-a')
       console.error('FAQ generation error:', error)
@@ -155,6 +292,7 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
       console.log('=== PREPARING GLOSSARY RAW HTTP DATA ===')
       
       const relatedTermsArray = data.relatedTerms ? data.relatedTerms.split(',').map(term => term.trim()).filter(Boolean) : []
+      const relatedBlogPostsArray = data.related_blog_posts ? data.related_blog_posts.split(',').map(post => post.trim()).filter(Boolean) : []
       
       let faqSchemaJson = null
       if (data.faqSchema) {
@@ -172,9 +310,15 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
         slug: data.slug,
         definition: data.definition,
         full_article: data.fullArticle,
+        why_it_matters: data.why_it_matters || null,
+        related_blog_posts: relatedBlogPostsArray,
         faq_schema: faqSchemaJson,
         related_terms: relatedTermsArray,
+        category: data.category || null,
+        difficulty_level: data.difficulty_level,
         published: data.published,
+        reading_time: readingTime,
+        seo_score: seoScore,
       }
 
       console.log('=== MAKING GLOSSARY RAW HTTP REQUEST ===')
@@ -223,39 +367,53 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
     }
   }
 
+  const onSubmit = (data: GlossaryFormData) => {
+    submitGlossaryRawHTTP(data)
+  }
+
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header Card */}
-      <Card className="border-0 shadow-lg bg-gradient-to-r from-blue-600 to-blue-700">
-        <CardHeader className="text-white">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <BookOpen className="h-6 w-6" />
-              <CardTitle className="text-2xl font-bold">Kreiranje Rečničkog Termina</CardTitle>
-            </div>
+    <Card className="border-0 shadow-lg">
+      <CardHeader>
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center">
+            <BookOpen className="h-5 w-5 mr-2 text-purple-600" />
+            Kreiraj Novi Rečnički Termin
           </div>
-        </CardHeader>
-      </Card>
+          <div className="flex items-center space-x-2">
+            <Badge variant={seoScore >= 80 ? "default" : seoScore >= 60 ? "secondary" : "destructive"}>
+              <Target className="h-3 w-3 mr-1" />
+              SEO: {seoScore}/100
+            </Badge>
+            <Badge variant="outline">
+              <Clock className="h-3 w-3 mr-1" />
+              {readingTime} min
+            </Badge>
+          </div>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 bg-white border border-gray-200 rounded-lg">
+            <TabsTrigger value="content" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+              <BookOpen className="h-4 w-4 mr-2" />
+              Sadržaj
+            </TabsTrigger>
+            <TabsTrigger value="seo" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+              <Globe className="h-4 w-4 mr-2" />
+              SEO
+            </TabsTrigger>
+            <TabsTrigger value="context" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+              <Info className="h-4 w-4 mr-2" />
+              Kontekst
+            </TabsTrigger>
+            <TabsTrigger value="connections" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+              <Link className="h-4 w-4 mr-2" />
+              Povezivanje
+            </TabsTrigger>
+          </TabsList>
 
-      {/* Main Form */}
-      <Card className="border-0 shadow-lg bg-white">
-        <CardContent className="p-8">
-          <div className="space-y-6">
-            {/* Validation Errors Display */}
-            {Object.keys(form.formState.errors).length > 0 && (
-              <Alert variant="destructive" className="bg-red-50 border-red-200">
-                <AlertDescription className="text-red-800">
-                  <div className="font-semibold mb-2">Ispravite sledeće greške:</div>
-                  <ul className="list-disc list-inside space-y-1">
-                    {Object.entries(form.formState.errors).map(([key, error]) => (
-                      <li key={key}>{error?.message}</li>
-                    ))}
-                  </ul>
-                </AlertDescription>
-              </Alert>
-            )}
-
-            {/* Basic Info Section */}
+          <TabsContent value="content" className="space-y-6">
+            {/* Basic Information */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900">Osnovne informacije</h3>
               
@@ -269,7 +427,7 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
                     {...form.register('term')}
                     onChange={(e) => handleTermChange(e.target.value)}
                     disabled={loading}
-                    className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-green-500 focus:ring-green-500"
+                    className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500"
                     placeholder="Unesite stomatološki termin"
                   />
                   {form.formState.errors.term && (
@@ -285,7 +443,7 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
                     id="slug"
                     {...form.register('slug')}
                     disabled={loading}
-                    className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-green-500 focus:ring-green-500"
+                    className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500"
                     placeholder="automatski-generisan-iz-termina"
                   />
                   {form.formState.errors.slug && (
@@ -301,9 +459,10 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
                 <Textarea
                   id="definition"
                   {...form.register('definition')}
+                  onChange={(e) => handleDefinitionChange(e.target.value)}
                   disabled={loading}
                   rows={3}
-                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-green-500 focus:ring-green-500"
+                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500"
                   placeholder="Unesite kratku definiciju termina (min 10 karaktera)"
                 />
                 {form.formState.errors.definition && (
@@ -325,9 +484,10 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
                 <Textarea
                   id="fullArticle"
                   {...form.register('fullArticle')}
+                  onChange={(e) => handleFullArticleChange(e.target.value)}
                   disabled={loading}
                   rows={12}
-                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-green-500 focus:ring-green-500"
+                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500"
                   placeholder="Unesite detaljni članak o terminu (minimum 50 karaktera)"
                 />
                 {form.formState.errors.fullArticle && (
@@ -338,125 +498,267 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
                 </p>
               </div>
             </div>
+          </TabsContent>
 
-            <Separator />
-
-            {/* Related Terms Section */}
+          <TabsContent value="seo" className="space-y-6">
+            {/* FAQ Schema */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Povezani sadržaj</h3>
+              <h3 className="text-lg font-semibold text-gray-900">FAQ Schema</h3>
               
               <div className="space-y-2">
-                <Label htmlFor="relatedTerms" className="text-sm font-medium text-gray-700">
-                  Povezani termini
-                </Label>
-                <Input
-                  id="relatedTerms"
-                  {...form.register('relatedTerms')}
-                  disabled={loading}
-                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-green-500 focus:ring-green-500"
-                  placeholder="termin1, termin2, termin3"
-                />
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* FAQ Section */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">FAQ Schema</h3>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={generateAutoFAQ}
-                  disabled={generatingFAQ || loading}
-                  className="border-green-300 text-green-600 hover:bg-green-50"
-                >
-                  {generatingFAQ && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Auto-generiši FAQ
-                </Button>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="faqSchema" className="text-sm font-medium text-gray-700">
-                  FAQ JSON Schema
-                </Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="faqSchema" className="text-sm font-medium text-gray-700">
+                    FAQ JSON Schema
+                  </Label>
+                  <Button
+                    type="button"
+                    onClick={generateAutoFAQ}
+                    disabled={generatingFAQ || loading}
+                    variant="outline"
+                    size="sm"
+                    className="text-purple-600 border-purple-200 hover:bg-purple-50"
+                  >
+                    {generatingFAQ ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Sparkles className="h-4 w-4 mr-2" />
+                    )}
+                    Auto-generiši FAQ
+                  </Button>
+                </div>
                 <Textarea
                   id="faqSchema"
                   {...form.register('faqSchema')}
                   disabled={loading}
                   rows={8}
-                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-green-500 focus:ring-green-500 font-mono text-sm"
-                  placeholder="Kliknite 'Auto-generiši FAQ' da se automatski kreira..."
+                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500 font-mono text-sm"
+                  placeholder="FAQ JSON Schema..."
                 />
               </div>
             </div>
 
-            {error && (
-              <Alert variant="destructive" className="bg-red-50 border-red-200">
-                <AlertDescription className="text-red-800">{error}</AlertDescription>
-              </Alert>
-            )}
+            <Separator />
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t">
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={() => form.reset()}
-                disabled={loading}
-                className="order-3 sm:order-1 border-gray-300 text-gray-600 hover:bg-gray-50"
-              >
-                Poništi
-              </Button>
+            {/* SEO Score */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">SEO Analiza</h3>
               
-              <Button 
-                type="button"
-                onClick={() => {
-                  form.setValue('published', false)
-                  form.handleSubmit(
-                    (data) => submitGlossaryRawHTTP(data),
-                    (errors) => {
-                      console.log('Validation errors:', errors)
-                      setError('Molimo popunite sva obavezna polja ispravno')
-                      toast.error('Molimo popunite sva obavezna polja ispravno')
-                    }
-                  )()
-                }}
-                disabled={loading} 
-                className="order-2 sm:order-2 bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 font-semibold"
-              >
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                <Save className="mr-2 h-4 w-4" />
-                Sačuvaj kao skicu
-              </Button>
-              
-              <Button 
-                type="button"
-                onClick={() => {
-                  form.setValue('published', true)
-                  form.handleSubmit(
-                    (data) => submitGlossaryRawHTTP(data),
-                    (errors) => {
-                      console.log('Validation errors:', errors)
-                      setError('Molimo popunite sva obavezna polja ispravno')
-                      toast.error('Molimo popunite sva obavezna polja ispravno')
-                    }
-                  )()
-                }}
-                disabled={loading} 
-                className="order-1 sm:order-3 bg-green-600 hover:bg-green-700 text-white px-8 py-3 font-semibold min-w-[160px]"
-              >
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                <Save className="mr-2 h-4 w-4" />
-                Objavi Termin
-              </Button>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">SEO Score</span>
+                    <Badge variant={seoScore >= 80 ? "default" : seoScore >= 60 ? "secondary" : "destructive"}>
+                      {seoScore}/100
+                    </Badge>
+                  </div>
+                  <div className="mt-2">
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full ${
+                          seoScore >= 80 ? 'bg-green-500' : 
+                          seoScore >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                        }`}
+                        style={{ width: `${seoScore}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">Vreme čitanja</span>
+                    <Badge variant="outline">
+                      {readingTime} min
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">Status</span>
+                    <Badge variant="outline">
+                      Draft
+                    </Badge>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+          </TabsContent>
+
+          <TabsContent value="context" className="space-y-6">
+            {/* Context Information */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">Kontekst i kategorizacija</h3>
+              
+              <div className="space-y-2">
+                <Label htmlFor="why_it_matters" className="text-sm font-medium text-gray-700">
+                  Zašto je važno?
+                </Label>
+                <Textarea
+                  id="why_it_matters"
+                  {...form.register('why_it_matters')}
+                  disabled={loading}
+                  rows={4}
+                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500"
+                  placeholder="Objašnjenje zašto je ovaj termin važan u stomatologiji..."
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="category" className="text-sm font-medium text-gray-700">
+                    Kategorija
+                  </Label>
+                  <Select
+                    value={form.watch('category')}
+                    onValueChange={(value) => form.setValue('category', value)}
+                  >
+                    <SelectTrigger className="bg-white border-gray-300 text-gray-900 focus:border-purple-500 focus:ring-purple-500">
+                      <SelectValue placeholder="Izaberite kategoriju" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="digitalna-stomatologija">Digitalna Stomatologija</SelectItem>
+                      <SelectItem value="upravljanje-ordinacijom">Upravljanje Ordinacijom</SelectItem>
+                      <SelectItem value="preventivna-stomatologija">Preventivna Stomatologija</SelectItem>
+                      <SelectItem value="estetska-stomatologija">Estetska Stomatologija</SelectItem>
+                      <SelectItem value="implantologija">Implantologija</SelectItem>
+                      <SelectItem value="ortodontija">Ortodontija</SelectItem>
+                      <SelectItem value="hirurgija">Hirurgija</SelectItem>
+                      <SelectItem value="endodoncija">Endodoncija</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="difficulty_level" className="text-sm font-medium text-gray-700">
+                    Nivo težine
+                  </Label>
+                  <Select
+                    value={form.watch('difficulty_level')}
+                    onValueChange={(value) => form.setValue('difficulty_level', value)}
+                  >
+                    <SelectTrigger className="bg-white border-gray-300 text-gray-900 focus:border-purple-500 focus:ring-purple-500">
+                      <SelectValue placeholder="Izaberite nivo težine" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="beginner">Početnik</SelectItem>
+                      <SelectItem value="intermediate">Srednji nivo</SelectItem>
+                      <SelectItem value="advanced">Napredni</SelectItem>
+                      <SelectItem value="expert">Ekspert</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="connections" className="space-y-6">
+            {/* Related Terms */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">Povezani sadržaj</h3>
+              
+              <div className="space-y-2">
+                <Label htmlFor="relatedTerms" className="text-sm font-medium text-gray-700">
+                  Povezani termini (odvojeni zarezom)
+                </Label>
+                <Input
+                  id="relatedTerms"
+                  {...form.register('relatedTerms')}
+                  disabled={loading}
+                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500"
+                  placeholder="termin1, termin2, termin3"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="related_blog_posts" className="text-sm font-medium text-gray-700">
+                  Povezani blog postovi (slug-ovi odvojeni zarezom)
+                </Label>
+                <Input
+                  id="related_blog_posts"
+                  {...form.register('related_blog_posts')}
+                  disabled={loading}
+                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500"
+                  placeholder="blog-slug-1, blog-slug-2"
+                />
+              </div>
+
+              {/* Topic Suggestions */}
+              {topicSuggestions.length > 0 && (
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-gray-700">
+                    Predloženi topic clusteri
+                  </Label>
+                  <div className="space-y-2">
+                    {topicSuggestions.map((suggestion, index) => (
+                      <div key={index} className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-purple-900">{suggestion.cluster_name}</span>
+                          <Badge variant="outline" className="text-purple-600">
+                            {suggestion.score} pts
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-purple-700 mt-1">
+                          Ključni pojmovi: {suggestion.keywords.join(', ')}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Related Content Suggestions */}
+              {relatedContent.length > 0 && (
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-gray-700">
+                    Predloženi povezani sadržaj
+                  </Label>
+                  <div className="space-y-2">
+                    {relatedContent.map((item, index) => (
+                      <div key={index} className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-green-900">{item.title}</span>
+                          <Badge variant="outline" className="text-green-600">
+                            {item.relevance_score} pts
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-green-700 mt-1">
+                          Razlog: {item.reason}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        {/* Error Display */}
+        {error && (
+          <Alert className="border-red-200 bg-red-50">
+            <AlertCircle className="h-4 w-4 text-red-600" />
+            <AlertDescription className="text-red-800">{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {/* Action Buttons */}
+        <div className="flex items-center justify-end space-x-4 pt-6">
+          <Button
+            type="button"
+            onClick={form.handleSubmit(onSubmit)}
+            disabled={loading}
+            className="bg-purple-600 hover:bg-purple-700 text-white"
+          >
+            {loading ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4 mr-2" />
+            )}
+            Kreiraj Termin
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   )
 }

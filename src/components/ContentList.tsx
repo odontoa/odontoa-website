@@ -38,8 +38,8 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
         .select('*')
         .order('created_at', { ascending: false })
 
-      // Apply filter for blogs only
-      if (type === 'blogs' && filterPublished !== undefined) {
+      // Apply filter for blogs and glossary
+      if (filterPublished !== undefined) {
         console.log('Applying published filter:', filterPublished)
         query = query.eq('published', filterPublished)
       }
@@ -118,25 +118,33 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
   }
 
   const handleTogglePublished = async (id: string, currentStatus: boolean) => {
-    if (type !== 'blogs') return
+    if (type !== 'blogs' && type !== 'glossary') return
     
     setUpdating(id)
     try {
       console.log('=== SUPABASE TOGGLE START ===')
       console.log('Blog ID:', id, 'Current status:', currentStatus, 'New status:', !currentStatus)
 
+      // Add timeout to prevent infinite loading
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Request timeout')), 10000)
+      })
+
       // Get current session
-      const { data: { session: currentSession } } = await supabase.auth.getSession()
+      const sessionPromise = supabase.auth.getSession()
+      const { data: { session: currentSession } } = await Promise.race([sessionPromise, timeoutPromise]) as any
       
       if (!currentSession?.access_token) {
         toast.error('Niste ulogovani. Molimo ulogujte se ponovo.')
         return
       }
 
-      const { error } = await supabase
-        .from('blogs')
+      const updatePromise = supabase
+        .from(type)
         .update({ published: !currentStatus })
         .eq('id', id)
+      
+      const { error } = await Promise.race([updatePromise, timeoutPromise]) as any
 
       if (error) {
         console.error('Supabase Toggle Error:', error)
@@ -145,12 +153,18 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
       }
 
       const statusText = !currentStatus ? 'objavljem' : 'sklonim sa sajta'
-      toast.success(`Blog uspešno ${statusText}!`)
+      const contentType = type === 'blogs' ? 'Blog' : 'Termin'
+      toast.success(`${contentType} uspešno ${statusText}!`)
       fetchItemsRawHTTP()
       console.log('=== SUPABASE TOGGLE SUCCESS ===')
     } catch (err) {
       console.error('Supabase Toggle Exception:', err)
-      toast.error('Greška pri ažuriranju')
+      if (err instanceof Error && err.message === 'Request timeout') {
+        console.error('Toggle request timed out after 10 seconds')
+        toast.error('Greška pri ažuriranju - timeout')
+      } else {
+        toast.error('Greška pri ažuriranju')
+      }
     } finally {
       setUpdating(null)
     }
@@ -165,21 +179,33 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
   }
 
   const getTabTitle = () => {
-    if (type === 'glossary') return 'Rečnik termina'
+    if (type === 'glossary') {
+      if (filterPublished === true) return 'Objavljeni termini'
+      if (filterPublished === false) return 'Skice termina'
+      return 'Svi termini'
+    }
     if (filterPublished === true) return 'Objavljeni blogovi'
     if (filterPublished === false) return 'Draft blogovi (Skice)'
     return 'Svi blogovi'
   }
 
   const getEmptyStateMessage = () => {
-    if (type === 'glossary') return 'Nema termina'
+    if (type === 'glossary') {
+      if (filterPublished === true) return 'Nema objavljenih termina'
+      if (filterPublished === false) return 'Nema draft termina'
+      return 'Nema termina'
+    }
     if (filterPublished === true) return 'Nema objavljenih blogova'
     if (filterPublished === false) return 'Nema draft blogova'
     return 'Nema blogova'
   }
 
   const getEmptyStateDescription = () => {
-    if (type === 'glossary') return 'Kreirajte prvi termin da biste počeli'
+    if (type === 'glossary') {
+      if (filterPublished === true) return 'Objavite termin da se pojavi ovde'
+      if (filterPublished === false) return 'Kreirajte draft termin da se pojavi ovde'
+      return 'Kreirajte prvi termin da biste počeli'
+    }
     if (filterPublished === true) return 'Objavite neki draft blog da bi se ovde prikazao'
     if (filterPublished === false) return 'Kreirajte draft blog da bi se ovde prikazao'
     return 'Kreirajte prvi blog da biste počeli'
@@ -201,8 +227,14 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
     console.log('FilterPublished === true:', filterPublished === true)
     console.log('🔄 Current loading state:', loading)
     
+    // Add timeout to prevent infinite loading
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Request timeout')), 10000)
+    })
+    
     // Get current session
-    const { data: { session: currentSession } } = await supabase.auth.getSession()
+    const sessionPromise = supabase.auth.getSession()
+    const { data: { session: currentSession } } = await Promise.race([sessionPromise, timeoutPromise]) as any
     
     if (!currentSession?.access_token) {
       console.error('No session access token available')
@@ -217,13 +249,14 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
         .select('*')
         .order('created_at', { ascending: false })
       
-      // Apply filter for blogs only
-      if (type === 'blogs' && filterPublished !== undefined) {
+      // Apply filter for blogs and glossary
+      if (filterPublished !== undefined) {
         console.log('🔍 Applying published filter:', filterPublished)
         query = query.eq('published', filterPublished)
       }
 
-      const { data, error } = await query
+      const queryPromise = query
+      const { data, error } = await Promise.race([queryPromise, timeoutPromise]) as any
 
       if (error) {
         console.error('Supabase Error:', error)
@@ -244,7 +277,12 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
       console.log('🔍 Current items state after setItems:', data)
     } catch (err) {
       console.error('Supabase Exception:', err)
-      toast.error('Greška pri učitavanju podataka')
+      if (err instanceof Error && err.message === 'Request timeout') {
+        console.error('Request timed out after 10 seconds')
+        toast.error('Greška pri učitavanju - timeout')
+      } else {
+        toast.error('Greška pri učitavanju podataka')
+      }
     } finally {
       console.log('🔄 Setting loading to false')
       setLoading(false)
@@ -257,152 +295,18 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-semibold text-gray-700">Loading {getTabTitle()}...</h3>
-          <div className="flex gap-2">
-            <Button
-              onClick={handleManualRefresh}
-              variant="outline"
-              size="sm"
-              className="border-blue-300 text-blue-600 hover:bg-blue-50"
-              disabled={loading}
-            >
-              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              Osveži
-            </Button>
-            
-            <Button
-              onClick={async () => {
-                console.log('🧪 CREATING TEST DRAFT - filterPublished:', filterPublished)
-                toast.info('Creating test draft...')
-                try {
-                  const testData = {
-                    title: `DEBUG DRAFT ${new Date().toLocaleTimeString()}`,
-                    slug: `debug-draft-${Date.now()}`,
-                    content: "This is a test draft blog created for debugging the draft display issue.",
-                    excerpt: "Debug test excerpt to verify draft functionality",
-                    author: "Debug Author", 
-                    published: false,
-                    meta_description: "Debug meta description for testing"
-                  }
-                  
-                  console.log('🧪 TEST DRAFT DATA:', testData)
-                  
-                  const response = await fetch('https://bjbfmddrekjmactytaky.supabase.co/rest/v1/blogs', {
-                    method: 'POST',
-                    headers: {
-                      'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqYmZtZGRyZWtqbWFjdHl0YWt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDA1NjEsImV4cCI6MjA2OTAxNjU2MX0.jkSPsLNdD1pfm5er4TgHm0T6vVdYaXorlnScFe_X99k',
-                      'Authorization': `Bearer ${session?.access_token}`,
-                      'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(testData)
-                  })
-                  
-                  const result = await response.text()
-                  console.log('🧪 TEST DRAFT RESPONSE:', response.status, result)
-                  
-                  if (response.ok) {
-                    toast.success('✅ Test draft created! Refreshing...')
-                    setTimeout(() => fetchItemsRawHTTP(), 1000)
-                  } else {
-                    toast.error(`❌ Failed: ${response.status}`)
-                    console.error('Test draft failed:', result)
-                  }
-                } catch (err) {
-                  console.error('Test draft error:', err)
-                  toast.error('Error creating test draft')
-                }
-              }}
-              variant="outline"
-              size="sm"
-              className="border-purple-300 text-purple-600 hover:bg-purple-50"
-            >
-              🧪 Test Draft
-            </Button>
-            
-            <Button
-              onClick={async () => {
-                console.log('🔧 FIXING NULL PUBLISHED...')
-                toast.info('Fixing NULL published values...')
-                try {
-                  const response = await fetch('https://bjbfmddrekjmactytaky.supabase.co/rest/v1/blogs?published=is.null', {
-                    method: 'PATCH',
-                    headers: {
-                      'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqYmZtZGRyZWtqbWFjdHl0YWt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDA1NjEsImV4cCI6MjA2OTAxNjU2MX0.jkSPsLNdD1pfm5er4TgHm0T6vVdYaXorlnScFe_X99k',
-                      'Authorization': `Bearer ${session?.access_token}`,
-                      'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ published: false })
-                  })
-                  
-                  if (response.ok) {
-                    toast.success('✅ Fixed NULL values! Refreshing...')
-                    setTimeout(() => fetchItemsRawHTTP(), 1000)
-                  } else {
-                    toast.error('❌ Failed to fix NULL values')
-                  }
-                } catch (err) {
-                  console.error('Fix error:', err)
-                  toast.error('Error fixing NULL values')
-                }
-              }}
-              variant="outline"
-              size="sm"
-              className="border-red-300 text-red-600 hover:bg-red-50"
-            >
-              🔧 Fix NULL
-            </Button>
-            
-            <Button
-              onClick={async () => {
-                console.log('🔍 DEBUGGING ALL BLOGS...')
-                toast.info('Fetching all blogs for debugging...')
-                try {
-                  // Fetch ALL blogs without filter
-                  const response = await fetch('https://bjbfmddrekjmactytaky.supabase.co/rest/v1/blogs?select=*&order=created_at.desc', {
-                    headers: {
-                      'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqYmZtZGRyZWtqbWFjdHl0YWt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDA1NjEsImV4cCI6MjA2OTAxNjU2MX0.jkSPsLNdD1pfm5er4TgHm0T6vVdYaXorlnScFe_X99k',
-                      'Content-Type': 'application/json'
-                    }
-                  })
-                  
-                  if (response.ok) {
-                    const allBlogs = await response.json()
-                    console.log('🔍 ALL BLOGS IN DATABASE:', allBlogs)
-                    console.log('🔍 TOTAL BLOGS:', allBlogs?.length || 0)
-                    console.log('🔍 BLOG DETAILS:', allBlogs?.map(blog => ({
-                      id: blog.id,
-                      title: blog.title,
-                      slug: blog.slug,
-                      published: blog.published,
-                      published_type: typeof blog.published,
-                      created_at: blog.created_at
-                    })))
-                    
-                    const drafts = allBlogs?.filter(blog => blog.published === false) || []
-                    const published = allBlogs?.filter(blog => blog.published === true) || []
-                    const nullPublished = allBlogs?.filter(blog => blog.published === null) || []
-                    
-                    console.log('🔍 DRAFTS (published=false):', drafts.length)
-                    console.log('🔍 PUBLISHED (published=true):', published.length)
-                    console.log('🔍 NULL PUBLISHED (published=null):', nullPublished.length)
-                    
-                    toast.success(`Debug: ${allBlogs?.length || 0} total, ${drafts.length} drafts, ${published.length} published`)
-                  } else {
-                    toast.error('❌ Failed to fetch all blogs')
-                  }
-                } catch (err) {
-                  console.error('Debug error:', err)
-                  toast.error('Error debugging blogs')
-                }
-              }}
-              variant="outline"
-              size="sm"
-              className="border-blue-300 text-blue-600 hover:bg-blue-50"
-            >
-              🔍 Debug All
-            </Button>
-            
-
-          </div>
+                  <div className="flex gap-2">
+          <Button
+            onClick={handleManualRefresh}
+            variant="outline"
+            size="sm"
+            className="border-blue-300 text-blue-600 hover:bg-blue-50"
+            disabled={loading}
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Osveži
+          </Button>
+        </div>
         </div>
         {[1, 2, 3].map(i => (
           <Card key={i} className="animate-pulse">
@@ -449,171 +353,14 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
         
         <div className="flex gap-2">
           <Button
-            onClick={() => {
-              setLoading(true)
-              fetchItems().then(() => {
-                toast.success('Supabase klijent osvežen')
-              }).catch(() => {
-                toast.error('Supabase klijent greška')
-              })
-            }}
-            variant="outline"
-            size="sm"
-            className="border-gray-300 text-gray-600 hover:bg-gray-50"
-            disabled={loading}
-          >
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            🔄 Supabase
-          </Button>
-          
-          <Button
-            onClick={() => {
-              setLoading(true)
-              fetchItemsRawHTTP().then(() => {
-                toast.success('Raw HTTP osvežen')
-              }).catch(() => {
-                toast.error('Raw HTTP greška')
-              })
-            }}
-            variant="outline"
-            size="sm"
-            className="border-green-300 text-green-600 hover:bg-green-50"
-            disabled={loading}
-          >
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            🌐 Raw HTTP
-          </Button>
-          
-          <Button
-            onClick={async () => {
-              console.log('🧪 CREATING TEST DRAFT - filterPublished:', filterPublished)
-              toast.info('Creating test draft...')
-              try {
-                const testData = {
-                  title: `DEBUG DRAFT ${new Date().toLocaleTimeString()}`,
-                  slug: `debug-draft-${Date.now()}`,
-                  content: "This is a test draft blog created for debugging the draft display issue.",
-                  excerpt: "Debug test excerpt to verify draft functionality",
-                  author: "Debug Author",
-                  published: false,
-                  created_at: new Date().toISOString(),
-                  updated_at: new Date().toISOString()
-                }
-                
-                const response = await fetch('https://bjbfmddrekjmactytaky.supabase.co/rest/v1/blogs', {
-                  method: 'POST',
-                  headers: {
-                    'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqYmZtZGRyZWtqbWFjdHl0YWt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDA1NjEsImV4cCI6MjA2OTAxNjU2MX0.jkSPsLNdD1pfm5er4TgHm0T6vVdYaXorlnScFe_X99k',
-                    'Authorization': `Bearer ${session?.access_token}`,
-                    'Content-Type': 'application/json',
-                    'Prefer': 'return=representation'
-                  },
-                  body: JSON.stringify(testData)
-                })
-                
-                if (response.ok) {
-                  const createdBlog = await response.json()
-                  console.log('✅ Test draft created:', createdBlog)
-                  toast.success('✅ Test draft created! Refreshing...')
-                  setTimeout(() => fetchItemsRawHTTP(), 1000)
-                } else {
-                  const errorData = await response.text()
-                  console.error('❌ Test draft creation failed:', errorData)
-                  toast.error('❌ Test draft creation failed')
-                }
-              } catch (err) {
-                console.error('Test draft error:', err)
-                toast.error('Error creating test draft')
-              }
-            }}
-            variant="outline"
-            size="sm"
-            className="border-purple-300 text-purple-600 hover:bg-purple-50"
-          >
-            🧪 Test Draft
-          </Button>
-          
-          <Button
-            onClick={async () => {
-              console.log('🔧 FIXING NULL PUBLISHED...')
-              toast.info('Fixing NULL published values...')
-              try {
-                const response = await fetch('https://bjbfmddrekjmactytaky.supabase.co/rest/v1/blogs?published=is.null', {
-                  method: 'PATCH',
-                  headers: {
-                    'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqYmZtZGRyZWtqbWFjdHl0YWt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDA1NjEsImV4cCI6MjA2OTAxNjU2MX0.jkSPsLNdD1pfm5er4TgHm0T6vVdYaXorlnScFe_X99k',
-                    'Authorization': `Bearer ${session?.access_token}`,
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({ published: false })
-                })
-                
-                if (response.ok) {
-                  toast.success('✅ Fixed NULL values! Refreshing...')
-                  setTimeout(() => fetchItemsRawHTTP(), 1000)
-                } else {
-                  toast.error('❌ Failed to fix NULL values')
-                }
-              } catch (err) {
-                console.error('Fix error:', err)
-                toast.error('Error fixing NULL values')
-              }
-            }}
-            variant="outline"
-            size="sm"
-            className="border-red-300 text-red-600 hover:bg-red-50"
-          >
-            🔧 Fix NULL
-          </Button>
-          
-          <Button
-            onClick={async () => {
-              console.log('🔍 DEBUGGING ALL BLOGS...')
-              toast.info('Fetching all blogs for debugging...')
-              try {
-                // Fetch ALL blogs without filter
-                const response = await fetch('https://bjbfmddrekjmactytaky.supabase.co/rest/v1/blogs?select=*&order=created_at.desc', {
-                  headers: {
-                    'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqYmZtZGRyZWtqbWFjdHl0YWt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDA1NjEsImV4cCI6MjA2OTAxNjU2MX0.jkSPsLNdD1pfm5er4TgHm0T6vVdYaXorlnScFe_X99k',
-                    'Content-Type': 'application/json'
-                  }
-                })
-                
-                if (response.ok) {
-                  const allBlogs = await response.json()
-                  console.log('🔍 ALL BLOGS IN DATABASE:', allBlogs)
-                  console.log('🔍 TOTAL BLOGS:', allBlogs?.length || 0)
-                  console.log('🔍 BLOG DETAILS:', allBlogs?.map(blog => ({
-                    id: blog.id,
-                    title: blog.title,
-                    slug: blog.slug,
-                    published: blog.published,
-                    published_type: typeof blog.published,
-                    created_at: blog.created_at
-                  })))
-                  
-                  const drafts = allBlogs?.filter(blog => blog.published === false) || []
-                  const published = allBlogs?.filter(blog => blog.published === true) || []
-                  const nullPublished = allBlogs?.filter(blog => blog.published === null) || []
-                  
-                  console.log('🔍 DRAFTS (published=false):', drafts.length)
-                  console.log('🔍 PUBLISHED (published=true):', published.length)
-                  console.log('🔍 NULL PUBLISHED (published=null):', nullPublished.length)
-                  
-                  toast.success(`Debug: ${allBlogs?.length || 0} total, ${drafts.length} drafts, ${published.length} published`)
-                } else {
-                  toast.error('❌ Failed to fetch all blogs')
-                }
-              } catch (err) {
-                console.error('Debug error:', err)
-                toast.error('Error debugging blogs')
-              }
-            }}
+            onClick={handleManualRefresh}
             variant="outline"
             size="sm"
             className="border-blue-300 text-blue-600 hover:bg-blue-50"
+            disabled={loading}
           >
-            🔍 Debug All
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Osveži
           </Button>
         </div>
       </div>
@@ -669,16 +416,16 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
                           {isBlog ? blog.title : glossary.term}
                         </CardTitle>
                         
-                        {isBlog && (
+                        {(isBlog || type === 'glossary') && (
                           <Badge 
                             variant="secondary" 
                             className={
-                              blog.published 
+                              (isBlog ? blog.published : glossary.published)
                                 ? 'bg-green-100 text-green-800 border-green-200' 
                                 : 'bg-yellow-100 text-yellow-800 border-yellow-200'
                             }
                           >
-                            {blog.published ? (
+                            {(isBlog ? blog.published : glossary.published) ? (
                               <>
                                 <Eye className="h-3 w-3 mr-1" />
                                 Objavljeno
@@ -728,16 +475,16 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      {/* Publish/Draft Toggle for Blogs */}
-                      {isBlog && (
+                      {/* Publish/Draft Toggle for Blogs and Glossary */}
+                      {(isBlog || type === 'glossary') && (
                         <div className="flex items-center space-x-2 p-2 bg-white rounded-lg border">
                           <span className="text-xs font-medium text-gray-600">
-                            {blog.published ? 'Objavljeno' : 'Draft'}
+                            {(isBlog ? blog.published : glossary.published) ? 'Objavljeno' : 'Draft'}
                           </span>
                           <Switch
-                            checked={blog.published}
-                            onCheckedChange={() => handleTogglePublished(blog.id, blog.published)}
-                            disabled={updating === blog.id}
+                            checked={isBlog ? blog.published : glossary.published}
+                            onCheckedChange={() => handleTogglePublished(item.id, isBlog ? blog.published : glossary.published)}
+                            disabled={updating === item.id}
                             className="data-[state=checked]:bg-green-600"
                           />
                         </div>

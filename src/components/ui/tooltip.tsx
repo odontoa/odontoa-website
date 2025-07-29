@@ -1,4 +1,4 @@
-'use client';
+"use client"
 
 import * as React from "react"
 import * as TooltipPrimitive from "@radix-ui/react-tooltip"
@@ -28,3 +28,36 @@ const TooltipContent = React.forwardRef<
 TooltipContent.displayName = TooltipPrimitive.Content.displayName
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
+
+// Enhanced Tooltip component with help icon
+interface HelpTooltipProps {
+  text: string
+  icon?: string
+  className?: string
+}
+
+export const HelpTooltip: React.FC<HelpTooltipProps> = ({ 
+  text, 
+  icon = "ℹ️", 
+  className = "" 
+}) => {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span 
+            className={`inline-flex items-center justify-center w-4 h-4 ml-1 text-xs cursor-help opacity-60 hover:opacity-100 transition-opacity ${className}`}
+          >
+            {icon}
+          </span>
+        </TooltipTrigger>
+        <TooltipContent 
+          side="top" 
+          className="max-w-xs p-3 bg-gray-900 text-white text-sm leading-relaxed"
+        >
+          <p className="whitespace-pre-wrap">{text}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
+}

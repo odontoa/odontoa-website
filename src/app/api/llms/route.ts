@@ -10,10 +10,11 @@ export async function GET() {
       .eq('published', true)
       .order('created_at', { ascending: false });
 
-    // Fetch all glossary entries
+    // Fetch published glossary entries
     const { data: glossary } = await supabase
       .from('glossary')
       .select('term, slug, definition, examples, notes')
+      .eq('published', true)
       .order('term', { ascending: true });
 
     // Generate llms.txt content

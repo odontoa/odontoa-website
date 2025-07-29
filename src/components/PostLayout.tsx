@@ -13,12 +13,17 @@ import {
   Copy, 
   ExternalLink,
   ArrowLeft,
-  BookOpen
+  BookOpen,
+  Eye,
+  Target,
+  TrendingUp
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { RelatedPosts } from './RelatedPosts'
 import { ShareButtons } from './ShareButtons'
 import { TableOfContents } from './TableOfContents'
+import { CTABlock } from './CTABlock'
+import { generateCompleteSEOData } from '@/lib/utils'
 
 interface PostLayoutProps {
   post: {
@@ -26,17 +31,34 @@ interface PostLayoutProps {
     title: string
     content: string
     excerpt: string
+    summary?: string
     author: string
     created_at: string
+    updated_at?: string
+    last_modified?: string
     tags: string[]
     featured_image?: string
+    image_url?: string
+    alt_text?: string
     slug: string
+    views_count?: number
+    reading_time?: number
+    seo_score?: number
+    related_glossary_terms?: string[]
+    faq_schema?: string
   }
+  type?: 'blog' | 'glossary'
+  showCTA?: boolean
 }
 
-export const PostLayout: React.FC<PostLayoutProps> = ({ post }) => {
+export const PostLayout: React.FC<PostLayoutProps> = ({ 
+  post, 
+  type = 'blog',
+  showCTA = true 
+}) => {
   const [scrollProgress, setScrollProgress] = useState(0)
   const [isSticky, setIsSticky] = useState(false)
+  const [relatedGlossaryTerms, setRelatedGlossaryTerms] = useState<any[]>([])
 
   // Scroll progress bar
   useEffect(() => {
@@ -62,7 +84,29 @@ export const PostLayout: React.FC<PostLayoutProps> = ({ post }) => {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+  // Fetch related glossary terms if available
+  useEffect(() => {
+    if (post.related_glossary_terms && post.related_glossary_terms.length > 0) {
+      fetchRelatedGlossaryTerms()
+    }
+  }, [post.related_glossary_terms])
+
+  const fetchRelatedGlossaryTerms = async () => {
+    try {
+      const response = await fetch(`/api/glossary/related?terms=${post.related_glossary_terms?.join(',')}`)
+      if (response.ok) {
+        const data = await response.json()
+        setRelatedGlossaryTerms(data)
+      }
+    } catch (error) {
+      console.error('Error fetching related glossary terms:', error)
+    }
+  }
+
   const getReadingTime = (content: string) => {
+    if (post.reading_time) {
+      return `${post.reading_time} min čitanja`
+    }
     const wordsPerMinute = 200
     const words = content.split(' ').length
     const minutes = Math.ceil(words / wordsPerMinute)
@@ -95,8 +139,32 @@ export const PostLayout: React.FC<PostLayoutProps> = ({ post }) => {
       .slice(0, 2)
   }
 
+  const getFeaturedImage = () => {
+    return post.image_url || post.featured_image
+  }
+
+  const getImageAlt = () => {
+    return post.alt_text || post.title
+  }
+
+  const getBackUrl = () => {
+    return type === 'blog' ? '/blogovi' : '/recnik'
+  }
+
+  const getBackText = () => {
+    return type === 'blog' ? 'Nazad na blogove' : 'Nazad na rečnik'
+  }
+
   return (
     <div className="min-h-screen bg-white">
+      {/* SEO Meta Tags */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateCompleteSEOData(post, type))
+        }}
+      />
+
       {/* Scroll Progress Bar */}
       <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
         <div 
@@ -110,10 +178,10 @@ export const PostLayout: React.FC<PostLayoutProps> = ({ post }) => {
         <div className="max-w-6xl mx-auto px-6">
           {/* Back Button */}
           <div className="mb-8">
-            <Link href="/blogovi">
+            <Link href={getBackUrl()}>
               <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Nazad na blogove
+                {getBackText()}
               </Button>
             </Link>
           </div>
@@ -122,12 +190,18 @@ export const PostLayout: React.FC<PostLayoutProps> = ({ post }) => {
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center gap-3 mb-6">
               {post.tags && post.tags.slice(0, 2).map((tag, index) => (
-                <Link key={index} href={`/blogovi?category=${tag}`}>
+                <Link key={index} href={`${getBackUrl()}?category=${tag}`}>
                   <Badge className="bg-green-100 text-green-800 hover:bg-green-200 transition-colors">
                     {tag}
                   </Badge>
                 </Link>
               ))}
+              {post.seo_score && (
+                <Badge variant="outline" className="flex items-center gap-1">
+                  <Target className="h-3 w-3" />
+                  SEO: {post.seo_score}/100
+                </Badge>
+              )}
             </div>
 
             <div className="flex items-start justify-between mb-8">
@@ -163,19 +237,25 @@ export const PostLayout: React.FC<PostLayoutProps> = ({ post }) => {
                 <Clock className="h-4 w-4" />
                 <span>{getReadingTime(post.content)}</span>
               </div>
+              {post.views_count && (
+                <div className="flex items-center gap-2">
+                  <Eye className="h-4 w-4" />
+                  <span>{post.views_count} pregleda</span>
+                </div>
+              )}
             </div>
 
-            {/* Excerpt */}
+            {/* Summary/Excerpt */}
             <p className="text-xl text-gray-600 leading-relaxed mb-8">
-              {post.excerpt}
+              {post.summary || post.excerpt}
             </p>
 
             {/* Featured Image */}
-            {post.featured_image && (
+            {getFeaturedImage() && (
               <div className="aspect-[16/9] rounded-xl shadow-md overflow-hidden">
                 <img 
-                  src={post.featured_image} 
-                  alt={post.title}
+                  src={getFeaturedImage()} 
+                  alt={getImageAlt()}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -194,6 +274,63 @@ export const PostLayout: React.FC<PostLayoutProps> = ({ post }) => {
                 className="text-lg leading-8 text-gray-700"
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
+
+              {/* FAQ Schema Display */}
+              {post.faq_schema && (
+                <div className="mt-12 p-6 bg-blue-50 rounded-xl border border-blue-200">
+                  <h3 className="text-xl font-semibold text-blue-900 mb-4">
+                    Često postavljena pitanja
+                  </h3>
+                  <div className="space-y-4">
+                    {JSON.parse(post.faq_schema).mainEntity?.map((faq: any, index: number) => (
+                      <div key={index} className="bg-white p-4 rounded-lg">
+                        <h4 className="font-semibold text-gray-900 mb-2">
+                          {faq.name}
+                        </h4>
+                        <p className="text-gray-700">
+                          {faq.acceptedAnswer.text}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Related Glossary Terms */}
+              {relatedGlossaryTerms.length > 0 && (
+                <div className="mt-12 p-6 bg-purple-50 rounded-xl border border-purple-200">
+                  <h3 className="text-xl font-semibold text-purple-900 mb-4">
+                    Povezani rečnički termini
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {relatedGlossaryTerms.map((term, index) => (
+                      <Link 
+                        key={index} 
+                        href={`/recnik/${term.slug}`}
+                        className="block p-4 bg-white rounded-lg hover:shadow-md transition-shadow"
+                      >
+                        <h4 className="font-semibold text-purple-900 mb-1">
+                          {term.term}
+                        </h4>
+                        <p className="text-sm text-gray-600">
+                          {term.definition}
+                        </p>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* CTA Block */}
+              {showCTA && (
+                <div className="mt-12">
+                  <CTABlock 
+                    type={type} 
+                    data={post}
+                    variant="gradient"
+                  />
+                </div>
+              )}
             </article>
 
             {/* Sidebar */}
@@ -216,7 +353,7 @@ export const PostLayout: React.FC<PostLayoutProps> = ({ post }) => {
                     </h3>
                     <div className="flex flex-wrap gap-2">
                       {post.tags.map((tag, index) => (
-                        <Link key={index} href={`/blogovi?category=${tag}`}>
+                        <Link key={index} href={`${getBackUrl()}?category=${tag}`}>
                           <Badge 
                             variant="outline" 
                             className="hover:bg-green-50 hover:text-green-700 hover:border-green-300 transition-colors cursor-pointer"
@@ -247,6 +384,19 @@ export const PostLayout: React.FC<PostLayoutProps> = ({ post }) => {
                     </div>
                   </div>
                 </div>
+
+                {/* Last Modified */}
+                {(post.last_modified || post.updated_at) && (
+                  <div className="bg-blue-50 rounded-xl p-4">
+                    <div className="flex items-center gap-2 text-blue-700">
+                      <TrendingUp className="h-4 w-4" />
+                      <span className="text-sm font-medium">Ažurirano</span>
+                    </div>
+                    <p className="text-sm text-blue-600 mt-1">
+                      {formatDate(post.last_modified || post.updated_at!)}
+                    </p>
+                  </div>
+                )}
               </div>
             </aside>
           </div>

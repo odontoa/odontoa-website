@@ -11,11 +11,21 @@ interface Blog {
   slug: string
   content: string
   excerpt: string
+  summary?: string
   author: string
   created_at: string
+  updated_at?: string
+  last_modified?: string
   tags: string[]
   featured_image?: string
+  image_url?: string
+  alt_text?: string
   published: boolean
+  views_count?: number
+  reading_time?: number
+  seo_score?: number
+  related_glossary_terms?: string[]
+  faq_schema?: string
 }
 
 interface PageProps {
@@ -48,11 +58,27 @@ export default function BlogPostPage({ params }: PageProps) {
       }
 
       setBlog(data)
+      
+      // Increment view count
+      incrementViewCount(data.id)
     } catch (error) {
       console.error('Error:', error)
       notFound()
     } finally {
       setLoading(false)
+    }
+  }
+
+  const incrementViewCount = async (blogId: string) => {
+    try {
+      await supabase
+        .from('blogs')
+        .update({ 
+          views_count: supabase.rpc('increment', { row_id: blogId, column_name: 'views_count' })
+        })
+        .eq('id', blogId)
+    } catch (error) {
+      console.error('Error incrementing view count:', error)
     }
   }
 
@@ -73,5 +99,5 @@ export default function BlogPostPage({ params }: PageProps) {
     notFound()
   }
 
-  return <PostLayout post={blog} />
+  return <PostLayout post={blog} type="blog" showCTA={true} />
 } 

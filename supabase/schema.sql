@@ -38,6 +38,7 @@ CREATE TABLE public.glossary (
     full_article text NOT NULL,
     faq_schema jsonb,
     related_terms text[] DEFAULT '{}',
+    published boolean DEFAULT false,
     created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
@@ -82,9 +83,9 @@ CREATE POLICY "Admin users can do everything on glossary" ON public.glossary
         )
     );
 
--- Allow public to read glossary entries
-CREATE POLICY "Anyone can read glossary entries" ON public.glossary
-    FOR SELECT USING (true);
+-- Allow public to read published glossary entries (including anonymous users)
+CREATE POLICY "Anyone can read published glossary entries" ON public.glossary
+    FOR SELECT USING (published = true);
 
 -- Create RLS policies for admin_users table
 CREATE POLICY "Admin users can read admin_users" ON public.admin_users
@@ -112,6 +113,7 @@ CREATE INDEX idx_blogs_published ON public.blogs(published);
 CREATE INDEX idx_blogs_created_at ON public.blogs(created_at DESC);
 CREATE INDEX idx_glossary_slug ON public.glossary(slug);
 CREATE INDEX idx_glossary_term ON public.glossary(term);
+CREATE INDEX idx_glossary_published ON public.glossary(published);
 CREATE INDEX idx_glossary_created_at ON public.glossary(created_at DESC);
 
 -- Create function to automatically update updated_at timestamp
