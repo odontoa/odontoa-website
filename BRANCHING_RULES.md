@@ -1,103 +1,133 @@
-# Odontoa Website - Branching and Versioning Rules
+# 🌿 Odontoa Branch Management Rules
 
-## Branch Structure
+## 🚫 Main Branch Protection
 
-### Main Branches
-- `main` - The primary branch containing production-ready code
-- `develop` - Integration branch for ongoing development
+**VAŽNO:** Main branch je **ZABLJEN** za direktne push-eve i merge-ove!
 
-### Feature Branches
-- Format: `feature/[feature-name]`
-- Created from: `develop`
-- Merge into: `develop`
-- Example: `feature/user-authentication`
+### ❌ Zabranjeno:
+- Direktan push na `main` branch
+- Merge na `main` bez eksplicitne dozvole
+- Force push na `main` branch
+- Direktno commitovanje na `main`
 
-### Release Branches
-- Format: `release/v[version]`
-- Created from: `develop`
-- Merge into: `main` and `develop`
-- Example: `release/v1.2.0`
+### ✅ Dozvoljeno:
+- Pull request sa review-om
+- Merge na `main` samo nakon eksplicitne dozvole
+- Hotfix-ovi samo u hitnim slučajevima
 
-### Hotfix Branches
-- Format: `hotfix/[fix-name]`
-- Created from: `main`
-- Merge into: `main` and `develop`
-- Example: `hotfix/login-fix`
+## 🌿 Branch Naming Convention
 
-## Versioning Rules
+### Format: `NextJS-migrated-version-X`
 
-We follow [Semantic Versioning](https://semver.org/) (MAJOR.MINOR.PATCH):
+**Primeri:**
+- `NextJS-migrated-version-3`
+- `NextJS-migrated-version-4`
+- `NextJS-migrated-version-5`
+- `NextJS-migrated-version-10`
 
-1. MAJOR version (x.0.0) - Incompatible API changes
-2. MINOR version (0.x.0) - Add functionality in a backward-compatible manner
-3. PATCH version (0.0.x) - Backward-compatible bug fixes
+### Automatsko numerisanje:
+- Svaki novi branch dobija sledeći broj u sekvenci
+- Nema preskakanja brojeva
+- Nema tagova - samo branch-evi
 
-### Version Tags
-- All releases must be tagged with their version number
-- Format: `v[version]` (e.g., `v1.1.0`)
+## 🔄 Workflow
 
-## Workflow Rules
+### 1. Kreiranje novog branch-a:
+```bash
+# Proveri poslednji broj
+git branch -a | grep "NextJS-migrated-version-" | tail -1
 
-1. **Starting New Work**
-   - Create a new feature branch from `develop`
-   - Use descriptive branch names
+# Kreiraj novi branch
+git checkout -b NextJS-migrated-version-X
+```
 
-2. **Making Changes**
-   - Keep commits atomic and focused
-   - Write clear commit messages
-   - Update version in `package.json` when appropriate
+### 2. Development:
+```bash
+# Radi promene
+git add .
+git commit -m "feat: opis promena"
+git push origin NextJS-migrated-version-X
+```
 
-3. **Code Review**
-   - All changes require a pull request
-   - At least one review is required
-   - All tests must pass
+### 3. Merge u main (samo sa dozvolom):
+```bash
+# SAMO kada tražiš merge
+git checkout main
+git merge NextJS-migrated-version-X
+git push origin main
+```
 
-4. **Merging**
-   - Feature branches merge into `develop`
-   - Release branches merge into both `main` and `develop`
-   - Delete branches after merging
+## 📋 Branch Checklist
 
-5. **Releases**
-   - Create a release branch when ready to release
-   - Update version numbers
-   - Create a git tag after merging to main
+### Pre push-a:
+- [ ] Branch ima ispravno ime (`NextJS-migrated-version-X`)
+- [ ] Sve promene su testirane
+- [ ] Commit message je jasno opisuje promene
+- [ ] Nema merge konflikata
 
-## Example Workflow
+### Pre merge-a u main:
+- [ ] Eksplicitna dozvola za merge
+- [ ] Code review završen
+- [ ] Testovi prolaze
+- [ ] Dokumentacija ažurirana
 
-1. Start new feature:
-   ```bash
-   git checkout develop
-   git pull origin develop
-   git checkout -b feature/new-feature
-   ```
+## 🛡️ Protection Rules
 
-2. Complete feature:
-   ```bash
-   git checkout develop
-   git merge feature/new-feature
-   git push origin develop
-   ```
+### GitHub Settings:
+1. **Branch Protection Rules** za `main`:
+   - Require pull request reviews
+   - Require status checks to pass
+   - Require branches to be up to date
+   - Restrict pushes that create files
+   - Restrict deletions
 
-3. Prepare release:
-   ```bash
-   git checkout develop
-   git checkout -b release/v1.2.0
-   # Update version in package.json
-   git commit -am "Release version 1.2.0"
-   ```
+2. **Required Status Checks**:
+   - Build must pass
+   - Tests must pass
+   - Linting must pass
 
-4. Finish release:
-   ```bash
-   git checkout main
-   git merge release/v1.2.0
-   git tag -a v1.2.0 -m "Version 1.2.0"
-   git push origin main --tags
-   ```
+## 📝 Version Tracking
 
-## Version History
+### Trenutne verzije:
+- `main` - stabilna verzija
+- `NextJS-migrated-version-3` - trenutni development
+- `NextJS-migrated-version-4` - sledeći development
+- itd.
 
-Keep track of significant changes in the CHANGELOG.md file.
+### Version History:
+- Svaki branch predstavlja jednu verziju
+- Nema tagova - samo branch-evi
+- Lako praćenje promena kroz branch history
 
-## Questions?
+## 🚨 Emergency Procedures
 
-Contact the development team for clarification on these rules. 
+### Hotfix na main:
+```bash
+# SAMO u hitnim slučajevima
+git checkout main
+git checkout -b hotfix-critical-fix
+# napravi promene
+git commit -m "hotfix: kritična ispravka"
+git checkout main
+git merge hotfix-critical-fix
+git push origin main
+```
+
+## 📊 Branch Status
+
+### Active Branches:
+- `main` - production ready
+- `NextJS-migrated-version-3` - development
+- `NextJS-migrated-version-4` - planned
+- `NextJS-migrated-version-5` - planned
+
+### Branch Lifecycle:
+1. **Development** - aktivni rad
+2. **Testing** - testiranje
+3. **Review** - code review
+4. **Merge** - merge u main (sa dozvolom)
+5. **Archive** - branch se može obrisati
+
+---
+
+**Zapamti:** Main branch je sveto! Uvek koristi numerisane branch-eve za development! 🛡️ 

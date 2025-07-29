@@ -1,1 +1,4 @@
-{}
+{
+  "/recnik/page": "app/recnik/page.js",
+  "/blogovi/page": "app/blogovi/page.js"
+}
