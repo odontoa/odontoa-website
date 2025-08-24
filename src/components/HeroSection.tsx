@@ -2,11 +2,12 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, ChevronRight, Menu, X, Zap, Shield, Calendar, Bell, TrendingUp } from 'lucide-react';
+import { ArrowRight, ChevronRight, Menu, X, Zap, Shield, Calendar, Bell, TrendingUp, Star } from 'lucide-react';
 import CountUp from "react-countup";
 import { Button } from '@/components/ui/button';
 import { AnimatedGroup } from '@/components/ui/animated-group';
 import { AnimatedGridPattern } from '@/components/ui/animated-grid-pattern';
+import { AnimatedTooltip } from '@/components/ui/animated-tooltip';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
@@ -29,6 +30,39 @@ const transitionVariants = {
     },
   },
 };
+
+const dentistAvatars = [
+  {
+    id: 1,
+    name: "Dr. Ana Petrović",
+    designation: "Ortodont",
+    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: 2,
+    name: "Dr. Marko Jovanović",
+    designation: "Oralni hirurg",
+    image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: 3,
+    name: "Dr. Jelena Nikolić",
+    designation: "Endodont",
+    image: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: 4,
+    name: "Dr. Stefan Đorđević",
+    designation: "Stomatolog opšte prakse",
+    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: 5,
+    name: "Dr. Marija Stojanović",
+    designation: "Parodontolog",
+    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+  },
+];
 
 const HeroSection = () => {
   return (
@@ -186,9 +220,19 @@ const HeroSection = () => {
                     },
                     ...transitionVariants,
                   }}
-                  className="mt-8 flex items-center justify-center text-muted-foreground text-sm">
-                  <Shield className="w-4 h-4 mr-2 text-primary" />
-                  <span>Razvijeno uz podršku stomatologa širom regiona</span>
+                  className="mt-8 flex flex-col items-center justify-center gap-4 text-muted-foreground text-sm">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1">
+                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                    </div>
+                    <span className="font-medium text-foreground">4.9+</span>
+                    <AnimatedTooltip items={dentistAvatars} />
+                  </div>
+                  <span className="text-muted-foreground text-sm">Razvijeno uz podršku stomatologa širom regiona</span>
                 </AnimatedGroup>
               </div>
             </div>
