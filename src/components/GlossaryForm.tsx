@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useAuth } from '@/contexts/AuthContext'
+import { useFormDirty } from '@/contexts/FormDirtyContext'
+import { useBeforeUnload } from '@/hooks/useBeforeUnload'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -61,6 +63,7 @@ interface GlossaryFormProps {
 
 export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
   const { user, session, isAdmin } = useAuth()
+  const { setDirty } = useFormDirty()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [generatingFAQ, setGeneratingFAQ] = useState(false)
@@ -102,6 +105,18 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
     },
   })
 
+  // Track form dirty state for unsaved changes protection
+  useEffect(() => {
+    const subscription = form.watch(() => {
+      setDirty(form.formState.isDirty)
+    })
+    
+    return () => subscription.unsubscribe()
+  }, [form.watch, form.formState.isDirty, setDirty])
+
+  // Setup beforeunload protection
+  useBeforeUnload(form.formState.isDirty)
+
   const generateSlug = (term: string) => {
     return createSEOSlug(term)
   }
@@ -140,17 +155,16 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
 
   const updateSEOScore = () => {
     const formData = form.getValues()
-    const score = calculateSEOScore({
+    const seoResult = calculateSEOScore({
       term: formData.term,
-      full_article: formData.fullArticle,
       definition: formData.definition,
-      why_it_matters: formData.why_it_matters,
-      related_blog_posts: formData.related_blog_posts ? formData.related_blog_posts.split(',').map(t => t.trim()) : [],
+      full_article: formData.fullArticle,
+      faq_schema: formData.faqSchema,
       related_terms: formData.relatedTerms ? formData.relatedTerms.split(',').map(t => t.trim()) : [],
       category: formData.category,
       difficulty_level: formData.difficulty_level
-    }, 'glossary')
-    setSeoScore(score)
+    })
+    setSeoScore(seoResult.score)
   }
 
   const generateTopicSuggestions = async () => {

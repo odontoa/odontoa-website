@@ -19,13 +19,22 @@ import {
   BarChart3,
   Activity,
   Target,
-  Award
+  Award,
+  Edit,
+  X,
+  Download
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { AdminRoute } from '@/components/AdminRoute'
 import { BlogForm } from '@/components/BlogForm'
 import { GlossaryForm } from '@/components/GlossaryForm'
 import { ContentList } from '@/components/ContentList'
+import { useAuth } from '@/contexts/AuthContext'
+import { FormDirtyProvider } from '@/contexts/FormDirtyContext'
+import { UnsavedChangesModal } from '@/components/UnsavedChangesModal'
+import { useProtectedAction } from '@/hooks/useProtectedAction'
+import { downloadBackup, getBackupStats } from '@/lib/backup'
+import { toast } from 'sonner'
 
 interface DashboardStats {
   totalBlogs: number
@@ -45,7 +54,9 @@ interface DashboardStats {
 }
 
 export default function AdminPanel() {
-  const [stats, setStats] = useState<DashboardStats>({
+  const { user, session, isAdmin } = useAuth()
+  const { executeProtectedAction } = useProtectedAction()
+  const [dashboardStats, setDashboardStats] = useState<DashboardStats>({
     totalBlogs: 0,
     publishedBlogs: 0,
     draftBlogs: 0,
@@ -56,76 +67,142 @@ export default function AdminPanel() {
     recentActivity: []
   })
   const [loading, setLoading] = useState(true)
+  const [editMode, setEditMode] = useState(false)
+  const [editingItem, setEditingItem] = useState<any>(null)
+  const [activeTab, setActiveTab] = useState('blog')
+  const [backupLoading, setBackupLoading] = useState(false)
 
   useEffect(() => {
     fetchDashboardStats()
   }, [])
 
   const fetchDashboardStats = async () => {
+    setLoading(true)
     try {
-      setLoading(true)
-
       // Fetch blog stats
-      const { data: blogs, error: blogsError } = await supabase
+      const { data: blogs } = await supabase
         .from('blogs')
-        .select('id, title, published, created_at')
-
-      if (blogsError) {
-        console.error('Error fetching blogs:', blogsError)
-      }
+        .select('id, published, created_at, title')
 
       // Fetch glossary stats
-      const { data: glossary, error: glossaryError } = await supabase
+      const { data: glossary } = await supabase
         .from('glossary')
-        .select('id, term, published, created_at')
-
-      if (glossaryError) {
-        console.error('Error fetching glossary:', glossaryError)
-      }
+        .select('id, published, created_at, term')
 
       // Calculate stats
       const totalBlogs = blogs?.length || 0
-      const publishedBlogs = blogs?.filter(blog => blog.published).length || 0
+      const publishedBlogs = blogs?.filter(b => b.published).length || 0
       const draftBlogs = totalBlogs - publishedBlogs
 
       const totalGlossaryTerms = glossary?.length || 0
-      const publishedTerms = glossary?.filter(term => term.published).length || 0
+      const publishedTerms = glossary?.filter(g => g.published).length || 0
       const draftTerms = totalGlossaryTerms - publishedTerms
 
-      // Create recent activity
-      const recentActivity = [
-        ...(blogs?.slice(0, 3).map(blog => ({
-          id: blog.id,
+      // Recent activity
+      const allActivity = [
+        ...(blogs || []).map(b => ({
+          id: b.id,
           type: 'blog' as const,
-          title: blog.title,
-          status: blog.published ? 'published' as const : 'draft' as const,
-          created_at: blog.created_at
-        })) || []),
-        ...(glossary?.slice(0, 2).map(term => ({
-          id: term.id,
+          title: b.title,
+          status: b.published ? 'published' as const : 'draft' as const,
+          created_at: b.created_at
+        })),
+        ...(glossary || []).map(g => ({
+          id: g.id,
           type: 'glossary' as const,
-          title: term.term,
-          status: term.published ? 'published' as const : 'draft' as const,
-          created_at: term.created_at
-        })) || [])
-      ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+          title: g.term,
+          status: g.published ? 'published' as const : 'draft' as const,
+          created_at: g.created_at
+        }))
+      ]
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
       .slice(0, 5)
 
-      setStats({
+      setDashboardStats({
         totalBlogs,
         publishedBlogs,
         draftBlogs,
         totalGlossaryTerms,
         publishedTerms,
         draftTerms,
-        totalReservations: 0,
-        recentActivity
+        totalReservations: 0, // TODO: Add reservations
+        recentActivity: allActivity
       })
-
     } catch (error) {
       console.error('Error fetching dashboard stats:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  // Edit handlers
+  const handleEditBlog = (blog: any) => {
+    setEditingItem(blog)
+    setEditMode(true)
+  }
+
+  const handleEditGlossary = (glossary: any) => {
+    setEditingItem(glossary)
+    setEditMode(true)
+  }
+
+  const handleEditItem = (item: any) => {
+    if (item.title) {
+      // It's a blog
+      handleEditBlog(item)
+    } else {
+      // It's a glossary
+      handleEditGlossary(item)
+    }
+  }
+
+  const handleEditSuccess = () => {
+    setEditMode(false)
+    setEditingItem(null)
+    fetchDashboardStats() // Refresh stats
+  }
+
+  const handleCancelEdit = () => {
+    setEditMode(false)
+    setEditingItem(null)
+  }
+
+  const handleTabChange = (newTab: string) => {
+    if (newTab !== activeTab) {
+      executeProtectedAction(() => {
+        setActiveTab(newTab)
+        setEditMode(false)
+        setEditingItem(null)
+      })
+    }
+  }
+
+  const handleNewBlog = () => {
+    executeProtectedAction(() => {
+      setEditMode(false)
+      setEditingItem(null)
+      setActiveTab('blog')
+    })
+  }
+
+  const handleNewGlossary = () => {
+    executeProtectedAction(() => {
+      setEditMode(false)
+      setEditingItem(null)
+      setActiveTab('glossary')
+    })
+  }
+
+  const handleBackup = async () => {
+    setBackupLoading(true)
+    try {
+      await downloadBackup('json')
+      toast.success('Backup uspešno preuzet!')
+    } catch (error) {
+      console.error('Backup error:', error)
+      toast.error('Greška pri kreiranju backup-a')
+    } finally {
+      setBackupLoading(false)
     }
   }
 
@@ -178,10 +255,42 @@ export default function AdminPanel() {
               </div>
               <div className="flex items-center gap-4">
                 <Button 
-                  onClick={fetchDashboardStats}
+                  onClick={handleNewBlog}
                   variant="outline"
                   size="sm"
                   className="border-blue-200 text-blue-700 hover:bg-blue-50"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  + Kreiraj Novi Blog
+                </Button>
+                <Button 
+                  onClick={handleNewGlossary}
+                  variant="outline"
+                  size="sm"
+                  className="border-purple-200 text-purple-700 hover:bg-purple-50"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  + Kreiraj Novi Rečnik
+                </Button>
+                <Button 
+                  onClick={handleBackup}
+                  disabled={backupLoading}
+                  variant="outline"
+                  size="sm"
+                  className="border-green-200 text-green-700 hover:bg-green-50"
+                >
+                  {backupLoading ? (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-green-600 mr-2" />
+                  ) : (
+                    <Download className="h-4 w-4 mr-2" />
+                  )}
+                  Backup podataka
+                </Button>
+                <Button 
+                  onClick={fetchDashboardStats}
+                  variant="outline"
+                  size="sm"
+                  className="border-gray-200 text-gray-700 hover:bg-gray-50"
                 >
                   <Activity className="h-4 w-4 mr-2" />
                   Osveži
@@ -200,15 +309,15 @@ export default function AdminPanel() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-gray-900">{stats.totalBlogs}</div>
+                <div className="text-2xl font-bold text-gray-900">{dashboardStats.totalBlogs}</div>
                 <div className="flex items-center gap-2 mt-2">
                   <div className="flex items-center text-sm text-green-600">
                     <CheckCircle className="h-4 w-4 mr-1" />
-                    {stats.publishedBlogs} objavljeno
+                    {dashboardStats.publishedBlogs} objavljeno
                   </div>
                   <div className="flex items-center text-sm text-yellow-600">
                     <Clock className="h-4 w-4 mr-1" />
-                    {stats.draftBlogs} skica
+                    {dashboardStats.draftBlogs} skica
                   </div>
                 </div>
               </CardContent>
@@ -222,15 +331,15 @@ export default function AdminPanel() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-gray-900">{stats.totalGlossaryTerms}</div>
+                <div className="text-2xl font-bold text-gray-900">{dashboardStats.totalGlossaryTerms}</div>
                 <div className="flex items-center gap-2 mt-2">
                   <div className="flex items-center text-sm text-green-600">
                     <CheckCircle className="h-4 w-4 mr-1" />
-                    {stats.publishedTerms} objavljeno
+                    {dashboardStats.publishedTerms} objavljeno
                   </div>
                   <div className="flex items-center text-sm text-yellow-600">
                     <Clock className="h-4 w-4 mr-1" />
-                    {stats.draftTerms} skica
+                    {dashboardStats.draftTerms} skica
                   </div>
                 </div>
               </CardContent>
@@ -245,7 +354,7 @@ export default function AdminPanel() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-gray-900">
-                  {stats.totalBlogs + stats.totalGlossaryTerms}
+                  {dashboardStats.totalBlogs + dashboardStats.totalGlossaryTerms}
                 </div>
                 <div className="flex items-center text-sm text-gray-600 mt-2">
                   <Target className="h-4 w-4 mr-1" />
@@ -279,9 +388,9 @@ export default function AdminPanel() {
                     </div>
                   ))}
                 </div>
-              ) : stats.recentActivity.length > 0 ? (
+              ) : dashboardStats.recentActivity.length > 0 ? (
                 <div className="space-y-4">
-                  {stats.recentActivity.map((activity) => (
+                  {dashboardStats.recentActivity.map((activity) => (
                     <div key={activity.id} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
                       <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full">
                         {getActivityIcon(activity.type)}
@@ -308,7 +417,7 @@ export default function AdminPanel() {
           </Card>
 
           {/* Main Content Tabs */}
-          <Tabs defaultValue="blog" className="space-y-6">
+          <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
             <TabsList className="grid w-full grid-cols-2 bg-white border-2 border-blue-200 rounded-xl shadow-sm">
               <TabsTrigger value="blog" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg">
                 <FileText className="h-4 w-4 mr-2" />
@@ -323,20 +432,45 @@ export default function AdminPanel() {
             {/* Blog Management */}
             <TabsContent value="blog" className="space-y-6">
               <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                {/* Blog Creation - Veći prostor */}
+                {/* Blog Creation/Edit - Veći prostor */}
                 <div className="xl:col-span-2">
                   <Card className="border-0 shadow-lg h-full">
                     <CardHeader>
-                      <CardTitle className="flex items-center">
+                      <CardTitle className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          {editMode ? (
+                            <Edit className="h-5 w-5 mr-2 text-blue-600" />
+                          ) : (
                         <Plus className="h-5 w-5 mr-2 text-blue-600" />
-                        Kreiraj Novi Blog
+                          )}
+                          {editMode ? 'Uredi Blog' : 'Kreiraj Novi Blog'}
+                        </div>
+                        {editMode && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleCancelEdit}
+                            className="text-gray-600"
+                          >
+                            <X className="h-4 w-4 mr-1" />
+                            Otkaži
+                          </Button>
+                        )}
                       </CardTitle>
                       <CardDescription>
-                        Dodajte novi članak u blog sekciju
+                        {editMode ? 'Uredite postojeći blog post' : 'Dodajte novi članak u blog sekciju'}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="h-full">
-                      <BlogForm />
+                      {editMode && editingItem ? (
+                        <BlogForm 
+                          onSuccess={handleEditSuccess}
+                          onCancel={handleCancelEdit}
+                          initialData={editingItem}
+                        />
+                      ) : (
+                        <BlogForm onSuccess={fetchDashboardStats} />
+                      )}
                     </CardContent>
                   </Card>
                 </div>
@@ -351,7 +485,11 @@ export default function AdminPanel() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <ContentList type="blogs" filterPublished={true} />
+                      <ContentList 
+                        type="blogs" 
+                        filterPublished={true}
+                        onEditItem={handleEditItem}
+                      />
                     </CardContent>
                   </Card>
 
@@ -363,7 +501,11 @@ export default function AdminPanel() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <ContentList type="blogs" filterPublished={false} />
+                      <ContentList 
+                        type="blogs" 
+                        filterPublished={false}
+                        onEditItem={handleEditItem}
+                      />
                     </CardContent>
                   </Card>
                 </div>
@@ -421,6 +563,7 @@ export default function AdminPanel() {
             </TabsContent>
           </Tabs>
         </div>
+        <UnsavedChangesModal />
       </div>
     </AdminRoute>
   )

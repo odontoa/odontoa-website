@@ -12,6 +12,7 @@ interface Blog {
   content: string
   excerpt: string
   summary?: string
+  meta_description?: string
   author: string
   created_at: string
   updated_at?: string

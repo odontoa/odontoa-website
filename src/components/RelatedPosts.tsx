@@ -173,7 +173,7 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = ({ currentPost }) => {
                       </div>
                     </div>
                     
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2 leading-tight">
+                    <h3 className="text-xl font-normal text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2 leading-tight">
                       {post.title}
                     </h3>
                     

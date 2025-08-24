@@ -55,6 +55,12 @@ const Navigation = () => {
             >
               Rečnik
             </Link>
+            <Link 
+              href="/dizajn-varijante"
+              className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium"
+            >
+              Dizajn Varijante
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -112,6 +118,13 @@ const Navigation = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Rečnik
+              </Link>
+              <Link 
+                href="/dizajn-varijante"
+                className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium text-left"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Dizajn Varijante
               </Link>
             </div>
           </div>

@@ -186,7 +186,7 @@ export default function ContactPage() {
       <section className="py-16 px-6 border-t border-[#262626]">
         <div className="max-w-screen-xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            <h2 className="text-3xl md:text-4xl font-normal text-white mb-6">
               Često postavljena <span className="text-[#4a9489]">pitanja</span>
             </h2>
             <p className="text-lg text-[#a1a1aa] max-w-2xl mx-auto">
@@ -195,6 +195,41 @@ export default function ContactPage() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-[#1a1a1a] border border-[#262626] rounded-2xl p-6">
+              <h3 className="text-base font-normal text-white mb-3">Da li je teško naučiti program?</h3>
+              <p className="text-[#a1a1aa]">
+                Prosečno vreme da se savlada sve je 2-3 dana normalnog rada. Imamo video tutorijale na srpskom i besplatnu podršku.
+              </p>
+            </div>
+
+            <div className="bg-[#1a1a1a] border border-[#262626] rounded-2xl p-6">
+              <h3 className="text-base font-normal text-white mb-3">Šta ako se pokvari računar?</h3>
+              <p className="text-[#a1a1aa]">
+                Odontoa ne zahteva instalaciju – sve radi u pregledaču i čuva se bezbedno u oblaku. Možete da pristupite svojim podacima sa bilo kog uređaja, u bilo koje doba dana, samo uz internet vezu i svoj nalog.
+              </p>
+            </div>
+
+            <div className="bg-[#1a1a1a] border border-[#262626] rounded-2xl p-6">
+              <h3 className="text-base font-normal text-white mb-3">Da li mogu da izvezem svoje kartone?</h3>
+              <p className="text-[#a1a1aa]">
+                Da, u bilo kom trenutku možete da preuzmete sve pacijente u Excel tabeli. Vaši podaci su vaši.
+              </p>
+            </div>
+
+            <div className="bg-[#1a1a1a] border border-[#262626] rounded-2xl p-6">
+              <h3 className="text-base font-normal text-white mb-3">Da li su podaci o pacijentima bezbedni?</h3>
+              <p className="text-[#a1a1aa]">
+                Svi podaci se čuvaju po evropskim standardima bezbednosti. Niko sem vas ne može da vidi kartone vaših pacijenata. Kada kucate podatke, oni se automatski šifruju kao u banci.
+              </p>
+            </div>
+
+            <div className="bg-[#1a1a1a] border border-[#262626] rounded-2xl p-6">
+              <h3 className="text-lg font-semibold text-white mb-3">Šta ako neki pacijent traži da obrišem njegove podatke?</h3>
+              <p className="text-[#a1a1aa]">
+                Jednostavno kliknete "obriši pacijenta" i svi njegovi podaci se trajno brišu iz sistema. Program vam automatski napravi potvrdu da je podatke obrisali, koju možete da pokažete pacijentu.
+              </p>
+            </div>
+
             <div className="bg-[#1a1a1a] border border-[#262626] rounded-2xl p-6">
               <h3 className="text-lg font-semibold text-white mb-3">Koliko košta Odontoa sistem?</h3>
               <p className="text-[#a1a1aa]">
@@ -219,10 +254,9 @@ export default function ContactPage() {
             </div>
 
             <div className="bg-[#1a1a1a] border border-[#262626] rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-white mb-3">Da li su podaci sigurni?</h3>
+              <h3 className="text-lg font-semibold text-white mb-3">Koliko košta instaliranje?</h3>
               <p className="text-[#a1a1aa]">
-                Apsolutno. Koristimo najviše standarde enkripcije i zaštite podataka u skladu sa 
-                GDPR regulativom.
+                Nema instalacije niti dodatnih troškova. Dovoljno je da se registrujete i odmah možete da pristupite svom nalogu sa bilo kog računara ili pametnog telefona, u bilo koje vreme, samo preko internet pregledača.
               </p>
             </div>
           </div>
@@ -232,7 +266,7 @@ export default function ContactPage() {
       {/* CTA Section */}
       <section className="py-16 px-6 border-t border-[#262626]">
         <div className="max-w-screen-xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+          <h2 className="text-3xl md:text-4xl font-normal text-white mb-6">
             Spremni da <span className="text-[#4a9489]">započnete</span>?
           </h2>
           <p className="text-lg text-[#a1a1aa] max-w-2xl mx-auto mb-8">

@@ -35,7 +35,7 @@ const ExpandableFeatureList = () => {
             <CollapsibleTrigger className="w-full">
               <div className="flex items-center justify-between gap-3 cursor-pointer">
                 <div className="text-left flex-1">
-                  <div className="text-[#09090B] text-xl font-medium leading-[26px]">
+                  <div className="text-[#09090B] text-xl font-normal leading-[26px]">
                     {feature.title}
                   </div>
                   {feature.description}

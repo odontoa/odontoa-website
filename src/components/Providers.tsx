@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster as SonnerToaster } from 'sonner'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { FormDirtyProvider } from '@/contexts/FormDirtyContext'
 
 const queryClient = new QueryClient();
 
@@ -12,11 +13,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
-          {children}
-          <Toaster />
-          <SonnerToaster />
-        </TooltipProvider>
+        <FormDirtyProvider>
+          <TooltipProvider>
+            {children}
+            <Toaster />
+            <SonnerToaster />
+          </TooltipProvider>
+        </FormDirtyProvider>
       </AuthProvider>
     </QueryClientProvider>
   )

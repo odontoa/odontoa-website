@@ -19,6 +19,7 @@ export interface Blog {
   tags: string[]
   related_glossary_terms: string[] // New field for topic clustering
   meta_description: string
+  meta_keywords?: string // New field for SEO keywords
   featured_image?: string
   views_count: number // New field for analytics
   reading_time: number // New field for UX
@@ -104,6 +105,7 @@ export interface CreateBlogData {
   tags: string[]
   related_glossary_terms?: string[]
   meta_description: string
+  meta_keywords?: string // New field for SEO keywords
   featured_image?: string
   author: string
   published: boolean

@@ -48,10 +48,10 @@ export async function generateMetadata({ params }: BlogPageProps): Promise<Metad
         const blog = blogs[0];
         return {
           title: `${blog.title} | Odontoa Blog`,
-          description: blog.excerpt || blog.content.substring(0, 160),
+          description: blog.meta_description || blog.content.substring(0, 160),
           openGraph: {
             title: blog.title,
-            description: blog.excerpt || blog.content.substring(0, 160),
+            description: blog.meta_description || blog.content.substring(0, 160),
             type: 'article',
             url: `https://odontoa.com/blog/${blog.slug}`,
             images: blog.featured_image ? [blog.featured_image] : ['/odontoa-logo1.png'],
@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: BlogPageProps): Promise<Metad
           twitter: {
             card: 'summary_large_image',
             title: blog.title,
-            description: blog.excerpt || blog.content.substring(0, 160),
+            description: blog.meta_description || blog.content.substring(0, 160),
             images: blog.featured_image ? [blog.featured_image] : ['/odontoa-logo1.png'],
           },
           alternates: {
@@ -133,7 +133,7 @@ export default async function BlogSinglePage({ params }: BlogPageProps) {
               "name": blog.author
             },
             "datePublished": blog.created_at,
-            "description": blog.excerpt || blog.content.substring(0, 160),
+            "description": blog.meta_description || blog.content.substring(0, 160),
             "url": `https://odontoa.com/blog/${blog.slug}`,
             "image": blog.featured_image,
             "publisher": {

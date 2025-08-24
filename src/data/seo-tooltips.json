@@ -14,7 +14,7 @@
     },
     "excerpt": {
       "icon": "📋",
-      "text": "Kratki opis koji se prikazuje u listi blogova. Koristi se za preview i meta opis ako summary nije unet."
+      "text": "Kratki opis koji se prikazuje u listi blogova i karticama. Koristi se za UX i poboljšanje CTR unutar aplikacije. Nije direktno vezan za SEO."
     },
     "summary": {
       "icon": "📝",
@@ -46,7 +46,7 @@
     },
     "meta_description": {
       "icon": "🔍",
-      "text": "Meta opis za SEO. Ako nije unet, koristi se summary ili excerpt. Optimalna dužina: 150-160 karaktera."
+      "text": "Meta opis za pretraživače (150-160 karaktera). Koristi se za meta tag, JSON-LD Article.description i WebPage.description. Ključno za SEO score (15 poena)."
     },
     "featured_image": {
       "icon": "⭐",

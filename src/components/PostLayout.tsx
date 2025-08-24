@@ -23,7 +23,7 @@ import { RelatedPosts } from './RelatedPosts'
 import { ShareButtons } from './ShareButtons'
 import { TableOfContents } from './TableOfContents'
 import { CTABlock } from './CTABlock'
-import { generateCompleteSEOData } from '@/lib/utils'
+import { generateCombinedSchema } from '@/lib/utils'
 
 interface PostLayoutProps {
   post: {
@@ -32,6 +32,7 @@ interface PostLayoutProps {
     content: string
     excerpt: string
     summary?: string
+    meta_description?: string
     author: string
     created_at: string
     updated_at?: string
@@ -91,6 +92,23 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
     }
   }, [post.related_glossary_terms])
 
+  // Add meta keywords to head
+  useEffect(() => {
+    if (post.tags && post.tags.length > 0) {
+      const metaKeywords = document.querySelector('meta[name="keywords"]')
+      const keywords = post.tags.join(', ')
+      
+      if (metaKeywords) {
+        metaKeywords.setAttribute('content', keywords)
+      } else {
+        const newMetaKeywords = document.createElement('meta')
+        newMetaKeywords.setAttribute('name', 'keywords')
+        newMetaKeywords.setAttribute('content', keywords)
+        document.head.appendChild(newMetaKeywords)
+      }
+    }
+  }, [post.tags])
+
   const fetchRelatedGlossaryTerms = async () => {
     try {
       const response = await fetch(`/api/glossary/related?terms=${post.related_glossary_terms?.join(',')}`)
@@ -123,9 +141,12 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
 
   const copyLink = async () => {
     try {
-      await navigator.clipboard.writeText(window.location.href)
-      toast.success('Link kopiran u clipboard!')
-    } catch (error) {
+      if (typeof window !== 'undefined') {
+        await navigator.clipboard.writeText(window.location.href)
+        toast.success('Link kopiran u clipboard!')
+      }
+    } catch (err) {
+      console.error('Error copying link:', err)
       toast.error('Greška pri kopiranju linka')
     }
   }
@@ -161,7 +182,7 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(generateCompleteSEOData(post, type))
+          __html: JSON.stringify(generateCombinedSchema(post, type))
         }}
       />
 
@@ -205,7 +226,7 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
             </div>
 
             <div className="flex items-start justify-between mb-8">
-              <h1 className="text-4xl md:text-5xl font-semibold leading-tight text-gray-900 flex-1 pr-4">
+              <h1 className="text-4xl md:text-5xl font-normal leading-tight text-gray-900 flex-1 pr-4">
                 {post.title}
               </h1>
               <Button
@@ -245,6 +266,22 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
               )}
             </div>
 
+            {/* Tags */}
+            {post.tags && post.tags.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 mb-6">
+                <span className="text-sm font-medium text-gray-700">Tagovi:</span>
+                {post.tags.map((tag, index) => (
+                  <Link
+                    key={index}
+                    href={`/blogovi?tag=${encodeURIComponent(tag)}`}
+                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors"
+                  >
+                    #{tag}
+                  </Link>
+                ))}
+              </div>
+            )}
+
             {/* Summary/Excerpt */}
             <p className="text-xl text-gray-600 leading-relaxed mb-8">
               {post.summary || post.excerpt}
@@ -282,16 +319,35 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
                     Često postavljena pitanja
                   </h3>
                   <div className="space-y-4">
-                    {JSON.parse(post.faq_schema).mainEntity?.map((faq: any, index: number) => (
-                      <div key={index} className="bg-white p-4 rounded-lg">
-                        <h4 className="font-semibold text-gray-900 mb-2">
-                          {faq.name}
-                        </h4>
-                        <p className="text-gray-700">
-                          {faq.acceptedAnswer.text}
-                        </p>
-                      </div>
-                    ))}
+                    {(() => {
+                      try {
+                        const schemaData = typeof post.faq_schema === 'string' 
+                          ? JSON.parse(post.faq_schema) 
+                          : post.faq_schema
+                        
+                        // Handle both old format (single FAQPage) and new format (array with multiple schemas)
+                        const faqSchema = Array.isArray(schemaData) 
+                          ? schemaData.find(schema => schema['@type'] === 'FAQPage')
+                          : schemaData
+                        
+                        if (faqSchema && faqSchema.mainEntity && Array.isArray(faqSchema.mainEntity)) {
+                          return faqSchema.mainEntity.map((faq: any, index: number) => (
+                            <div key={index} className="bg-white p-4 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-2">
+                                {faq.name}
+                              </h4>
+                              <p className="text-gray-700">
+                                {faq.acceptedAnswer.text}
+                              </p>
+                            </div>
+                          ))
+                        }
+                        return <p className="text-gray-600">Nema dostupnih FAQ podataka.</p>
+                      } catch (error) {
+                        console.warn('Error parsing FAQ schema:', error)
+                        return <p className="text-gray-600">Greška pri učitavanju FAQ podataka.</p>
+                      }
+                    })()}
                   </div>
                 </div>
               )}
@@ -342,7 +398,7 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
                 {/* Share Buttons */}
                 <ShareButtons 
                   title={post.title}
-                  url={window.location.href}
+                  url={typeof window !== 'undefined' ? window.location.href : ''}
                 />
 
                 {/* Tags */}

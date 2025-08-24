@@ -1,11 +1,15 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Providers } from '@/components/Providers'
-import Navigation from '@/components/Navigation'
+
 import Footer from '@/components/Footer'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ 
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Odontoa - Napredni sistem za upravljanje stomatološkom ordinacijom',
@@ -68,10 +72,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="sr">
-      <body className={inter.className}>
+      <body className={`${inter.className} ${inter.variable}`}>
         <Providers>
           <div className="min-h-screen flex flex-col">
-            <Navigation />
             <main className="flex-1">
               {children}
             </main>

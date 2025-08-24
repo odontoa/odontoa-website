@@ -1,64 +1,141 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import { Globe, Bell, TrendingUp, Zap, BarChart3, MousePointer, Calendar, XCircle, Trophy, Play, Wifi, Building2, Shield } from "lucide-react";
-import { motion } from "framer-motion";
+import { Globe, Bell, TrendingUp, Zap, BarChart3, MousePointer, Calendar, XCircle, Trophy, Play, Wifi, Building2, Shield, BarChart3 as BarChart3Icon, Calendar as CalendarIcon, ClipboardCheck, BookOpen, Monitor, Download, DollarSign, Trash2, FileText, Search, Camera, Receipt, Package, Wrench, MessageCircle, X, Maximize2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useState } from "react";
 
 const AiPresenceSection = () => {
-  return <div className="w-full min-h-screen relative py-20 bg-black">
+  const [selectedImage, setSelectedImage] = useState<{
+    src: string;
+    alt: string;
+    title: string;
+    description: string;
+  } | null>(null);
+
+  const featureCards = [
+    {
+      id: 1,
+      category: "ZAKAZIVANJE",
+      title: "Online 24/7",
+      description: "Automatski SMS/email podsetnici za pacijente",
+      image: "/images/zakzaivanje-termina.png",
+      alt: "Kalendar i zakazivanje"
+    },
+    {
+      id: 2,
+      category: "RADNI NALOZI",
+      title: "Za tehničare",
+      description: "Kreirajte i pratite naloge u realnom vremenu",
+      image: "/images/odontoa_radni-nalozi_mockup_v2.png",
+      alt: "Lista radnih naloga"
+    },
+    {
+      id: 3,
+      category: "FAKTURAIRANJE",
+      title: "Prihodi/troškovi",
+      description: "Praćenje profitabilnosti po tretmanima",
+      image: "/images/fakturisanje-nova-slika.png",
+      alt: "Fakturairanje"
+    },
+    {
+      id: 4,
+      category: "PODRŠKA",
+      title: "Stručni tim",
+      description: "Dostupan radnim danima za tehničku podršku",
+      image: "/images/podrska:nova:slika:odontoa.png",
+      alt: "Podrška tim"
+    }
+  ];
+
+  const handleCardClick = (card: typeof featureCards[0]) => {
+    setSelectedImage({
+      src: card.image,
+      alt: card.alt,
+      title: card.title,
+      description: card.description
+    });
+  };
+
+  const closePopup = () => {
+    setSelectedImage(null);
+  };
+
+
+
+  return (
+    <div className="section-spacing w-full min-h-screen relative bg-background">
       <div className="max-w-7xl mx-auto px-4">
-        {/* Header Section */}
-        <div className="text-center mb-20">
+
+        {/* Introduction Heading */}
+        <motion.div 
+          className="text-center py-12"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+        >
           <motion.h2 
-            className="text-4xl md:text-[44px] font-bold text-white leading-[52px] mb-8 max-w-[620px] mx-auto"
+            className="text-4xl md:text-[44px] font-normal text-foreground leading-tight mb-8 max-w-[620px] mx-auto"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
           >
-            Pametni uvidi. Brže odluke. Više posla.
+            Sve što vam treba na jednom mestu
           </motion.h2>
-          <motion.p 
-            className="text-[#717179] text-xl font-medium leading-[26px] mb-12 max-w-[600px] mx-auto"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            Odontoa analizira ključne podatke tvoje ordinacije u realnom vremenu — od zakazivanja do profita. Vi samo gledate kako sve funkcioniše.
-          </motion.p>
-          <div className="flex gap-4 justify-center">
-            <Button variant="default" className="bg-[#1565C0] text-white hover:bg-[#0D47A1] px-8 py-3 transition-colors duration-200" style={{borderRadius: '8px'}}>
-              Isprobaj odmah – bez kartice
-            </Button>
-            <Button className="bg-[#171717] text-white hover:bg-[#4a9489] px-8 py-3 shadow-sm transition-colors duration-200" style={{borderRadius: '8px'}}>
-              Pogledaj kako radi u praksi
-            </Button>
-          </div>
-        </div>
+        </motion.div>
 
-        {/* First Content Section - Revenue Analysis */}
-        <div className="border-t border-l border-r border-[#252525] mb-8">
-          <div className="flex flex-col lg:flex-row items-center gap-8">
-            {/* Left Image */}
-            <div className="w-full lg:w-1/2 relative group cursor-pointer overflow-visible">
-              <div className="relative overflow-visible rounded-xl">
-                <img alt="Sentiment Analysis Dashboard" className="w-full h-[403px] object-cover transition-all duration-500 ease-out group-hover:scale-105 rounded-xl" src="/images/d7f17d89-beef-45d8-9a70-5875feaa7be2.jpg" />
-                
-                {/* Dashboard image that expands to show full content */}
-                <div className="absolute inset-0 flex items-center justify-center transition-all duration-500 ease-out group-hover:z-50 overflow-visible">
+        {/* Hero Section - Digitalni kartoni + Analitika */}
+        <div className="mb-16">
+          <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-200 p-8 lg:p-12">
+            <div className="flex flex-col lg:flex-row items-center gap-12">
+              {/* Left Content */}
+              <div className="w-full lg:w-1/2">
+                <span className="text-primary text-sm uppercase tracking-widest font-normal mb-4 block">KOMPLETNA KONTROLA</span>
+                <motion.h3 
+                  className="text-foreground text-4xl lg:text-5xl font-bold leading-tight mb-6"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.6 }}
+                >
+                  Digitalni kartoni + Analitika
+                </motion.h3>
+                <p className="text-muted-foreground text-lg leading-relaxed mb-8">
+                  Kompletan medicinski karton sa finansijskim pregledom i detaljnom analitikom na jednom ekranu
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <BarChart3 className="h-4 w-4 text-primary" />
+                    Finansijski pregled
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <FileText className="h-4 w-4 text-primary" />
+                    Digitalni kartoni
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <TrendingUp className="h-4 w-4 text-primary" />
+                    Real-time analitika
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Image */}
+              <div className="w-full lg:w-1/2 relative group cursor-pointer overflow-visible">
+                <div className="relative overflow-visible rounded-xl p-4">
                   <img 
-                    alt="Analiza prodaje i prihoda dashboard" 
-                    className="max-w-[85%] max-h-[85%] object-contain transition-all duration-500 ease-out group-hover:scale-110 group-hover:brightness-110 group-hover:contrast-105 rounded-lg shadow-xl group-hover:shadow-2xl group-hover:shadow-[#4a9489]/50" 
+                    alt="Dashboard - kompletna kontrola" 
+                    className="w-full h-auto object-contain transition-all duration-500 ease-out group-hover:scale-105 rounded-xl shadow-lg group-hover:shadow-xl border border-gray-200" 
                     src="/images/prodaja2.png"
                     style={{
-                      filter: 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.4))',
+                      filter: 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.15))',
                       transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
                       transformOrigin: 'center center'
                     }}
@@ -66,236 +143,169 @@ const AiPresenceSection = () => {
                 </div>
               </div>
             </div>
-
-            {/* Right Content */}
-            <div className="w-full lg:w-1/2 px-4">
-              <div className="mb-8">
-                <span className="text-[#4a9489] text-sm uppercase tracking-widest font-semibold mb-2 block">Analitika</span>
-                <motion.h3 
-                  className="text-white text-4xl font-bold leading-[44px] mb-4 flex items-center gap-2"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6 }}
-                >
-                  📈 Analiza prihoda i tretmana
-                </motion.h3>
-                <motion.p 
-                  className="text-[#717179] text-lg font-medium leading-[23.4px]"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                >
-                  Odmah vidite koji tretmani donose najviše prihoda, kako se menja promet po mesecima, i gde ima prostora za rast.
-                </motion.p>
-              </div>
-
-              {/* Feature List */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <Zap size={20} className="text-[#EB894C] flex-shrink-0" />
-                  <span className="text-white text-base font-medium">Prihodi po tretmanu i lekaru</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Zap size={20} className="text-[#EB894C] flex-shrink-0" />
-                  <span className="text-white text-base font-medium">Rentabilnost u realnom vremenu</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Zap size={20} className="text-[#EB894C] flex-shrink-0" />
-                  <span className="text-white text-base font-medium">Predikcija na osnovu prethodnih meseci</span>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
-        {/* Second Content Section - Smart Scheduling */}
-        <div className="border-t border-l border-r border-[#252525] mb-8">
-          <div className="flex flex-col lg:flex-row items-center gap-8">
-            {/* Left Content */}
-            <div className="w-full lg:w-1/2 pt-6 lg:pt-0 px-4">
-              <div className="mb-8">
-                <span className="text-[#4a9489] text-sm uppercase tracking-widest font-semibold mb-2 block">Zakazivanje</span>
-                <motion.h3 
-                  className="text-white text-4xl font-bold leading-[44px] mb-4 flex items-center gap-2"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6 }}
-                >
-                  📅 Pametnije zakazivanje termina
-                </motion.h3>
-                <motion.p 
-                  className="text-[#717179] text-lg font-medium leading-[23.4px]"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                >
-                  Odontoa automatski predlaže optimalne termine u skladu sa trajanjem tretmana, zauzetošću tima i dostupnim resursima.
-                </motion.p>
+        {/* Feature Grid - 2x2 Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+          {featureCards.map((card, index) => (
+            <motion.div 
+              key={card.id}
+              className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all duration-300 group cursor-pointer"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              onClick={() => handleCardClick(card)}
+            >
+              <div className="mb-4">
+                <span className="text-primary text-xs uppercase tracking-widest font-normal mb-2 block">{card.category}</span>
+                <h4 className="text-foreground text-xl font-bold mb-2">{card.title}</h4>
+                <p className="text-muted-foreground text-sm mb-4">
+                  {card.description}
+                </p>
               </div>
-
-              {/* Feature List */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <Calendar size={20} className="text-[#797BEC] flex-shrink-0" />
-                  <span className="text-white text-base font-medium">Predlozi termina u realnom vremenu</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Bell size={20} className="text-[#797BEC] flex-shrink-0" />
-                  <span className="text-white text-base font-medium">Automatski SMS i email podsetnici</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <TrendingUp size={20} className="text-[#797BEC] flex-shrink-0" />
-                  <span className="text-white text-base font-medium">Optimizacija smena i resursa</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Image */}
-            <div className="w-full lg:w-1/2 relative group cursor-pointer overflow-visible">
-              <div className="relative overflow-visible rounded-xl">
+              <div className="relative overflow-hidden rounded-lg">
                 <img 
-                  alt="Optimizovano zakazivanje dashboard" 
-                  className="max-w-[85%] max-h-[85%] object-contain transition-all duration-500 ease-out group-hover:scale-110 group-hover:brightness-110 group-hover:contrast-105 rounded-lg shadow-xl group-hover:shadow-2xl group-hover:shadow-[#797BEC]/50" 
-                  src="/images/pacijenti-3.png"
-                  style={{
-                    filter: 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.4))',
-                    transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                    transformOrigin: 'center center'
-                  }}
+                  alt={card.alt} 
+                  className="w-full h-32 object-cover transition-all duration-500 ease-out group-hover:scale-105" 
+                  src={card.image}
                 />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Third Content Section - Patient Statistics */}
-        <div className="border-t border-l border-r border-[#252525]">
-          <div className="flex flex-col lg:flex-row items-center gap-8">
-            {/* Left Image */}
-            <div className="w-full lg:w-1/2 relative group cursor-pointer overflow-visible">
-              <div className="relative overflow-visible rounded-xl">
-                <img alt="Referral Analytics Dashboard" className="w-full h-[403px] object-cover transition-all duration-500 ease-out group-hover:scale-105 rounded-xl" src="/images/d7f17d89-beef-45d8-9a70-5875feaa7be2.jpg" />
-                
-                {/* Dashboard image that expands to show full content */}
-                <div className="absolute inset-0 flex items-center justify-center transition-all duration-500 ease-out group-hover:z-50 overflow-visible">
-                  <img 
-                    alt="Statistika dolazaka pacijenata dashboard" 
-                    className="max-w-[85%] max-h-[85%] object-contain transition-all duration-500 ease-out group-hover:scale-110 group-hover:brightness-110 group-hover:contrast-105 rounded-lg shadow-xl group-hover:shadow-2xl group-hover:shadow-[#EB894C]/50" 
-                    src="/images/izostanak-pacijenata1.png"
-                    style={{
-                      filter: 'drop-shadow(0 8px 24px rgba(0, 0, 0, 0.4))',
-                      transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                      transformOrigin: 'center center'
-                    }}
-                  />
+                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                  <Maximize2 className="h-8 w-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
               </div>
-            </div>
-
-            {/* Right Content */}
-            <div className="w-full lg:w-1/2 px-4">
-              <div className="mb-8">
-                <span className="text-[#4a9489] text-sm uppercase tracking-widest font-semibold mb-2 block">Statistika</span>
-                <motion.h3 
-                  className="text-white text-4xl font-bold leading-[44px] mb-4 flex items-center gap-2"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6 }}
-                >
-                  📊 Statistika dolazaka i otkazivanja
-                </motion.h3>
-                <motion.p 
-                  className="text-[#717179] text-lg font-medium leading-[23.4px]"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                >
-                  Pratite trendove dolazaka, procenat otkaza i prepoznajte najefikasnije procedure koje pacijenti zaista biraju.
-                </motion.p>
-              </div>
-
-              {/* Feature List */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <Calendar size={20} className="text-[#EB894C] flex-shrink-0" />
-                  <span className="text-white text-base font-medium">Prosečna popunjenost termina</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <XCircle size={20} className="text-[#EB894C] flex-shrink-0" />
-                  <span className="text-white text-base font-medium">Stopa otkaza po lekaru</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Trophy size={20} className="text-[#EB894C] flex-shrink-0" />
-                  <span className="text-white text-base font-medium">Tretmani sa najvišom realizacijom</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Video Preview Section */}
-        <div className="mt-20 text-center px-4">
-          <h4 className="text-white text-2xl font-semibold mb-6">🎬 Pogledajte kako izgleda uživo</h4>
-          <Button 
-            variant="outline" 
-            size="lg"
-            className="bg-transparent border-2 border-[#4a9489] text-white hover:bg-[#4a9489] hover:text-white transition-all duration-300"
-            onClick={() => window.open('https://www.loom.com/share/your-video-id', '_blank')}
-          >
-            <Play className="mr-2 h-5 w-5" />
-            Kratki demo video – 90 sekundi
-          </Button>
+            </motion.div>
+          ))}
         </div>
 
         {/* FAQ Section */}
         <div className="mt-20 px-4 max-w-3xl mx-auto">
-          <h4 className="text-white text-2xl font-semibold mb-8 text-center">Odgovori na često pitanja</h4>
+          <h4 className="text-foreground text-xl font-normal mb-8 text-center">Odgovori na česta pitanja</h4>
           <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="item-1" className="border-[#252525]">
-              <AccordionTrigger className="text-white hover:text-[#4a9489] transition-colors">
+            <AccordionItem value="item-1" className="border-border">
+              <AccordionTrigger className="text-foreground hover:text-primary transition-colors text-base">
                 <div className="flex items-center gap-3">
-                  <Wifi className="h-5 w-5 text-[#4a9489]" />
-                  Da li se Odontoa koristi i bez interneta?
+                  <BookOpen className="h-5 w-5 text-primary" />
+                  Da li je teško naučiti program?
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="text-[#717179]">
-                Da, Odontoa ima offline režim rada koji vam omogućava da nastavite sa radom čak i kada nemate internet konekciju. Svi podaci se sinhronizuju čim se internet veza ponovo uspostavi.
+              <AccordionContent className="text-muted-foreground text-sm">
+                Prosečno vreme da se savlada sve je 2-3 dana normalnog rada. Imamo video tutorijale na srpskom i besplatnu podršku.
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-2" className="border-[#252525]">
-              <AccordionTrigger className="text-white hover:text-[#4a9489] transition-colors">
+            <AccordionItem value="item-2" className="border-border">
+              <AccordionTrigger className="text-foreground hover:text-primary transition-colors text-base">
                 <div className="flex items-center gap-3">
-                  <Building2 className="h-5 w-5 text-[#4a9489]" />
-                  Koliko ordinacija mogu registrovati?
+                  <Monitor className="h-5 w-5 text-primary" />
+                  Šta ako se pokvari računar?
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="text-[#717179]">
-                Možete registrovati neograničen broj ordinacija. Svaka ordinacija dobija svoj zasebni prostor sa prilagođenim podešavanjima, a vi imate centralizovan pregled svih lokacija.
+              <AccordionContent className="text-muted-foreground text-sm">
+                Odontoa ne zahteva instalaciju – sve radi u pregledaču i čuva se bezbedno u oblaku. Možete da pristupite svojim podacima sa bilo kog uređaja, u bilo koje doba dana, samo uz internet vezu i svoj nalog. Ako promenite računar, samo se prijavite i nastavljate tamo gde ste stali.
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-3" className="border-[#252525]">
-              <AccordionTrigger className="text-white hover:text-[#4a9489] transition-colors">
+            <AccordionItem value="item-3" className="border-border">
+              <AccordionTrigger className="text-foreground hover:text-primary transition-colors text-base">
                 <div className="flex items-center gap-3">
-                  <Shield className="h-5 w-5 text-[#4a9489]" />
-                  Kako se vodi sigurnost podataka pacijenata?
+                  <Download className="h-5 w-5 text-primary" />
+                  Da li mogu da izvezem svoje kartone?
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="text-[#717179]">
-                Svi podaci su enkriptovani po najvišim standardima (AES-256), čuvaju se u EU data centrima, i u potpunosti su usklađeni sa GDPR regulativom. Redovno radimo backup podataka i security audit-e.
+              <AccordionContent className="text-muted-foreground text-sm">
+                Da, u bilo kom trenutku možete da preuzmete sve pacijente u Excel tabeli. Vaši podaci su vaši.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-4" className="border-border">
+              <AccordionTrigger className="text-foreground hover:text-primary transition-colors text-base">
+                <div className="flex items-center gap-3">
+                  <Shield className="h-5 w-5 text-primary" />
+                  Da li su podaci o pacijentima bezbedni?
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-sm">
+                Svi podaci se čuvaju po evropskim standardima bezbednosti. Niko sem vas ne može da vidi kartone vaših pacijenata. Kada kucate podatke, oni se automatski šifruju kao u banci.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-5" className="border-border">
+              <AccordionTrigger className="text-foreground hover:text-primary transition-colors text-base">
+                <div className="flex items-center gap-3">
+                  <Trash2 className="h-5 w-5 text-primary" />
+                  Šta ako neki pacijent traži da obrišem njegove podatke?
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-sm">
+                Jednostavno kliknete "obriši pacijenta" i svi njegovi podaci se trajno brišu iz sistema. Program vam automatski napravi potvrdu da je podatke obrisali, koju možete da pokažete pacijentu.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-6" className="border-border">
+              <AccordionTrigger className="text-foreground hover:text-primary transition-colors text-base">
+                <div className="flex items-center gap-3">
+                  <DollarSign className="h-5 w-5 text-primary" />
+                  Koliko košta instaliranje?
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-sm">
+                Nema instalacije niti dodatnih troškova. Dovoljno je da se registrujete i odmah možete da pristupite svom nalogu sa bilo kog računara ili pametnog telefona, u bilo koje vreme, samo preko internet pregledača.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
         </div>
       </div>
-    </div>;
+
+      {/* Image Popup Modal */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closePopup}
+          >
+            <motion.div
+              className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                <div>
+                  <h3 className="text-xl font-bold text-foreground">{selectedImage.title}</h3>
+                  <p className="text-muted-foreground text-sm">{selectedImage.description}</p>
+                </div>
+                <button
+                  onClick={closePopup}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X className="h-6 w-6 text-gray-500" />
+                </button>
+              </div>
+
+              {/* Image Container */}
+              <div className="p-6">
+                <div className="relative">
+                  <img
+                    src={selectedImage.src}
+                    alt={selectedImage.alt}
+                    className="w-full h-auto object-contain rounded-lg shadow-lg"
+                  />
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 };
 
 export default AiPresenceSection;

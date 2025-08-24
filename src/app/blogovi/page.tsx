@@ -38,6 +38,7 @@ interface Blog {
   tags: string[]
   featured_image?: string
   published: boolean
+  meta_description?: string
 }
 
 export default function BlogoviPage() {
@@ -344,7 +345,7 @@ export default function BlogoviPage() {
             {(selectedCategory || searchQuery ? filteredBlogs : regularBlogs).map((blog, index) => (
               <Card 
                 key={blog.id} 
-                className="group cursor-pointer border-0 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden rounded-xl"
+                className="group cursor-pointer border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden rounded-xl"
                 onMouseEnter={() => setHoveredCard(blog.id)}
                 onMouseLeave={() => setHoveredCard(null)}
               >

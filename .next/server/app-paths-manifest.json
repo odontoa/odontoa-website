@@ -1,1 +1,18 @@
-{}
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/glossary/related/route": "app/api/glossary/related/route.js",
+  "/admin-panel/page": "app/admin-panel/page.js",
+  "/animated-grid-demo/page": "app/animated-grid-demo/page.js",
+  "/api/llms/route": "app/api/llms/route.js",
+  "/blogovi/[slug]/page": "app/blogovi/[slug]/page.js",
+  "/blogovi/page": "app/blogovi/page.js",
+  "/page": "app/page.js",
+  "/recnik/[slug]/page": "app/recnik/[slug]/page.js",
+  "/reset-password/page": "app/reset-password/page.js",
+  "/recnik/page": "app/recnik/page.js",
+  "/kontakt/page": "app/kontakt/page.js",
+  "/o-nama/page": "app/o-nama/page.js",
+  "/blog/page": "app/blog/page.js",
+  "/blog/[slug]/page": "app/blog/[slug]/page.js",
+  "/dizajn-varijante/page": "app/dizajn-varijante/page.js"
+}

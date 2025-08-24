@@ -18,6 +18,7 @@ import {
   Heading3,
   Link as LinkIcon,
   Image as ImageIcon,
+  Upload,
   Undo,
   Redo,
   AlignLeft,
@@ -25,12 +26,14 @@ import {
   AlignRight
 } from 'lucide-react'
 import { toast } from 'sonner'
+import { supabase } from '@/lib/supabase'
 
 interface RichTextEditorProps {
   value: string
   onChange: (value: string) => void
   placeholder?: string
   className?: string
+  onFocus?: () => void
 }
 
 const MenuBar = ({ editor }: { editor: any }) => {
@@ -38,6 +41,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
   const [imageUrl, setImageUrl] = useState('')
   const [showLinkInput, setShowLinkInput] = useState(false)
   const [showImageInput, setShowImageInput] = useState(false)
+  const [uploadingImage, setUploadingImage] = useState(false)
 
   if (!editor) {
     return null
@@ -65,6 +69,69 @@ const MenuBar = ({ editor }: { editor: any }) => {
     setShowImageInput(false)
     setImageUrl('')
     toast.success('Slika dodata!')
+  }
+
+  const handleImageUpload = async (file: File) => {
+    if (!file) return
+
+    // Validate file
+    if (!file.type.startsWith('image/')) {
+      toast.error('Molimo odaberite validnu sliku.')
+      return
+    }
+
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      toast.error('Slika je prevelika. Maksimalna veličina je 5MB.')
+      return
+    }
+
+    setUploadingImage(true)
+
+    try {
+      // Check if bucket exists
+      const { data: buckets } = await supabase.storage.listBuckets()
+      const blogImagesBucket = buckets?.find(bucket => bucket.name === 'blog-images')
+      
+      if (!blogImagesBucket) {
+        // Try to create bucket
+        const { error: createError } = await supabase.storage.createBucket('blog-images', {
+          public: true,
+          allowedMimeTypes: ['image/*'],
+          fileSizeLimit: 5242880
+        })
+        
+        if (createError) {
+          throw new Error('Greška pri kreiranju storage bucket-a. Molimo kontaktirajte administratora.')
+        }
+      }
+
+      const fileName = `editor-images/${Date.now()}-${file.name}`
+      
+      const { data, error } = await supabase.storage
+        .from('blog-images')
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false
+        })
+
+      if (error) {
+        throw new Error(`Upload greška: ${error.message}`)
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('blog-images')
+        .getPublicUrl(fileName)
+
+      // Insert image into editor
+      editor.chain().focus().setImage({ src: publicUrl }).run()
+      toast.success('Slika uspešno uploadovana!')
+      
+    } catch (error) {
+      console.error('Image upload error:', error)
+      toast.error(error.message || 'Greška pri upload-u slike')
+    } finally {
+      setUploadingImage(false)
+    }
   }
 
   return (
@@ -168,6 +235,30 @@ const MenuBar = ({ editor }: { editor: any }) => {
           >
             <ImageIcon className="h-4 w-4" />
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              const input = document.createElement('input')
+              input.type = 'file'
+              input.accept = 'image/*'
+              input.onchange = (e) => {
+                const file = (e.target as HTMLInputElement).files?.[0]
+                if (file) {
+                  handleImageUpload(file)
+                }
+              }
+              input.click()
+            }}
+            disabled={uploadingImage}
+            className="h-8 w-8 p-0"
+          >
+            {uploadingImage ? (
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
+            ) : (
+              <Upload className="h-4 w-4" />
+            )}
+          </Button>
         </div>
 
         {/* Undo/Redo */}
@@ -189,6 +280,21 @@ const MenuBar = ({ editor }: { editor: any }) => {
             className="h-8 w-8 p-0"
           >
             <Redo className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* Slash Commands */}
+        <div className="flex items-center gap-1 border-l border-gray-200 pl-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              editor.chain().focus().setHorizontalRule().run()
+              toast.success('Separator dodat!')
+            }}
+            className="h-8 px-2 text-xs"
+          >
+            /separator
           </Button>
         </div>
       </div>
@@ -250,8 +356,11 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   value,
   onChange,
   placeholder = 'Započnite pisanje...',
-  className = ''
+  className = '',
+  onFocus
 }) => {
+  const [characterCount, setCharacterCount] = useState(0)
+  
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -271,18 +380,39 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
     ],
     content: value,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML())
+      const html = editor.getHTML()
+      onChange(html)
+      // Update character count (excluding HTML tags)
+      const textContent = editor.getText()
+      setCharacterCount(textContent.length)
+    },
+    onFocus: () => {
+      onFocus?.()
     },
     immediatelyRender: false,
   })
 
+  // Update character count when value changes externally
+  React.useEffect(() => {
+    if (editor) {
+      const textContent = editor.getText()
+      setCharacterCount(textContent.length)
+    }
+  }, [value, editor])
+
   return (
     <div className={`border border-gray-300 rounded-lg overflow-hidden ${className}`}>
       <MenuBar editor={editor} />
-      <EditorContent 
-        editor={editor} 
-        className="prose prose-sm max-w-none p-4 min-h-[300px] focus:outline-none"
-      />
+      <div className="relative">
+        <EditorContent 
+          editor={editor} 
+          className="prose prose-sm max-w-none p-4 min-h-[300px] cursor-text [&_.ProseMirror]:outline-none [&_.ProseMirror]:focus:outline-none [&_.ProseMirror]:focus:ring-0 [&_.ProseMirror]:border-0"
+        />
+        {/* Character count */}
+        <div className="absolute bottom-2 right-4 text-xs text-gray-500 bg-white px-2 py-1 rounded">
+          Karaktera: {characterCount}
+        </div>
+      </div>
     </div>
   )
 } 

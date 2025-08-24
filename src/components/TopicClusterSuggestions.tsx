@@ -160,7 +160,7 @@ export const TopicClusterSuggestions: React.FC<TopicClusterSuggestionsProps> = (
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-sm">{getTypeIcon(item.type)}</span>
-                  <h4 className="text-sm font-medium text-gray-900 truncate">
+                  <h4 className="text-sm font-normal text-gray-900 truncate">
                     {item.title}
                   </h4>
                   <Badge 

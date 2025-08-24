@@ -3,25 +3,36 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Ensure Inter font is applied globally */
+@layer base {
+  html {
+    font-family: var(--font-inter), 'Inter', ui-sans-serif, system-ui, sans-serif;
+  }
+  
+  body {
+    font-family: var(--font-inter), 'Inter', ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
 /* Custom Prose Styles for Blog Content */
 .prose {
-  @apply text-gray-700 leading-8;
+  @apply text-slate-600 leading-8 font-sans;
 }
 
 .prose h1 {
-  @apply text-3xl font-bold text-gray-900 mt-10 mb-6 leading-tight;
+  @apply text-3xl font-normal text-slate-900 mt-10 mb-6 leading-tight;
 }
 
 .prose h2 {
-  @apply text-2xl font-bold text-gray-900 mt-10 mb-4 leading-tight;
+  @apply text-2xl font-normal text-slate-900 mt-10 mb-4 leading-tight;
 }
 
 .prose h3 {
-  @apply text-xl font-semibold text-gray-900 mt-8 mb-3 leading-tight;
+  @apply text-xl font-normal text-slate-900 mt-8 mb-3 leading-tight;
 }
 
 .prose h4 {
-  @apply text-lg font-semibold text-gray-900 mt-6 mb-2 leading-tight;
+  @apply text-lg font-normal text-slate-900 mt-6 mb-2 leading-tight;
 }
 
 .prose p {
@@ -29,7 +40,7 @@
 }
 
 .prose blockquote {
-  @apply border-l-4 border-blue-300 pl-4 italic text-gray-600 my-6;
+  @apply border-l-4 border-blue-400 pl-4 italic text-slate-600 my-6;
 }
 
 .prose img {
@@ -49,23 +60,23 @@
 }
 
 .prose a {
-  @apply text-blue-600 hover:text-blue-800 underline;
+  @apply text-blue-600 hover:text-blue-700 underline;
 }
 
 .prose strong {
-  @apply font-semibold text-gray-900;
+  @apply font-normal text-slate-900;
 }
 
 .prose em {
-  @apply italic text-gray-700;
+  @apply italic text-slate-700;
 }
 
 .prose code {
-  @apply bg-gray-100 px-2 py-1 rounded text-sm font-mono;
+  @apply bg-slate-100 px-2 py-1 rounded text-sm font-mono;
 }
 
 .prose pre {
-  @apply bg-gray-900 text-white p-4 rounded-lg overflow-x-auto my-6;
+  @apply bg-slate-900 text-white p-4 rounded-lg overflow-x-auto my-6;
 }
 
 .prose pre code {
@@ -81,89 +92,95 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Light Theme Palette (Odontoa - cold tech, more blue) */
+    /* Backgrounds */
+    --background: 0 0% 96%; /* #F3F4F6 - malo hladnija svetla siva */
+    --card: 0 0% 100%; /* #FFFFFF */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    /* Text */
+    --foreground: 222 84% 0%; /* #0F172A - još tamnija plava-siva za tekst */
+    --card-foreground: 222 84% 0%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 222 84% 0%;
+    --muted-foreground: 215 16% 30%; /* #64748B - tamniji za bolji kontrast */
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Brand colors */
+    --primary: 221 83% 53%; /* #2563EB - klasična plava (više korporativna) */
+    --primary-foreground: 221 83% 45%; /* #1D4ED8 */
+    --secondary: 199 89% 48%; /* #0EA5E9 - cyan/azure kao akcenat */
+    --secondary-foreground: 199 89% 40%; /* #0284C7 */
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Status colors */
+    --success: 142 76% 36%; /* #22C55E */
+    --warning: 45 93% 47%; /* #EAB308 */
+    --destructive: 0 84% 60%; /* #DC2626 */
+    --destructive-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* UI Elements */
+    --muted: 0 0% 96%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 222 84% 0%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Dosledan radius sistem */
+    --radius: 0.5rem; /* 8px za kontrole */
+    --radius-card: 0.75rem; /* 12px za kartice/sekcije */
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar */
+    --sidebar-background: 210 40% 98%;
+    --sidebar-foreground: 215 16% 30%;
+    --sidebar-primary: 222 84% 0%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222 84% 0%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 221 83% 53%;
   }
 
   .dark {
-    --background: 0 0% 0%;
-    --foreground: 210 40% 98%;
+    /* Dark Theme Palette (Odontoa - dark tech) */
+    /* Backgrounds */
+    --background: 222 84% 5%; /* #0F172A - tamna plava-siva */
+    --card: 217 33% 17%; /* #1E293B - malo svetlija tamna */
 
-    --card: 222.2 84% 4.9%;
+    /* Text */
+    --foreground: 210 40% 98%; /* #F8FAFC - svetla siva */
     --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
+    --popover: 217 33% 17%;
     --popover-foreground: 210 40% 98%;
+    --muted-foreground: 215 20% 65%; /* #94A3B8 */
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Brand colors - inverzni za dark theme */
+    --primary: 217 91% 60%; /* #3B82F6 - svetlija plava */
+    --primary-foreground: 221 83% 53%; /* #2563EB */
+    --secondary: 199 89% 48%; /* #0EA5E9 - cyan ostaje isti */
+    --secondary-foreground: 199 89% 40%; /* #0284C7 */
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    /* Status colors */
+    --success: 142 76% 36%; /* #22C55E */
+    --warning: 45 93% 47%; /* #EAB308 */
+    --destructive: 0 84% 60%; /* #EF4444 - svetliji crveni */
+    --destructive-foreground: 0 0% 100%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
+    /* UI Elements */
+    --muted: 217 33% 17%; /* #334155 */
+    --accent: 217 33% 17%;
     --accent-foreground: 210 40% 98%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 217 91% 60%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar */
+    --sidebar-background: 222 84% 5%;
+    --sidebar-foreground: 215 20% 65%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 222 84% 5%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 17%;
+    --sidebar-ring: 217 91% 60%;
   }
 }
 
@@ -173,7 +190,55 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+
+  /* Tipografija i hijerarhija */
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-normal leading-tight tracking-tight;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-normal leading-tight tracking-tight;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl lg:text-3xl font-normal leading-tight;
+  }
+
+  h4 {
+    @apply text-lg md:text-xl font-normal leading-tight;
+  }
+
+  p {
+    @apply text-base leading-relaxed;
+  }
+
+  /* Badge stilovi */
+  .badge-default {
+    @apply text-xs bg-white/70 text-gray-800 px-2 py-1 rounded-md font-medium;
+  }
+
+  .badge-success {
+    @apply text-xs bg-green-100 text-green-800 px-2 py-1 rounded-md font-medium;
+  }
+
+  .badge-warning {
+    @apply text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-md font-medium;
+  }
+
+  .badge-danger {
+    @apply text-xs bg-red-100 text-red-800 px-2 py-1 rounded-md font-medium;
+  }
+
+  /* Sekcijski razmaci */
+  .section-spacing {
+    @apply py-12 md:py-20;
+  }
+
+  /* Sticky CTA */
+  .sticky-cta {
+    @apply fixed bottom-6 right-6 z-50 bg-primary text-white px-4 py-2 rounded-lg shadow-lg hover:bg-primary/90 transition-all duration-300;
   }
 }
 
@@ -284,7 +349,7 @@
 }
 
 .animate-shimmer {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
   background-size: 200px 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -304,7 +369,7 @@
 }
 
 .hover-glow:hover {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
 }
 
 /* Glassmorphism */
@@ -322,7 +387,7 @@
 
 /* Gradient Text */
 .gradient-text {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2563EB 0%, #0EA5E9 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -334,22 +399,22 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #f1f5f9;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2563EB 0%, #0EA5E9 100%);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+  background: linear-gradient(135deg, #1D4ED8 0%, #0284C7 100%);
 }
 
 /* Loading States */
 .skeleton {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
   background-size: 200px 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -364,6 +429,35 @@
 .card-enter-active {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Line Clamp Utilities */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.line-clamp-4 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
 }
 
 /* Responsive Design */

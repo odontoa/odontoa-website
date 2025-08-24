@@ -156,7 +156,7 @@ export function generateStructuredData(type: 'article' | 'glossary' | 'blog', da
     return {
       ...baseData,
       "headline": safeData.title,
-      "description": safeData.meta_description || safeData.excerpt || safeData.summary,
+      "description": safeData.meta_description || safeData.summary,
       "author": {
         "@type": "Person",
         "name": safeData.author
@@ -221,12 +221,12 @@ export function generateCompleteSEOData(data: any, type: 'blog' | 'glossary'): a
   
   return {
     title: `${safeData.title || safeData.term} | Odontoa`,
-    description: safeData.meta_description || safeData.excerpt || safeData.definition,
+    description: safeData.meta_description || safeData.definition,
     keywords: safeData.tags?.join(', ') || '',
     canonical: pageUrl,
     openGraph: {
       title: safeData.title || safeData.term,
-      description: safeData.meta_description || safeData.excerpt || safeData.definition,
+      description: safeData.meta_description || safeData.definition,
       url: pageUrl,
       type: type === 'blog' ? 'article' : 'website',
       image: safeData.image_url || safeData.featured_image ? {
@@ -241,7 +241,7 @@ export function generateCompleteSEOData(data: any, type: 'blog' | 'glossary'): a
     twitter: {
       card: 'summary_large_image',
       title: safeData.title || safeData.term,
-      description: safeData.meta_description || safeData.excerpt || safeData.definition,
+      description: safeData.meta_description || safeData.definition,
       image: safeData.image_url || safeData.featured_image,
       creator: '@odontoa'
     },
@@ -263,64 +263,170 @@ export function calculateReadingTime(content: string): number {
 }
 
 /**
- * Calculates SEO score for content
+ * Enhanced SEO Score calculation with detailed metrics
  */
-export function calculateSEOScore(data: any, type: 'blog' | 'glossary'): number {
-  let score = 0
-  
-  // Title length (optimal: 50-60 characters)
-  const title = data.title || data.term || ''
-  if (title && title.length >= 50 && title.length <= 60) {
-    score += 20
-  } else if (title && title.length >= 30 && title.length <= 70) {
-    score += 10
+export function calculateSEOScore(data: any): { score: number; metrics: any } {
+  const metrics = {
+    title: { score: 0, max: 10, details: '' },
+    metaDescription: { score: 0, max: 15, details: '' },
+    contentLength: { score: 0, max: 20, details: '' },
+    image: { score: 0, max: 10, details: '' },
+    altText: { score: 0, max: 5, details: '' },
+    tags: { score: 0, max: 10, details: '' },
+    faqSchema: { score: 0, max: 10, details: '' },
+    internalLinks: { score: 0, max: 10, details: '' },
+    structure: { score: 0, max: 10, details: '' }
   }
   
-  // Content length
-  const content = data.content || data.full_article || ''
-  if (content && content.length > 1500) {
-    score += 20
-  } else if (content && content.length > 800) {
-    score += 10
+  let totalScore = 0
+  
+  // 1. Title analysis
+  if (data.title) {
+    const titleLength = data.title.length
+    if (titleLength >= 30 && titleLength <= 60) {
+      metrics.title.score = 10
+      metrics.title.details = `Naslov ima ${titleLength} karaktera (optimalno 30-60)`
+    } else if (titleLength > 0) {
+      metrics.title.score = Math.max(0, 10 - Math.abs(titleLength - 45) / 3)
+      metrics.title.details = `Naslov ima ${titleLength} karaktera (preporučeno 30-60)`
+    } else {
+      metrics.title.details = 'Naslov je obavezan'
+    }
   }
   
-  // Meta description
-  const description = data.meta_description || data.excerpt || data.definition || ''
-  if (description && description.length >= 150 && description.length <= 160) {
-    score += 15
-  } else if (description && description.length >= 120 && description.length <= 170) {
-    score += 10
+  // 2. Meta description analysis
+  if (data.meta_description && data.meta_description.trim().length > 0) {
+    const descLength = data.meta_description.length
+    if (descLength >= 150 && descLength <= 160) {
+      metrics.metaDescription.score = 15
+      metrics.metaDescription.details = `Meta opis ima ${descLength} karaktera (optimalno 150-160)`
+    } else if (descLength > 0) {
+      metrics.metaDescription.score = Math.max(0, 15 - Math.abs(descLength - 155) / 2)
+      metrics.metaDescription.details = `Meta opis ima ${descLength} karaktera (preporučeno 150-160)`
+    } else {
+      metrics.metaDescription.details = 'Meta opis je obavezan za SEO'
+    }
+  } else {
+    metrics.metaDescription.score = 0
+    metrics.metaDescription.details = 'Meta Description: 0/15 poena - nije unet'
   }
   
-  // Has featured image
+  // 3. Content length analysis
+  if (data.content) {
+    const textContent = data.content.replace(/<[^>]*>/g, '').trim()
+    const wordCount = textContent.split(/\s+/).length
+    if (wordCount >= 300) {
+      metrics.contentLength.score = 20
+      metrics.contentLength.details = `Sadržaj ima ${wordCount} reči (odlično za SEO)`
+    } else if (wordCount >= 150) {
+      metrics.contentLength.score = 15
+      metrics.contentLength.details = `Sadržaj ima ${wordCount} reči (dovoljno)`
+    } else if (wordCount >= 50) {
+      metrics.contentLength.score = 10
+      metrics.contentLength.details = `Sadržaj ima ${wordCount} reči (minimalno)`
+    } else {
+      metrics.contentLength.details = 'Sadržaj je prekratak (minimum 50 reči)'
+    }
+  }
+  
+  // 4. Image analysis
   if (data.image_url || data.featured_image) {
-    score += 10
+    metrics.image.score = 10
+    metrics.image.details = 'Featured slika je postavljena'
+  } else {
+    metrics.image.details = 'Featured slika poboljšava SEO'
   }
   
-  // Has alt text
-  if (data.alt_text) {
-    score += 5
+  // 5. Alt text analysis
+  if (data.alt_text && data.alt_text.trim().length > 0) {
+    metrics.altText.score = 5
+    metrics.altText.details = 'Alt tekst je postavljen'
+  } else {
+    metrics.altText.details = 'Alt tekst je obavezan za pristupačnost'
   }
   
-  // Has FAQ schema
+  // 6. Tags analysis
+  let tagsArr: string[] = [];
+  if (Array.isArray(data.tags)) {
+    tagsArr = data.tags;
+  } else if (typeof data.tags === 'string') {
+    tagsArr = data.tags.split(',').map(t => t.trim()).filter(Boolean);
+  }
+  if (tagsArr.length > 0) {
+    const tagCount = tagsArr.length;
+    if (tagCount >= 3) {
+      metrics.tags.score = 10;
+      metrics.tags.details = `${tagCount} tagova (odlično)`;
+    } else {
+      metrics.tags.score = tagCount * 3;
+      metrics.tags.details = `${tagCount} tagova (preporučeno 3+)`;
+    }
+  } else {
+    metrics.tags.details = 'Tagovi poboljšavaju SEO';
+  }
+
+  // 7. FAQ Schema analysis
   if (data.faq_schema) {
-    score += 15
+    try {
+      let schemas = [];
+      if (typeof data.faq_schema === 'string') {
+        const parsed = JSON.parse(data.faq_schema);
+        schemas = Array.isArray(parsed) ? parsed : [parsed];
+      } else if (Array.isArray(data.faq_schema)) {
+        schemas = data.faq_schema;
+      } else {
+        schemas = [data.faq_schema];
+      }
+      const faqPage = schemas.find(s => s['@type'] === 'FAQPage' && Array.isArray(s.mainEntity) && s.mainEntity.length > 0);
+      if (faqPage) {
+        metrics.faqSchema.score = 10;
+        metrics.faqSchema.details = `${faqPage.mainEntity.length} FAQ pitanja`;
+      } else {
+        metrics.faqSchema.score = 5;
+        metrics.faqSchema.details = 'FAQ schema postoji ali nema pitanja ili nije FAQPage';
+      }
+    } catch {
+      metrics.faqSchema.details = 'FAQ schema nije validan JSON';
+    }
+  } else {
+    metrics.faqSchema.details = 'FAQ schema poboljšava Rich Results';
   }
   
-  // Has tags
-  if (data.tags && data.tags.length > 0) {
-    score += 10
+  // 8. Internal links analysis
+  if (data.related_glossary_terms && Array.isArray(data.related_glossary_terms) && data.related_glossary_terms.length > 0) {
+    const linkCount = data.related_glossary_terms.length
+    metrics.internalLinks.score = Math.min(10, linkCount * 2)
+    metrics.internalLinks.details = `${linkCount} internih linkova`
+  } else {
+    metrics.internalLinks.details = 'Interni linkovi poboljšavaju SEO'
   }
   
-  // Has related content
-  if (type === 'blog' && data.related_glossary_terms && data.related_glossary_terms.length > 0) {
-    score += 10
-  }
-  if (type === 'glossary' && data.related_blog_posts && data.related_blog_posts.length > 0) {
-    score += 10
+  // 9. Content structure analysis
+  if (data.content) {
+    const hasHeadings = /<h[1-6]/.test(data.content)
+    const hasLists = /<[uo]l>|<li>/.test(data.content)
+    const hasParagraphs = /<p>/.test(data.content)
+    
+    let structureScore = 0
+    if (hasHeadings) structureScore += 4
+    if (hasLists) structureScore += 3
+    if (hasParagraphs) structureScore += 3
+    
+    metrics.structure.score = structureScore
+    metrics.structure.details = `Struktura: ${hasHeadings ? 'H1-H6' : ''} ${hasLists ? 'Liste' : ''} ${hasParagraphs ? 'Paragrafi' : ''}`.trim()
+  } else {
+    metrics.structure.details = 'Struktura sadržaja je važna'
   }
   
-  return Math.min(100, score)
+  // Calculate total score
+  Object.values(metrics).forEach(metric => {
+    totalScore += metric.score
+  })
+  
+  return {
+    score: Math.round(totalScore),
+    metrics
+  }
 }
 
 /**
@@ -509,58 +615,162 @@ export function generateTopicClusterSuggestions(
   return suggestions.sort((a, b) => b.score - a.score).slice(0, 3)
 }
 
-// Auto-generate FAQ from content and title
-export function generateAutoFAQ(title: string, content: string, summary?: string, whyItMatters?: string) {
-  const faqs: Array<{question: string, answer: string}> = []
-  
-  // Clean content for analysis
-  const cleanContent = content ? content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() : ''
-  const cleanTitle = title ? title.trim() : ''
-  const cleanSummary = summary ? summary.trim() : ''
-  const cleanWhyItMatters = whyItMatters ? whyItMatters.trim() : ''
-  
-  // Generate FAQ based on content type
-  if (cleanTitle && cleanContent) {
-    // FAQ 1: What is [topic]?
-    const topic = cleanTitle.toLowerCase().includes('šta je') ? 
-      cleanTitle.replace(/šta je\s+/i, '').replace(/\?/g, '') :
-      cleanTitle
-    
-    const answer1 = cleanSummary || cleanContent.substring(0, 200) + '...'
-    
-    faqs.push({
-      question: `Šta je ${topic}?`,
-      answer: answer1
-    })
-    
-    // FAQ 2: Why is [topic] important? (if why_it_matters exists)
-    if (cleanWhyItMatters) {
-      faqs.push({
-        question: `Zašto je ${topic} važan?`,
-        answer: cleanWhyItMatters
-      })
-    }
-    
-    // FAQ 3: How to [action]? (if content contains action words)
-    const actionWords = ['kako', 'način', 'metoda', 'tehnika', 'procedura']
-    const hasActionContent = actionWords.some(word => cleanContent.toLowerCase().includes(word))
-    
-    if (hasActionContent) {
-      const actionAnswer = cleanContent.length > 300 ? 
-        cleanContent.substring(200, 400) + '...' :
-        cleanContent
-      
-      faqs.push({
-        question: `Kako se koristi ${topic}?`,
-        answer: actionAnswer
-      })
-    }
+/**
+ * Comprehensive SEO metadata enhancer for tags
+ * Handles meta keywords, Article schema, frontend display, and SEO scoring
+ */
+export function enhanceSEOWithTags(
+  tags: string[],
+  title: string,
+  summary: string,
+  existingMetaKeywords?: string
+): {
+  metaKeywords: string
+  articleSchema: any
+  frontendTags: Array<{name: string, slug: string}>
+  seoScore: number
+} {
+  // Clean and validate tags
+  const cleanTags = tags
+    .map(tag => tag.trim())
+    .filter(tag => tag.length > 0)
+    .slice(0, 10) // Limit to 10 tags for SEO
+
+  // Generate meta keywords
+  const existingKeywords = existingMetaKeywords ? existingMetaKeywords.split(',').map(k => k.trim()) : []
+  const allKeywords = [...new Set([...existingKeywords, ...cleanTags])]
+  const metaKeywords = allKeywords.join(', ')
+
+  // Generate Article schema with tags
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "about": cleanTags.map(tag => ({
+      "@type": "Thing",
+      "name": tag
+    })),
+    "keywords": metaKeywords
   }
+
+  // Generate frontend tags with slugs
+  const frontendTags = cleanTags.map(tag => ({
+    name: tag,
+    slug: createSEOSlug(tag)
+  }))
+
+  // Calculate SEO score based on tag relevance
+  let seoScore = 0
   
-  return faqs.length > 0 ? generateFAQStructuredData(faqs) : null
+  // Check if tags match title keywords
+  const titleKeywords = extractKeywords(title)
+  const titleMatches = cleanTags.filter(tag => 
+    titleKeywords.some(keyword => 
+      tag.toLowerCase().includes(keyword.toLowerCase()) ||
+      keyword.toLowerCase().includes(tag.toLowerCase())
+    )
+  )
+  seoScore += titleMatches.length * 5
+
+  // Check if tags match summary keywords
+  const summaryKeywords = extractKeywords(summary)
+  const summaryMatches = cleanTags.filter(tag => 
+    summaryKeywords.some(keyword => 
+      tag.toLowerCase().includes(keyword.toLowerCase()) ||
+      keyword.toLowerCase().includes(tag.toLowerCase())
+    )
+  )
+  seoScore += summaryMatches.length * 3
+
+  // Bonus for having optimal number of tags (3-6)
+  if (cleanTags.length >= 3 && cleanTags.length <= 6) {
+    seoScore += 10
+  }
+
+  return {
+    metaKeywords,
+    articleSchema,
+    frontendTags,
+    seoScore: Math.min(100, seoScore)
+  }
 }
 
-// Enhanced content analysis for SEO test mode
+/**
+ * Suggests relevant tags based on content and title
+ */
+export function suggestRelevantTags(content: string, title: string): string[] {
+  if (!content && !title) return []
+  
+  // Combine content and title for analysis
+  const fullText = `${title} ${content}`.toLowerCase()
+  
+  // Remove HTML tags
+  const cleanText = fullText.replace(/<[^>]*>/g, '')
+  
+  // Serbian dental/medical keywords
+  const dentalKeywords = [
+    'stomatologija', 'zub', 'zubi', 'zubar', 'zubara', 'ordinacija', 'pregled',
+    'lečenje', 'karijes', 'krunica', 'most', 'implant', 'ortodoncija', 'aparatić',
+    'čistiti', 'četkica', 'pasta', 'konac', 'fluor', 'anestezija', 'bol',
+    'upala', 'desni', 'plomba', 'ekstrakcija', 'vađenje', 'preventiva',
+    'digitalizacija', '3d', 'skener', 'rtg', 'panorama', 'cefalometrija',
+    'hirurgija', 'parodontologija', 'endodoncija', 'pedodoncija', 'protetika',
+    'estetika', 'beljenje', 'veneers', 'laminati', 'inlej', 'onlej'
+  ]
+  
+  // General medical/health keywords
+  const healthKeywords = [
+    'zdravlje', 'zdrav', 'bolest', 'simptom', 'dijagnoza', 'terapija',
+    'lek', 'antibiotik', 'analgetik', 'upala', 'infekcija', 'bakterija',
+    'virus', 'imunitet', 'prevencija', 'kontrola', 'pregled', 'test',
+    'rezultat', 'analiza', 'krv', 'urina', 'temperatura', 'pritisak'
+  ]
+  
+  // Technology keywords
+  const techKeywords = [
+    'digitalizacija', 'tehnologija', 'aplikacija', 'software', 'hardware',
+    'online', 'internet', 'web', 'mobilna', 'app', 'sistem', 'platforma',
+    'automatizacija', 'ai', 'artificial intelligence', 'machine learning',
+    'data', 'analitika', 'cloud', 'backup', 'security', 'privacy'
+  ]
+  
+  // Business keywords
+  const businessKeywords = [
+    'posao', 'biznis', 'usluga', 'klijent', 'pacijent', 'termin',
+    'zakazivanje', 'rezervacija', 'plaćanje', 'cena', 'trošak',
+    'profit', 'marketing', 'reklama', 'promocija', 'kvalitet',
+    'satisfakcija', 'feedback', 'recenzija', 'preporuka'
+  ]
+  
+  // Combine all keyword categories
+  const allKeywords = [...dentalKeywords, ...healthKeywords, ...techKeywords, ...businessKeywords]
+  
+  // Find matching keywords in text
+  const foundKeywords = allKeywords.filter(keyword => 
+    cleanText.includes(keyword)
+  )
+  
+  // Extract additional keywords from text using NLP-like approach
+  const words = cleanText
+    .replace(/[^\w\s]/g, '')
+    .split(/\s+/)
+    .filter(word => 
+      word.length > 3 && 
+      !['i', 'ili', 'a', 'ali', 'pa', 'te', 'da', 'je', 'su', 'bi', 'će', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might'].includes(word)
+    )
+  
+  // Get unique words and limit to top relevant ones
+  const uniqueWords = [...new Set(words)].slice(0, 10)
+  
+  // Combine found keywords with extracted words
+  const suggestions = [...foundKeywords, ...uniqueWords]
+  
+  // Remove duplicates and limit to 6 suggestions
+  return [...new Set(suggestions)].slice(0, 6)
+}
+
+/**
+ * Analyzes content structure for SEO optimization
+ */
 export function analyzeContentStructure(content: string) {
   if (!content) return {
     hasHeadings: false,
@@ -606,4 +816,264 @@ export function checkKeywordOptimization(title: string, summary?: string, altTex
     altTextOptimized,
     titleKeywords
   }
+}
+
+/**
+ * Generates combined Article and FAQPage schema as JSON array
+ * Ready for Google Rich Results and LLM crawlers
+ */
+export function generateCombinedSchema(data: any, type: 'blog' | 'glossary'): any[] {
+  const safeData = data || {}
+  const baseUrl = 'https://odontoa.com'
+  const pageUrl = `${baseUrl}/${type === 'blog' ? 'blogovi' : 'recnik'}/${safeData.slug || ''}`
+  const currentDate = new Date().toISOString()
+  
+  // Generate description for JSON-LD - use meta_description exclusively
+  const generateDescription = () => {
+    if (safeData.meta_description && safeData.meta_description.trim().length > 0) {
+      return safeData.meta_description
+    }
+    // Fallback to content if meta_description is not available
+    if (safeData.content) {
+      const textContent = safeData.content.replace(/<[^>]*>/g, '').trim()
+      const sentences = textContent.split(/[.!?]+/).filter(s => s.trim().length > 0)
+      if (sentences.length >= 2) {
+        return sentences.slice(0, 2).join('. ').trim() + '.'
+      }
+      return textContent.substring(0, 160).trim()
+    }
+    return safeData.definition || ''
+  }
+  
+  const description = generateDescription()
+  
+  const schemas: any[] = []
+  
+  // 1. Article Schema
+  const articleSchema: any = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": safeData.title || safeData.term,
+    "description": description,
+    "url": pageUrl,
+    "datePublished": safeData.created_at || currentDate,
+    "dateModified": safeData.last_modified || safeData.updated_at || safeData.created_at || currentDate,
+    "author": {
+      "@type": "Organization",
+      "name": safeData.author || "Odontoa Tim",
+      "url": "https://odontoa.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Odontoa",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://odontoa.com/odontoa-logo1.png",
+        "width": 120,
+        "height": 60
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": pageUrl
+    }
+  }
+  
+  // Add image if available
+  if (safeData.image_url || safeData.featured_image) {
+    articleSchema.image = {
+      "@type": "ImageObject",
+      "url": safeData.image_url || safeData.featured_image,
+      "alt": safeData.alt_text || safeData.title || safeData.term,
+      "width": 1200,
+      "height": 630
+    }
+  }
+  
+  // Add about section from tags
+  if (safeData.tags && safeData.tags.length > 0) {
+    articleSchema.about = safeData.tags.map((tag: string) => ({
+      "@type": "Thing",
+      "name": tag
+    }))
+  }
+  
+  // Add keywords
+  if (safeData.tags && safeData.tags.length > 0) {
+    articleSchema.keywords = safeData.tags.join(', ')
+  }
+  
+  // Add word count and reading time for blogs
+  if (type === 'blog' && safeData.content) {
+    const wordCount = safeData.content.replace(/<[^>]*>/g, '').split(/\s+/).length
+    articleSchema.wordCount = wordCount
+    articleSchema.timeRequired = `PT${safeData.reading_time || Math.ceil(wordCount / 200)}M`
+  }
+  
+  schemas.push(articleSchema)
+  
+  // 2. FAQPage Schema (if available)
+  if (safeData.faq_schema) {
+    try {
+      const faqData = typeof safeData.faq_schema === 'string' 
+        ? JSON.parse(safeData.faq_schema) 
+        : safeData.faq_schema
+      
+      // Ensure it has the correct structure
+      if (faqData && faqData.mainEntity && Array.isArray(faqData.mainEntity)) {
+        const faqSchema = {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": faqData.mainEntity.map((faq: any) => ({
+            "@type": "Question",
+            "name": faq.name || faq.question || '',
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": faq.acceptedAnswer?.text || faq.answer || ''
+            }
+          }))
+        }
+        schemas.push(faqSchema)
+      }
+    } catch (error) {
+      console.warn('Error parsing FAQ schema:', error)
+    }
+  }
+  
+  // 3. WebPage Schema for better SEO
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": safeData.title || safeData.term,
+    "description": description,
+    "url": pageUrl,
+    "datePublished": safeData.created_at || currentDate,
+    "dateModified": safeData.last_modified || safeData.updated_at || safeData.created_at || currentDate,
+    "author": {
+      "@type": "Organization",
+      "name": safeData.author || "Odontoa Tim"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Odontoa"
+    }
+  }
+  
+  schemas.push(webPageSchema)
+  
+  // Validate schema output in development mode
+  validateSchemaOutput(schemas)
+  
+  return schemas
+}
+
+/**
+ * Validates schema output for development mode
+ */
+export function validateSchemaOutput(schema: any[]): boolean {
+  if (process.env.NODE_ENV !== 'development') {
+    return true
+  }
+
+  console.log('🔍 Validating schema output...')
+  
+  // Check if it's an array
+  if (!Array.isArray(schema)) {
+    console.warn('❌ Schema is not an array')
+    return false
+  }
+  
+  // Check if it has at least 1 object
+  if (schema.length < 1) {
+    console.warn(`❌ Schema should have at least 1 object, got ${schema.length}`)
+    return false
+  }
+  
+  // Define valid schema types and their required fields
+  const validSchemaTypes = {
+    WebPage: ['@context', '@type', 'name', 'description', 'url'],
+    Article: ['@context', '@type', 'headline', 'description', 'url', 'author', 'publisher'],
+    FAQPage: ['@context', '@type', 'mainEntity']
+  }
+  
+  // Check each schema object
+  for (let i = 0; i < schema.length; i++) {
+    const obj = schema[i]
+    
+    if (!obj['@context'] || obj['@context'] !== 'https://schema.org') {
+      console.warn(`❌ Schema ${i}: Missing or invalid @context`)
+      return false
+    }
+    
+    if (!obj['@type']) {
+      console.warn(`❌ Schema ${i}: Missing @type`)
+      return false
+    }
+    
+    const schemaType = obj['@type']
+    if (!validSchemaTypes[schemaType as keyof typeof validSchemaTypes]) {
+      console.warn(`❌ Schema ${i}: Invalid @type "${schemaType}". Valid types: ${Object.keys(validSchemaTypes).join(', ')}`)
+      return false
+    }
+    
+    // Check required fields for this type
+    const required = validSchemaTypes[schemaType as keyof typeof validSchemaTypes]
+    for (const field of required) {
+      if (!obj[field]) {
+        console.warn(`❌ ${schemaType}: Missing required field '${field}'`)
+        return false
+      }
+    }
+  }
+  
+  // Check optional fields for each schema type
+  const article = schema.find(s => s['@type'] === 'Article')
+  if (article) {
+    if (!article.keywords) {
+      console.warn('⚠️ Article: Missing keywords field')
+    }
+    if (!article.about) {
+      console.warn('⚠️ Article: Missing about field')
+    }
+    if (!article.wordCount) {
+      console.warn('⚠️ Article: Missing wordCount field')
+    }
+    if (!article.timeRequired) {
+      console.warn('⚠️ Article: Missing timeRequired field')
+    }
+    if (!article.datePublished) {
+      console.warn('⚠️ Article: Missing datePublished field')
+    }
+    if (!article.dateModified) {
+      console.warn('⚠️ Article: Missing dateModified field')
+    }
+  }
+  
+  const faqPage = schema.find(s => s['@type'] === 'FAQPage')
+  if (faqPage) {
+    if (!faqPage.mainEntity || !Array.isArray(faqPage.mainEntity) || faqPage.mainEntity.length === 0) {
+      console.warn('⚠️ FAQPage: Missing or empty mainEntity array')
+    } else {
+      console.log(`✅ FAQPage: Has ${faqPage.mainEntity.length} questions`)
+    }
+  }
+  
+  const webPage = schema.find(s => s['@type'] === 'WebPage')
+  if (webPage) {
+    if (!webPage.datePublished) {
+      console.warn('⚠️ WebPage: Missing datePublished field')
+    }
+    if (!webPage.dateModified) {
+      console.warn('⚠️ WebPage: Missing dateModified field')
+    }
+  }
+  
+  console.log('✅ Schema validation passed!')
+  console.log('📊 Schema breakdown:')
+  console.log(`   - Article: ${article ? '✅' : '❌'}`)
+  console.log(`   - FAQPage: ${faqPage ? '✅' : '❌'}`)
+  console.log(`   - WebPage: ${webPage ? '✅' : '❌'}`)
+  console.log(`   - Total schemas: ${schema.length}`)
+  
+  return true
 }

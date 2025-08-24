@@ -6,15 +6,16 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
-import { Trash2, RefreshCw, Eye, EyeOff, Calendar, User, FileText, BookOpen } from 'lucide-react'
+import { Trash2, RefreshCw, Eye, EyeOff, Calendar, User, FileText, BookOpen, Edit } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface ContentListProps {
   type: 'blogs' | 'glossary'
   filterPublished?: boolean // true = only published, false = only drafts, undefined = all
+  onEditItem?: (item: Blog | GlossaryEntry) => void
 }
 
-export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished }) => {
+export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished, onEditItem }) => {
   const { session } = useAuth()
   const [items, setItems] = useState<(Blog | GlossaryEntry)[]>([])
   const [loading, setLoading] = useState(true)
@@ -227,14 +228,16 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
     console.log('FilterPublished === true:', filterPublished === true)
     console.log('🔄 Current loading state:', loading)
     
-    // Add timeout to prevent infinite loading
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('Request timeout')), 10000)
-    })
-    
-    // Get current session
-    const sessionPromise = supabase.auth.getSession()
-    const { data: { session: currentSession } } = await Promise.race([sessionPromise, timeoutPromise]) as any
+    // Get current session first
+    let currentSession
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      currentSession = session
+    } catch (error) {
+      console.error('Session error:', error)
+      toast.error('Greška pri proveri sesije')
+      return
+    }
     
     if (!currentSession?.access_token) {
       console.error('No session access token available')
@@ -255,6 +258,11 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
         query = query.eq('published', filterPublished)
       }
 
+      // Add timeout only for the main query
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Request timeout')), 15000) // Increased to 15s
+      })
+      
       const queryPromise = query
       const { data, error } = await Promise.race([queryPromise, timeoutPromise]) as any
 
@@ -278,10 +286,14 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
     } catch (err) {
       console.error('Supabase Exception:', err)
       if (err instanceof Error && err.message === 'Request timeout') {
-        console.error('Request timed out after 10 seconds')
-        toast.error('Greška pri učitavanju - timeout')
+        console.error('Request timed out after 15 seconds')
+        toast.error('Greška pri učitavanju - timeout. Pokušajte ponovo.')
+      } else if (err instanceof Error && err.message.includes('JWT')) {
+        console.error('JWT token error:', err.message)
+        toast.error('Sesija je istekla. Molimo ulogujte se ponovo.')
       } else {
-        toast.error('Greška pri učitavanju podataka')
+        console.error('Unknown error:', err)
+        toast.error('Greška pri učitavanju podataka. Pokušajte ponovo.')
       }
     } finally {
       console.log('🔄 Setting loading to false')
@@ -319,8 +331,6 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
       </div>
     )
   }
-
-  console.log('🎨 RENDERING ContentList - items:', items, 'loading:', loading, 'type:', type, 'filterPublished:', filterPublished)
   
   // Debug: Check if loading is stuck
   if (loading) {
@@ -400,7 +410,7 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
             return (
               <Card 
                 key={item.id} 
-                className={`transition-all hover:shadow-md border-l-4 ${
+                className={`transition-all hover:shadow-lg border-l-4 shadow-sm ${
                   isBlog 
                     ? blog.published 
                       ? 'border-l-green-500 bg-green-50/30' 
@@ -409,7 +419,8 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
                 }`}
               >
                 <CardHeader className="pb-3">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  <div className="flex flex-col gap-4">
+                    {/* Main content */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
                         <CardTitle className="text-lg text-gray-900 truncate">
@@ -442,7 +453,7 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
                       
                       <div className="space-y-2">
                         <p className="text-sm text-gray-600 line-clamp-2">
-                          {isBlog ? blog.excerpt || blog.content.substring(0, 120) + '...' : glossary.definition.substring(0, 120) + '...'}
+                          {isBlog ? blog.excerpt : glossary.definition.substring(0, 120) + '...'}
                         </p>
                         
                         <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
@@ -474,7 +485,8 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0">
+                    {/* Actions row */}
+                    <div className="flex items-center justify-between gap-2 pt-2 border-t border-gray-100">
                       {/* Publish/Draft Toggle for Blogs and Glossary */}
                       {(isBlog || type === 'glossary') && (
                         <div className="flex items-center space-x-2 p-2 bg-white rounded-lg border">
@@ -488,6 +500,21 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
                             className="data-[state=checked]:bg-green-600"
                           />
                         </div>
+                      )}
+
+                      {/* Action buttons */}
+                      <div className="flex items-center gap-2">
+                        {/* Edit Button - only for drafts */}
+                        {((isBlog && !blog.published) || (type === 'glossary' && !glossary.published)) && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => onEditItem?.(item)}
+                            className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300"
+                          >
+                            <Edit className="h-4 w-4 mr-1" />
+                            Uredi
+                          </Button>
                       )}
 
                       {/* Delete Button */}
@@ -520,6 +547,7 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished 
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>
+                      </div>
                     </div>
                   </div>
                 </CardHeader>

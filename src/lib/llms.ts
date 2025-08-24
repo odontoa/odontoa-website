@@ -127,7 +127,7 @@ Detaljno: ${cleanArticle}${cleanArticle.length >= 200 ? '...' : ''}
 
 - Email: kontakt@odontoa.rs
 - Telefon: +381 60 123 4567
-- Adresa: Knez Mihailova 42/5, Beograd
+- Adresa: Krunska 46, Beograd
 
 ## Napomene za LLM-ove
 

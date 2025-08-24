@@ -100,7 +100,7 @@ export const CTABlock: React.FC<CTABlockProps> = ({
                 }`} />
               </div>
               <div>
-                <h3 className="text-xl font-bold">{content.title}</h3>
+                <h3 className="text-xl font-normal">{content.title}</h3>
                 <p className="text-sm opacity-80 mt-1">{content.description}</p>
               </div>
             </div>
@@ -127,7 +127,7 @@ export const CTABlock: React.FC<CTABlockProps> = ({
             <Link href={content.buttonUrl}>
               <Button 
                 size="lg" 
-                className={`${getButtonVariant()} px-8 py-3 font-semibold`}
+                className={`${getButtonVariant()} px-8 py-3 font-medium`}
               >
                 {content.buttonText}
                 <ArrowRight className="h-4 w-4 ml-2" />
