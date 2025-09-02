@@ -340,3 +340,4 @@ This project is proprietary software. All rights reserved.
 
 Built with ❤️ for dental practices in Serbia
 // Force redeploy
+// Force Vercel to use main branch
