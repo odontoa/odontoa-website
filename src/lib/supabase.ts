@@ -3,6 +3,12 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
+// Debug environment variables in browser
+if (typeof window !== 'undefined') {
+  console.log('🔧 Browser - Supabase URL:', supabaseUrl)
+  console.log('🔧 Browser - Supabase Key:', supabaseAnonKey ? `${supabaseAnonKey.substring(0, 20)}...` : 'NOT SET')
+}
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Types for our database tables
@@ -29,6 +35,12 @@ export interface Blog {
   updated_at: string
   author: string
   published: boolean
+  featured: boolean
+  // Archive fields temporarily disabled
+  // archived: boolean // New field for archive functionality
+  // archived_at?: string // New field for archive timestamp
+  // archived_by?: string // New field for archive user
+  // archive_reason?: string // New field for archive reason
 }
 
 export interface GlossaryEntry {
@@ -109,6 +121,7 @@ export interface CreateBlogData {
   featured_image?: string
   author: string
   published: boolean
+  featured: boolean
 }
 
 export interface CreateGlossaryData {

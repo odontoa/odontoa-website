@@ -39,6 +39,7 @@ import {
   generateTopicClusterSuggestions,
   suggestRelatedContent
 } from '@/lib/utils'
+import { buildCombinedSchema } from '@/lib/schema/buildJsonLd'
 import { supabase } from '@/lib/supabase'
 
 const glossarySchema = z.object({
@@ -52,6 +53,11 @@ const glossarySchema = z.object({
   relatedTerms: z.string().optional(),
   category: z.string().optional(),
   difficulty_level: z.string().default('beginner'),
+  author: z.string().min(1, 'Autor je obavezan'),
+  author_url: z.string().url('Nevalidna URL adresa').min(1, 'URL autora je obavezan'),
+  image_url: z.string().url('Nevalidna URL adresa').min(1, 'URL slike je obavezan'),
+  alt_text: z.string().min(1, 'Alt tekst je obavezan'),
+  meta_description: z.string().min(10, 'Meta opis mora imati najmanje 10 karaktera'),
   published: z.boolean().default(false),
 })
 
@@ -101,6 +107,11 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
       relatedTerms: '',
       category: '',
       difficulty_level: 'beginner',
+      author: 'Odontoa Tim',
+      author_url: 'https://odontoa.com/o-nama',
+      image_url: '',
+      alt_text: '',
+      meta_description: '',
       published: false,
     },
   })
@@ -217,9 +228,28 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
     const term = form.getValues('term')
     const definition = form.getValues('definition')
     const whyItMatters = form.getValues('why_it_matters')
+    const fullArticle = form.getValues('fullArticle')
+    const meta_description = form.getValues('meta_description')
+    const author = form.getValues('author')
+    const author_url = form.getValues('author_url')
+    const slug = form.getValues('slug')
+    const image_url = form.getValues('image_url')
+    const alt_text = form.getValues('alt_text')
     
-    if (!term || !definition) {
-      toast.error('Unesite termin i definiciju pre generisanja FAQ-a')
+    // Validate all required fields before generating schema
+    const missingFields = []
+    if (!term) missingFields.push('Termin')
+    if (!definition) missingFields.push('Definicija')
+    if (!fullArticle || fullArticle.length < 50) missingFields.push('Članak (najmanje 50 karaktera)')
+    if (!meta_description) missingFields.push('Meta opis')
+    if (!image_url) missingFields.push('URL slike')
+    if (!alt_text) missingFields.push('Alt tekst')
+    if (!author) missingFields.push('Autor')
+    if (!author_url) missingFields.push('URL autora')
+    if (!slug) missingFields.push('Slug')
+    
+    if (missingFields.length > 0) {
+      toast.error(`Popunite sva obavezna polja pre generacije schema: ${missingFields.join(', ')}`)
       return
     }
 
@@ -272,11 +302,30 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
         }
       )
       
-      form.setValue('faqSchema', JSON.stringify(faqData, null, 2))
-      toast.success('FAQ automatski generisan!')
+      // Generate enhanced combined schema with all 4 required objects
+      const combinedSchema = buildCombinedSchema({
+        term,
+        description: definition,
+        content: form.getValues('fullArticle'),
+        meta_description: form.getValues('meta_description'),
+        author: form.getValues('author'),
+        author_url: form.getValues('author_url'),
+        slug: form.getValues('slug'),
+        image_url: form.getValues('image_url'),
+        alt_text: form.getValues('alt_text'),
+        created_at: new Date().toISOString(),
+        faq_schema: faqData,
+        category: form.getValues('category'),
+        difficulty_level: form.getValues('difficulty_level'),
+        why_it_matters: whyItMatters
+      }, 'glossary')
+      
+      form.setValue('faqSchema', JSON.stringify(combinedSchema, null, 2))
+      toast.success('Kombinovana schema (WebPage + BreadcrumbList + Article + FAQPage) generisana uspešno!')
       updateSEOScore()
     } catch (error) {
-      toast.error('Greška pri generisanju FAQ-a')
+      const errorMessage = error instanceof Error ? error.message : 'Nepoznata greška'
+      toast.error(`Greška pri generisanju schema: ${errorMessage}`)
       console.error('FAQ generation error:', error)
     } finally {
       setGeneratingFAQ(false)
@@ -330,6 +379,11 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
         related_terms: relatedTermsArray,
         category: data.category || null,
         difficulty_level: data.difficulty_level,
+        author: data.author,
+        author_url: data.author_url,
+        image_url: data.image_url,
+        alt_text: data.alt_text,
+        meta_description: data.meta_description,
         published: data.published,
         reading_time: readingTime,
         seo_score: seoScore,
@@ -339,7 +393,7 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
       console.log('Glossary data:', glossaryData)
       console.log('Using session access_token:', session.access_token ? 'present' : 'missing')
       
-      const response = await fetch('https://bjbfmddrekjmactytaky.supabase.co/rest/v1/glossary', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/glossary`, {
         method: 'POST',
         headers: {
           'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqYmZtZGRyZWtqbWFjdHl0YWt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDA1NjEsImV4cCI6MjA2OTAxNjU2MX0.jkSPsLNdD1pfm5er4TgHm0T6vVdYaXorlnScFe_X99k',
@@ -406,6 +460,15 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {/* Schema Generation Info */}
+        <Alert className="border-purple-200 bg-purple-50 mb-6">
+          <Info className="h-4 w-4 text-purple-600" />
+          <AlertDescription className="text-purple-800">
+            <strong>💡 Za generisanje JSON-LD schema potrebno je popuniti sva obavezna polja:</strong><br />
+            Termin, Slug, Definicija, Članak, Meta opis, URL slike, Alt tekst, Autor, URL autora
+          </AlertDescription>
+        </Alert>
+        
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-4 bg-white border border-gray-200 rounded-lg">
             <TabsTrigger value="content" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
@@ -481,6 +544,97 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
                 />
                 {form.formState.errors.definition && (
                   <p className="text-sm text-red-600">{form.formState.errors.definition.message}</p>
+                )}
+              </div>
+
+              {/* Required fields for JSON-LD schema */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="author" className="text-sm font-medium text-gray-700">
+                    Autor *
+                  </Label>
+                  <Input
+                    id="author"
+                    {...form.register('author')}
+                    disabled={loading}
+                    className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500"
+                    placeholder="Odontoa Tim"
+                  />
+                  {form.formState.errors.author && (
+                    <p className="text-sm text-red-600">{form.formState.errors.author.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="author_url" className="text-sm font-medium text-gray-700">
+                    URL autora *
+                  </Label>
+                  <Input
+                    id="author_url"
+                    {...form.register('author_url')}
+                    disabled={loading}
+                    className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500"
+                    placeholder="https://odontoa.com/o-nama"
+                  />
+                  {form.formState.errors.author_url && (
+                    <p className="text-sm text-red-600">{form.formState.errors.author_url.message}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="image_url" className="text-sm font-medium text-gray-700">
+                    URL slike *
+                  </Label>
+                  <Input
+                    id="image_url"
+                    {...form.register('image_url')}
+                    disabled={loading}
+                    className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500"
+                    placeholder="https://odontoa.com/images/termin-slika.jpg"
+                  />
+                  {form.formState.errors.image_url && (
+                    <p className="text-sm text-red-600">{form.formState.errors.image_url.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="alt_text" className="text-sm font-medium text-gray-700">
+                    Alt tekst slike *
+                  </Label>
+                  <Input
+                    id="alt_text"
+                    {...form.register('alt_text')}
+                    disabled={loading}
+                    className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500"
+                    placeholder="Opis slike za pristupačnost"
+                  />
+                  {form.formState.errors.alt_text && (
+                    <p className="text-sm text-red-600">{form.formState.errors.alt_text.message}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="meta_description" className="text-sm font-medium text-gray-700">
+                  Meta opis * (150-160 karaktera)
+                </Label>
+                <Textarea
+                  id="meta_description"
+                  {...form.register('meta_description')}
+                  disabled={loading}
+                  rows={3}
+                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500"
+                  placeholder="Meta opis za pretraživače (obavezan za JSON-LD schema)"
+                />
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-gray-500">
+                    Trenutno: {form.watch('meta_description').length} karaktera
+                  </p>
+                </div>
+                {form.formState.errors.meta_description && (
+                  <p className="text-sm text-red-600">{form.formState.errors.meta_description.message}</p>
                 )}
               </div>
             </div>

@@ -33,11 +33,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     console.log('🔐 AuthContext: Initializing...')
     
-    // Add timeout to prevent infinite loading
+    // Add timeout to prevent infinite loading - reduced from 10s to 5s
     const timeoutId = setTimeout(() => {
       console.log('🔐 AuthContext: Timeout reached, setting loading to false')
       setLoading(false)
-    }, 10000)
+    }, 5000)
     
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -70,8 +70,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else {
         console.log('🔐 AuthContext: No user in auth change')
         setAdminUser(null)
+        setLoading(false)
       }
-      setLoading(false)
     })
 
     return () => subscription.unsubscribe()

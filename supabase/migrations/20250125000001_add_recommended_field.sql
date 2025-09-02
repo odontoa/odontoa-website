@@ -1,0 +1,3 @@
+-- This migration is no longer needed as we removed the recommended field
+-- The featured field is sufficient for admin control of featured articles
+-- Recommended articles are now handled automatically by the tag system

@@ -2,135 +2,117 @@
 
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const menuItems = [
+    { name: 'Početna', href: '/' },
+    { name: 'O nama', href: '/o-nama' },
+    { name: 'Kontakt', href: '/kontakt' },
+    { name: 'Blogovi', href: '/blogovi' },
+    { name: 'Rečnik', href: '/recnik' },
+  ];
 
   return (
-    <nav className="w-full border-b border-[#262626] sticky top-0 z-50 bg-black">
-      <div className="max-w-screen-xl mx-auto px-6">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center">
-              <img 
-                src="/odontoa-logo1.png" 
-                alt="Odontoa Logo" 
-                className="h-8 w-auto mr-3"
-              />
-              <div className="text-white font-bold text-xl">Odontoa</div>
-            </Link>
-          </div>
-          
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link 
-              href="/"
-              className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium"
-            >
-              Početna
-            </Link>
-            <Link 
-              href="/o-nama"
-              className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium"
-            >
-              O nama
-            </Link>
-            <Link 
-              href="/kontakt"
-              className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium"
-            >
-              Kontakt
-            </Link>
-            <Link 
-              href="/blogovi"
-              className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium"
-            >
-              Blogovi
-            </Link>
-            <Link 
-              href="/recnik"
-              className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium"
-            >
-              Rečnik
-            </Link>
-            <Link 
-              href="/dizajn-varijante"
-              className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium"
-            >
-              Dizajn Varijante
-            </Link>
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-white hover:text-[#4a9489] transition-colors"
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-          
-          <div className="hidden md:flex items-center space-x-3">
-            <Button variant="outline" size="sm" className="bg-[#1976D2] border border-[#1976D2] text-[#FFFFFF] hover:bg-[#1565C0] transition-colors duration-200 shadow-sm" style={{borderRadius: '8px'}}>
-              Uloguj se
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden border-t border-[#262626] py-4">
-            <div className="flex flex-col space-y-4">
-              <Link 
+    <header>
+      <nav
+        data-state={isMenuOpen && 'active'}
+        className="fixed z-20 w-full px-2 group">
+        <div className={cn('mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12', isScrolled && 'bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5')}>
+          <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
+            <div className="flex w-full justify-between lg:w-auto">
+              <Link
                 href="/"
-                className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium text-left"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Početna
+                aria-label="home"
+                className="flex items-center space-x-2">
+                <Logo />
               </Link>
-              <Link 
-                href="/o-nama"
-                className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium text-left"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                O nama
-              </Link>
-              <Link 
-                href="/kontakt"
-                className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium text-left"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Kontakt
-              </Link>
-              <Link 
-                href="/blogovi"
-                className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium text-left"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Blogovi
-              </Link>
-              <Link 
-                href="/recnik"
-                className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium text-left"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Rečnik
-              </Link>
-              <Link 
-                href="/dizajn-varijante"
-                className="text-white hover:text-[#4a9489] transition-colors text-sm font-medium text-left"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Dizajn Varijante
-              </Link>
+
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label={isMenuOpen == true ? 'Close Menu' : 'Open Menu'}
+                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden">
+                <Menu className="in-data-[state=active]:rotate-180 group-data-[state=active]:scale-0 group-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
+                <X className="group-data-[state=active]:rotate-0 group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
+              </button>
+            </div>
+
+            <div className="absolute inset-0 m-auto hidden size-fit lg:block">
+              <ul className="flex gap-8 text-sm">
+                {menuItems.map((item, index) => (
+                  <li key={index}>
+                    <Link
+                      href={item.href}
+                      className="text-muted-foreground hover:text-accent-foreground block duration-150">
+                      <span>{item.name}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="bg-background group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
+              <div className="lg:hidden">
+                <ul className="space-y-6 text-base">
+                  {menuItems.map((item, index) => (
+                    <li key={index}>
+                      <Link
+                        href={item.href}
+                        className="text-muted-foreground hover:text-accent-foreground block duration-150"
+                        onClick={() => setIsMenuOpen(false)}>
+                        <span>{item.name}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                <Button
+                  asChild
+                  variant={isScrolled ? "default" : "outline"}
+                  size="sm"
+                  className={cn(
+                    isScrolled ? "bg-primary text-white hover:bg-primary/90 hover:text-white" : "text-foreground hover:text-foreground"
+                  )}>
+                  <Link href="/admin-panel">
+                    <span>Uloguj se</span>
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
-        )}
-      </div>
-    </nav>
+        </div>
+      </nav>
+    </header>
+  );
+};
+
+const Logo = ({ className }: { className?: string }) => {
+  return (
+    <div className={cn('flex items-center', className)}>
+      <Image 
+        src="/images/Odontoa - logo pack/Full_logo_horizontal_color.png" 
+        alt="Odontoa Logo" 
+        width={120}
+        height={36}
+        className="h-8 w-auto"
+        priority
+      />
+    </div>
   );
 };
 

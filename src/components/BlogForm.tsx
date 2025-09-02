@@ -49,27 +49,31 @@ import {
   checkKeywordOptimization,
   suggestRelevantTags,
   enhanceSEOWithTags,
-  generateCombinedSchema
+  generateCombinedSchema,
+  SUGGESTED_BLOG_TAGS
 } from '@/lib/utils'
+import { buildCombinedSchema } from '@/lib/schema/buildJsonLd'
 import { HelpTooltip } from '@/components/ui/tooltip'
 import { TopicClusterSuggestions } from '@/components/TopicClusterSuggestions'
 import { SEOTestMode } from '@/components/SEOTestMode'
 import tooltipsData from '@/data/seo-tooltips.json'
-import { supabase } from '@/lib/supabase'
+
 
 const blogSchema = z.object({
   title: z.string().min(1, 'Naslov je obavezan'),
   slug: z.string().min(1, 'Slug je obavezan'),
   content: z.string().min(50, 'Sadržaj mora imati najmanje 50 karaktera'),
   excerpt: z.string().min(10, 'Kratki opis mora imati najmanje 10 karaktera'),
-  image_url: z.string().url('Nevalidna URL adresa').optional().or(z.literal('')),
-  alt_text: z.string().optional(),
+  image_url: z.string().url('Nevalidna URL adresa').min(1, 'URL slike je obavezan'),
+  alt_text: z.string().min(1, 'Alt tekst je obavezan'),
   faqSchema: z.string().optional(),
   tags: z.string().optional(),
   related_glossary_terms: z.string().optional(),
   author: z.string().min(1, 'Autor je obavezan'),
+  author_url: z.string().url('Nevalidna URL adresa').min(1, 'URL autora je obavezan'),
   meta_description: z.string().min(10, 'Meta opis mora imati najmanje 10 karaktera'),
   featured_image: z.string().url('Nevalidna URL adresa').optional().or(z.literal('')),
+  featured: z.boolean().default(false),
 })
 
 type BlogFormData = z.infer<typeof blogSchema>
@@ -124,17 +128,42 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
       tags: initialData?.tags ? initialData.tags.join(', ') : '',
       related_glossary_terms: initialData?.related_glossary_terms ? initialData.related_glossary_terms.join(', ') : '',
       author: initialData?.author || 'Odontoa Tim',
+      author_url: initialData?.author_url || 'https://odontoa.com/o-nama',
       meta_description: initialData?.meta_description || '',
-      featured_image: initialData?.featured_image || ''
+      featured_image: initialData?.featured_image || '',
+      featured: initialData?.featured || false
     }
   })
 
-  // Update SEO score when initialData is loaded
+  // Update form when initialData changes (for edit mode)
   useEffect(() => {
     if (initialData) {
-      updateSEOScore()
+      form.reset({
+        title: initialData.title || '',
+        slug: initialData.slug || '',
+        content: initialData.content || '',
+        excerpt: initialData.excerpt || '',
+        image_url: initialData.image_url || '',
+        alt_text: initialData.alt_text || '',
+        faqSchema: initialData.faq_schema ? JSON.stringify(initialData.faq_schema, null, 2) : '',
+        tags: initialData.tags ? initialData.tags.join(', ') : '',
+        related_glossary_terms: initialData.related_glossary_terms ? initialData.related_glossary_terms.join(', ') : '',
+        author: initialData.author || 'Odontoa Tim',
+        author_url: initialData.author_url || 'https://odontoa.com/o-nama',
+        meta_description: initialData.meta_description || '',
+        featured_image: initialData.featured_image || '',
+        featured: initialData.featured || false
+      })
+      
+      // Inicijalizuj selectedTags za predložene kategorije
+      if (initialData.tags && initialData.tags.length > 0) {
+        const suggestedTags = initialData.tags.filter(tag => 
+          SUGGESTED_BLOG_TAGS.some(suggested => suggested.name === tag)
+        )
+        setSelectedTags(suggestedTags)
+      }
     }
-  }, [initialData])
+  }, [initialData, form])
 
   // Auto-update SEO score when relevant fields change (with debounce)
   useEffect(() => {
@@ -275,18 +304,24 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
     const formData = form.getValues()
     if (formData.content) {
       try {
-        // Fetch existing content for suggestions
-        const { data: existingBlogs } = await supabase
-          .from('blogs')
-          .select('id, title, slug, tags, content')
-          .eq('published', true)
-          .limit(20)
+        // Fetch existing content for suggestions using REST API
+        const [blogsResponse, glossaryResponse] = await Promise.all([
+          fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/blogs?select=id,title,slug,tags,content&published=eq.true&limit=20`, {
+            headers: {
+              'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+              'Authorization': `Bearer ${session?.access_token || ''}`,
+            }
+          }),
+          fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/glossary?select=id,term,slug,related_terms,full_article&published=eq.true&limit=20`, {
+            headers: {
+              'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+              'Authorization': `Bearer ${session?.access_token || ''}`,
+            }
+          })
+        ])
 
-        const { data: existingGlossary } = await supabase
-          .from('glossary')
-          .select('id, term, slug, related_terms, full_article')
-          .eq('published', true)
-          .limit(20)
+        const existingBlogs = await blogsResponse.json()
+        const existingGlossary = await glossaryResponse.json()
 
         const allContent = [
           ...(existingBlogs || []),
@@ -317,14 +352,21 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
     const slug = form.getValues('slug')
     const image_url = form.getValues('image_url')
     const alt_text = form.getValues('alt_text')
+    const author_url = form.getValues('author_url')
     
-    if (!title) {
-      toast.error('Unesite naslov bloga pre generacije schema.')
-      return
-    }
+    // Validate all required fields before generating schema
+    const missingFields = []
+    if (!title) missingFields.push('Naslov')
+    if (!content || content.length < 50) missingFields.push('Sadržaj (najmanje 50 karaktera)')
+    if (!meta_description) missingFields.push('Meta opis')
+    if (!image_url) missingFields.push('URL slike')
+    if (!alt_text) missingFields.push('Alt tekst')
+    if (!author) missingFields.push('Autor')
+    if (!author_url) missingFields.push('URL autora')
+    if (!slug) missingFields.push('Slug')
     
-    if (!content || content.length < 50) {
-      toast.error('Unesite sadržaj bloga (najmanje 50 karaktera) pre generacije schema.')
+    if (missingFields.length > 0) {
+      toast.error(`Popunite sva obavezna polja pre generacije schema: ${missingFields.join(', ')}`)
       return
     }
 
@@ -338,14 +380,14 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
         const tagsArray = tags ? tags.split(',').map(tag => tag.trim()).filter(Boolean) : []
         const tagEnhancement = enhanceSEOWithTags(tagsArray, title, meta_description)
         
-        // Generate combined schema with Article, FAQPage, and WebPage
-        const combinedSchema = generateCombinedSchema({
+        // Generate enhanced combined schema with all 4 required objects
+        const combinedSchema = buildCombinedSchema({
           title,
           content,
-          summary: meta_description, // Use meta_description as summary
-          author: author || 'Odontoa Tim',
-          slug,
           meta_description,
+          author: author || 'Odontoa Tim',
+          author_url: form.getValues('author_url'),
+          slug,
           image_url,
           alt_text,
           tags: tagEnhancement.frontendTags.map(tag => tag.name),
@@ -362,7 +404,8 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
         toast.error('Nije moguće generisati FAQ schema za ovaj sadržaj')
       }
     } catch (error) {
-      toast.error('Greška pri generisanju FAQ-a')
+      const errorMessage = error instanceof Error ? error.message : 'Nepoznata greška'
+      toast.error(`Greška pri generisanju schema: ${errorMessage}`)
       console.error('FAQ generation error:', error)
     } finally {
       setGeneratingFAQ(false)
@@ -370,20 +413,12 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
   }
 
   const submitBlogRawHTTP = async (data: BlogFormData, published: boolean) => {
-    console.log('=== RAW HTTP SUBMIT START ===')
-    console.log('🔥 PUBLISHED PARAMETER:', published)
-    console.log('🔥 PUBLISHED TYPE:', typeof published)
-    console.log('🔥 IS DRAFT?:', published === false)
     
     setLoading(true)
     setError('')
 
     try {
       // Use session from React context instead of Supabase client
-      console.log('=== USING CONTEXT SESSION FOR AUTH ===')
-      console.log('Session from context:', session)
-      console.log('User from context:', user)
-      console.log('Is Admin from context:', isAdmin)
       
       if (!session || !user || !isAdmin) {
         setError('Niste ulogovani kao admin')
@@ -392,7 +427,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
         return
       }
 
-      console.log('=== PREPARING RAW HTTP DATA ===')
+
       
       const tagsArray = data.tags ? data.tags.split(',').map(tag => tag.trim()).filter(Boolean) : []
       const relatedGlossaryArray = data.related_glossary_terms ? data.related_glossary_terms.split(',').map(term => term.trim()).filter(Boolean) : []
@@ -411,18 +446,18 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
         }
       }
 
-      // Generate combined schema
-      const combinedSchema = generateCombinedSchema({
-        ...data,
-        tags: tagEnhancement.frontendTags.map(tag => tag.name),
+      // Generate enhanced combined schema with all 4 required objects
+      const combinedSchema = buildCombinedSchema({
+        title: data.title,
         content: data.content,
-        created_at: new Date().toISOString(),
-        author: data.author,
-        slug: data.slug,
         meta_description: data.meta_description,
+        author: data.author,
+        author_url: data.author_url,
+        slug: data.slug,
         image_url: data.image_url,
-        featured_image: data.featured_image,
         alt_text: data.alt_text,
+        tags: tagEnhancement.frontendTags.map(tag => tag.name),
+        created_at: new Date().toISOString(),
         faq_schema: faqSchemaJson,
         reading_time: readingTime
       }, 'blog')
@@ -439,7 +474,9 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
         tags: tagEnhancement.frontendTags.map(tag => tag.name), // Use processed tags
         related_glossary_terms: relatedGlossaryArray,
         author: data.author,
+        author_url: data.author_url,
         published,
+        featured: data.featured,
         meta_description: data.meta_description,
         featured_image: data.featured_image || null,
         reading_time: readingTime,
@@ -447,16 +484,17 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
         meta_keywords: tagEnhancement.metaKeywords // Add meta keywords
       }
 
-      console.log('=== MAKING RAW HTTP REQUEST ===')
-      console.log('🚀 FINAL BLOG DATA:', blogData)
-      console.log('🚀 FINAL PUBLISHED VALUE:', blogData.published)
-      console.log('🚀 FINAL PUBLISHED TYPE:', typeof blogData.published)
-      console.log('Using session access_token:', session.access_token ? 'present' : 'missing')
+      // Determine if this is an edit (update) or create operation
+      const isEditMode = !!initialData?.id
+      const method = isEditMode ? 'PATCH' : 'POST'
+      const url = isEditMode 
+        ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/blogs?id=eq.${initialData.id}`
+        : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/blogs`
       
-      const response = await fetch('https://bjbfmddrekjmactytaky.supabase.co/rest/v1/blogs', {
-        method: 'POST',
+      const response = await fetch(url, {
+        method,
         headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqYmZtZGRyZWtqbWFjdHl0YWt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDA1NjEsImV4cCI6MjA2OTAxNjU2MX0.jkSPsLNdD1pfm5er4TgHm0T6vVdYaXorlnScFe_X99k',
+          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json',
           'Prefer': 'return=representation'
@@ -464,19 +502,27 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
         body: JSON.stringify(blogData)
       })
 
-      console.log('=== RAW HTTP RESPONSE ===')
-      console.log('Status:', response.status)
-      console.log('OK:', response.ok)
-
       if (response.ok) {
         const insertedData = await response.json()
-        console.log('=== RAW HTTP SUCCESS ===')
-        console.log('Inserted data:', insertedData)
         
-        const statusText = published ? 'objavljen' : 'sačuvan kao draft'
+        const isEditMode = !!initialData?.id
+        const actionText = isEditMode ? 'ažuriran' : 'kreiran'
+        const statusText = published ? `objavljen i ${actionText}` : `sačuvan kao draft i ${actionText}`
         toast.success(`Blog post ${statusText} uspešno!`)
-        form.reset()
+        
+        if (isEditMode) {
+          // Don't reset form in edit mode, just call success callback
+          onSuccess?.()
+        } else {
+          // Reset form only for new blog creation
+          form.reset()
+        }
+        
+        // Trigger immediate refresh for all components
         window.dispatchEvent(new Event('storage'))
+        window.dispatchEvent(new CustomEvent('content-updated'))
+        
+        // Call success callback
         onSuccess?.()
       } else {
         const errorData = await response.text()
@@ -498,15 +544,13 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
           toast.error(`HTTP greška: ${response.status}`)
         }
       }
-    } catch (err) {
-      console.error('=== RAW HTTP SUBMIT ERROR ===', err)
-      console.error('Error details:', err)
-      setError('Greška pri HTTP pozivu')
-      toast.error('Greška pri HTTP pozivu')
-    } finally {
-      setLoading(false)
-      console.log('=== RAW HTTP SUBMIT END ===')
-    }
+          } catch (err) {
+        console.error('Error submitting blog:', err)
+        setError('Greška pri HTTP pozivu')
+        toast.error('Greška pri HTTP pozivu')
+      } finally {
+        setLoading(false)
+      }
   }
 
   const onSubmit = (data: BlogFormData) => {
@@ -518,43 +562,53 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
   }
 
   return (
-    <Card className="border-0 shadow-lg">
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center">
-            <FileText className="h-5 w-5 mr-2 text-blue-600" />
-            Kreiraj Novi Blog Post
-          </div>
-          <div className="flex items-center space-x-2">
-            <Badge variant={seoScore >= 80 ? "default" : seoScore >= 60 ? "secondary" : "destructive"}>
-              <Target className="h-3 w-3 mr-1" />
-              SEO: {seoScore}/100
-            </Badge>
-            <Badge variant="outline">
-              <Clock className="h-3 w-3 mr-1" />
-              {readingTime} min
-            </Badge>
-          </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div className="space-y-6">
+      {/* Header with stats */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <Badge variant={seoScore >= 80 ? "default" : seoScore >= 60 ? "secondary" : "destructive"}>
+            <Target className="h-3 w-3 mr-1" />
+            SEO: {seoScore}/100
+          </Badge>
+          <Badge variant="outline">
+            <Clock className="h-3 w-3 mr-1" />
+            {readingTime} min
+          </Badge>
+        </div>
+      </div>
+
+      {/* Form */}
+      <div className="space-y-6">
+        {/* Schema Generation Info */}
+        <Alert className="border-blue-200 bg-blue-50">
+          <Info className="h-4 w-4 text-blue-600" />
+          <AlertDescription className="text-blue-800">
+            <strong>💡 Za generisanje JSON-LD schema potrebno je popuniti sva obavezna polja:</strong><br />
+            Naslov, Slug, Sadržaj, Meta opis, URL slike, Alt tekst, Autor, URL autora
+          </AlertDescription>
+        </Alert>
+        
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-white border border-gray-200 rounded-lg">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 bg-white border border-gray-200 rounded-lg shadow-sm">
             <TabsTrigger value="content" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
-              <FileText className="h-4 w-4 mr-2" />
-              Sadržaj
+              <FileText className="h-4 w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Sadržaj</span>
+              <span className="sm:hidden">Sadržaj</span>
             </TabsTrigger>
             <TabsTrigger value="seo" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
-              <Globe className="h-4 w-4 mr-2" />
-              SEO
+              <Globe className="h-4 w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">SEO</span>
+              <span className="sm:hidden">SEO</span>
             </TabsTrigger>
             <TabsTrigger value="media" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
-              <Image className="h-4 w-4 mr-2" />
-              Media
+              <Image className="h-4 w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Media</span>
+              <span className="sm:hidden">Media</span>
             </TabsTrigger>
             <TabsTrigger value="connections" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
-              <Link className="h-4 w-4 mr-2" />
-              Povezivanje
+              <Link className="h-4 w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Povezivanje</span>
+              <span className="sm:hidden">Link</span>
             </TabsTrigger>
           </TabsList>
 
@@ -563,7 +617,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900">Osnovne informacije</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="title" className="text-sm font-medium text-gray-700 flex items-center">
                     Naslov *
@@ -648,6 +702,8 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
                 <RichTextEditor
                   value={form.watch('content')}
                   onChange={(content) => handleContentChange(content)}
+                  placeholder="Napišite glavni sadržaj bloga..."
+                  className="min-h-[500px]"
                 />
                 {form.formState.errors.content && (
                   <p className="text-sm text-red-600">{form.formState.errors.content.message}</p>
@@ -678,6 +734,26 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
                 />
                 {form.formState.errors.author && (
                   <p className="text-sm text-red-600">{form.formState.errors.author.message}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="author_url" className="text-sm font-medium text-gray-700 flex items-center">
+                  URL autora *
+                  <HelpTooltip 
+                    text="URL stranice autora (obavezan za JSON-LD schema)"
+                    icon="link"
+                  />
+                </Label>
+                <Input
+                  id="author_url"
+                  {...form.register('author_url')}
+                  disabled={loading}
+                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="https://odontoa.com/o-nama"
+                />
+                {form.formState.errors.author_url && (
+                  <p className="text-sm text-red-600">{form.formState.errors.author_url.message}</p>
                 )}
               </div>
             </div>
@@ -730,26 +806,97 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
               </div>
 
               <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="featured"
+                    {...form.register('featured')}
+                    disabled={loading}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <Label htmlFor="featured" className="text-sm font-medium text-gray-700 flex items-center">
+                    Istaknuti članak (Featured)
+                    <HelpTooltip 
+                      text="Istaknuti članak će biti prikazan na vrhu blog stranice kao glavni članak"
+                      icon="⭐"
+                    />
+                  </Label>
+                </div>
+                {form.watch('featured') && (
+                  <p className="text-xs text-blue-600 flex items-center">
+                    <Info className="h-3 w-3 mr-1" />
+                    Ovaj članak će biti prikazan kao istaknuti na blog stranici
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="tags" className="text-sm font-medium text-gray-700 flex items-center">
-                  Tagovi (odvojeni zarezom)
+                  Kategorije članka
                   <HelpTooltip 
-                    text={tooltipsData.blog.tags.text}
-                    icon={tooltipsData.blog.tags.icon}
+                    text="Izaberite kategorije koje najbolje opisuju sadržaj članka. Ovo će pomoći u preporučivanju sličnih članaka."
+                    icon="🏷️"
                   />
                 </Label>
-                <Input
-                  id="tags"
-                  {...form.register('tags')}
-                  disabled={loading}
-                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
-                  placeholder="stomatologija, digitalizacija, ordinacija"
-                />
+                
+                {/* Predložene kategorije */}
+                <div className="space-y-3">
+                  <Label className="text-xs font-medium text-gray-600">
+                    Izaberite kategorije:
+                  </Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {SUGGESTED_BLOG_TAGS.map((tag, index) => (
+                      <div
+                        key={index}
+                        className={`p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                          selectedTags.includes(tag.name)
+                            ? 'border-blue-500 bg-blue-50'
+                            : 'border-gray-200 hover:border-gray-300 bg-white'
+                        }`}
+                        onClick={() => {
+                          const currentTags = form.getValues('tags')
+                          const tagsArray = currentTags ? currentTags.split(',').map(t => t.trim()).filter(Boolean) : []
+                          
+                          if (selectedTags.includes(tag.name)) {
+                            // Ukloni tag
+                            const newTags = tagsArray.filter(t => t !== tag.name).join(', ')
+                            form.setValue('tags', newTags)
+                            setSelectedTags(selectedTags.filter(t => t !== tag.name))
+                          } else {
+                            // Dodaj tag
+                            if (!tagsArray.includes(tag.name)) {
+                              const newTags = [...tagsArray, tag.name].join(', ')
+                              form.setValue('tags', newTags)
+                              setSelectedTags([...selectedTags, tag.name])
+                            }
+                          }
+                        }}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h4 className="font-medium text-gray-900 mb-1">{tag.name}</h4>
+                            <p className="text-xs text-gray-600 leading-relaxed">{tag.description}</p>
+                          </div>
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ml-3 ${
+                            selectedTags.includes(tag.name)
+                              ? 'border-blue-500 bg-blue-500'
+                              : 'border-gray-300'
+                          }`}>
+                            {selectedTags.includes(tag.name) && (
+                              <div className="w-2 h-2 bg-white rounded-full"></div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
                 
                 {/* Tag Suggestions */}
                 {tagSuggestions.length > 0 && (
                   <div className="space-y-2">
                     <Label className="text-xs font-medium text-gray-600">
-                      Predloženi tagovi:
+                      Dodatni predloženi tagovi:
                     </Label>
                     <div className="flex flex-wrap gap-2">
                       {tagSuggestions.map((tag, index) => (
@@ -1007,104 +1154,39 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
                               setUploadLoading(false) // Reset loading state immediately
                               throw new Error('Molimo odaberite validnu sliku.')
                             }
+
+                            // Validate file size (minimum 1KB to avoid tiny test images)
+                            if (file.size < 1024) {
+                              setUploadLoading(false) // Reset loading state immediately
+                              throw new Error('Slika je premala. Molimo odaberite veću sliku.')
+                            }
                             
                             let fileName = `blog-images/${Date.now()}-${file.name}`
                             
-                            // Check if bucket exists first
-                            console.log('🔍 Checking if blog-images bucket exists...')
-                            const { data: buckets, error: bucketsError } = await supabase.storage.listBuckets()
+                            // Create FormData for API upload
+                            const formData = new FormData()
+                            formData.append('file', file)
+                            formData.append('folder', 'featured-images')
+
+                            console.log('🚀 Starting upload via API...')
                             
-                            if (bucketsError) {
-                              console.error('🔴 Error checking buckets:', bucketsError)
-                              throw new Error('Greška pri proveri storage-a')
-                            }
-                            
-                            const blogImagesBucket = buckets?.find(bucket => bucket.name === 'blog-images')
-                            console.log('📦 Available buckets:', buckets?.map(b => b.name))
-                            console.log('🎯 Blog-images bucket found:', !!blogImagesBucket)
-                            
-                            if (!blogImagesBucket) {
-                              console.log('⚠️ Blog-images bucket not found, creating...')
-                              const { data: newBucket, error: createError } = await supabase.storage.createBucket('blog-images', {
-                                public: true,
-                                allowedMimeTypes: ['image/*'],
-                                fileSizeLimit: 5242880 // 5MB
-                              })
-                              
-                              if (createError) {
-                                console.error('🔴 Error creating bucket:', createError)
-                                // Try to use existing bucket if available
-                                const existingBuckets = buckets?.filter(b => b.public)
-                                if (existingBuckets && existingBuckets.length > 0) {
-                                  const fallbackBucket = existingBuckets[0]
-                                  console.log(`🔄 Using fallback bucket: ${fallbackBucket.name}`)
-                                  // Update fileName to use fallback bucket
-                                  fileName = `${fallbackBucket.name}/${Date.now()}-${file.name}`
-                                } else {
-                                  console.error('🔴 No available buckets for fallback')
-                                  throw new Error('Greška pri kreiranju storage bucket-a. Molimo kontaktirajte administratora.')
-                                }
-                              } else {
-                                console.log('✅ Blog-images bucket created successfully')
-                              }
-                            }
-                            
-                            // Determine bucket name for upload
-                            const bucketName = fileName.startsWith('blog-images/') ? 'blog-images' : fileName.split('/')[0]
-                            console.log(`📤 Uploading to bucket: ${bucketName}`)
-                            
-                            // Add timeout for upload (30 seconds)
-                            const uploadPromise = supabase.storage
-                              .from(bucketName)
-                              .upload(fileName, file, {
-                                cacheControl: '3600',
-                                upsert: false
-                              })
-                            
-                            const timeoutPromise = new Promise((_, reject) => {
-                              setTimeout(() => {
-                                console.log('⏰ Upload timeout reached')
-                                reject(new Error('Upload timeout - pokušajte ponovo'))
-                              }, 30000)
+                            const response = await fetch('/api/upload-image', {
+                              method: 'POST',
+                              body: formData
                             })
-                            
-                            console.log('🚀 Starting upload with timeout...')
-                            let result: any
-                            try {
-                              result = await Promise.race([uploadPromise, timeoutPromise])
-                            } catch (raceError) {
-                              console.error('🔴 Promise.race error:', raceError)
-                              throw raceError
+
+                            const result = await response.json()
+
+                            if (!response.ok) {
+                              throw new Error(result.error || 'Upload greška')
                             }
-                            const { data, error } = result
-                            console.log('✅ Upload completed or timed out')
-                            
-                            if (error) {
-                              console.error('🔴 Supabase upload error:', error)
-                              setUploadLoading(false) // Reset loading state immediately
-                              if (error.message.includes('already exists')) {
-                                throw new Error('Fajl sa istim imenom već postoji. Molimo preimenujte fajl.')
-                              } else if (error.message.includes('quota')) {
-                                throw new Error('Dostignut je limit za upload. Molimo pokušajte kasnije.')
-                              } else if (error.message.includes('file size')) {
-                                throw new Error('Fajl je prevelik. Maksimalna veličina je 5MB.')
-                              } else if (error.message.includes('timeout')) {
-                                throw new Error('Upload timeout - pokušajte ponovo sa manjim fajlom.')
-                              } else if (error.message.includes('Bucket not found')) {
-                                throw new Error('Storage bucket nije pronađen. Molimo kontaktirajte administratora.')
-                              } else if (error.message.includes('bucket')) {
-                                throw new Error('Greška sa storage bucket-om. Molimo pokušajte ponovo.')
-                              } else {
-                                throw new Error(`Upload greška: ${error.message}`)
-                              }
+
+                            if (!result.success) {
+                              throw new Error(result.error || 'Upload nije uspešan')
                             }
-                            
-                            const { data: { publicUrl } } = supabase.storage
-                              .from(bucketName)
-                              .getPublicUrl(fileName)
-                            
-                            form.setValue('image_url', publicUrl)
-                            console.log('✅ Upload successful, URL:', publicUrl)
+
+                            form.setValue('image_url', result.url)
+                            console.log('✅ Upload successful, URL:', result.url)
                             toast.success('Slika uspešno uploadovana!')
                           } catch (error) {
                             console.error('🔴 Upload error:', error)
@@ -1255,37 +1337,37 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
         )}
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-end space-x-4 pt-6">
+        <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-6">
           <Button
             type="button"
             onClick={form.handleSubmit(onSubmit)}
             disabled={loading}
             variant="outline"
-            className="border-gray-300 text-gray-700 hover:bg-gray-50"
+            className="border-gray-300 text-gray-700 hover:bg-gray-50 w-full sm:w-auto"
           >
             {loading ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
             ) : (
               <Save className="h-4 w-4 mr-2" />
             )}
-            Sačuvaj kao Draft
+            {initialData ? 'Sačuvaj izmene' : 'Sačuvaj kao Draft'}
           </Button>
           
           <Button
             type="button"
             onClick={form.handleSubmit(onPublish)}
             disabled={loading}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
           >
             {loading ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
             ) : (
               <TrendingUp className="h-4 w-4 mr-2" />
             )}
-            Objavi odmah
+            {initialData ? 'Objavi izmene' : 'Objavi odmah'}
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

@@ -1,7 +1,12 @@
 import { createClient } from '@supabase/supabase-js'
+import dotenv from 'dotenv'
 
-const supabaseUrl = 'https://bjbfmddrekjmactytaky.supabase.co'
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqYmZtZGRyZWtqbWFjdHl0YWt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDA1NjEsImV4cCI6MjA2OTAxNjU2MX0.jkSPsLNdD1pfm5er4TgHm0T6vVdYaXorlnScFe_X99k'
+// Load environment variables
+dotenv.config({ path: '.env.local' })
+
+// Use environment variables
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
@@ -15,29 +20,23 @@ async function testConnection() {
       .select('count', { count: 'exact', head: true })
 
     if (error) {
-      console.error('❌ Connection error:', error.message)
+      console.error('❌ Connection failed:', error.message)
       return false
     }
 
-    console.log('✅ Supabase connection successful!')
-    console.log('📊 Blogs table accessible')
+    console.log('✅ Connection successful!')
+    console.log('📊 Blog count:', data)
     
-    // Test if tables exist
-    const tables = ['blogs', 'glossary', 'admin_users', 'backups']
-    for (const table of tables) {
-      try {
-        const { error: tableError } = await supabase
-          .from(table)
-          .select('count', { count: 'exact', head: true })
-        
-        if (tableError) {
-          console.log(`❌ Table ${table}: ${tableError.message}`)
-        } else {
-          console.log(`✅ Table ${table}: accessible`)
-        }
-      } catch (e) {
-        console.log(`❌ Table ${table}: ${e.message}`)
-      }
+    // Test admin_users table
+    const { data: adminData, error: adminError } = await supabase
+      .from('admin_users')
+      .select('*')
+
+    if (adminError) {
+      console.error('❌ Admin table access failed:', adminError.message)
+    } else {
+      console.log('✅ Admin table accessible')
+      console.log('👥 Admin users:', adminData)
     }
 
     return true
@@ -49,13 +48,10 @@ async function testConnection() {
 
 testConnection().then(success => {
   if (success) {
-    console.log('\n🎉 All systems ready!')
-    console.log('📝 Next steps:')
-    console.log('1. Create admin user in Supabase Dashboard')
-    console.log('2. Add user to admin_users table')  
-    console.log('3. Test login at http://localhost:3000/admin-panel')
+    console.log('\n🎉 Supabase connection working!')
+    console.log('🌐 Admin panel should be accessible at: http://localhost:3000/admin-panel')
   } else {
-    console.log('\n❌ Connection failed. Check your Supabase configuration.')
+    console.log('\n❌ Connection issues detected.')
   }
   process.exit(0)
 }) 

@@ -6,10 +6,11 @@ import { Input } from "@/components/ui/input";
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
 import { ArrowRight, Zap, Shield, Clock } from "lucide-react";
+import { DemoForm } from "@/components/DemoForm";
 
 const CtaSection = () => {
   return (
-    <section className="section-spacing w-full px-6 bg-background">
+    <section id="demo" className="section-spacing w-full px-6 bg-background">
       <div className="max-w-screen-xl mx-auto">
         {/* Glassmorphism Container */}
         <motion.div 
@@ -55,48 +56,22 @@ const CtaSection = () => {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              Zakažite demo i saznajte kako da automatizujete zakazivanja, smanjite broj propuštenih termina i uštedite 6+ sati nedeljno. Sve to bez komplikovane obuke.
+              Zakažite demo i saznajte kako da automatizujete zakazivanja, smanjite broj propuštenih termina i uštedite 10+ sati nedeljno. Sve to bez komplikovane obuke.
             </motion.p>
 
             {/* Contact Form */}
             <motion.div 
-              className="max-w-md mx-auto bg-white rounded-xl p-6 shadow-sm mb-8 border border-gray-200"
+              className="max-w-md mx-auto mb-8"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <form className="space-y-4">
-                <Input
-                  type="text"
-                  placeholder="Ime i prezime"
-                  className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-900"
-                />
-                <Input
-                  type="email"
-                  placeholder="Email adresa"
-                  className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-900"
-                />
-                <Input
-                  type="tel"
-                  placeholder="Broj telefona"
-                  className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-900"
-                />
-                
-                <Button 
-                  className="px-5 py-3 transition-colors duration-200 w-full rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  Zakaži demo
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-
-                <p className="text-xs text-gray-500 mt-2 text-center leading-relaxed">
-                  Vaši podaci su zaštićeni u skladu sa GDPR regulativom.{" "}
-                  <a href="/privacy" className="text-primary hover:underline">
-                    Politika privatnosti
-                  </a>
-                </p>
-              </form>
+              <DemoForm 
+                title="Zakažite demo"
+                description="Kontaktirajte nas za besplatan demo Odontoa sistema"
+                buttonText="Zakaži demo"
+              />
             </motion.div>
 
             {/* Additional Info */}

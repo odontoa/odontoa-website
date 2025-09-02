@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import { Globe, Bell, TrendingUp, Zap, BarChart3, MousePointer, Calendar, XCircle, Trophy, Play, Wifi, Building2, Shield, BarChart3 as BarChart3Icon, Calendar as CalendarIcon, ClipboardCheck, BookOpen, Monitor, Download, DollarSign, Trash2, FileText, Search, Camera, Receipt, Package, Wrench, MessageCircle, X, Maximize2 } from "lucide-react";
+import { Globe, Bell, TrendingUp, Zap, BarChart3, MousePointer, Calendar, XCircle, Trophy, Play, Wifi, Building2, Shield, BarChart3 as BarChart3Icon, Calendar as CalendarIcon, ClipboardCheck, BookOpen, Monitor, Download, DollarSign, Trash2, FileText, Search, Camera, Receipt, Package, Wrench, MessageCircle, X, Maximize2, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Accordion,
@@ -22,32 +22,32 @@ const AiPresenceSection = () => {
   const featureCards = [
     {
       id: 1,
-      category: "ZAKAZIVANJE",
-      title: "Online 24/7",
+      category: "Online 24/7",
+      title: "ZAKAZIVANJE",
       description: "Automatski SMS/email podsetnici za pacijente",
       image: "/images/zakzaivanje-termina.png",
       alt: "Kalendar i zakazivanje"
     },
     {
       id: 2,
-      category: "RADNI NALOZI",
-      title: "Za tehničare",
+      category: "Za tehničare",
+      title: "RADNI NALOZI",
       description: "Kreirajte i pratite naloge u realnom vremenu",
-      image: "/images/odontoa_radni-nalozi_mockup_v2.png",
+      image: "/images/radni nalozi mockup.png",
       alt: "Lista radnih naloga"
     },
     {
       id: 3,
-      category: "FAKTURAIRANJE",
-      title: "Prihodi/troškovi",
+      category: "Prihodi/troškovi",
+      title: "FAKTURAIRANJE",
       description: "Praćenje profitabilnosti po tretmanima",
       image: "/images/fakturisanje-nova-slika.png",
       alt: "Fakturairanje"
     },
     {
       id: 4,
-      category: "PODRŠKA",
-      title: "Stručni tim",
+      category: "Stručni tim",
+      title: "PODRŠKA",
       description: "Dostupan radnim danima za tehničku podršku",
       image: "/images/podrska:nova:slika:odontoa.png",
       alt: "Podrška tim"
@@ -203,7 +203,7 @@ const AiPresenceSection = () => {
                 </div>
               </AccordionTrigger>
               <AccordionContent className="text-muted-foreground text-sm">
-                Odontoa ne zahteva instalaciju – sve radi u pregledaču i čuva se bezbedno u oblaku. Možete da pristupite svojim podacima sa bilo kog uređaja, u bilo koje doba dana, samo uz internet vezu i svoj nalog. Ako promenite računar, samo se prijavite i nastavljate tamo gde ste stali.
+                Odontoa ne zahteva instalaciju – sve radi u pregledaču i čuva se bezbedno u oblaku. Možete da pristupite svojim podacima sa bilo kog uređaja, u bilo koje doba dana, samo uz internet vezu i svoj nalog.
               </AccordionContent>
             </AccordionItem>
 
@@ -244,6 +244,42 @@ const AiPresenceSection = () => {
             </AccordionItem>
 
             <AccordionItem value="item-6" className="border-border">
+              <AccordionTrigger className="text-foreground hover:text-primary transition-colors text-base">
+                <div className="flex items-center gap-3">
+                  <DollarSign className="h-5 w-5 text-primary" />
+                  Koliko košta Odontoa sistem?
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-sm">
+                Naš sistem ima fleksibilne cene koje se prilagođavaju veličini vaše ordinacije. Kontaktirajte nas za personalizovanu ponudu.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-7" className="border-border">
+              <AccordionTrigger className="text-foreground hover:text-primary transition-colors text-base">
+                <div className="flex items-center gap-3">
+                  <Zap className="h-5 w-5 text-primary" />
+                  Koliko traje implementacija?
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-sm">
+                Implementacija traje svega nekoliko minuta jer je sistem potpuno web-based i spreman za rad odmah po registraciji. Ukoliko želite da prebacite postojeće podatke iz ordinacije (kartone, evidenciju, termine), naš tim će vam pomoći u procesu migracije. Vreme trajanja zavisi od količine podataka, ali ceo proces je jednostavan i uz našu podršku prolazi bez zastoja u radu ordinacije.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-8" className="border-border">
+              <AccordionTrigger className="text-foreground hover:text-primary transition-colors text-base">
+                <div className="flex items-center gap-3">
+                  <Users className="h-5 w-5 text-primary" />
+                  Da li pružate obuku za osoblje?
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-sm">
+                Da, pružamo kompletnu obuku za sve članove vašeg tima, uključujući i kontinuiranu podršku.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-9" className="border-border">
               <AccordionTrigger className="text-foreground hover:text-primary transition-colors text-base">
                 <div className="flex items-center gap-3">
                   <DollarSign className="h-5 w-5 text-primary" />

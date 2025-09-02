@@ -22,7 +22,10 @@ import {
   Award,
   Edit,
   X,
-  Download
+  Download,
+  Maximize2,
+  Minimize2,
+  Archive
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { AdminRoute } from '@/components/AdminRoute'
@@ -40,6 +43,7 @@ interface DashboardStats {
   totalBlogs: number
   publishedBlogs: number
   draftBlogs: number
+  archivedBlogs: number
   totalGlossaryTerms: number
   publishedTerms: number
   draftTerms: number
@@ -60,6 +64,7 @@ export default function AdminPanel() {
     totalBlogs: 0,
     publishedBlogs: 0,
     draftBlogs: 0,
+    archivedBlogs: 0,
     totalGlossaryTerms: 0,
     publishedTerms: 0,
     draftTerms: 0,
@@ -71,6 +76,8 @@ export default function AdminPanel() {
   const [editingItem, setEditingItem] = useState<any>(null)
   const [activeTab, setActiveTab] = useState('blog')
   const [backupLoading, setBackupLoading] = useState(false)
+  const [expandedView, setExpandedView] = useState<'form' | 'lists' | 'both'>('both')
+  const [formExpanded, setFormExpanded] = useState(false)
 
   useEffect(() => {
     fetchDashboardStats()
@@ -122,6 +129,7 @@ export default function AdminPanel() {
         totalBlogs,
         publishedBlogs,
         draftBlogs,
+        archivedBlogs: 0, // Archive functionality temporarily disabled
         totalGlossaryTerms,
         publishedTerms,
         draftTerms,
@@ -135,68 +143,51 @@ export default function AdminPanel() {
     }
   }
 
-  // Edit handlers
-  const handleEditBlog = (blog: any) => {
-    setEditingItem(blog)
-    setEditMode(true)
+  const handleTabChange = (value: string) => {
+    setActiveTab(value)
+    setExpandedView('both') // Reset to both view when changing tabs
+    setFormExpanded(false) // Reset form expansion when changing tabs
   }
 
-  const handleEditGlossary = (glossary: any) => {
-    setEditingItem(glossary)
-    setEditMode(true)
+  const handleNewBlog = () => {
+    setEditMode(false)
+    setEditingItem(null)
+    setActiveTab('blog')
+    setExpandedView('form')
+    setFormExpanded(true) // Automatically expand form when creating new blog
+  }
+
+  const handleNewGlossary = () => {
+    setActiveTab('glossary')
+    setExpandedView('form')
   }
 
   const handleEditItem = (item: any) => {
-    if (item.title) {
-      // It's a blog
-      handleEditBlog(item)
-    } else {
-      // It's a glossary
-      handleEditGlossary(item)
-    }
+    setEditingItem(item)
+    setEditMode(true)
+    setExpandedView('form')
+    setFormExpanded(true) // Automatically expand form when editing
   }
 
   const handleEditSuccess = () => {
     setEditMode(false)
     setEditingItem(null)
-    fetchDashboardStats() // Refresh stats
+    fetchDashboardStats()
+    setExpandedView('both')
+    setFormExpanded(false) // Reset form expansion after successful edit
   }
 
   const handleCancelEdit = () => {
     setEditMode(false)
     setEditingItem(null)
-  }
-
-  const handleTabChange = (newTab: string) => {
-    if (newTab !== activeTab) {
-      executeProtectedAction(() => {
-        setActiveTab(newTab)
-        setEditMode(false)
-        setEditingItem(null)
-      })
-    }
-  }
-
-  const handleNewBlog = () => {
-    executeProtectedAction(() => {
-      setEditMode(false)
-      setEditingItem(null)
-      setActiveTab('blog')
-    })
-  }
-
-  const handleNewGlossary = () => {
-    executeProtectedAction(() => {
-      setEditMode(false)
-      setEditingItem(null)
-      setActiveTab('glossary')
-    })
+    setExpandedView('both')
+    setFormExpanded(false) // Reset form expansion when canceling edit
   }
 
   const handleBackup = async () => {
     setBackupLoading(true)
     try {
-      await downloadBackup('json')
+      await downloadBackup()
       toast.success('Backup uspešno preuzet!')
     } catch (error) {
       console.error('Backup error:', error)
@@ -244,24 +235,25 @@ export default function AdminPanel() {
 
   return (
     <AdminRoute>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 pt-20">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
           {/* Header */}
           <div className="mb-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-                <p className="text-gray-600 mt-1">Upravljajte sadržajem i pratite statistike</p>
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+                <p className="text-gray-600 mt-1 text-sm sm:text-base">Upravljajte sadržajem i pratite statistike</p>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 flex-wrap">
                 <Button 
                   onClick={handleNewBlog}
                   variant="outline"
                   size="sm"
                   className="border-blue-200 text-blue-700 hover:bg-blue-50"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
-                  + Kreiraj Novi Blog
+                  <Plus className="h-4 w-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">+ Blog</span>
+                  <span className="sm:hidden">Blog</span>
                 </Button>
                 <Button 
                   onClick={handleNewGlossary}
@@ -269,8 +261,9 @@ export default function AdminPanel() {
                   size="sm"
                   className="border-purple-200 text-purple-700 hover:bg-purple-50"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
-                  + Kreiraj Novi Rečnik
+                  <Plus className="h-4 w-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">+ Rečnik</span>
+                  <span className="sm:hidden">Rečnik</span>
                 </Button>
                 <Button 
                   onClick={handleBackup}
@@ -280,11 +273,11 @@ export default function AdminPanel() {
                   className="border-green-200 text-green-700 hover:bg-green-50"
                 >
                   {backupLoading ? (
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-green-600 mr-2" />
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-green-600 mr-1 sm:mr-2" />
                   ) : (
-                    <Download className="h-4 w-4 mr-2" />
+                    <Download className="h-4 w-4 mr-1 sm:mr-2" />
                   )}
-                  Backup podataka
+                  <span className="hidden sm:inline">Backup</span>
                 </Button>
                 <Button 
                   onClick={fetchDashboardStats}
@@ -292,15 +285,15 @@ export default function AdminPanel() {
                   size="sm"
                   className="border-gray-200 text-gray-700 hover:bg-gray-50"
                 >
-                  <Activity className="h-4 w-4 mr-2" />
-                  Osveži
+                  <Activity className="h-4 w-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Osveži</span>
                 </Button>
               </div>
             </div>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
             <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
@@ -319,6 +312,13 @@ export default function AdminPanel() {
                     <Clock className="h-4 w-4 mr-1" />
                     {dashboardStats.draftBlogs} skica
                   </div>
+                  {/* Archive functionality temporarily disabled */}
+                  {/* {dashboardStats.archivedBlogs > 0 && (
+                    <div className="flex items-center text-sm text-red-600">
+                      <Archive className="h-4 w-4 mr-1" />
+                      {dashboardStats.archivedBlogs} arhiviran
+                    </div>
+                  )} */}
                 </div>
               </CardContent>
             </Card>
@@ -364,12 +364,25 @@ export default function AdminPanel() {
             </Card>
           </div>
 
-          {/* Recent Activity */}
+          {/* Recent Activity - Collapsible */}
           <Card className="border-0 shadow-lg mb-6">
             <CardHeader>
-              <CardTitle className="flex items-center text-lg">
-                <Activity className="h-5 w-5 mr-2 text-blue-600" />
-                Nedavna Aktivnost
+              <CardTitle className="flex items-center justify-between text-lg">
+                <div className="flex items-center">
+                  <Activity className="h-5 w-5 mr-2 text-blue-600" />
+                  Nedavna Aktivnost
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setExpandedView(expandedView === 'both' ? 'lists' : 'both')}
+                >
+                  {expandedView === 'both' ? (
+                    <Minimize2 className="h-4 w-4" />
+                  ) : (
+                    <Maximize2 className="h-4 w-4" />
+                  )}
+                </Button>
               </CardTitle>
               <CardDescription>
                 Poslednje promene u sistemu
@@ -378,7 +391,7 @@ export default function AdminPanel() {
             <CardContent>
               {loading ? (
                 <div className="space-y-4">
-                  {[...Array(5)].map((_, i) => (
+                  {[...Array(3)].map((_, i) => (
                     <div key={i} className="flex items-center space-x-4 animate-pulse">
                       <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
                       <div className="flex-1 space-y-2">
@@ -389,15 +402,15 @@ export default function AdminPanel() {
                   ))}
                 </div>
               ) : dashboardStats.recentActivity.length > 0 ? (
-                <div className="space-y-4">
-                  {dashboardStats.recentActivity.map((activity) => (
+                <div className="space-y-3">
+                  {dashboardStats.recentActivity.slice(0, 3).map((activity) => (
                     <div key={activity.id} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
                       <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full">
                         {getActivityIcon(activity.type)}
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <p className="text-sm font-medium text-gray-900">{activity.title}</p>
+                          <p className="text-sm font-medium text-gray-900 truncate">{activity.title}</p>
                           {getStatusBadge(activity.status)}
                         </div>
                         <p className="text-xs text-gray-500 mt-1">
@@ -408,9 +421,9 @@ export default function AdminPanel() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <Activity className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                  <p>Nema nedavne aktivnosti</p>
+                <div className="text-center py-6 text-gray-500">
+                  <Activity className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+                  <p className="text-sm">Nema nedavne aktivnosti</p>
                 </div>
               )}
             </CardContent>
@@ -421,144 +434,292 @@ export default function AdminPanel() {
             <TabsList className="grid w-full grid-cols-2 bg-white border-2 border-blue-200 rounded-xl shadow-sm">
               <TabsTrigger value="blog" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg">
                 <FileText className="h-4 w-4 mr-2" />
-                Blogovi
+                <span className="hidden sm:inline">Blogovi</span>
+                <span className="sm:hidden">Blog</span>
               </TabsTrigger>
               <TabsTrigger value="glossary" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white rounded-lg">
                 <BookOpen className="h-4 w-4 mr-2" />
-                Rečnik
+                <span className="hidden sm:inline">Rečnik</span>
+                <span className="sm:hidden">Rec</span>
               </TabsTrigger>
             </TabsList>
 
             {/* Blog Management */}
             <TabsContent value="blog" className="space-y-6">
-              <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                {/* Blog Creation/Edit - Veći prostor */}
-                <div className="xl:col-span-2">
-                  <Card className="border-0 shadow-lg h-full">
-                    <CardHeader>
-                      <CardTitle className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          {editMode ? (
-                            <Edit className="h-5 w-5 mr-2 text-blue-600" />
-                          ) : (
-                        <Plus className="h-5 w-5 mr-2 text-blue-600" />
+              <div className={`grid gap-6 ${
+                expandedView === 'form' ? 'grid-cols-1' : 
+                expandedView === 'lists' ? 'grid-cols-1' : 
+                formExpanded ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-3'
+              }`}>
+                {/* Blog Creation/Edit */}
+                {(expandedView === 'form' || expandedView === 'both') && (
+                  <div className={formExpanded ? 'col-span-1 lg:col-span-3' : expandedView === 'both' ? 'lg:col-span-2' : 'col-span-1'}>
+                    <Card className="border-0 shadow-lg h-full">
+                      <CardHeader className="pb-4">
+                        <CardTitle className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            {editMode ? (
+                              <Edit className="h-5 w-5 mr-2 text-blue-600" />
+                            ) : (
+                              <Plus className="h-5 w-5 mr-2 text-blue-600" />
+                            )}
+                            {editMode ? 'Uredi Blog' : 'Kreiraj Novi Blog'}
+                            {formExpanded && (
+                              <Badge variant="secondary" className="ml-2 text-xs">
+                                Prošireno
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {editMode && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={handleCancelEdit}
+                                className="text-gray-600"
+                              >
+                                <X className="h-4 w-4 mr-1" />
+                                Otkaži
+                              </Button>
+                            )}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setFormExpanded(!formExpanded)}
+                              title={formExpanded ? "Smanji prozor" : "Proširi prozor"}
+                            >
+                              {formExpanded ? (
+                                <Minimize2 className="h-4 w-4" />
+                              ) : (
+                                <Maximize2 className="h-4 w-4" />
+                              )}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setExpandedView(expandedView === 'form' ? 'both' : 'form')}
+                            >
+                              {expandedView === 'form' ? (
+                                <Minimize2 className="h-4 w-4" />
+                              ) : (
+                                <Maximize2 className="h-4 w-4" />
+                              )}
+                            </Button>
+                          </div>
+                        </CardTitle>
+                        <CardDescription>
+                          {editMode ? 'Uredite postojeći blog post' : 'Dodajte novi članak u blog sekciju'}
+                          {formExpanded && (
+                            <span className="block mt-1 text-xs text-blue-600">
+                              💡 Prošireni prostor za pisanje - možete da smanjite kada završite
+                            </span>
                           )}
-                          {editMode ? 'Uredi Blog' : 'Kreiraj Novi Blog'}
-                        </div>
-                        {editMode && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={handleCancelEdit}
-                            className="text-gray-600"
-                          >
-                            <X className="h-4 w-4 mr-1" />
-                            Otkaži
-                          </Button>
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="h-full">
+                        {editMode && editingItem ? (
+                          <BlogForm 
+                            onSuccess={handleEditSuccess}
+                            onCancel={handleCancelEdit}
+                            initialData={editingItem}
+                          />
+                        ) : (
+                          <BlogForm onSuccess={fetchDashboardStats} />
                         )}
-                      </CardTitle>
-                      <CardDescription>
-                        {editMode ? 'Uredite postojeći blog post' : 'Dodajte novi članak u blog sekciju'}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="h-full">
-                      {editMode && editingItem ? (
-                        <BlogForm 
-                          onSuccess={handleEditSuccess}
-                          onCancel={handleCancelEdit}
-                          initialData={editingItem}
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+
+                {/* Blog Lists */}
+                {(expandedView === 'lists' || expandedView === 'both') && (
+                  <div className={expandedView === 'both' ? 'space-y-6' : 'col-span-1'}>
+                    <Card className="border-0 shadow-lg">
+                      <CardHeader className="pb-4">
+                        <CardTitle className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <Eye className="h-5 w-5 mr-2 text-green-600" />
+                            Objavljeni Blogovi
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setExpandedView(expandedView === 'lists' ? 'both' : 'lists')}
+                          >
+                            {expandedView === 'lists' ? (
+                              <Minimize2 className="h-4 w-4" />
+                            ) : (
+                              <Maximize2 className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <ContentList 
+                          type="blogs" 
+                          filterPublished={true}
+                          onEditItem={handleEditItem}
                         />
-                      ) : (
-                        <BlogForm onSuccess={fetchDashboardStats} />
-                      )}
-                    </CardContent>
-                  </Card>
-                </div>
+                      </CardContent>
+                    </Card>
 
-                {/* Blog Lists - Manji prostor */}
-                <div className="space-y-6">
-                  <Card className="border-0 shadow-lg">
-                    <CardHeader>
-                      <CardTitle className="flex items-center">
-                        <Eye className="h-5 w-5 mr-2 text-green-600" />
-                        Objavljeni Blogovi
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ContentList 
-                        type="blogs" 
-                        filterPublished={true}
-                        onEditItem={handleEditItem}
-                      />
-                    </CardContent>
-                  </Card>
+                    <Card className="border-0 shadow-lg">
+                      <CardHeader className="pb-4">
+                        <CardTitle className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <Clock className="h-5 w-5 mr-2 text-yellow-600" />
+                            Skice Blogova
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setExpandedView(expandedView === 'lists' ? 'both' : 'lists')}
+                          >
+                            {expandedView === 'lists' ? (
+                              <Minimize2 className="h-4 w-4" />
+                            ) : (
+                              <Maximize2 className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <ContentList 
+                          type="blogs" 
+                          filterPublished={false}
+                          onEditItem={handleEditItem}
+                        />
+                      </CardContent>
+                    </Card>
 
-                  <Card className="border-0 shadow-lg">
-                    <CardHeader>
-                      <CardTitle className="flex items-center">
-                        <Clock className="h-5 w-5 mr-2 text-yellow-600" />
-                        Skice Blogova
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ContentList 
-                        type="blogs" 
-                        filterPublished={false}
-                        onEditItem={handleEditItem}
-                      />
-                    </CardContent>
-                  </Card>
-                </div>
+                    {/* Archive functionality temporarily disabled */}
+                    {/* <Card className="border-0 shadow-lg">
+                      <CardHeader className="pb-4">
+                        <CardTitle className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <Archive className="h-5 w-5 mr-2 text-red-600" />
+                            Arhiva Blogova
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setExpandedView(expandedView === 'lists' ? 'both' : 'lists')}
+                          >
+                            {expandedView === 'lists' ? (
+                              <Minimize2 className="h-4 w-4" />
+                            ) : (
+                              <Maximize2 className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="overflow-y-auto max-h-[calc(100vh-300px)]">
+                        <ContentList 
+                          type="blogs" 
+                          showArchived={true}
+                          onEditItem={handleEditItem}
+                        />
+                      </CardContent>
+                    </Card> */}
+                  </div>
+                )}
               </div>
             </TabsContent>
 
             {/* Glossary Management */}
             <TabsContent value="glossary" className="space-y-6">
-              <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                {/* Glossary Creation - Veći prostor */}
-                <div className="xl:col-span-2">
-                  <Card className="border-0 shadow-lg h-full">
-                    <CardHeader>
-                      <CardTitle className="flex items-center">
-                        <Plus className="h-5 w-5 mr-2 text-purple-600" />
-                        Dodaj Novi Termin
-                      </CardTitle>
-                      <CardDescription>
-                        Dodajte novi termin u rečnik
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="h-full">
-                      <GlossaryForm />
-                    </CardContent>
-                  </Card>
-                </div>
+              <div className={`grid gap-6 ${
+                expandedView === 'form' ? 'grid-cols-1' : 
+                expandedView === 'lists' ? 'grid-cols-1' : 
+                'grid-cols-1 lg:grid-cols-3'
+              }`}>
+                {/* Glossary Creation */}
+                {(expandedView === 'form' || expandedView === 'both') && (
+                  <div className={expandedView === 'both' ? 'lg:col-span-2' : 'col-span-1'}>
+                    <Card className="border-0 shadow-lg h-full">
+                      <CardHeader className="pb-4">
+                        <CardTitle className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <Plus className="h-5 w-5 mr-2 text-purple-600" />
+                            Dodaj Novi Termin
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setExpandedView(expandedView === 'form' ? 'both' : 'form')}
+                          >
+                            {expandedView === 'form' ? (
+                              <Minimize2 className="h-4 w-4" />
+                            ) : (
+                              <Maximize2 className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </CardTitle>
+                        <CardDescription>
+                          Dodajte novi termin u rečnik
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="h-full">
+                        <GlossaryForm />
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
 
-                {/* Glossary Lists - Manji prostor */}
-                <div className="space-y-6">
-                  <Card className="border-0 shadow-lg">
-                    <CardHeader>
-                      <CardTitle className="flex items-center">
-                        <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
-                        Objavljeni Termini
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ContentList type="glossary" filterPublished={true} />
-                    </CardContent>
-                  </Card>
+                {/* Glossary Lists */}
+                {(expandedView === 'lists' || expandedView === 'both') && (
+                  <div className={expandedView === 'both' ? 'space-y-6' : 'col-span-1'}>
+                    <Card className="border-0 shadow-lg">
+                      <CardHeader className="pb-4">
+                        <CardTitle className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
+                            Objavljeni Termini
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setExpandedView(expandedView === 'lists' ? 'both' : 'lists')}
+                          >
+                            {expandedView === 'lists' ? (
+                              <Minimize2 className="h-4 w-4" />
+                            ) : (
+                              <Maximize2 className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <ContentList type="glossary" filterPublished={true} />
+                      </CardContent>
+                    </Card>
 
-                  <Card className="border-0 shadow-lg">
-                    <CardHeader>
-                      <CardTitle className="flex items-center">
-                        <Clock className="h-5 w-5 mr-2 text-yellow-600" />
-                        Skice Termina
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ContentList type="glossary" filterPublished={false} />
-                    </CardContent>
-                  </Card>
-                </div>
+                    <Card className="border-0 shadow-lg">
+                      <CardHeader className="pb-4">
+                        <CardTitle className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <Clock className="h-5 w-5 mr-2 text-yellow-600" />
+                            Skice Termina
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setExpandedView(expandedView === 'lists' ? 'both' : 'lists')}
+                          >
+                            {expandedView === 'lists' ? (
+                              <Minimize2 className="h-4 w-4" />
+                            ) : (
+                              <Maximize2 className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <ContentList type="glossary" filterPublished={false} />
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
               </div>
             </TabsContent>
           </Tabs>

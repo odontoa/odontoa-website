@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { 
   Calendar, 
@@ -15,7 +14,6 @@ import {
   ArrowLeft,
   BookOpen,
   Eye,
-  Target,
   TrendingUp
 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -161,7 +159,12 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
   }
 
   const getFeaturedImage = () => {
-    return post.image_url || post.featured_image
+    const imageUrl = post.image_url || post.featured_image
+    // Don't show placeholder images or empty URLs
+    if (!imageUrl || imageUrl.includes('placeholder') || imageUrl.includes('test-')) {
+      return null
+    }
+    return imageUrl
   }
 
   const getImageAlt = () => {
@@ -175,6 +178,32 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
   const getBackText = () => {
     return type === 'blog' ? 'Nazad na blogove' : 'Nazad na rečnik'
   }
+
+  // Function to add IDs to headings in HTML content
+  const addIdsToHeadings = (htmlContent: string): string => {
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(htmlContent, 'text/html')
+    const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6')
+    
+    headings.forEach((heading, index) => {
+      const text = heading.textContent || ''
+      const id = text
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+        .replace(/\s+/g, '-') // Replace spaces with hyphens
+        .replace(/-+/g, '-') // Replace multiple hyphens with single
+        .trim()
+        .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+      
+      // If ID is empty or duplicate, use index
+      const finalId = id || `heading-${index}`
+      heading.setAttribute('id', finalId)
+    })
+    
+    return doc.body.innerHTML
+  }
+
+
 
   return (
     <div className="min-h-screen bg-white">
@@ -195,12 +224,15 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
       </div>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-white to-sky-50 pt-8 pb-12">
+      <section className="bg-gradient-to-b from-white to-sky-50 pt-20 pb-12">
         <div className="max-w-6xl mx-auto px-6">
           {/* Back Button */}
           <div className="mb-8">
             <Link href={getBackUrl()}>
-              <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
+              <Button 
+                variant="outline" 
+                className="text-gray-700 hover:text-gray-900 border-gray-300 hover:border-gray-400 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200 px-4 py-2 rounded-lg"
+              >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 {getBackText()}
               </Button>
@@ -209,21 +241,7 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
 
           {/* Title and Meta */}
           <div className="max-w-4xl mx-auto">
-            <div className="flex items-center gap-3 mb-6">
-              {post.tags && post.tags.slice(0, 2).map((tag, index) => (
-                <Link key={index} href={`${getBackUrl()}?category=${tag}`}>
-                  <Badge className="bg-green-100 text-green-800 hover:bg-green-200 transition-colors">
-                    {tag}
-                  </Badge>
-                </Link>
-              ))}
-              {post.seo_score && (
-                <Badge variant="outline" className="flex items-center gap-1">
-                  <Target className="h-3 w-3" />
-                  SEO: {post.seo_score}/100
-                </Badge>
-              )}
-            </div>
+
 
             <div className="flex items-start justify-between mb-8">
               <h1 className="text-4xl md:text-5xl font-normal leading-tight text-gray-900 flex-1 pr-4">
@@ -243,7 +261,7 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
             <div className="flex items-center gap-6 mb-8 text-gray-600">
               <div className="flex items-center gap-2">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="/images/odontoa-logo1.png" />
+                  <AvatarImage src="/images/Odontoa - logo pack/Icon_color.png" />
                   <AvatarFallback className="bg-blue-100 text-blue-600 text-xs">
                     {getAuthorInitials(post.author)}
                   </AvatarFallback>
@@ -266,21 +284,7 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
               )}
             </div>
 
-            {/* Tags */}
-            {post.tags && post.tags.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2 mb-6">
-                <span className="text-sm font-medium text-gray-700">Tagovi:</span>
-                {post.tags.map((tag, index) => (
-                  <Link
-                    key={index}
-                    href={`/blogovi?tag=${encodeURIComponent(tag)}`}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors"
-                  >
-                    #{tag}
-                  </Link>
-                ))}
-              </div>
-            )}
+
 
             {/* Summary/Excerpt */}
             <p className="text-xl text-gray-600 leading-relaxed mb-8">
@@ -294,6 +298,13 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
                   src={getFeaturedImage()} 
                   alt={getImageAlt()}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    console.error('Image failed to load:', getFeaturedImage())
+                    e.currentTarget.style.display = 'none'
+                  }}
+                  onLoad={() => {
+                    console.log('Image loaded successfully:', getFeaturedImage())
+                  }}
                 />
               </div>
             )}
@@ -309,8 +320,17 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
             <article className="prose prose-lg max-w-none">
               <div 
                 className="text-lg leading-8 text-gray-700"
-                dangerouslySetInnerHTML={{ __html: post.content }}
+                dangerouslySetInnerHTML={{ __html: addIdsToHeadings(post.content) }}
               />
+
+              {/* CTA at the bottom */}
+              <div className="mt-12">
+                <CTABlock 
+                  type={type} 
+                  data={post}
+                  variant="gradient"
+                />
+              </div>
 
               {/* FAQ Schema Display */}
               {post.faq_schema && (
@@ -377,16 +397,7 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
                 </div>
               )}
 
-              {/* CTA Block */}
-              {showCTA && (
-                <div className="mt-12">
-                  <CTABlock 
-                    type={type} 
-                    data={post}
-                    variant="gradient"
-                  />
-                </div>
-              )}
+
             </article>
 
             {/* Sidebar */}
@@ -401,26 +412,7 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
                   url={typeof window !== 'undefined' ? window.location.href : ''}
                 />
 
-                {/* Tags */}
-                {post.tags && post.tags.length > 0 && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                      Tagovi
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {post.tags.map((tag, index) => (
-                        <Link key={index} href={`${getBackUrl()}?category=${tag}`}>
-                          <Badge 
-                            variant="outline" 
-                            className="hover:bg-green-50 hover:text-green-700 hover:border-green-300 transition-colors cursor-pointer"
-                          >
-                            {tag}
-                          </Badge>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
+
 
                 {/* Author Info */}
                 <div className="bg-gray-50 rounded-xl p-6">
@@ -429,7 +421,7 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
                   </h3>
                   <div className="flex items-center gap-3">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src="/images/odontoa-logo1.png" />
+                      <AvatarImage src="/images/Odontoa - logo pack/Icon_color.png" />
                       <AvatarFallback className="bg-blue-100 text-blue-600">
                         {getAuthorInitials(post.author)}
                       </AvatarFallback>

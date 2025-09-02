@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { User, Users, Building2 } from "lucide-react";
 import { GlowCard } from "@/components/ui/spotlight-card";
-import Navigation from "@/components/Navigation";
 
 const TargetAudienceSection = () => {
   const audiences = [
@@ -433,8 +432,7 @@ const TargetAudienceSectionVariant3 = () => {
 
 const DesignVariantsPage = () => {
   return (
-    <div className="min-h-screen bg-black">
-      <Navigation />
+    <div className="min-h-screen bg-black pt-20">
       
       <div className="pt-16">
         <div className="max-w-screen-xl mx-auto px-6 py-12">

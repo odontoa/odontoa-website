@@ -144,7 +144,7 @@ export function generateStructuredData(type: 'article' | 'glossary' | 'blog', da
       "name": "Odontoa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://odontoa.com/odontoa-logo1.png"
+        "url": "https://odontoa.com/images/Odontoa - logo pack/social_media_profile_image.png"
       }
     },
     "url": `https://odontoa.com/${type === 'article' ? 'blogovi' : 'recnik'}/${safeData.slug || ''}`,
@@ -868,7 +868,7 @@ export function generateCombinedSchema(data: any, type: 'blog' | 'glossary'): an
       "name": "Odontoa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://odontoa.com/odontoa-logo1.png",
+        "url": "https://odontoa.com/images/Odontoa - logo pack/social_media_profile_image.png",
         "width": 120,
         "height": 60
       }
@@ -1076,4 +1076,122 @@ export function validateSchemaOutput(schema: any[]): boolean {
   console.log(`   - Total schemas: ${schema.length}`)
   
   return true
+}
+
+/**
+ * Predloženi tagovi za blogove - kategorije za organizaciju sadržaja
+ * Ovi tagovi se koriste za preporučivanje članaka i kategorizaciju
+ */
+export const SUGGESTED_BLOG_TAGS = [
+  {
+    name: 'Digitalizacija',
+    description: 'Elektronski karton, online zakazivanje, digitalni RTG, cloud softver',
+    keywords: ['digitalizacija', 'elektronski karton', 'online zakazivanje', 'digitalni rtg', 'cloud softver', 'digitalni rad', 'papir na digitalni']
+  },
+  {
+    name: 'Upravljanje ordinacijom',
+    description: 'Plan terapije, organizacija rada, CRM za stomatologe, vođenje tima',
+    keywords: ['upravljanje ordinacijom', 'plan terapije', 'organizacija rada', 'crm', 'vođenje tima', 'workflow', 'organizacija']
+  },
+  {
+    name: 'Zalihe i troškovi',
+    description: 'Upravljanje zalihama, praćenje potrošnog materijala, optimizacija nabavke',
+    keywords: ['zalihe', 'troškovi', 'potrošni materijal', 'nabavka', 'finansije', 'resursi', 'upravljanje zalihama']
+  },
+  {
+    name: 'Iskustvo pacijenata',
+    description: 'Automatski podsetnici, komunikacija, preporuke, zadovoljstvo pacijenata',
+    keywords: ['iskustvo pacijenata', 'podsetnici', 'komunikacija', 'preporuke', 'zadovoljstvo', 'loyalnost', 'pacijenti']
+  }
+] as const
+
+export type SuggestedTagName = typeof SUGGESTED_BLOG_TAGS[number]['name']
+
+/**
+ * Funkcija za preporučivanje članaka na osnovu tagova
+ * Implementira pametnu logiku za pronalaženje relevantnih članaka
+ */
+export function getRelatedPostsByTags(
+  currentTags: string[],
+  allPosts: Array<{id: string, tags: string[], created_at: string}>,
+  excludePostId: string,
+  maxPosts: number = 3
+): Array<{id: string, tags: string[], created_at: string, relevanceScore: number}> {
+  
+  // Ako nema tagova, vrati najnovije članke
+  if (!currentTags || currentTags.length === 0) {
+    return allPosts
+      .filter(post => post.id !== excludePostId)
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      .slice(0, maxPosts)
+      .map(post => ({ ...post, relevanceScore: 0 }))
+  }
+
+  // Mapiraj tagove na kategorije
+  const tagCategories = currentTags.map(tag => {
+    const category = SUGGESTED_BLOG_TAGS.find(cat => 
+      cat.keywords.some(keyword => 
+        tag.toLowerCase().includes(keyword.toLowerCase()) ||
+        keyword.toLowerCase().includes(tag.toLowerCase())
+      )
+    )
+    return category?.name || tag
+  })
+
+  // Pronađi članke sa sličnim tagovima i izračunaj relevantnost
+  const postsWithScores = allPosts
+    .filter(post => post.id !== excludePostId)
+    .map(post => {
+      let relevanceScore = 0
+      
+      // Direktno poklapanje tagova (najviše bodova)
+      const directMatches = post.tags?.filter(tag => 
+        currentTags.some(currentTag => 
+          tag.toLowerCase() === currentTag.toLowerCase()
+        )
+      ) || []
+      relevanceScore += directMatches.length * 10
+
+      // Poklapanje kategorija
+      const postCategories = post.tags?.map(tag => {
+        const category = SUGGESTED_BLOG_TAGS.find(cat => 
+          cat.keywords.some(keyword => 
+            tag.toLowerCase().includes(keyword.toLowerCase()) ||
+            keyword.toLowerCase().includes(tag.toLowerCase())
+          )
+        )
+        return category?.name || tag
+      }) || []
+
+      const categoryMatches = postCategories.filter(cat => 
+        tagCategories.includes(cat)
+      )
+      relevanceScore += categoryMatches.length * 5
+
+      // Bonus za članke sa više tagova (veća relevantnost)
+      if (post.tags && post.tags.length > 0) {
+        relevanceScore += Math.min(post.tags.length, 3)
+      }
+
+      return {
+        ...post,
+        relevanceScore
+      }
+    })
+    .filter(post => post.relevanceScore > 0) // Samo relevantni članci
+    .sort((a, b) => b.relevanceScore - a.relevanceScore) // Sortiraj po relevantnosti
+
+  // Ako nema dovoljno relevantnih članaka, dodaj najnovije
+  if (postsWithScores.length < maxPosts) {
+    const recentPosts = allPosts
+      .filter(post => post.id !== excludePostId)
+      .filter(post => !postsWithScores.find(scored => scored.id === post.id))
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      .slice(0, maxPosts - postsWithScores.length)
+      .map(post => ({ ...post, relevanceScore: 0 }))
+
+    return [...postsWithScores, ...recentPosts].slice(0, maxPosts)
+  }
+
+  return postsWithScores.slice(0, maxPosts)
 }

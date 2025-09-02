@@ -25,6 +25,7 @@ CREATE TABLE public.blogs (
     tags text[] DEFAULT '{}',
     author text NOT NULL,
     published boolean DEFAULT false,
+    featured boolean DEFAULT false,
     created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );

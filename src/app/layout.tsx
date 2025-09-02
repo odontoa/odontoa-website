@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Providers } from '@/components/Providers'
 
+import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import './globals.css'
 
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
     siteName: 'Odontoa',
     images: [
       {
-        url: '/odontoa-logo1.png',
+        url: '/images/Odontoa - logo pack/social_media_profile_image.png',
         width: 1200,
         height: 630,
         alt: 'Odontoa - Stomatološka ordinacija',
@@ -47,7 +48,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Odontoa - Napredni sistem za upravljanje stomatološkom ordinacijom',
     description: 'Kompletno rešenje za upravljanje stomatološkom ordinacijom.',
-    images: ['/odontoa-logo1.png'],
+    images: ['/images/Odontoa - logo pack/social_media_profile_image.png'],
   },
   robots: {
     index: true,
@@ -75,6 +76,7 @@ export default function RootLayout({
       <body className={`${inter.className} ${inter.variable}`}>
         <Providers>
           <div className="min-h-screen flex flex-col">
+            <Navigation />
             <main className="flex-1">
               {children}
             </main>

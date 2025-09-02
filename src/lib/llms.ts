@@ -125,7 +125,7 @@ Detaljno: ${cleanArticle}${cleanArticle.length >= 200 ? '...' : ''}
       content += `
 ## Kontakt
 
-- Email: kontakt@odontoa.rs
+- Email: info@odontoa.com
 - Telefon: +381 60 123 4567
 - Adresa: Krunska 46, Beograd
 

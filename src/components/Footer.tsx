@@ -1,27 +1,26 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const Footer = () => {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
     <footer className="w-full bg-background border-t border-border py-16 px-6">
       <div className="max-w-screen-xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
           {/* Logo and Company Info */}
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="flex items-center mb-4 hover:opacity-80 transition-opacity">
-              <img 
-                src="/odontoa-logo1.png" 
+              <Image 
+                src="/images/Odontoa - logo pack/Full_logo_horizontal_color.png" 
                 alt="Odontoa Logo" 
-                className="h-9 w-auto mr-3"
+                width={120}
+                height={36}
+                className="h-9 w-auto"
+                priority
               />
-              <div className="text-foreground font-bold text-xl">Odontoa</div>
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6 max-w-sm">
               Digitalno rešenje za upravljanje stomatološkim ordinacijama. 
@@ -32,7 +31,7 @@ const Footer = () => {
             <div className="space-y-3 mb-6">
               <div className="flex items-center space-x-2 text-muted-foreground text-sm">
                 <Mail size={16} />
-                <span>kontakt@odontoa.rs</span>
+                <span>info@odontoa.com</span>
               </div>
               <div className="flex items-center space-x-2 text-muted-foreground text-sm">
                 <Phone size={16} />
@@ -40,7 +39,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-2 text-muted-foreground text-sm">
                 <MapPin size={16} />
-                <span>Krunska 46, Beograd</span>
+                <span>Krunska, Beograd</span>
               </div>
             </div>
 
@@ -53,29 +52,30 @@ const Footer = () => {
           <div>
             <h3 className="text-foreground font-semibold text-sm mb-4">Navigacija</h3>
             <ul className="space-y-2">
-              <li>
-                <button 
-                  onClick={scrollToTop}
-                  className="text-muted-foreground text-sm hover:text-foreground transition-colors"
-                >
-                  Početna strana
-                </button>
-              </li>
+              <li><Link href="/" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Početna strana</Link></li>
               <li><Link href="/o-nama" className="text-muted-foreground text-sm hover:text-foreground transition-colors">O nama</Link></li>
               <li><Link href="/kontakt" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Kontakt</Link></li>
-              <li><Link href="/blog" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Blog</Link></li>
+            </ul>
+          </div>
+
+          {/* Resources */}
+          <div>
+            <h3 className="text-foreground font-semibold text-sm mb-4">Resursi</h3>
+            <ul className="space-y-2">
+              <li><Link href="/blogovi" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Blog</Link></li>
+              <li><Link href="/recnik" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Rečnik</Link></li>
             </ul>
           </div>
 
           {/* Support & Legal Links */}
           <div>
-            <h3 className="text-foreground font-semibold text-sm mb-4">Podrška i pravno</h3>
+            <h3 className="text-foreground font-semibold text-sm mb-4">Podrška i uslovi</h3>
             <ul className="space-y-2">
-              <li><Link href="/pomoc" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Pomoć</Link></li>
+              <li><Link href="/pomoc-i-pravno#pomoc" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Pomoć</Link></li>
+              <li><Link href="/pomoc-i-pravno#privatnost" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Politika privatnosti</Link></li>
+              <li><Link href="/pomoc-i-pravno#uslovi" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Uslovi korišćenja</Link></li>
+              <li><Link href="/pomoc-i-pravno#gdpr" className="text-muted-foreground text-sm hover:text-foreground transition-colors">GDPR</Link></li>
               <li><Link href="/demo" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Demo</Link></li>
-              <li><Link href="/privatnost" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Politika privatnosti</Link></li>
-              <li><Link href="/uslovi" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Uslovi korišćenja</Link></li>
-              <li><Link href="/gdpr" className="text-muted-foreground text-sm hover:text-foreground transition-colors">GDPR</Link></li>
               <li><Link href="/admin-panel" className="text-muted-foreground/70 text-xs hover:text-muted-foreground transition-colors">Admin</Link></li>
             </ul>
           </div>
@@ -108,14 +108,14 @@ const Footer = () => {
         {/* Bottom section */}
         <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between">
           <div className="text-muted-foreground/70 text-xs mb-4 md:mb-0">
-            Napravljeno sa ❤️ za stomatološke ordinacije u Srbiji
+            Napravljeno sa ❤️ za stomatološke ordinacije u regionu
           </div>
           
           <div className="flex items-center space-x-4">
             {/* Social Media Links */}
             <div className="flex items-center space-x-2">
               <a 
-                href="https://www.linkedin.com/company/odontoa" 
+                href="https://www.linkedin.com/company/odontoa/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-8 h-8 bg-background border border-border rounded-lg flex items-center justify-center hover:bg-muted transition-colors"
@@ -125,17 +125,7 @@ const Footer = () => {
               </a>
 
               <a 
-                href="https://www.youtube.com/@odontoa" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-8 h-8 bg-background border border-border rounded-lg flex items-center justify-center hover:bg-muted transition-colors"
-                aria-label="YouTube"
-              >
-                <Youtube className="w-4 h-4 text-muted-foreground" />
-              </a>
-
-              <a 
-                href="https://www.facebook.com/odontoa" 
+                href="https://www.facebook.com/profile.php?id=61580254345083" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-8 h-8 bg-background border border-border rounded-lg flex items-center justify-center hover:bg-muted transition-colors"
@@ -145,7 +135,7 @@ const Footer = () => {
               </a>
 
               <a 
-                href="https://www.instagram.com/odontoa" 
+                href="https://www.instagram.com/odontoa.app/"
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-8 h-8 bg-background border border-border rounded-lg flex items-center justify-center hover:bg-muted transition-colors"

@@ -34,16 +34,12 @@ export const CTABlock: React.FC<CTABlockProps> = ({
   const getCTAContent = () => {
     if (type === 'blog') {
       return {
-        title: "Spremni da unapredite vašu ordinaciju?",
-        description: "Ovaj blog vam je pokazao teoriju. Sada je vreme za praksu.",
-        buttonText: "Zakažite besplatan demo",
+        title: "Organizovana ordinacija počinje ovde.",
+        description: "",
+        buttonText: "Saznaj kako",
         buttonUrl: `/kontakt?source=blog&slug=${data.slug}`,
         icon: Calendar,
-        features: [
-          "Besplatna konsultacija",
-          "Personalizovana demonstracija",
-          "Bez obaveza"
-        ]
+        features: []
       }
     } else {
       return {
@@ -67,7 +63,7 @@ export const CTABlock: React.FC<CTABlockProps> = ({
   const getVariantStyles = () => {
     switch (variant) {
       case 'gradient':
-        return 'bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0'
+        return 'bg-card/40 backdrop-blur-sm border border-gray-200 bg-gradient-to-r from-primary/30 via-secondary/20 to-primary/30 bg-clip-border'
       case 'outline':
         return 'bg-white border-2 border-blue-200 text-blue-900'
       default:
@@ -87,65 +83,83 @@ export const CTABlock: React.FC<CTABlockProps> = ({
   }
 
   return (
-    <Card className={`${getVariantStyles()} ${className}`}>
-      <CardContent className="p-6">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-          <div className="flex-1 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${
-                variant === 'gradient' ? 'bg-white/20' : 'bg-blue-100'
-              }`}>
-                <IconComponent className={`h-5 w-5 ${
-                  variant === 'gradient' ? 'text-white' : 'text-blue-600'
-                }`} />
+    <Card className={`${getVariantStyles()} ${variant === 'gradient' && type === 'blog' ? 'shadow-2xl overflow-hidden relative' : ''} ${className}`}>
+      <CardContent className={variant === 'gradient' && type === 'blog' ? 'p-8 md:p-12' : 'p-6'}>
+        {variant === 'gradient' && type === 'blog' ? (
+          // Middle CTA style for blog gradient variant
+          <div className="text-center relative z-10">
+            <h3 className="text-3xl font-normal mb-8 text-foreground">
+              {content.title}
+            </h3>
+            <div className="flex justify-center">
+              <Link href={content.buttonUrl}>
+                <Button className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium">
+                  {content.buttonText}
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          // Original layout for other variants
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div className="flex-1 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg ${
+                  variant === 'gradient' ? 'bg-white/20' : 'bg-blue-100'
+                }`}>
+                  <IconComponent className={`h-5 w-5 ${
+                    variant === 'gradient' ? 'text-white' : 'text-blue-600'
+                  }`} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-normal">{content.title}</h3>
+                  <p className="text-sm opacity-80 mt-1">{content.description}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-xl font-normal">{content.title}</h3>
-                <p className="text-sm opacity-80 mt-1">{content.description}</p>
+
+              <div className="flex flex-wrap gap-2">
+                {content.features.map((feature, index) => (
+                  <Badge 
+                    key={index} 
+                    variant={variant === 'gradient' ? 'secondary' : 'outline'}
+                    className={`${
+                      variant === 'gradient' 
+                        ? 'bg-white/20 text-white border-white/30' 
+                        : 'bg-blue-100 text-blue-700 border-blue-200'
+                    }`}
+                  >
+                    <Star className="h-3 w-3 mr-1" />
+                    {feature}
+                  </Badge>
+                ))}
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              {content.features.map((feature, index) => (
-                <Badge 
-                  key={index} 
-                  variant={variant === 'gradient' ? 'secondary' : 'outline'}
-                  className={`${
-                    variant === 'gradient' 
-                      ? 'bg-white/20 text-white border-white/30' 
-                      : 'bg-blue-100 text-blue-700 border-blue-200'
-                  }`}
+            <div className="flex flex-col items-center gap-3">
+              <Link href={content.buttonUrl}>
+                <Button 
+                  size="lg" 
+                  className={`${getButtonVariant()} px-8 py-3 font-medium`}
                 >
-                  <Star className="h-3 w-3 mr-1" />
-                  {feature}
-                </Badge>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center gap-3">
-            <Link href={content.buttonUrl}>
-              <Button 
-                size="lg" 
-                className={`${getButtonVariant()} px-8 py-3 font-medium`}
-              >
-                {content.buttonText}
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-            </Link>
-            
-            <div className="flex items-center gap-4 text-sm opacity-70">
-              <div className="flex items-center gap-1">
-                <Users className="h-4 w-4" />
-                <span>500+ ordinacija</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Zap className="h-4 w-4" />
-                <span>24/7 podrška</span>
+                  {content.buttonText}
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
+              </Link>
+              
+              <div className="flex items-center gap-4 text-sm opacity-70">
+                <div className="flex items-center gap-1">
+                  <Users className="h-4 w-4" />
+                  <span>500+ ordinacija</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Zap className="h-4 w-4" />
+                  <span>24/7 podrška</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   )

@@ -23,10 +23,27 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({ content }) => 
     const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6')
     
     const items: TocItem[] = []
+    const usedIds = new Set<string>()
+    
     headings.forEach((heading, index) => {
       const level = parseInt(heading.tagName.charAt(1))
       const text = heading.textContent || ''
-      const id = `heading-${index}`
+      
+      // Generate a unique ID based on text content
+      let id = text
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+        .replace(/\s+/g, '-') // Replace spaces with hyphens
+        .replace(/-+/g, '-') // Replace multiple hyphens with single
+        .trim()
+        .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+      
+      // If ID is empty or duplicate, use index
+      if (!id || usedIds.has(id)) {
+        id = `heading-${index}`
+      }
+      
+      usedIds.add(id)
       
       items.push({
         id,
@@ -38,12 +55,19 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({ content }) => 
     setTocItems(items)
   }, [content])
 
+
+
   const scrollToHeading = (id: string) => {
     const element = document.getElementById(id)
+    
     if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
+      const offset = 100
+      const elementPosition = element.getBoundingClientRect().top
+      const offsetPosition = elementPosition + window.pageYOffset - offset
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
       })
     }
   }

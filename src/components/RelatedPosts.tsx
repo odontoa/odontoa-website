@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Calendar, Clock, User, ArrowRight } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { getRelatedPostsByTags } from '@/lib/utils'
 
 interface Post {
   id: string
@@ -14,6 +15,7 @@ interface Post {
   created_at: string
   tags: string[]
   featured_image?: string
+  image_url?: string
 }
 
 interface RelatedPostsProps {
@@ -35,53 +37,28 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = ({ currentPost }) => {
     try {
       setLoading(true)
       
-      // First, try to find posts with similar tags
-      let query = supabase
+      // Prvo dohvati sve objavljene članke
+      const { data: allPosts, error } = await supabase
         .from('blogs')
         .select('*')
         .eq('published', true)
-        .neq('id', currentPost.id)
         .order('created_at', { ascending: false })
-        .limit(6)
 
-      // If current post has tags, filter by them
-      if (currentPost.tags && currentPost.tags.length > 0) {
-        // Create OR conditions for tags
-        const tagFilters = currentPost.tags.map(tag => `tags.cs.{${tag}}`)
-        query = query.or(tagFilters.join(','))
+      if (error) {
+        console.error('Error fetching posts:', error)
+        return
       }
 
-      const { data: taggedPosts, error: taggedError } = await query
+      // Koristi novu logiku za preporučivanje članaka
+      const relatedPostsWithScores = getRelatedPostsByTags(
+        currentPost.tags || [],
+        allPosts || [],
+        currentPost.id,
+        3
+      )
 
-      if (taggedError) {
-        console.error('Error fetching tagged posts:', taggedError)
-      }
-
-      // If we don't have enough posts with similar tags, get recent posts
-      let finalPosts = taggedPosts || []
-      
-      if (finalPosts.length < 3) {
-        const { data: recentPosts, error: recentError } = await supabase
-          .from('blogs')
-          .select('*')
-          .eq('published', true)
-          .neq('id', currentPost.id)
-          .order('created_at', { ascending: false })
-          .limit(3 - finalPosts.length)
-
-        if (recentError) {
-          console.error('Error fetching recent posts:', recentError)
-        } else if (recentPosts) {
-          // Merge and remove duplicates
-          const allPosts = [...finalPosts, ...recentPosts]
-          const uniquePosts = allPosts.filter((post, index, self) => 
-            index === self.findIndex(p => p.id === post.id)
-          )
-          finalPosts = uniquePosts.slice(0, 3)
-        }
-      } else {
-        finalPosts = finalPosts.slice(0, 3)
-      }
+      // Ukloni relevanceScore iz rezultata
+      const finalPosts = relatedPostsWithScores.map(({ relevanceScore, ...post }) => post)
 
       setRelatedPosts(finalPosts)
     } catch (error) {
@@ -145,7 +122,7 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = ({ currentPost }) => {
                 <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:scale-[1.01]">
                   <div className="relative overflow-hidden">
                     <img 
-                      src={post.featured_image || '/images/blog-placeholder.jpg'} 
+                      src={post.image_url || post.featured_image || '/images/blog-placeholder.jpg'} 
                       alt={post.title} 
                       className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110" 
                     />

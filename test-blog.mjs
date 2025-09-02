@@ -1,7 +1,11 @@
 import { createClient } from '@supabase/supabase-js'
+import dotenv from 'dotenv'
 
-const supabaseUrl = 'https://bjbfmddrekjmactytaky.supabase.co'
-const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqYmZtZGRyZWtqbWFjdHl0YWt5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzQ0MDU2MSwiZXhwIjoyMDY5MDE2NTYxfQ.LOppQx_xLdDW7Z7Brkvy6Vit8WFr9g6QrDZZEgVy49A'
+// Load environment variables
+dotenv.config({ path: '.env.local' })
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {

@@ -62,7 +62,7 @@ export async function GET() {
     llmsContent += `## Kontakt informacije\n`;
     llmsContent += `- **Email:** info@odontoa.com\n`;
     llmsContent += `- **Telefon:** +381 60 123 4567\n`;
-    llmsContent += `- **Adresa:** Knez Mihailova 15, 11000 Beograd, Srbija\n`;
+    llmsContent += `- **Adresa:** Krunska, 11000 Beograd, Srbija\n`;
     llmsContent += `- **Website:** https://odontoa.com\n\n`;
 
     llmsContent += `## Radno vreme\n`;

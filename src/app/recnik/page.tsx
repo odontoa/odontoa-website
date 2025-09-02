@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { Search, BookOpen, Hash, ArrowRight, Filter, Plus, MessageCircle } from 'lucide-react'
+import { DemoForm } from '@/components/DemoForm'
+import { Search, BookOpen, Hash, ArrowRight, Filter, Plus, MessageCircle, Zap, Shield, Clock } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -177,22 +178,30 @@ export default function GlossaryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-gray-50 pt-20">
+      {/* Hero Section - Full Width */}
       <motion.section 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="bg-gradient-to-br from-blue-50 via-white to-indigo-50"
+        className="w-full bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-b border-gray-100 relative overflow-hidden"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-100 rounded-full opacity-20"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-100 rounded-full opacity-20"></div>
+          <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-indigo-100 rounded-full opacity-30"></div>
+        </div>
+        
+        {/* Content container with max-width for readability */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
             {/* Welcome Banner */}
             <motion.div 
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 rounded-full mb-6"
+              className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 rounded-full mb-8"
             >
               <span className="text-sm font-medium text-white">HEJ TI! DOBRODOŠAO U NAŠ RECNIK</span>
             </motion.div>
@@ -201,7 +210,7 @@ export default function GlossaryPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-4xl md:text-6xl font-normal text-gray-900 mb-6 leading-tight"
+              className="text-4xl md:text-5xl lg:text-6xl font-normal text-gray-900 mb-8 leading-tight"
             >
               Otključavanje Jasnoće:<br />
               Vaš Kompletan Stomatološki Rečnik
@@ -212,14 +221,15 @@ export default function GlossaryPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex items-center justify-center gap-6 text-sm text-gray-600 mb-8"
+              className="flex items-center justify-center gap-8 text-lg text-gray-600 mb-10"
             >
-              <span className="flex items-center gap-2">
-                <Hash className="h-4 w-4" />
-                {terms.length} termina
+              <span className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm">
+                <Hash className="h-5 w-5 text-blue-600" />
+                <span className="font-medium">{terms.length} termina</span>
               </span>
-              <Separator orientation="vertical" className="h-4 bg-gray-300" />
-              <span>{categories.length - 1} kategorija</span>
+              <span className="bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm">
+                <span className="font-medium">{categories.length - 1} kategorija</span>
+              </span>
             </motion.div>
 
             {/* Search Bar */}
@@ -227,17 +237,35 @@ export default function GlossaryPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="max-w-2xl mx-auto mb-8"
+              className="max-w-2xl mx-auto mb-10"
             >
               <div className="relative">
-                <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                 <Input
                   type="text"
                   placeholder="Šta tražite?"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-6 pr-12 h-14 text-lg bg-white text-gray-900 border-2 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-xl shadow-sm"
+                  className="pl-12 h-16 text-lg bg-white text-gray-900 border-2 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-xl shadow-sm"
                 />
+              </div>
+            </motion.div>
+            
+            {/* Visual elements */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="flex justify-center items-center space-x-6"
+            >
+              <div className="bg-white/80 backdrop-blur-sm rounded-full p-3 shadow-lg">
+                <BookOpen className="h-6 w-6 text-blue-600" />
+              </div>
+              <div className="bg-white/80 backdrop-blur-sm rounded-full p-3 shadow-lg">
+                <MessageCircle className="h-6 w-6 text-purple-600" />
+              </div>
+              <div className="bg-white/80 backdrop-blur-sm rounded-full p-3 shadow-lg">
+                <Plus className="h-6 w-6 text-green-600" />
               </div>
             </motion.div>
           </div>
@@ -384,7 +412,7 @@ export default function GlossaryPage() {
                 >
                   <div className="flex items-center gap-4 mb-6">
                     <div className="flex items-center justify-center w-12 h-12 bg-blue-600 rounded-lg">
-                      <span className="text-xl font-bold text-white">
+                      <span className="text-xl font-normal text-white">
                         {letter}
                       </span>
                     </div>
@@ -520,7 +548,7 @@ export default function GlossaryPage() {
           <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
             <CardContent className="py-8">
               <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                <h3 className="text-2xl font-normal text-foreground mb-3">
                   Istražite popularne teme o kojima se priča
                 </h3>
                 <p className="text-gray-600 max-w-2xl mx-auto">
@@ -610,6 +638,77 @@ export default function GlossaryPage() {
               </div>
             </CardContent>
           </Card>
+        </motion.div>
+
+        {/* CTA Section */}
+        <motion.div 
+          className="mt-20"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="bg-card/40 backdrop-blur-sm rounded-3xl p-12 shadow-2xl border border-gray-200 bg-gradient-to-r from-primary/30 via-secondary/20 to-primary/30 bg-clip-border relative overflow-hidden">
+            <div className="text-center relative z-10">
+              <motion.h2 
+                className="text-4xl md:text-5xl font-normal text-foreground mb-6 leading-tight"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6 }}
+              >
+                Spremni da digitalizujete ordinaciju?<br />
+                <span className="text-primary">Start za 5 minuta.</span>
+              </motion.h2>
+
+              <motion.p 
+                className="text-muted-foreground text-xl max-w-3xl mx-auto leading-relaxed mb-12"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                Zakažite demo i saznajte kako da automatizujete zakazivanja, smanjite broj propuštenih termina i uštedite 10+ sati nedeljno. Sve to bez komplikovane obuke.
+              </motion.p>
+
+              {/* Contact Form */}
+              <motion.div 
+                className="max-w-md mx-auto mb-8"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <DemoForm 
+                  title="Zakažite demo"
+                  description="Kontaktirajte nas za besplatan demo Odontoa sistema"
+                  buttonText="Zakaži demo"
+                />
+              </motion.div>
+
+              {/* Additional Info */}
+              <motion.div 
+                className="flex flex-col sm:flex-row gap-8 justify-center items-center text-center"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
+                <div className="flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-primary" />
+                  <span className="text-sm text-muted-foreground">Demo traje 15 minuta</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-primary" />
+                  <span className="text-sm text-muted-foreground">Bez obaveze</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-primary" />
+                  <span className="text-sm text-muted-foreground">Odmah dostupan</span>
+                </div>
+              </motion.div>
+            </div>
+          </div>
         </motion.div>
       </div>
     </div>
