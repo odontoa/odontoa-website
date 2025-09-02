@@ -1113,10 +1113,10 @@ export type SuggestedTagName = typeof SUGGESTED_BLOG_TAGS[number]['name']
  */
 export function getRelatedPostsByTags(
   currentTags: string[],
-  allPosts: Array<{id: string, tags: string[], created_at: string}>,
+  allPosts: Array<{id: string, title: string, excerpt: string, slug: string, author: string, tags: string[], created_at: string, featured_image?: string, image_url?: string}>,
   excludePostId: string,
   maxPosts: number = 3
-): Array<{id: string, tags: string[], created_at: string, relevanceScore: number}> {
+): Array<{id: string, title: string, excerpt: string, slug: string, author: string, tags: string[], created_at: string, featured_image?: string, image_url?: string, relevanceScore: number}> {
   
   // Ako nema tagova, vrati najnovije članke
   if (!currentTags || currentTags.length === 0) {
