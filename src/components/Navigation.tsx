@@ -88,9 +88,9 @@ const Navigation = () => {
                   className={cn(
                     isScrolled ? "bg-primary text-white hover:bg-primary/90 hover:text-white" : "text-foreground hover:text-foreground"
                   )}>
-                  <Link href="/admin-panel">
+                  <a href="https://app.odontoa.com" target="_blank" rel="noopener noreferrer">
                     <span>Uloguj se</span>
-                  </Link>
+                  </a>
                 </Button>
               </div>
             </div>
