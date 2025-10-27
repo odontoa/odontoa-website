@@ -109,7 +109,7 @@ export function normalizeStrapiArticles(raw: StrapiResponse): NormalizedArticle[
   return raw.data.map((article) => {
     // Handle cover image URL with fallback logic
     let coverImageUrl: string | null = null;
-    if (article.attributes.cover?.data) {
+    if (article.attributes?.cover?.data) {
       const cover = article.attributes.cover.data;
       if (cover.formats?.medium?.url) {
         coverImageUrl = cover.formats.medium.url;
@@ -118,14 +118,14 @@ export function normalizeStrapiArticles(raw: StrapiResponse): NormalizedArticle[
       }
     }
 
-    // Handle author name
-    const authorName = article.attributes.author?.data?.attributes?.name || null;
+    // Handle author name with fallback
+    const authorName = article.attributes?.author?.data?.attributes?.name || null;
 
-    // Handle category name
-    const categoryName = article.attributes.category?.data?.attributes?.name || null;
+    // Handle category name with fallback
+    const categoryName = article.attributes?.category?.data?.attributes?.name || null;
 
-    // Format published date
-    const publishedAt = article.attributes.publishedAt 
+    // Format published date with fallback
+    const publishedAt = article.attributes?.publishedAt 
       ? new Date(article.attributes.publishedAt).toLocaleDateString('sr-RS', {
           year: 'numeric',
           month: 'short',
@@ -134,10 +134,10 @@ export function normalizeStrapiArticles(raw: StrapiResponse): NormalizedArticle[
       : null;
 
     return {
-      id: article.id.toString(),
-      title: article.attributes.title,
-      slug: article.attributes.slug,
-      excerpt: article.attributes.excerpt || null,
+      id: article.id?.toString() || 'unknown',
+      title: article.attributes?.title || 'Untitled',
+      slug: article.attributes?.slug || 'untitled',
+      excerpt: article.attributes?.excerpt || null,
       coverImageUrl,
       authorName,
       categoryName,

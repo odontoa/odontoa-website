@@ -63,45 +63,68 @@ export default async function StrapiPreviewPage({ searchParams }: StrapiPreviewP
 
           {articles.length > 0 && (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {articles.map((article) => (
-                <Card key={article.id} className="border-gray-700 bg-gray-800/50 hover:bg-gray-800/70 transition-colors">
-                  <CardContent className="p-4">
-                    <div className="flex gap-4">
-                      {article.coverImageUrl && (
-                        <img 
-                          src={article.coverImageUrl} 
-                          alt={article.title} 
-                          className="w-24 h-24 rounded-lg object-cover flex-shrink-0"
-                        />
-                      )}
-                      <div className="flex flex-col flex-1 min-w-0">
-                        <div className="text-sm text-purple-400 font-medium mb-1">
-                          Strapi CMS Preview (beta)
-                        </div>
-                        <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2">
-                          {article.title}
-                        </h3>
-                        <div className="text-xs text-gray-400 mb-2">
-                          {article.authorName ? `${article.authorName} • ` : ""}
-                          {article.publishedAt}
-                        </div>
-                        {article.excerpt && (
-                          <p className="text-sm text-gray-300 line-clamp-2">
-                            {article.excerpt}
-                          </p>
-                        )}
-                        {article.categoryName && (
-                          <div className="mt-2">
-                            <Badge variant="outline" className="text-xs">
-                              {article.categoryName}
-                            </Badge>
+              {articles.map((article) => {
+                try {
+                  return (
+                    <Card key={article.id} className="border-gray-700 bg-gray-800/50 hover:bg-gray-800/70 transition-colors">
+                      <CardContent className="p-4">
+                        <div className="flex gap-4">
+                          {article.coverImageUrl ? (
+                            <img 
+                              src={article.coverImageUrl} 
+                              alt={article.title} 
+                              className="w-24 h-24 rounded-lg object-cover flex-shrink-0"
+                              onError={(e) => {
+                                // Hide image if it fails to load
+                                e.currentTarget.style.display = 'none';
+                              }}
+                            />
+                          ) : (
+                            <div className="w-24 h-24 bg-gray-800/40 rounded-lg flex items-center justify-center text-gray-400 text-xs flex-shrink-0">
+                              No image
+                            </div>
+                          )}
+                          <div className="flex flex-col flex-1 min-w-0">
+                            <div className="text-sm text-purple-400 font-medium mb-1">
+                              Strapi CMS Preview (beta)
+                            </div>
+                            <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2">
+                              {article.title}
+                            </h3>
+                            <div className="text-xs text-gray-400 mb-2">
+                              {article.authorName ? `${article.authorName} • ` : ""}
+                              {article.publishedAt}
+                            </div>
+                            {article.excerpt && (
+                              <p className="text-sm text-gray-300 line-clamp-2">
+                                {article.excerpt}
+                              </p>
+                            )}
+                            {article.categoryName && (
+                              <div className="mt-2">
+                                <Badge variant="outline" className="text-xs">
+                                  {article.categoryName}
+                                </Badge>
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                } catch (err) {
+                  // If individual article fails to render, show error card
+                  return (
+                    <Card key={`error-${article.id}`} className="border-red-500 bg-red-900/20">
+                      <CardContent className="p-4">
+                        <div className="text-red-400 text-sm">
+                          Error rendering article: {article.title || 'Unknown'}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                }
+              })}
             </div>
           )}
 
