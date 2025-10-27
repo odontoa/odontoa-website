@@ -1,0 +1,30 @@
+{
+  "name": "odontoa-strapi-cms",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Strapi CMS for Odontoa blog and glossary content management",
+  "scripts": {
+    "build": "strapi build",
+    "develop": "strapi develop",
+    "start": "strapi start",
+    "strapi": "strapi"
+  },
+  "dependencies": {
+    "@strapi/strapi": "5.29.0",
+    "@strapi/plugin-users-permissions": "5.29.0",
+    "@strapi/plugin-i18n": "5.29.0",
+    "sqlite3": "5.1.6"
+  },
+  "author": {
+    "name": "Odontoa Team",
+    "email": "info@odontoa.com"
+  },
+  "strapi": {
+    "uuid": "odontoa-strapi-cms-uuid"
+  },
+  "engines": {
+    "node": ">=18.0.0 <=20.x.x",
+    "npm": ">=6.0.0"
+  },
+  "license": "MIT"
+}
