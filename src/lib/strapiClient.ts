@@ -36,19 +36,19 @@ interface StrapiCategory {
 
 interface StrapiArticle {
   id: number;
-  attributes: {
-    title: string;
-    slug: string;
-    excerpt?: string;
-    cover?: {
-      data?: StrapiImage;
-    };
-    author?: StrapiAuthor;
-    category?: StrapiCategory;
-    publishedAt: string;
-    createdAt: string;
-    updatedAt: string;
+  documentId?: string;
+  title: string;
+  slug: string;
+  description?: string;
+  excerpt?: string;
+  cover?: {
+    data?: StrapiImage;
   };
+  author?: StrapiAuthor;
+  category?: StrapiCategory;
+  publishedAt: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface StrapiResponse {
@@ -109,8 +109,8 @@ export function normalizeStrapiArticles(raw: StrapiResponse): NormalizedArticle[
   return raw.data.map((article) => {
     // Handle cover image URL with fallback logic
     let coverImageUrl: string | null = null;
-    if (article.attributes?.cover?.data) {
-      const cover = article.attributes.cover.data;
+    if (article.cover?.data) {
+      const cover = article.cover.data;
       if (cover.formats?.medium?.url) {
         coverImageUrl = cover.formats.medium.url;
       } else if (cover.url) {
@@ -119,14 +119,14 @@ export function normalizeStrapiArticles(raw: StrapiResponse): NormalizedArticle[
     }
 
     // Handle author name with fallback
-    const authorName = article.attributes?.author?.data?.attributes?.name || null;
+    const authorName = article.author?.data?.attributes?.name || null;
 
     // Handle category name with fallback
-    const categoryName = article.attributes?.category?.data?.attributes?.name || null;
+    const categoryName = article.category?.data?.attributes?.name || null;
 
     // Format published date with fallback
-    const publishedAt = article.attributes?.publishedAt 
-      ? new Date(article.attributes.publishedAt).toLocaleDateString('sr-RS', {
+    const publishedAt = article.publishedAt 
+      ? new Date(article.publishedAt).toLocaleDateString('sr-RS', {
           year: 'numeric',
           month: 'short',
           day: 'numeric'
@@ -135,9 +135,9 @@ export function normalizeStrapiArticles(raw: StrapiResponse): NormalizedArticle[
 
     return {
       id: article.id?.toString() || 'unknown',
-      title: article.attributes?.title || 'Untitled',
-      slug: article.attributes?.slug || 'untitled',
-      excerpt: article.attributes?.excerpt || null,
+      title: article.title || 'Untitled',
+      slug: article.slug || 'untitled',
+      excerpt: article.excerpt || article.description || null,
       coverImageUrl,
       authorName,
       categoryName,
