@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/blogovi/[slug]/page": [
+    "/blogovi/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/blogovi/[slug]/page.js"
+      "static/chunks/app/blogovi/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -26,20 +26,20 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/blogovi/page": [
+    "/blog2/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/blogovi/page.js"
+      "static/chunks/app/blog2/page.js"
     ],
-    "/blog/[slug]/page": [
+    "/blog2/[slug]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/blog/[slug]/page.js"
+      "static/chunks/app/blog2/[slug]/page.js"
     ],
-    "/recnik/page": [
+    "/_not-found/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/recnik/page.js"
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }

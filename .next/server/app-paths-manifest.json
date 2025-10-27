@@ -1,6 +1,7 @@
 {
-  "/blogovi/page": "app/blogovi/page.js",
-  "/blogovi/[slug]/page": "app/blogovi/[slug]/page.js",
-  "/blog/[slug]/page": "app/blog/[slug]/page.js",
-  "/recnik/page": "app/recnik/page.js"
+  "/page": "app/page.js",
+  "/blog2/page": "app/blog2/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/blog2/[slug]/page": "app/blog2/[slug]/page.js",
+  "/blogovi/page": "app/blogovi/page.js"
 }

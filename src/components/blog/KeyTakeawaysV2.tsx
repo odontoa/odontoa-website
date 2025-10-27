@@ -32,3 +32,4 @@ export default function KeyTakeawaysV2({ takeaways }: KeyTakeawaysV2Props) {
     </div>
   );
 }
+
