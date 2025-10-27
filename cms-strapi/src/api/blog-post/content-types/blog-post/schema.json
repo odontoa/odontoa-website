@@ -46,7 +46,7 @@
       "type": "richtext",
       "required": true
     },
-    "faq": {
+    "faq_items": {
       "type": "component",
       "repeatable": true,
       "component": "blog.faq-item",

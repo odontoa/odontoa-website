@@ -1,0 +1,103 @@
+{
+  "kind": "collectionType",
+  "collectionName": "articles",
+  "info": {
+    "singularName": "article",
+    "pluralName": "articles",
+    "displayName": "Article",
+    "description": "Articles for Odontoa blog with rich content, SEO, and conversion features"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": true,
+      "maxLength": 500
+    },
+    "cover": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "author": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::author.author",
+      "inversedBy": "articles"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "inversedBy": "articles"
+    },
+    "blocks": {
+      "type": "dynamiczone",
+      "components": ["shared.rich-text", "shared.media", "shared.quote"],
+      "required": false
+    },
+    "key_takeaways": {
+      "type": "component",
+      "component": "blog.key-takeaway",
+      "repeatable": true,
+      "required": false
+    },
+    "faq_items": {
+      "type": "component",
+      "component": "blog.faq-item",
+      "repeatable": true,
+      "required": false
+    },
+    "cta_footer_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "cta_footer_headline": {
+      "type": "string"
+    },
+    "cta_footer_subtext": {
+      "type": "text"
+    },
+    "cta_footer_button_label": {
+      "type": "string"
+    },
+    "cta_footer_button_url": {
+      "type": "string"
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
+    },
+    "og_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "breadcrumb_label": {
+      "type": "string"
+    },
+    "geo_focus": {
+      "type": "enumeration",
+      "enum": ["Srbija", "Balkan", "Regionalno"]
+    },
+    "structured_data_override": {
+      "type": "json"
+    }
+  }
+}

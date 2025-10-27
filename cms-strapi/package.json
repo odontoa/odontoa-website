@@ -12,7 +12,6 @@
   "dependencies": {
     "@strapi/strapi": "5.29.0",
     "@strapi/plugin-users-permissions": "5.29.0",
-    "@strapi/plugin-i18n": "5.29.0",
     "sqlite3": "5.1.6"
   },
   "author": {
