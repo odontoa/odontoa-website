@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_blog_faq_items",
+  "info": {
+    "displayName": "FAQ Item",
+    "description": "Q&A pair for article FAQ and FAQPage schema"
+  },
+  "options": {},
+  "attributes": {
+    "question": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "answer": {
+      "type": "text",
+      "required": true,
+      "maxLength": 1000
+    }
+  }
+}
