@@ -5,7 +5,7 @@
     "singularName": "article",
     "pluralName": "articles",
     "displayName": "Article",
-    "description": "Articles for Odontoa blog with rich content, SEO, and conversion features"
+    "description": "Articles for Odontoa blog with rich content, SEO, and conversion features - Updated with all new fields"
   },
   "options": {
     "draftAndPublish": true
