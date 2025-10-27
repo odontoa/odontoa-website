@@ -301,3 +301,6 @@ export async function fetchArticleBySlug(slug: string): Promise<ArticleDetails |
     return null;
   }
 }
+
+// Alias for consistency with the requirements
+export const fetchBlogPostBySlug = fetchArticleBySlug;

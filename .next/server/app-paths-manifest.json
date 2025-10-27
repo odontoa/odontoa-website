@@ -1,5 +1,6 @@
 {
   "/blogovi/page": "app/blogovi/page.js",
   "/blogovi/[slug]/page": "app/blogovi/[slug]/page.js",
-  "/admin2/strapi-preview/page": "app/admin2/strapi-preview/page.js"
+  "/blog/[slug]/page": "app/blog/[slug]/page.js",
+  "/recnik/page": "app/recnik/page.js"
 }

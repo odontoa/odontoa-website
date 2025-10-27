@@ -53,15 +53,32 @@ Trenutno pokrećemo Strapi CMS kao eksperiment za upravljanje blogom i rečnikom
 
 **Eksperimentalno:** Ova funkcionalnost je u beta fazi i ne utiče na postojeći sistem.
 
-### Blog (Strapi Cloud)
-- Sav sadržaj bloga sada živi u Strapi Cloud instanci (URL je u NEXT_PUBLIC_STRAPI_URL).
-- Marketing/content tim unosi i objavljuje članke kroz Strapi (Collection type: Article).
-- Objavljeni članci su javno vidljivi na /blogovi (lista) i /blog/[slug] (pojedinačna stranica).
-- /admin2/strapi-preview ostaje kao interni pregled iza Supabase auth-a (noindex).
-- Ako Strapi Cloud "spava" (free tier), frontend prikazuje user-friendly poruke
-  umesto da puca.
-- Svaki članak dobija SEO metadata (generateMetadata) i JSON-LD ([WebPage, BreadcrumbList, Article, FAQPage])
-  po našem SEO/LLMO modelu za long-tail stomatološke upite.
+## Blog (Strapi CMS)
+
+Blog sadržaj (naslovi, tekstovi, slike) se sada uređuje u Strapi Cloud. Odontoa frontend (Next.js) samo čita javno objavljene članke iz Strapi-ja.
+
+### Strapi Cloud Setup
+- **URL**: `NEXT_PUBLIC_STRAPI_URL` pokazuje na Strapi Cloud instancu
+- **Collection Type**: Article sa poljima title, slug, description, content, cover, author, publishedAt
+- **Public Role**: Ima uključena `find` i `findOne` dozvola za Article kolekciju
+- **API Endpoint**: `/api/articles?populate=*` za sve članke, `/api/articles?filters[slug][$eq]=...` za pojedinačne
+
+### Frontend Integracija
+- **Lista članaka**: `/blog2` - nova ruta sa Strapi integracijom
+- **Pojedinačni članak**: `/blog2/[slug]` - server component sa SEO metadata
+- **Admin pregled**: `/admin2/strapi-preview` - interni pregled za admin tim (iza Supabase auth, noindex)
+- **Graceful fallback**: Ako Strapi spava, prikazuje se user-friendly poruka umesto 500 greške
+
+### Content Management
+- Content tim može objavljivati članke bez developera: dovoljno je da publish-uju u Strapi-ju
+- Automatski SEO metadata (title, description, OpenGraph, Twitter Cards)
+- JSON-LD structured data (Article, BreadcrumbList)
+- Responsive dizajn sa sticky TOC i modernim tipografijom
+
+### TODO: Migracija
+- Kada migriramo finalni dizajn, `/blog2` će zameniti `/blog` u glavnom headeru
+- Stari `/blog` ide u 301 redirect
+- Trenutno postoje oba linka u navigaciji za testiranje
 
 ### Content Types
 1. **Blogs** - SEO posts with FAQ schema, tags, publishing status, rich content

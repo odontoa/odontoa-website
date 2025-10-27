@@ -24,7 +24,7 @@ const Navigation = () => {
     { name: 'O nama', href: '/o-nama' },
     { name: 'Kontakt', href: '/kontakt' },
     { name: 'Blogovi', href: '/blogovi' },
-    { name: 'Blog2', href: '/blogovi' },
+    { name: 'Blog2', href: '/blog2' }, // Temporary link for new Strapi-powered blog
     { name: 'Rečnik', href: '/recnik' },
   ];
 

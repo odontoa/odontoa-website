@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/page": [
+    "/blogovi/[slug]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/chunks/app/blogovi/[slug]/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -21,25 +21,25 @@
       "static/chunks/main-app.js",
       "static/chunks/app/not-found.js"
     ],
-    "/admin2/strapi-preview/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin2/strapi-preview/page.js"
+      "static/chunks/app/page.js"
     ],
-    "/admin2/strapi-preview/layout": [
+    "/blogovi/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin2/strapi-preview/layout.js"
+      "static/chunks/app/blogovi/page.js"
     ],
-    "/admin2/layout": [
+    "/blog/[slug]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin2/layout.js"
+      "static/chunks/app/blog/[slug]/page.js"
     ],
-    "/_not-found/page": [
+    "/recnik/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/chunks/app/recnik/page.js"
     ]
   }
 }
