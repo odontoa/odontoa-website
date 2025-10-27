@@ -15,6 +15,10 @@ const FeaturedBlogsSection = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
+        // TODO: Strapi CMS integration - replace Supabase with Strapi API
+        // Future mapping: ${process.env.NEXT_PUBLIC_STRAPI_URL}/api/blog-posts?populate=*&filters[featured][$eq]=true
+        // Fields mapping: title, slug, excerpt, cover_image, tags, read_time, main_content, faq, seo_schema, datePublished, author
+        
         // Dohvati samo članke sa featured = true
         let { data, error } = await supabase
           .from('blogs')

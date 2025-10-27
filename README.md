@@ -30,6 +30,29 @@ Trenutno testiramo Strapi CMS kao moguću zamenu za postojeći admin panel. Sadr
 - 🔗 Direktan link ka Strapi admin panelu
 - 🏷️ Beta badge za jasno označavanje test verzije
 
+### Strapi CMS (Beta) – naredni korak
+Trenutno pokrećemo Strapi CMS kao eksperiment za upravljanje blogom i rečnikom. Nakon testiranja može zameniti postojeći admin panel za sadržaj.
+
+**Backend struktura:** `/cms-strapi/`
+- 📝 Blog-post content type sa svim potrebnim poljima
+- 👤 Author content type za upravljanje autorima
+- 🔄 Lifecycle hooks za automatsko generisanje SEO schema
+- 🎯 Komponente za FAQ strukturu
+- 🔗 API endpoint: `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/blog-posts?populate=*`
+
+**Strapi Cloud Setup:**
+- `NEXT_PUBLIC_STRAPI_URL` pokazuje na Strapi Cloud instancu (free plan)
+- `fetchBlogPosts()` poziva Strapi `/api/articles?populate=*`
+- Public role u Strapi mora da ima uključena find i findOne za Article
+- Blog listing na sajtu za sada još uvek renderuje podatke iz starog sistema; Strapi je u fazi testiranja
+
+**Preview System:**
+- We added `/admin2/strapi-preview` to visually inspect Strapi Cloud content before we fully switch the live blog to Strapi
+- This route is protected and noindexed
+- Shows normalized article data with cover images, authors, and publication dates
+
+**Eksperimentalno:** Ova funkcionalnost je u beta fazi i ne utiče na postojeći sistem.
+
 ### Content Types
 1. **Blogs** - SEO posts with FAQ schema, tags, publishing status, rich content
 2. **Glossary** - Wiki-style dictionary terms with related entries

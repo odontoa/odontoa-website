@@ -37,6 +37,10 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = ({ currentPost }) => {
     try {
       setLoading(true)
       
+      // TODO: Strapi CMS integration - replace Supabase with Strapi API
+      // Future mapping: ${process.env.NEXT_PUBLIC_STRAPI_URL}/api/blog-posts?populate=*
+      // Fields mapping: title, slug, excerpt, cover_image, tags, read_time, main_content, faq, seo_schema, datePublished, author
+      
       // Prvo dohvati sve objavljene članke
       const { data: allPosts, error } = await supabase
         .from('blogs')

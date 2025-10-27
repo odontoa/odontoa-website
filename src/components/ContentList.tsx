@@ -29,6 +29,11 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished,
     
     setLoading(true)
     try {
+      // TODO: Strapi CMS integration - replace Supabase with Strapi API
+      // For blogs: ${process.env.NEXT_PUBLIC_STRAPI_URL}/api/blog-posts?populate=*
+      // For glossary: ${process.env.NEXT_PUBLIC_STRAPI_URL}/api/glossary-entries?populate=*
+      // Fields mapping: title, slug, excerpt, cover_image, tags, read_time, main_content, faq, seo_schema, datePublished, author
+      
       let query = supabase
         .from(type)
         .select('*')

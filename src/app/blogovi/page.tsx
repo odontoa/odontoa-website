@@ -1,5 +1,22 @@
 'use client';
 
+// TODO [Strapi integration - beta]:
+//
+// Plan je da ova stranica uskoro povlači blog sadržaj direktno iz Strapi Cloud-a.
+// To znači da će stomatološka ordinacija moći sama da objavi članak bez ikakve
+// intervencije developera.
+//
+// Primer upotrebe (ne aktivirati još u runtime-u):
+//
+// import { fetchBlogPosts } from "@/lib/strapiClient";
+// const strapiData = await fetchBlogPosts();
+// console.log("Strapi blog posts (beta)", strapiData);
+//
+// Važno:
+// - Nemoj još menjati render postojećih kartica / dizajna bloga.
+// - Produkcija i dalje koristi sadržaj iz postojećeg admin panela / Supabase.
+// - Ovaj fajl je samo priprema za kasniju migraciju na Strapi.
+
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react'
 import { supabase } from '@/lib/supabase'
 import { SUGGESTED_BLOG_TAGS } from '@/lib/utils'
@@ -149,6 +166,10 @@ export default function BlogoviPage() {
     try {
       setLoading(true)
       setError(null)
+      
+      // TODO: Strapi CMS integration - replace Supabase with Strapi API
+      // Future mapping: ${process.env.NEXT_PUBLIC_STRAPI_URL}/api/blog-posts?populate=*
+      // Fields mapping: title, slug, excerpt, cover_image, tags, read_time, main_content, faq, seo_schema, datePublished, author
       
       const { data, error } = await supabase
         .from('blogs')

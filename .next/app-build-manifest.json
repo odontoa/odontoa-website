@@ -1,9 +1,19 @@
 {
   "pages": {
-    "/page": [
+    "/admin2/strapi-preview/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/chunks/app/admin2/strapi-preview/page.js"
+    ],
+    "/admin2/strapi-preview/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin2/strapi-preview/layout.js"
+    ],
+    "/admin2/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin2/layout.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -21,30 +31,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/not-found.js"
     ],
-    "/blogovi/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/blogovi/page.js"
-    ],
-    "/admin-panel/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/admin-panel/page.js"
-    ],
-    "/admin-panel/dashboard/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/admin-panel/dashboard/page.js"
-    ],
-    "/admin2/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/admin2/page.js"
-    ],
-    "/admin2/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/admin2/layout.js"
+      "static/chunks/app/page.js"
     ],
     "/_not-found/page": [
       "static/chunks/webpack.js",
