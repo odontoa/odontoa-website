@@ -53,6 +53,16 @@ Trenutno pokrećemo Strapi CMS kao eksperiment za upravljanje blogom i rečnikom
 
 **Eksperimentalno:** Ova funkcionalnost je u beta fazi i ne utiče na postojeći sistem.
 
+### Blog (Strapi Cloud)
+- Sav sadržaj bloga sada živi u Strapi Cloud instanci (URL je u NEXT_PUBLIC_STRAPI_URL).
+- Marketing/content tim unosi i objavljuje članke kroz Strapi (Collection type: Article).
+- Objavljeni članci su javno vidljivi na /blogovi (lista) i /blog/[slug] (pojedinačna stranica).
+- /admin2/strapi-preview ostaje kao interni pregled iza Supabase auth-a (noindex).
+- Ako Strapi Cloud "spava" (free tier), frontend prikazuje user-friendly poruke
+  umesto da puca.
+- Svaki članak dobija SEO metadata (generateMetadata) i JSON-LD ([WebPage, BreadcrumbList, Article, FAQPage])
+  po našem SEO/LLMO modelu za long-tail stomatološke upite.
+
 ### Content Types
 1. **Blogs** - SEO posts with FAQ schema, tags, publishing status, rich content
 2. **Glossary** - Wiki-style dictionary terms with related entries
