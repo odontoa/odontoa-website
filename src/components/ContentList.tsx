@@ -83,7 +83,10 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished,
     
     const handleCustomEvent = () => {
       console.log('=== CUSTOM EVENT RECEIVED - REFRESHING ===')
-      fetchItems()
+      // Add a small delay to ensure the database update is complete
+      setTimeout(() => {
+        fetchItems()
+      }, 1000)
     }
     
     console.log('=== ADDING EVENT LISTENERS ===')
@@ -347,11 +350,11 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished,
               <CardContent className="p-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h4 className="text-base font-medium text-gray-900 truncate">
+                    <div className="flex items-start gap-2 mb-2">
+                      <h4 className="text-base font-medium text-gray-900 leading-tight break-words flex-1">
                         {getItemTitle(item)}
                       </h4>
-                      <Badge variant={item.published ? "default" : "secondary"} className="text-xs">
+                      <Badge variant={item.published ? "default" : "secondary"} className={`text-xs flex-shrink-0 ${item.published ? 'text-white' : ''}`}>
                         {item.published ? (
                           <>
                             <Eye className="h-3 w-3 mr-1" />

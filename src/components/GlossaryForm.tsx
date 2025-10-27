@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useAuth } from '@/contexts/AuthContext'
 import { useFormDirty } from '@/contexts/FormDirtyContext'
+import { useProtectedAction } from '@/hooks/useProtectedAction'
 import { useBeforeUnload } from '@/hooks/useBeforeUnload'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -26,7 +27,10 @@ import {
   AlertCircle,
   TrendingUp,
   Link,
-  Info
+  Info,
+  Upload,
+  Image,
+  X
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { 
@@ -65,12 +69,15 @@ type GlossaryFormData = z.infer<typeof glossarySchema>
 
 interface GlossaryFormProps {
   onSuccess?: () => void
+  onCancel?: () => void
 }
 
-export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
+export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess, onCancel }) => {
   const { user, session, isAdmin } = useAuth()
   const { setDirty } = useFormDirty()
+  const { executeProtectedAction } = useProtectedAction()
   const [loading, setLoading] = useState(false)
+  const [uploadLoading, setUploadLoading] = useState(false)
   const [error, setError] = useState('')
   const [generatingFAQ, setGeneratingFAQ] = useState(false)
   const [seoScore, setSeoScore] = useState(0)
@@ -429,6 +436,7 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
       console.error('Error details:', err)
       setError('Greška pri HTTP pozivu')
       toast.error('Greška pri HTTP pozivu')
+      // Don't call onSuccess on error
     } finally {
       setLoading(false)
       console.log('=== GLOSSARY RAW HTTP SUBMIT END ===')
@@ -437,6 +445,37 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
 
   const onSubmit = (data: GlossaryFormData) => {
     submitGlossaryRawHTTP(data)
+  }
+
+  const handleCancel = () => {
+    executeProtectedAction(() => {
+      // GlossaryForm is always in create mode - clear all data
+      form.reset({
+        term: '',
+        slug: '',
+        definition: '',
+        fullArticle: '',
+        why_it_matters: '',
+        related_blog_posts: '',
+        faqSchema: '',
+        relatedTerms: '',
+        category: '',
+        difficulty_level: 'beginner',
+        author: 'Odontoa Tim',
+        author_url: 'https://odontoa.com/o-nama',
+        image_url: '',
+        alt_text: '',
+        meta_description: '',
+        published: false
+      })
+      
+      // Reset dirty state
+      setDirty(false)
+      
+      if (onCancel) {
+        onCancel()
+      }
+    })
   }
 
   return (
@@ -587,13 +626,104 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
                   <Label htmlFor="image_url" className="text-sm font-medium text-gray-700">
                     URL slike *
                   </Label>
-                  <Input
-                    id="image_url"
-                    {...form.register('image_url')}
-                    disabled={loading}
-                    className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500"
-                    placeholder="https://odontoa.com/images/termin-slika.jpg"
-                  />
+                  <div className="flex gap-2">
+                    <Input
+                      id="image_url"
+                      {...form.register('image_url')}
+                      disabled={loading || uploadLoading}
+                      className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500 flex-1"
+                      placeholder="https://odontoa.com/images/termin-slika.jpg ili kliknite Upload"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={async () => {
+                        const input = document.createElement('input')
+                        input.type = 'file'
+                        input.accept = 'image/*'
+                        input.onchange = async (e) => {
+                          const file = (e.target as HTMLInputElement).files?.[0]
+                          if (!file) return
+                          
+                          if (file) {
+                            const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2)
+                            console.log(`📁 Selected glossary image: ${file.name} (${fileSizeMB}MB)`)
+                            
+                            if (file.size > 5 * 1024 * 1024) {
+                              toast.error(`Fajl je prevelik (${fileSizeMB}MB). Maksimalna veličina je 5MB.`)
+                              return
+                            }
+                            
+                            try {
+                              setUploadLoading(true)
+                              
+                              if (!file.type.startsWith('image/')) {
+                                throw new Error('Molimo odaberite validnu sliku.')
+                              }
+
+                              if (file.size < 1024) {
+                                throw new Error('Slika je premala. Molimo odaberite veću sliku.')
+                              }
+                              
+                              // Create FormData for API upload - glossary images go to glossary folder
+                              const formData = new FormData()
+                              formData.append('file', file)
+                              formData.append('folder', 'glossary')
+
+                              const response = await fetch('/api/upload-image', {
+                                method: 'POST',
+                                body: formData
+                              })
+
+                              const result = await response.json()
+
+                              if (!response.ok) {
+                                throw new Error(result.error || 'Upload greška')
+                              }
+
+                              if (!result.success) {
+                                throw new Error(result.error || 'Upload nije uspešan')
+                              }
+
+                              form.setValue('image_url', result.url)
+                              console.log('✅ Glossary image upload successful, URL:', result.url)
+                              toast.success('Slika za glossary uspešno uploadovana!')
+                            } catch (error) {
+                              console.error('🔴 Glossary image upload error:', error)
+                              const errorMessage = error instanceof Error ? error.message : 'Greška pri uploadu slike'
+                              toast.error(errorMessage)
+                            } finally {
+                              setUploadLoading(false)
+                            }
+                          }
+                        }
+                        input.click()
+                        setTimeout(() => {
+                          if (input.parentNode) {
+                            input.parentNode.removeChild(input)
+                          }
+                        }, 1000)
+                      }}
+                      disabled={uploadLoading}
+                      className="whitespace-nowrap"
+                    >
+                      {uploadLoading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Uploading...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="h-4 w-4 mr-2" />
+                          Upload
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    💡 Slika se automatski čuva u "glossary" folderu i može se koristiti za rečničke termine
+                  </p>
                   {form.formState.errors.image_url && (
                     <p className="text-sm text-red-600">{form.formState.errors.image_url.message}</p>
                   )}
@@ -912,6 +1042,19 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess }) => {
 
         {/* Action Buttons */}
         <div className="flex items-center justify-end space-x-4 pt-6">
+          {onCancel && (
+            <Button
+              type="button"
+              onClick={handleCancel}
+              disabled={loading}
+              variant="outline"
+              className="border-red-300 text-red-600 hover:bg-red-50"
+            >
+              <X className="h-4 w-4 mr-2" />
+              Odustani
+            </Button>
+          )}
+          
           <Button
             type="button"
             onClick={form.handleSubmit(onSubmit)}

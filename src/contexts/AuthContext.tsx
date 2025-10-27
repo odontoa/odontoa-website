@@ -33,16 +33,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     console.log('🔐 AuthContext: Initializing...')
     
-    // Add timeout to prevent infinite loading - reduced from 10s to 5s
+    // Add timeout to prevent infinite loading - increased to 10s for better reliability
     const timeoutId = setTimeout(() => {
       console.log('🔐 AuthContext: Timeout reached, setting loading to false')
       setLoading(false)
-    }, 5000)
+    }, 10000)
     
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('🔐 AuthContext: Initial session:', session)
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      console.log('🔐 AuthContext: Initial session response:', { session: !!session, error })
       clearTimeout(timeoutId)
+      
+      if (error) {
+        console.error('🔐 AuthContext: Session error:', error)
+        setLoading(false)
+        return
+      }
+      
       setSession(session)
       setUser(session?.user ?? null)
       if (session?.user) {
@@ -61,12 +68,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('🔐 AuthContext: Auth state change:', event, session)
+      
+      // Clear timeout when auth state changes
+      clearTimeout(timeoutId)
+      
       setSession(session)
       setUser(session?.user ?? null)
       
       if (session?.user) {
         console.log('🔐 AuthContext: User in auth change, checking admin status...')
         await checkAdminUser(session.user.id)
+        // setLoading(false) is called in checkAdminUser after completion
       } else {
         console.log('🔐 AuthContext: No user in auth change')
         setAdminUser(null)
@@ -88,7 +100,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('role', 'admin')
         .single()
 
-      console.log('🔐 AuthContext: Admin check result:', { data, error })
+      console.log('🔐 AuthContext: Admin check result:', { data: !!data, error: error?.message })
 
       if (error) {
         if (error.code === 'PGRST116') {
@@ -96,19 +108,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.log('🔐 AuthContext: No admin user found for this user ID')
           setAdminUser(null)
         } else {
-          console.error('Error checking admin user:', error)
+          console.error('🔐 AuthContext: Error checking admin user:', error)
           setAdminUser(null)
         }
       } else {
         setAdminUser(data)
-        console.log('🔐 AuthContext: Admin user set to:', data)
+        console.log('🔐 AuthContext: Admin user found and set:', data.email)
       }
       
+      // Always set loading to false after admin check completes
       setLoading(false)
+      console.log('🔐 AuthContext: Loading set to false after admin check')
     } catch (error) {
-      console.error('Error checking admin user:', error)
+      console.error('🔐 AuthContext: Exception in admin check:', error)
       setAdminUser(null)
       setLoading(false)
+      console.log('🔐 AuthContext: Loading set to false after exception in admin check')
     }
   }
 

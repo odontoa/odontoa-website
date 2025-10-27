@@ -1,0 +1,202 @@
+
+> odontoa@2.0.0 build
+> next build
+
+  ▲ Next.js 14.2.5
+  - Environments: .env.local
+  - Experiments (use with caution):
+    · esmExternals
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+⚠️  Node.js 18 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 20 or later. For more information, visit: https://github.com/orgs/supabase/discussions/37217
+⚠️  Node.js 18 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 20 or later. For more information, visit: https://github.com/orgs/supabase/discussions/37217
+⚠️  Node.js 18 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 20 or later. For more information, visit: https://github.com/orgs/supabase/discussions/37217
+⚠️  Node.js 18 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 20 or later. For more information, visit: https://github.com/orgs/supabase/discussions/37217
+   Generating static pages (0/33) ...
+⚠️  Node.js 18 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 20 or later. For more information, visit: https://github.com/orgs/supabase/discussions/37217
+⚠️  Node.js 18 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 20 or later. For more information, visit: https://github.com/orgs/supabase/discussions/37217
+⚠️  Node.js 18 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 20 or later. For more information, visit: https://github.com/orgs/supabase/discussions/37217
+⚠️  Node.js 18 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 20 or later. For more information, visit: https://github.com/orgs/supabase/discussions/37217
+   Generating static pages (8/33) 
+🔍 Testing environment variables in API route...
+NEXT_PUBLIC_SUPABASE_URL: https://bjbfmddrekjmactytaky.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY: Set
+⚠️  Node.js 18 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 20 or later. For more information, visit: https://github.com/orgs/supabase/discussions/37217
+API error: q [Error]: Dynamic server usage: Route /api/glossary/related couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at W (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:21106)
+    at Object.get (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:28459)
+    at u (/Users/ognjendrinic/Desktop/odontoa-website/.next/server/app/api/glossary/related/route.js:1:783)
+    at /Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:36264
+    at /Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854)
+    at /Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/server/lib/trace/tracer.js:122:103 {
+  description: "Route /api/glossary/related couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+⚠️  Node.js 18 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 20 or later. For more information, visit: https://github.com/orgs/supabase/discussions/37217
+Error: Could not find the module "/Users/ognjendrinic/Desktop/odontoa-website/node_modules/framer-motion/dist/es/index.mjs#motion#div" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at eb (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:136703)
+    at ek (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:140326)
+    at Array.toJSON (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135755)
+    at stringify (<anonymous>)
+    at eR (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142219)
+    at eE (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142698)
+    at AsyncLocalStorage.run (node:async_hooks:338:14)
+    at Timeout._onTimeout (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:150397)
+    at listOnTimeout (node:internal/timers:569:17)
+    at process.processTimers (node:internal/timers:512:7) {
+  digest: '2075632077'
+}
+Error: Could not find the module "/Users/ognjendrinic/Desktop/odontoa-website/node_modules/framer-motion/dist/es/index.mjs#motion#h1" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at eb (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:136703)
+    at ek (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:140326)
+    at Array.toJSON (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135755)
+    at stringify (<anonymous>)
+    at eR (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142219)
+    at eE (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142698)
+    at AsyncLocalStorage.run (node:async_hooks:338:14)
+    at Timeout._onTimeout (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:150397)
+    at listOnTimeout (node:internal/timers:569:17)
+    at process.processTimers (node:internal/timers:512:7) {
+  digest: '3519534061'
+}
+Error: Could not find the module "/Users/ognjendrinic/Desktop/odontoa-website/node_modules/framer-motion/dist/es/index.mjs#motion#p" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at eb (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:136703)
+    at ek (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:140326)
+    at Array.toJSON (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135755)
+    at stringify (<anonymous>)
+    at eR (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142219)
+    at eE (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142698)
+    at AsyncLocalStorage.run (node:async_hooks:338:14)
+    at Timeout._onTimeout (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:150397)
+    at listOnTimeout (node:internal/timers:569:17)
+    at process.processTimers (node:internal/timers:512:7) {
+  digest: '1723752621'
+}
+Error: Could not find the module "/Users/ognjendrinic/Desktop/odontoa-website/node_modules/framer-motion/dist/es/index.mjs#motion#div" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at eb (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:136703)
+    at ek (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:140326)
+    at Array.toJSON (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135755)
+    at stringify (<anonymous>)
+    at eR (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142219)
+    at eE (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142698)
+    at AsyncLocalStorage.run (node:async_hooks:338:14)
+    at Timeout._onTimeout (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:150397)
+    at listOnTimeout (node:internal/timers:569:17)
+    at process.processTimers (node:internal/timers:512:7) {
+  digest: '2075632077'
+}
+Error: Could not find the module "/Users/ognjendrinic/Desktop/odontoa-website/node_modules/framer-motion/dist/es/index.mjs#motion#div" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at eb (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:136703)
+    at ek (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:140326)
+    at Array.toJSON (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135755)
+    at stringify (<anonymous>)
+    at eR (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142219)
+    at eE (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142698)
+    at AsyncLocalStorage.run (node:async_hooks:338:14)
+    at Timeout._onTimeout (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:150397)
+    at listOnTimeout (node:internal/timers:569:17)
+    at process.processTimers (node:internal/timers:512:7) {
+  digest: '2075632077'
+}
+Error: Could not find the module "/Users/ognjendrinic/Desktop/odontoa-website/node_modules/framer-motion/dist/es/index.mjs#motion#div" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at eb (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:136703)
+    at ek (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:140326)
+    at Array.toJSON (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135755)
+    at stringify (<anonymous>)
+    at eR (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142219)
+    at eE (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142698)
+    at Timeout._onTimeout (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135475)
+    at listOnTimeout (node:internal/timers:569:17)
+    at process.processTimers (node:internal/timers:512:7) {
+  digest: '2987390400'
+}
+⚠️  Node.js 18 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 20 or later. For more information, visit: https://github.com/orgs/supabase/discussions/37217
+Error: Could not find the module "/Users/ognjendrinic/Desktop/odontoa-website/node_modules/framer-motion/dist/es/index.mjs#motion#h1" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at eb (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:136703)
+    at ek (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:140326)
+    at Array.toJSON (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135755)
+    at stringify (<anonymous>)
+    at eR (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142219)
+    at eE (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142698)
+    at Timeout._onTimeout (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135475)
+    at listOnTimeout (node:internal/timers:569:17)
+    at process.processTimers (node:internal/timers:512:7) {
+  digest: '3532102432'
+}
+Error: Could not find the module "/Users/ognjendrinic/Desktop/odontoa-website/node_modules/framer-motion/dist/es/index.mjs#motion#p" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at eb (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:136703)
+    at ek (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:140326)
+    at Array.toJSON (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135755)
+    at stringify (<anonymous>)
+    at eR (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142219)
+    at eE (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142698)
+    at Timeout._onTimeout (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135475)
+    at listOnTimeout (node:internal/timers:569:17)
+    at process.processTimers (node:internal/timers:512:7) {
+  digest: '1787430240'
+}
+Error: Could not find the module "/Users/ognjendrinic/Desktop/odontoa-website/node_modules/framer-motion/dist/es/index.mjs#motion#div" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at eb (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:136703)
+    at ek (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:140326)
+    at Array.toJSON (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135755)
+    at stringify (<anonymous>)
+    at eR (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142219)
+    at eE (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142698)
+    at Timeout._onTimeout (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135475)
+    at listOnTimeout (node:internal/timers:569:17)
+    at process.processTimers (node:internal/timers:512:7) {
+  digest: '2987390400'
+}
+Error: Could not find the module "/Users/ognjendrinic/Desktop/odontoa-website/node_modules/framer-motion/dist/es/index.mjs#motion#div" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at eb (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:136703)
+    at ek (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:140326)
+    at Array.toJSON (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135755)
+    at stringify (<anonymous>)
+    at eR (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142219)
+    at eE (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142698)
+    at Timeout._onTimeout (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135475)
+    at listOnTimeout (node:internal/timers:569:17)
+    at process.processTimers (node:internal/timers:512:7) {
+  digest: '2987390400'
+}
+Error: Could not find the module "/Users/ognjendrinic/Desktop/odontoa-website/node_modules/framer-motion/dist/es/index.mjs#motion#div" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at eb (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:136703)
+    at ek (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:140326)
+    at Array.toJSON (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135755)
+    at stringify (<anonymous>)
+    at eR (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142219)
+    at eE (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142698)
+    at Timeout._onTimeout (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135475)
+    at listOnTimeout (node:internal/timers:569:17)
+    at process.processTimers (node:internal/timers:512:7) {
+  digest: '2987390400'
+}
+   Generating static pages (16/33) 
+⚠️  Node.js 18 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 20 or later. For more information, visit: https://github.com/orgs/supabase/discussions/37217
+
+Error occurred prerendering page "/demo-hero". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: Could not find the module "/Users/ognjendrinic/Desktop/odontoa-website/node_modules/framer-motion/dist/es/index.mjs#motion#div" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at eb (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:136703)
+    at ek (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:140326)
+    at Array.toJSON (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:135755)
+    at stringify (<anonymous>)
+    at eR (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142219)
+    at eE (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142698)
+    at AsyncLocalStorage.run (node:async_hooks:338:14)
+    at Timeout._onTimeout (/Users/ognjendrinic/Desktop/odontoa-website/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:150397)
+    at listOnTimeout (node:internal/timers:569:17)
+    at process.processTimers (node:internal/timers:512:7)
+⚠️  Node.js 18 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 20 or later. For more information, visit: https://github.com/orgs/supabase/discussions/37217
+   Generating static pages (24/33) 
+ ✓ Generating static pages (33/33)
+
+> Export encountered errors on following paths:
+	/demo-hero/page: /demo-hero

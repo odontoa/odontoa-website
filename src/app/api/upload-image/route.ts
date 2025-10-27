@@ -44,6 +44,20 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Validate folder name for security - supports main folder types
+    const validFolders = [
+      'featured-images', 
+      'blog-content', 
+      'glossary'
+    ]
+    
+    if (!validFolders.includes(folder)) {
+      return NextResponse.json(
+        { error: `Nevalidan folder za upload: ${folder}` },
+        { status: 400 }
+      )
+    }
+
     // Generate unique filename
     const timestamp = Date.now()
     const fileName = `${folder}/${timestamp}-${file.name}`
@@ -72,7 +86,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       url: publicUrl,
-      path: data.path
+      path: data.path,
+      folder: folder,
+      fileName: `${timestamp}-${file.name}`,
+      fileType: getFileType(folder)
     })
 
   } catch (error) {
@@ -82,4 +99,18 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
+}
+
+// Helper function to determine file type based on folder
+function getFileType(folder: string): string {
+  if (folder.startsWith('featured-images') || folder === 'featured-images') {
+    return 'featured-image'
+  } else if (folder.startsWith('blog-content')) {
+    return 'blog-content'
+  } else if (folder.startsWith('glossary')) {
+    return 'glossary'
+  } else if (folder.startsWith('editor-images')) {
+    return 'editor-image'
+  }
+  return 'other'
 }

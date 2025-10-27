@@ -1,0 +1,27 @@
+# Odontoa Project Git Configuration
+# This file contains the correct git configuration for the odontoa project
+# To apply these settings, run: git config --file .gitconfig-odontoa --local
+
+[user]
+    name = Odontoa Team
+    email = info@odontoa.com
+
+[remote "origin"]
+    url = git@github.com-odontoa:odontoa/odontoa-website.git
+    fetch = +refs/heads/*:refs/remotes/origin/*
+
+[push]
+    default = simple
+
+[core]
+    autocrlf = input
+    safecrlf = true
+
+# Branch protection rules
+[core]
+    hooksPath = .git/hooks
+
+# Ensure we always use the odontoa account
+[alias]
+    push-odontoa = "!git push origin"
+    setup-odontoa = "!git config --local user.name 'Odontoa Team' && git config --local user.email 'info@odontoa.com' && git remote set-url origin git@github.com-odontoa:odontoa/odontoa-website.git"

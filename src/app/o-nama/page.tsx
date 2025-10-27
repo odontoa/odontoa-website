@@ -25,6 +25,8 @@ import { Input } from "@/components/ui/input";
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
 import { DemoForm } from "@/components/DemoForm";
+import { Hero } from "@/components/ui/hero-with-group-of-images-text-and-two-buttons";
+import OdontoaMissionSection from "@/components/ui/mission-section";
 
 
 export default function AboutPage() {
@@ -32,194 +34,15 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background w-full pt-20">
       {/* Hero Section - Full Width */}
-      <section className="w-full bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-b border-gray-100 relative overflow-hidden">
-        {/* Background decorative elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-100 rounded-full opacity-20"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-100 rounded-full opacity-20"></div>
-          <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-indigo-100 rounded-full opacity-30"></div>
-        </div>
-        
-        {/* Content container with max-width for readability */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left side - Text content */}
-            <motion.div 
-              className="text-center lg:text-left space-y-8"
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6 }}
-            >
-              <motion.h1 
-                className="text-4xl md:text-5xl lg:text-6xl font-normal text-foreground leading-tight"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6 }}
-              >
-                Zašto postoji Odontoa?
-              </motion.h1>
-              
-              <motion.p 
-                className="text-xl lg:text-2xl text-gray-600 leading-relaxed"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                Od digitalnog kalendara do sigurnog vođenja kartona – razvili smo platformu koja stomatolozima štedi vreme i donosi više fokusa na pacijente.
-              </motion.p>
-              
-              <motion.div 
-                className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                <div className="bg-foreground/10 rounded-[14px] border p-0.5">
-                  <Button className="rounded-xl px-6 text-base text-white h-14">
-                    Kontaktiraj nas
-                    <ArrowRight className="ml-2 h-4 w-4 text-white" />
-                  </Button>
-                </div>
-                <Button variant="outline" className="rounded-xl px-6 h-14">
-                  Saznaj više
-                </Button>
-              </motion.div>
-            </motion.div>
-
-            {/* Right side - Tooth Icon as Background Cover */}
-            <motion.div 
-              className="relative group"
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              {/* Tooth Icon as Background Cover */}
-              <div className="relative w-full h-64 rounded-3xl overflow-hidden flex items-center justify-center">
-                <img 
-                  src="/images/Odontoa - logo pack/Icon_color.png" 
-                  alt="Odontoa Tooth Icon Background" 
-                  className="w-72 h-72 object-contain opacity-60 group-hover:opacity-80 transition-opacity duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-purple-50/80"></div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
+      <section className="w-full relative overflow-hidden">
+        <Hero />
       </section>
 
       {/* Mission Section */}
-      <section className="section-spacing border-t border-border">
-        <div className="max-w-screen-xl mx-auto">
-          <div className="md:flex md:flex-row items-center justify-between gap-10">
-            <motion.div 
-              className="relative group md:w-[40%] mt-10 md:mt-0"
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6 }}
-            >
-              <div className="absolute inset-0 bg-primary/20 rounded-3xl blur-xl opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
-              <img 
-                src="/images/2dentists-smiling.jpg" 
-                alt="Stomatolozi u Odontoa sistemu" 
-                className="relative rounded-3xl shadow-2xl w-full transform group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent rounded-3xl"></div>
-            </motion.div>
-            <motion.div 
-              className="space-y-8 md:w-[60%]"
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <div className="space-y-4">
-                <motion.h2 
-                  className="text-3xl font-normal leading-tight sm:text-5xl sm:leading-tight text-foreground"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6 }}
-                >
-                  Naša misija
-                </motion.h2>
-              </div>
-              <motion.p 
-                className="text-muted-foreground leading-relaxed"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                Verujemo da stomatološke prakse zaslužuju tehnologiju koja oslobađa tim od administracije i daje više vremena za ono što je najvažnije – pacijente.
-              </motion.p>
-              <motion.p 
-                className="text-muted-foreground leading-relaxed"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
-                Kroz digitalizaciju procesa unapređujemo kvalitet rada ordinacija u regionu i činimo savremene usluge dostupnijim većem broju pacijenata.
-              </motion.p>
-              
-              <motion.div 
-                className="space-y-3 pt-4"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                <h3 className="text-lg font-normal text-foreground">Šta radimo za doktore:</h3>
-                <ul className="space-y-2 text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Automatizujemo zakazivanja i smanjujemo propuštene termine</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Digitalizujemo kartone sa najvišim standardima sigurnosti</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Pojednostavljujemo fakturisanje i finansije</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Štedimo 10+ sati nedeljno na administraciji</span>
-                  </li>
-                </ul>
-              </motion.div>
-              
-              <motion.div 
-                className="flex flex-col sm:flex-row gap-4 pt-4"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-              >
-                <div className="bg-foreground/10 rounded-[14px] border p-0.5">
-                  <Button className="rounded-xl px-5 text-base text-white h-12">
-                    Kontaktiraj nas
-                    <ArrowRight className="ml-2 h-4 w-4 text-white" />
-                  </Button>
-                </div>
-                <Button variant="outline" className="rounded-xl px-5 h-12">
-                  Saznaj više
-                </Button>
-              </motion.div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
+      <OdontoaMissionSection />
 
       {/* Values Section */}
-      <section className="section-spacing border-t border-border">
+      <section className="section-spacing">
         <div className="max-w-screen-xl mx-auto">
           <motion.div 
             className="text-center mb-20"

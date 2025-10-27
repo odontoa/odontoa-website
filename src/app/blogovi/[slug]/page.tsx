@@ -103,10 +103,14 @@ export default function BlogPostPage({ params }: PageProps) {
     try {
       setLoading(true)
       
+      // Decode the slug to handle URL encoding
+      const decodedSlug = decodeURIComponent(params.slug)
+      console.log('🔍 Fetching blog with slug:', decodedSlug)
+      
       const { data, error } = await supabase
         .from('blogs')
         .select('*')
-        .eq('slug', params.slug)
+        .eq('slug', decodedSlug)
         .eq('published', true)
         .single()
 
@@ -160,10 +164,20 @@ export default function BlogPostPage({ params }: PageProps) {
 
   const incrementViewCount = async (blogId: string) => {
     try {
-      await supabase
+      // Simple increment without RPC
+      const { data: currentBlog } = await supabase
         .from('blogs')
-        .update({ views_count: supabase.rpc('increment', { row_id: blogId, column_name: 'views_count' }) })
+        .select('views_count')
         .eq('id', blogId)
+        .single()
+      
+      if (currentBlog) {
+        const newCount = (currentBlog.views_count || 0) + 1
+        await supabase
+          .from('blogs')
+          .update({ views_count: newCount })
+          .eq('id', blogId)
+      }
     } catch (error) {
       console.error('Error incrementing view count:', error)
     }

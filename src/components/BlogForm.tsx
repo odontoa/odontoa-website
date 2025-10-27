@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useAuth } from '@/contexts/AuthContext'
 import { useFormDirty } from '@/contexts/FormDirtyContext'
+import { useProtectedAction } from '@/hooks/useProtectedAction'
 import { useBeforeUnload } from '@/hooks/useBeforeUnload'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -79,7 +80,7 @@ const blogSchema = z.object({
 type BlogFormData = z.infer<typeof blogSchema>
 
 interface BlogFormProps {
-  onSuccess?: () => void
+  onSuccess?: (action: 'created' | 'published' | 'updated') => void
   onCancel?: () => void
   initialData?: any
 }
@@ -87,7 +88,11 @@ interface BlogFormProps {
 export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initialData }) => {
   const { user, session, isAdmin } = useAuth()
   const { setDirty } = useFormDirty()
+  const { executeProtectedAction } = useProtectedAction()
   const [loading, setLoading] = useState(false)
+  
+  // Store original data for cancel functionality
+  const [originalData, setOriginalData] = useState<any>(null)
   const [uploadLoading, setUploadLoading] = useState(false)
   const [error, setError] = useState('')
   const [generatingFAQ, setGeneratingFAQ] = useState(false)
@@ -138,6 +143,9 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
   // Update form when initialData changes (for edit mode)
   useEffect(() => {
     if (initialData) {
+      // Store original data for cancel functionality
+      setOriginalData(initialData)
+      
       form.reset({
         title: initialData.title || '',
         slug: initialData.slug || '',
@@ -512,18 +520,16 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
         
         if (isEditMode) {
           // Don't reset form in edit mode, just call success callback
-          onSuccess?.()
+          onSuccess?.(published ? 'published' : 'updated')
         } else {
           // Reset form only for new blog creation
           form.reset()
+          onSuccess?.(published ? 'published' : 'created')
         }
         
         // Trigger immediate refresh for all components
         window.dispatchEvent(new Event('storage'))
         window.dispatchEvent(new CustomEvent('content-updated'))
-        
-        // Call success callback
-        onSuccess?.()
       } else {
         const errorData = await response.text()
         console.error('=== RAW HTTP ERROR ===')
@@ -557,7 +563,90 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
     submitBlogRawHTTP(data, false) // Save as draft
   }
 
+  const handleCancel = () => {
+    executeProtectedAction(() => {
+      if (initialData) {
+        // Edit mode - restore original data
+        if (originalData) {
+          form.reset({
+            title: originalData.title || '',
+            slug: originalData.slug || '',
+            content: originalData.content || '',
+            excerpt: originalData.excerpt || '',
+            image_url: originalData.image_url || '',
+            alt_text: originalData.alt_text || '',
+            faqSchema: originalData.faq_schema ? JSON.stringify(originalData.faq_schema, null, 2) : '',
+            tags: originalData.tags ? originalData.tags.join(', ') : '',
+            related_glossary_terms: originalData.related_glossary_terms ? originalData.related_glossary_terms.join(', ') : '',
+            author: originalData.author || 'Odontoa Tim',
+            author_url: originalData.author_url || 'https://odontoa.com/o-nama',
+            meta_description: originalData.meta_description || '',
+            featured_image: originalData.featured_image || '',
+            featured: originalData.featured || false
+          })
+          
+          // Restore selected tags
+          if (originalData.tags && originalData.tags.length > 0) {
+            const suggestedTags = originalData.tags.filter(tag => 
+              SUGGESTED_BLOG_TAGS.some(suggested => suggested.name === tag)
+            )
+            setSelectedTags(suggestedTags)
+          }
+        }
+      } else {
+        // New blog mode - clear all data
+        form.reset({
+          title: '',
+          slug: '',
+          content: '',
+          excerpt: '',
+          image_url: '',
+          alt_text: '',
+          faqSchema: '',
+          tags: '',
+          related_glossary_terms: '',
+          author: 'Odontoa Tim',
+          author_url: 'https://odontoa.com/o-nama',
+          meta_description: '',
+          featured_image: '',
+          featured: false
+        })
+        setSelectedTags([])
+      }
+      
+      // Reset dirty state
+      setDirty(false)
+      
+      if (onCancel) {
+        onCancel()
+      }
+    })
+  }
+
   const onPublish = (data: BlogFormData) => {
+    // Validate required SEO fields before publishing
+    const missingFields = []
+    if (!data.meta_description || data.meta_description.length < 10) {
+      missingFields.push('Meta opis (najmanje 10 karaktera)')
+    }
+    if (!data.alt_text || data.alt_text.length < 1) {
+      missingFields.push('Alt tekst')
+    }
+    if (!data.author || data.author.length < 1) {
+      missingFields.push('Autor')
+    }
+    if (!data.author_url || data.author_url.length < 1) {
+      missingFields.push('URL autora')
+    }
+    
+    if (missingFields.length > 0) {
+      toast.error(
+        `Ne možete objaviti blog bez obaveznih SEO polja:\n${missingFields.join('\n')}`,
+        { duration: 5000 }
+      )
+      return
+    }
+    
     submitBlogRawHTTP(data, true) // Publish immediately
   }
 
@@ -589,7 +678,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
         </Alert>
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 bg-white border border-gray-200 rounded-lg shadow-sm">
             <TabsTrigger value="content" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
               <FileText className="h-4 w-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">Sadržaj</span>
@@ -599,11 +688,6 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
               <Globe className="h-4 w-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">SEO</span>
               <span className="sm:hidden">SEO</span>
-            </TabsTrigger>
-            <TabsTrigger value="media" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
-              <Image className="h-4 w-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Media</span>
-              <span className="sm:hidden">Media</span>
             </TabsTrigger>
             <TabsTrigger value="connections" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
               <Link className="h-4 w-4 mr-1 sm:mr-2" />
@@ -631,7 +715,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
                     {...form.register('title')}
                     onChange={(e) => handleTitleChange(e.target.value)}
                     disabled={loading}
-                    className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                    className="bg-white border-gray-400 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
                     placeholder="Unesite naslov bloga"
                   />
                   {form.formState.errors.title && (
@@ -651,7 +735,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
                     id="slug"
                     {...form.register('slug')}
                     disabled={loading}
-                    className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                    className="bg-white border-gray-400 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
                     placeholder="automatski-generisan-iz-naslova"
                   />
                   {form.formState.errors.slug && (
@@ -673,7 +757,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
                   {...form.register('excerpt')}
                   disabled={loading}
                   rows={2}
-                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                  className="bg-white border-gray-400 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
                   placeholder="Kratak opis koji se prikazuje u listi blogova i karticama"
                 />
                 <p className="text-xs text-gray-500">
@@ -687,423 +771,15 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
 
             <Separator />
 
-            {/* Content Editor */}
+            {/* Hero Image */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Sadržaj</h3>
-              
-              <div className="space-y-2">
-                <Label htmlFor="content" className="text-sm font-medium text-gray-700 flex items-center">
-                  Glavni sadržaj * (min 50 karaktera)
-                  <HelpTooltip 
-                    text={tooltipsData.blog.content.text}
-                    icon={tooltipsData.blog.content.icon}
-                  />
-                </Label>
-                <RichTextEditor
-                  value={form.watch('content')}
-                  onChange={(content) => handleContentChange(content)}
-                  placeholder="Napišite glavni sadržaj bloga..."
-                  className="min-h-[500px]"
-                />
-                {form.formState.errors.content && (
-                  <p className="text-sm text-red-600">{form.formState.errors.content.message}</p>
-                )}
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Author */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Autor</h3>
-              
-              <div className="space-y-2">
-                <Label htmlFor="author" className="text-sm font-medium text-gray-700 flex items-center">
-                  Autor *
-                  <HelpTooltip 
-                    text={tooltipsData.blog.author.text}
-                    icon={tooltipsData.blog.author.icon}
-                  />
-                </Label>
-                <Input
-                  id="author"
-                  {...form.register('author')}
-                  disabled={loading}
-                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
-                  placeholder="Ime autora"
-                />
-                {form.formState.errors.author && (
-                  <p className="text-sm text-red-600">{form.formState.errors.author.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="author_url" className="text-sm font-medium text-gray-700 flex items-center">
-                  URL autora *
-                  <HelpTooltip 
-                    text="URL stranice autora (obavezan za JSON-LD schema)"
-                    icon="link"
-                  />
-                </Label>
-                <Input
-                  id="author_url"
-                  {...form.register('author_url')}
-                  disabled={loading}
-                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
-                  placeholder="https://odontoa.com/o-nama"
-                />
-                {form.formState.errors.author_url && (
-                  <p className="text-sm text-red-600">{form.formState.errors.author_url.message}</p>
-                )}
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="seo" className="space-y-6">
-            {/* SEO Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">SEO Optimizacija</h3>
-              
-              {/* Info about field separation */}
-              <Alert className="border-blue-200 bg-blue-50">
-                <Info className="h-4 w-4 text-blue-600" />
-                <AlertDescription className="text-blue-800">
-                  <strong>Važno:</strong> Meta opis se koristi isključivo za SEO (meta tag, JSON-LD). 
-                  Kratki opis (excerpt) se koristi za UX u listi blogova. Ova polja su odvojena za bolju kontrolu.
-                </AlertDescription>
-              </Alert>
-              
-              <div className="space-y-2">
-                <Label htmlFor="meta_description" className="text-sm font-medium text-gray-700 flex items-center">
-                  Meta opis * (150-160 karaktera)
-                  <HelpTooltip 
-                    text={tooltipsData.blog.meta_description.text}
-                    icon={tooltipsData.blog.meta_description.icon}
-                  />
-                </Label>
-                <Textarea
-                  id="meta_description"
-                  {...form.register('meta_description')}
-                  disabled={loading}
-                  rows={3}
-                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
-                  placeholder="Meta opis za pretraživače (meta tag, JSON-LD)"
-                />
-                <div className="flex items-center justify-between">
-                  <p className="text-xs text-gray-500">
-                    Trenutno: {form.watch('meta_description').length} karaktera
-                  </p>
-                  {!form.watch('meta_description') && (
-                    <p className="text-xs text-orange-600 flex items-center">
-                      <AlertCircle className="h-3 w-3 mr-1" />
-                      Meta Description: 0/15 poena u SEO score
-                    </p>
-                  )}
-                </div>
-                {form.formState.errors.meta_description && (
-                  <p className="text-sm text-red-600">{form.formState.errors.meta_description.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="featured"
-                    {...form.register('featured')}
-                    disabled={loading}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <Label htmlFor="featured" className="text-sm font-medium text-gray-700 flex items-center">
-                    Istaknuti članak (Featured)
-                    <HelpTooltip 
-                      text="Istaknuti članak će biti prikazan na vrhu blog stranice kao glavni članak"
-                      icon="⭐"
-                    />
-                  </Label>
-                </div>
-                {form.watch('featured') && (
-                  <p className="text-xs text-blue-600 flex items-center">
-                    <Info className="h-3 w-3 mr-1" />
-                    Ovaj članak će biti prikazan kao istaknuti na blog stranici
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="tags" className="text-sm font-medium text-gray-700 flex items-center">
-                  Kategorije članka
-                  <HelpTooltip 
-                    text="Izaberite kategorije koje najbolje opisuju sadržaj članka. Ovo će pomoći u preporučivanju sličnih članaka."
-                    icon="🏷️"
-                  />
-                </Label>
-                
-                {/* Predložene kategorije */}
-                <div className="space-y-3">
-                  <Label className="text-xs font-medium text-gray-600">
-                    Izaberite kategorije:
-                  </Label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {SUGGESTED_BLOG_TAGS.map((tag, index) => (
-                      <div
-                        key={index}
-                        className={`p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
-                          selectedTags.includes(tag.name)
-                            ? 'border-blue-500 bg-blue-50'
-                            : 'border-gray-200 hover:border-gray-300 bg-white'
-                        }`}
-                        onClick={() => {
-                          const currentTags = form.getValues('tags')
-                          const tagsArray = currentTags ? currentTags.split(',').map(t => t.trim()).filter(Boolean) : []
-                          
-                          if (selectedTags.includes(tag.name)) {
-                            // Ukloni tag
-                            const newTags = tagsArray.filter(t => t !== tag.name).join(', ')
-                            form.setValue('tags', newTags)
-                            setSelectedTags(selectedTags.filter(t => t !== tag.name))
-                          } else {
-                            // Dodaj tag
-                            if (!tagsArray.includes(tag.name)) {
-                              const newTags = [...tagsArray, tag.name].join(', ')
-                              form.setValue('tags', newTags)
-                              setSelectedTags([...selectedTags, tag.name])
-                            }
-                          }
-                        }}
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h4 className="font-medium text-gray-900 mb-1">{tag.name}</h4>
-                            <p className="text-xs text-gray-600 leading-relaxed">{tag.description}</p>
-                          </div>
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ml-3 ${
-                            selectedTags.includes(tag.name)
-                              ? 'border-blue-500 bg-blue-500'
-                              : 'border-gray-300'
-                          }`}>
-                            {selectedTags.includes(tag.name) && (
-                              <div className="w-2 h-2 bg-white rounded-full"></div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                
-                {/* Tag Suggestions */}
-                {tagSuggestions.length > 0 && (
-                  <div className="space-y-2">
-                    <Label className="text-xs font-medium text-gray-600">
-                      Dodatni predloženi tagovi:
-                    </Label>
-                    <div className="flex flex-wrap gap-2">
-                      {tagSuggestions.map((tag, index) => (
-                        <Badge
-                          key={index}
-                          variant="outline"
-                          className="cursor-pointer hover:bg-blue-50 hover:border-blue-300 text-blue-600"
-                          onClick={() => {
-                            const currentTags = form.getValues('tags')
-                            const tagsArray = currentTags ? currentTags.split(',').map(t => t.trim()).filter(Boolean) : []
-                            if (!tagsArray.includes(tag)) {
-                              const newTags = [...tagsArray, tag].join(', ')
-                              form.setValue('tags', newTags)
-                              setSelectedTags([...selectedTags, tag])
-                            }
-                          }}
-                        >
-                          + {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                {/* Selected Tags Display */}
-                {selectedTags.length > 0 && (
-                  <div className="space-y-2">
-                    <Label className="text-xs font-medium text-gray-600">
-                      Dodati tagovi:
-                    </Label>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedTags.map((tag, index) => (
-                        <Badge
-                          key={index}
-                          variant="default"
-                          className="bg-blue-100 text-blue-800 border-blue-200"
-                        >
-                          {tag}
-                          <X
-                            className="h-3 w-3 ml-1 cursor-pointer"
-                            onClick={() => {
-                              const currentTags = form.getValues('tags')
-                              const tagsArray = currentTags ? currentTags.split(',').map(t => t.trim()).filter(Boolean) : []
-                              const newTags = tagsArray.filter(t => t !== tag).join(', ')
-                              form.setValue('tags', newTags)
-                              setSelectedTags(selectedTags.filter(t => t !== tag))
-                            }}
-                          />
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* FAQ Schema */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">FAQ Schema</h3>
-              
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="faqSchema" className="text-sm font-medium text-gray-700 flex items-center">
-                    FAQ JSON Schema
-                    <HelpTooltip 
-                      text={tooltipsData.blog.faq_schema.text}
-                      icon={tooltipsData.blog.faq_schema.icon}
-                    />
-                  </Label>
-                  <Button
-                    type="button"
-                    onClick={handleGenerateFAQ}
-                    disabled={generatingFAQ || loading}
-                    variant="outline"
-                    size="sm"
-                    className="text-blue-600 border-blue-200 hover:bg-blue-50"
-                  >
-                    {generatingFAQ ? (
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    ) : (
-                      <Sparkles className="h-4 w-4 mr-2" />
-                    )}
-                    Auto-generiši FAQ
-                  </Button>
-                </div>
-                <Textarea
-                  id="faqSchema"
-                  {...form.register('faqSchema')}
-                  disabled={loading}
-                  rows={8}
-                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500 font-mono text-sm"
-                  placeholder="FAQ JSON Schema..."
-                />
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* SEO Score */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">SEO Analiza</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700">SEO Score</span>
-                    {seoCalculating ? (
-                      <div className="flex items-center">
-                        <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                        <span className="text-xs text-gray-500">Računam...</span>
-                      </div>
-                    ) : (
-                      <Badge variant={seoScore >= 80 ? "default" : seoScore >= 60 ? "secondary" : "destructive"}>
-                        {seoScore}/100
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="mt-2">
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className={`h-2 rounded-full transition-all duration-300 ${
-                          seoScore >= 80 ? 'bg-green-500' : 
-                          seoScore >= 60 ? 'bg-yellow-500' : 'bg-red-500'
-                        }`}
-                        style={{ width: `${seoScore}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700">Vreme čitanja</span>
-                    <Badge variant="outline">
-                      {readingTime} min
-                    </Badge>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700">Status</span>
-                    <Badge variant="outline">
-                      Draft
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-
-              {/* Detailed SEO Metrics */}
-              <div className="mt-6">
-                <h4 className="text-md font-medium text-gray-900 mb-3">Detaljne metrike</h4>
-                {seoCalculating ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {[...Array(6)].map((_, index) => (
-                      <div key={index} className="p-3 bg-white border border-gray-200 rounded-lg animate-pulse">
-                        <div className="flex items-center justify-between mb-1">
-                          <div className="h-4 bg-gray-200 rounded w-24"></div>
-                          <div className="h-3 bg-gray-200 rounded w-8"></div>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-1 mb-2"></div>
-                        <div className="h-3 bg-gray-200 rounded w-full"></div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {Object.entries(seoMetrics).map(([key, metric]: [string, any]) => (
-                      <div key={key} className="p-3 bg-white border border-gray-200 rounded-lg">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm font-medium text-gray-700 capitalize">
-                            {key.replace(/([A-Z])/g, ' $1').trim()}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {metric.score}/{metric.max}
-                          </span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-1 mb-2">
-                          <div 
-                            className={`h-1 rounded-full transition-all duration-300 ${
-                              metric.score === metric.max ? 'bg-green-500' : 
-                              metric.score > metric.max / 2 ? 'bg-yellow-500' : 'bg-red-500'
-                            }`}
-                            style={{ width: `${(metric.score / metric.max) * 100}%` }}
-                          ></div>
-                        </div>
-                        <p className="text-xs text-gray-600">{metric.details}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="media" className="space-y-6">
-            {/* Media Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Media i slike</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Hero Slika</h3>
               
               <div className="space-y-2">
                 <Label htmlFor="image_url" className="text-sm font-medium text-gray-700 flex items-center">
-                  Featured Image
+                  Hero slika za blog *
                   <HelpTooltip 
-                    text="Glavna slika za blog. Možete uneti URL ili uploadovati sliku sa računara."
+                    text="Hero slika koja se prikazuje na vrhu bloga. Možete uneti URL ili uploadovati sliku sa računara."
                     icon="🖼️"
                   />
                 </Label>
@@ -1112,7 +788,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
                     id="image_url"
                     {...form.register('image_url')}
                     disabled={loading || uploadLoading}
-                    className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500 flex-1"
+                    className="bg-white border-gray-400 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500 flex-1"
                     placeholder="https://example.com/image.jpg ili kliknite Upload"
                   />
                   <Button
@@ -1243,7 +919,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
                   id="alt_text"
                   {...form.register('alt_text')}
                   disabled={loading}
-                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                  className="bg-white border-gray-400 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
                   placeholder="Opis slike za pristupačnost i SEO"
                 />
                 {!form.watch('alt_text') && (
@@ -1252,6 +928,415 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
               </div>
 
 
+            </div>
+
+            <Separator />
+
+            {/* Content Editor */}
+            <div className="space-y-3">
+              <h3 className="text-lg font-semibold text-gray-900">Sadržaj</h3>
+              
+              <div className="space-y-2">
+                <Label htmlFor="content" className="text-sm font-medium text-gray-700 flex items-center">
+                  Glavni sadržaj * (min 50 karaktera)
+                  <HelpTooltip 
+                    text={tooltipsData.blog.content.text}
+                    icon={tooltipsData.blog.content.icon}
+                  />
+                </Label>
+                <RichTextEditor
+                  value={form.watch('content')}
+                  onChange={(content) => handleContentChange(content)}
+                  placeholder="Napišite glavni sadržaj bloga..."
+                  className="min-h-[500px]"
+                  blogSlug={form.watch('slug')} // Prosleđujemo slug za organizaciju slika
+                />
+                {form.formState.errors.content && (
+                  <p className="text-sm text-red-600">{form.formState.errors.content.message}</p>
+                )}
+              </div>
+            </div>
+
+            <Separator className="my-2" />
+
+            {/* Author */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">Autor</h3>
+              
+              <div className="space-y-2">
+                <Label htmlFor="author" className="text-sm font-medium text-gray-700 flex items-center">
+                  Autor *
+                  <HelpTooltip 
+                    text={tooltipsData.blog.author.text}
+                    icon={tooltipsData.blog.author.icon}
+                  />
+                </Label>
+                <Input
+                  id="author"
+                  {...form.register('author')}
+                  disabled={loading}
+                  className="bg-white border-gray-400 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="Ime autora"
+                />
+                {form.formState.errors.author && (
+                  <p className="text-sm text-red-600">{form.formState.errors.author.message}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="author_url" className="text-sm font-medium text-gray-700 flex items-center">
+                  URL autora *
+                  <HelpTooltip 
+                    text="URL stranice autora (obavezan za JSON-LD schema)"
+                    icon="link"
+                  />
+                </Label>
+                <Input
+                  id="author_url"
+                  {...form.register('author_url')}
+                  disabled={loading}
+                  className="bg-white border-gray-400 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="https://odontoa.com/o-nama"
+                />
+                {form.formState.errors.author_url && (
+                  <p className="text-sm text-red-600">{form.formState.errors.author_url.message}</p>
+                )}
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="seo" className="space-y-6">
+            {/* SEO Information */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">SEO Optimizacija</h3>
+              
+              {/* Info about field separation */}
+              <Alert className="border-blue-200 bg-blue-50">
+                <Info className="h-4 w-4 text-blue-600" />
+                <AlertDescription className="text-blue-800">
+                  <strong>Važno:</strong> Meta opis se koristi isključivo za SEO (meta tag, JSON-LD). 
+                  Kratki opis (excerpt) se koristi za UX u listi blogova. Ova polja su odvojena za bolju kontrolu.
+                </AlertDescription>
+              </Alert>
+              
+              <div className="space-y-2">
+                <Label htmlFor="meta_description" className="text-sm font-medium text-gray-700 flex items-center">
+                  Meta opis * (150-160 karaktera)
+                  <HelpTooltip 
+                    text={tooltipsData.blog.meta_description.text}
+                    icon={tooltipsData.blog.meta_description.icon}
+                  />
+                </Label>
+                <Textarea
+                  id="meta_description"
+                  {...form.register('meta_description')}
+                  disabled={loading}
+                  rows={3}
+                  className="bg-white border-gray-400 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="Meta opis za pretraživače (meta tag, JSON-LD)"
+                />
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-gray-500">
+                    Trenutno: {form.watch('meta_description').length} karaktera
+                  </p>
+                  {!form.watch('meta_description') && (
+                    <p className="text-xs text-orange-600 flex items-center">
+                      <AlertCircle className="h-3 w-3 mr-1" />
+                      Meta Description: 0/15 poena u SEO score
+                    </p>
+                  )}
+                </div>
+                {form.formState.errors.meta_description && (
+                  <p className="text-sm text-red-600">{form.formState.errors.meta_description.message}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="featured"
+                    {...form.register('featured')}
+                    disabled={loading}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-400 rounded"
+                  />
+                  <Label htmlFor="featured" className="text-sm font-medium text-gray-700 flex items-center">
+                    Istaknuti članak (Featured)
+                    <HelpTooltip 
+                      text="Istaknuti članak će biti prikazan na vrhu blog stranice kao glavni članak"
+                      icon="⭐"
+                    />
+                  </Label>
+                </div>
+                {form.watch('featured') && (
+                  <p className="text-xs text-blue-600 flex items-center">
+                    <Info className="h-3 w-3 mr-1" />
+                    Ovaj članak će biti prikazan kao istaknuti na blog stranici
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="tags" className="text-sm font-medium text-gray-700 flex items-center">
+                  Kategorije članka
+                  <HelpTooltip 
+                    text="Izaberite kategorije koje najbolje opisuju sadržaj članka. Ovo će pomoći u preporučivanju sličnih članaka."
+                    icon="🏷️"
+                  />
+                </Label>
+                
+                {/* Predložene kategorije */}
+                <div className="space-y-3">
+                  <Label className="text-xs font-medium text-gray-600">
+                    Izaberite kategorije:
+                  </Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {SUGGESTED_BLOG_TAGS.map((tag, index) => (
+                      <div
+                        key={index}
+                        className={`p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                          selectedTags.includes(tag.name)
+                            ? 'border-blue-500 bg-blue-50'
+                            : 'border-gray-200 hover:border-gray-400 bg-white'
+                        }`}
+                        onClick={() => {
+                          const currentTags = form.getValues('tags')
+                          const tagsArray = currentTags ? currentTags.split(',').map(t => t.trim()).filter(Boolean) : []
+                          
+                          if (selectedTags.includes(tag.name)) {
+                            // Ukloni tag
+                            const newTags = tagsArray.filter(t => t !== tag.name).join(', ')
+                            form.setValue('tags', newTags)
+                            setSelectedTags(selectedTags.filter(t => t !== tag.name))
+                          } else {
+                            // Dodaj tag
+                            if (!tagsArray.includes(tag.name)) {
+                              const newTags = [...tagsArray, tag.name].join(', ')
+                              form.setValue('tags', newTags)
+                              setSelectedTags([...selectedTags, tag.name])
+                            }
+                          }
+                        }}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h4 className="font-medium text-gray-900 mb-1">{tag.name}</h4>
+                            <p className="text-xs text-gray-600 leading-relaxed">{tag.description}</p>
+                          </div>
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ml-3 ${
+                            selectedTags.includes(tag.name)
+                              ? 'border-blue-500 bg-blue-500'
+                              : 'border-gray-400'
+                          }`}>
+                            {selectedTags.includes(tag.name) && (
+                              <div className="w-2 h-2 bg-white rounded-full"></div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Tag Suggestions */}
+                {tagSuggestions.length > 0 && (
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium text-gray-600">
+                      Dodatni predloženi tagovi:
+                    </Label>
+                    <div className="flex flex-wrap gap-2">
+                      {tagSuggestions.map((tag, index) => (
+                        <Badge
+                          key={index}
+                          variant="outline"
+                          className="cursor-pointer hover:bg-blue-50 hover:border-blue-300 text-blue-600"
+                          onClick={() => {
+                            const currentTags = form.getValues('tags')
+                            const tagsArray = currentTags ? currentTags.split(',').map(t => t.trim()).filter(Boolean) : []
+                            if (!tagsArray.includes(tag)) {
+                              const newTags = [...tagsArray, tag].join(', ')
+                              form.setValue('tags', newTags)
+                              setSelectedTags([...selectedTags, tag])
+                            }
+                          }}
+                        >
+                          + {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Selected Tags Display */}
+                {selectedTags.length > 0 && (
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium text-gray-600">
+                      Dodati tagovi:
+                    </Label>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedTags.map((tag, index) => (
+                        <Badge
+                          key={index}
+                          variant="default"
+                          className="bg-blue-100 text-blue-800 border-blue-200"
+                        >
+                          {tag}
+                          <X
+                            className="h-3 w-3 ml-1 cursor-pointer"
+                            onClick={() => {
+                              const currentTags = form.getValues('tags')
+                              const tagsArray = currentTags ? currentTags.split(',').map(t => t.trim()).filter(Boolean) : []
+                              const newTags = tagsArray.filter(t => t !== tag).join(', ')
+                              form.setValue('tags', newTags)
+                              setSelectedTags(selectedTags.filter(t => t !== tag))
+                            }}
+                          />
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* FAQ Schema */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">FAQ Schema</h3>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="faqSchema" className="text-sm font-medium text-gray-700 flex items-center">
+                    FAQ JSON Schema
+                    <HelpTooltip 
+                      text={tooltipsData.blog.faq_schema.text}
+                      icon={tooltipsData.blog.faq_schema.icon}
+                    />
+                  </Label>
+                  <Button
+                    type="button"
+                    onClick={handleGenerateFAQ}
+                    disabled={generatingFAQ || loading}
+                    variant="outline"
+                    size="sm"
+                    className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                  >
+                    {generatingFAQ ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Sparkles className="h-4 w-4 mr-2" />
+                    )}
+                    Auto-generiši FAQ
+                  </Button>
+                </div>
+                <Textarea
+                  id="faqSchema"
+                  {...form.register('faqSchema')}
+                  disabled={loading}
+                  rows={8}
+                  className="bg-white border-gray-400 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500 font-mono text-sm"
+                  placeholder="FAQ JSON Schema..."
+                />
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* SEO Score */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">SEO Analiza</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">SEO Score</span>
+                    {seoCalculating ? (
+                      <div className="flex items-center">
+                        <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                        <span className="text-xs text-gray-500">Računam...</span>
+                      </div>
+                    ) : (
+                      <Badge variant={seoScore >= 80 ? "default" : seoScore >= 60 ? "secondary" : "destructive"}>
+                        {seoScore}/100
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="mt-2">
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          seoScore >= 80 ? 'bg-green-500' : 
+                          seoScore >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                        }`}
+                        style={{ width: `${seoScore}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">Vreme čitanja</span>
+                    <Badge variant="outline">
+                      {readingTime} min
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">Status</span>
+                    <Badge variant="outline">
+                      Draft
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              {/* Detailed SEO Metrics */}
+              <div className="mt-6">
+                <h4 className="text-md font-medium text-gray-900 mb-3">Detaljne metrike</h4>
+                {seoCalculating ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {[...Array(6)].map((_, index) => (
+                      <div key={index} className="p-3 bg-white border border-gray-200 rounded-lg animate-pulse">
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="h-4 bg-gray-200 rounded w-24"></div>
+                          <div className="h-3 bg-gray-200 rounded w-8"></div>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-1 mb-2"></div>
+                        <div className="h-3 bg-gray-200 rounded w-full"></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {Object.entries(seoMetrics).map(([key, metric]: [string, any]) => (
+                      <div key={key} className="p-3 bg-white border border-gray-200 rounded-lg">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm font-medium text-gray-700 capitalize">
+                            {key.replace(/([A-Z])/g, ' $1').trim()}
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            {metric.score}/{metric.max}
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-1 mb-2">
+                          <div 
+                            className={`h-1 rounded-full transition-all duration-300 ${
+                              metric.score === metric.max ? 'bg-green-500' : 
+                              metric.score > metric.max / 2 ? 'bg-yellow-500' : 'bg-red-500'
+                            }`}
+                            style={{ width: `${(metric.score / metric.max) * 100}%` }}
+                          ></div>
+                        </div>
+                        <p className="text-xs text-gray-600">{metric.details}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </TabsContent>
 
@@ -1272,7 +1357,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
                   id="related_glossary_terms"
                   {...form.register('related_glossary_terms')}
                   disabled={loading}
-                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                  className="bg-white border-gray-400 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500"
                   placeholder="termin1, termin2, termin3"
                 />
               </div>
@@ -1343,7 +1428,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
             onClick={form.handleSubmit(onSubmit)}
             disabled={loading}
             variant="outline"
-            className="border-gray-300 text-gray-700 hover:bg-gray-50 w-full sm:w-auto"
+            className="border-gray-400 text-gray-700 hover:bg-gray-50 w-full sm:w-auto"
           >
             {loading ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -1366,6 +1451,19 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
             )}
             {initialData ? 'Objavi izmene' : 'Objavi odmah'}
           </Button>
+          
+          {onCancel && (
+            <Button
+              type="button"
+              onClick={handleCancel}
+              disabled={loading}
+              variant="outline"
+              className="border-red-300 text-red-600 hover:bg-red-50 w-full sm:w-auto"
+            >
+              <X className="h-4 w-4 mr-2" />
+              Odustani
+            </Button>
+          )}
         </div>
       </div>
     </div>

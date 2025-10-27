@@ -21,6 +21,15 @@ Advanced Dental Practice Management Website with Internal Content Management Sys
 - ✅ Weekly automated backups
 - ✅ LLM optimization with llms.txt
 
+### Beta Strapi CMS – testiranje
+Trenutno testiramo Strapi CMS kao moguću zamenu za postojeći admin panel. Sadržaj bloga i rečnika će preći u Strapi kad potvrđeno da sve radi kako treba.
+
+**Pristup:** `/admin2` (dostupno samo u development i staging okruženju)
+- 🔒 Zaštićeno autentikacijom (isti admin pristup kao `/admin-panel`)
+- 🚫 Meta tag `noindex,nofollow` - ne indeksira se u Google-u
+- 🔗 Direktan link ka Strapi admin panelu
+- 🏷️ Beta badge za jasno označavanje test verzije
+
 ### Content Types
 1. **Blogs** - SEO posts with FAQ schema, tags, publishing status, rich content
 2. **Glossary** - Wiki-style dictionary terms with related entries
@@ -32,6 +41,33 @@ Advanced Dental Practice Management Website with Internal Content Management Sys
 - **Meta tags and OpenGraph support**
 - **Internal linking suggestions**
 - **Responsive design with modern UI**
+
+## 🔐 Git Account Rules
+
+**CRITICAL:** This project MUST always use the odontoa GitHub account for all git operations.
+
+### Git Configuration Setup:
+```bash
+# Run this script to set up correct git configuration
+./setup-git-odontoa.sh
+
+# Or manually configure:
+git config --local user.name "Odontoa Team"
+git config --local user.email "info@odontoa.com"
+git remote set-url origin git@github.com-odontoa:odontoa/odontoa-website.git
+```
+
+### Account Rules:
+- ✅ **Always use**: `odontoa/odontoa-website` repository
+- ✅ **Email**: `info@odontoa.com` [[memory:7917533]]
+- ✅ **User**: `Odontoa Team`
+- ❌ **Never use**: Personal GitHub accounts
+- ❌ **Never push to**: Other repositories
+
+### Pre-push Hook:
+- Automatically verifies correct account before each push
+- Prevents accidental pushes to wrong repositories
+- Auto-corrects user configuration if needed
 
 ## 🌿 Branch Management
 

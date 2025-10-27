@@ -76,7 +76,7 @@ const Footer = () => {
               <li><Link href="/pomoc-i-pravno#uslovi" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Uslovi korišćenja</Link></li>
               <li><Link href="/pomoc-i-pravno#gdpr" className="text-muted-foreground text-sm hover:text-foreground transition-colors">GDPR</Link></li>
               <li><Link href="/demo" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Demo</Link></li>
-              <li><Link href="/admin-panel" className="text-muted-foreground/70 text-xs hover:text-muted-foreground transition-colors">Admin</Link></li>
+              <li><Link href="/admin-panel" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/70 text-xs hover:text-muted-foreground transition-colors">Admin</Link></li>
             </ul>
           </div>
         </div>
