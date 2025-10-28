@@ -5,7 +5,7 @@
     "singularName": "article",
     "pluralName": "articles",
     "displayName": "Article",
-    "description": "Articles for Odontoa blog (FINAL schema: key_takeaways, faq_items, CTA footer, SEO, geo_focus, structured_data_override) - Force rebuild"
+    "description": "Articles for Odontoa blog (synced v2 layout) - Force rebuild"
   },
   "options": {
     "draftAndPublish": true
