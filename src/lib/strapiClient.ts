@@ -182,26 +182,35 @@ export async function fetchPublicArticles(): Promise<ArticleSummary[]> {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
     if (!baseUrl) {
+      console.warn('NEXT_PUBLIC_STRAPI_URL is not set');
       return [];
     }
+
+    console.log('Attempting to fetch articles from:', baseUrl);
 
     const res = await fetch(
       `${baseUrl}/api/articles?populate=*`,
       {
         method: "GET",
         next: { revalidate: 60 },
+        // Add timeout and better error handling
+        signal: AbortSignal.timeout(10000), // 10 second timeout
       }
     );
 
     if (!res.ok) {
+      console.error(`Strapi API error: ${res.status} ${res.statusText}`);
       return [];
     }
 
     const data = await res.json();
     
     if (!data.data || !Array.isArray(data.data)) {
+      console.warn('Invalid data structure received from Strapi');
       return [];
     }
+
+    console.log(`Successfully fetched ${data.data.length} articles from Strapi`);
 
     return data.data.map((article: StrapiArticle) => {
       // Handle cover image URL with fallback logic
@@ -228,7 +237,8 @@ export async function fetchPublicArticles(): Promise<ArticleSummary[]> {
       };
     });
   } catch (error) {
-    console.error('Error fetching public articles:', error);
+    console.error('Error fetching public articles from Strapi:', error);
+    // Return empty array instead of throwing to allow fallback content
     return [];
   }
 }

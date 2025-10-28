@@ -4,44 +4,83 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { BookOpen, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
-import { Blog } from "@/lib/supabase";
+import { fetchPublicArticles, ArticleSummary } from "@/lib/strapiClient";
 import Link from "next/link";
 
 const FeaturedBlogsSection = () => {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [blogs, setBlogs] = useState<ArticleSummary[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        // TODO: Strapi CMS integration - replace Supabase with Strapi API
-        // Future mapping: ${process.env.NEXT_PUBLIC_STRAPI_URL}/api/blog-posts?populate=*&filters[featured][$eq]=true
-        // Fields mapping: title, slug, excerpt, cover_image, tags, read_time, main_content, faq, seo_schema, datePublished, author
+        // Uzmi sve članke iz Strapi-ja (za sada bez featured filtera)
+        const articles = await fetchPublicArticles();
         
-        // Dohvati samo članke sa featured = true
-        let { data, error } = await supabase
-          .from('blogs')
-          .select('*')
-          .eq('published', true)
-          .eq('featured', true)
-          .order('created_at', { ascending: false })
-          .limit(3);
-
-        if (error) {
-          console.error('Error fetching featured blogs:', error);
-          return;
-        }
-
-        // Ako nema featured članaka, ne prikazuj sekciju
-        if (!data || data.length === 0) {
-          console.log('No featured blogs found');
-          setBlogs([]);
+        // Uzmi prva 3 članka kao "featured"
+        const featuredArticles = articles.slice(0, 3);
+        
+        if (featuredArticles.length === 0) {
+          console.log('No featured blogs found - using fallback content');
+          // Fallback sadržaj kada Strapi nije dostupan
+          setBlogs([
+            {
+              title: "Digitalizacija stomatološke ordinacije",
+              slug: "digitalizacija-stomatoloske-ordinacije",
+              description: "Saznajte kako moderni alati mogu transformisati vašu stomatološku praksu i poboljšati efikasnost rada.",
+              coverImageUrl: null,
+              authorName: "Odontoa tim",
+              publishedAtISO: new Date().toISOString()
+            },
+            {
+              title: "Upravljanje pacijentima u digitalnom dobu",
+              slug: "upravljanje-pacijentima-digitalno",
+              description: "Najbolje prakse za organizaciju i praćenje pacijenata kroz digitalne alate.",
+              coverImageUrl: null,
+              authorName: "Odontoa tim",
+              publishedAtISO: new Date().toISOString()
+            },
+            {
+              title: "Automatizacija SMS i email podsetnika",
+              slug: "automatizacija-podsetnika",
+              description: "Kako automatizovati komunikaciju sa pacijentima i smanjiti administrativni teret.",
+              coverImageUrl: null,
+              authorName: "Odontoa tim",
+              publishedAtISO: new Date().toISOString()
+            }
+          ]);
         } else {
-          setBlogs(data);
+          setBlogs(featuredArticles);
         }
       } catch (error) {
         console.error('Error fetching blogs:', error);
+        // Fallback sadržaj u slučaju greške
+        setBlogs([
+          {
+            title: "Digitalizacija stomatološke ordinacije",
+            slug: "digitalizacija-stomatoloske-ordinacije",
+            description: "Saznajte kako moderni alati mogu transformisati vašu stomatološku praksu i poboljšati efikasnost rada.",
+            coverImageUrl: null,
+            authorName: "Odontoa tim",
+            publishedAtISO: new Date().toISOString()
+          },
+          {
+            title: "Upravljanje pacijentima u digitalnom dobu",
+            slug: "upravljanje-pacijentima-digitalno",
+            description: "Najbolje prakse za organizaciju i praćenje pacijenata kroz digitalne alate.",
+            coverImageUrl: null,
+            authorName: "Odontoa tim",
+            publishedAtISO: new Date().toISOString()
+          },
+          {
+            title: "Automatizacija SMS i email podsetnika",
+            slug: "automatizacija-podsetnika",
+            description: "Kako automatizovati komunikaciju sa pacijentima i smanjiti administrativni teret.",
+            coverImageUrl: null,
+            authorName: "Odontoa tim",
+            publishedAtISO: new Date().toISOString()
+          }
+        ]);
       } finally {
         setLoading(false);
       }
@@ -102,14 +141,14 @@ const FeaturedBlogsSection = () => {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <Link href={`/blog/${blogs[0].slug}`}>
+              <Link href={`/blog2/${blogs[0].slug}`}>
                 <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:scale-[1.02] hover:border hover:border-primary/30 hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-200">
                   <div className="flex items-center mb-3">
                     <div className="p-2 bg-primary/10 rounded-lg mr-3">
                       <BookOpen className="w-5 h-5 text-primary" />
                     </div>
                     <span className="text-sm text-primary font-medium">
-                      {blogs[0].tags?.[0] || 'Blog'}
+                      Blog
                     </span>
                   </div>
                   
@@ -118,12 +157,12 @@ const FeaturedBlogsSection = () => {
                   </h3>
                   
                   <p className="text-muted-foreground text-base mb-4 line-clamp-2">
-                    {blogs[0].excerpt || (blogs[0].content ? blogs[0].content.substring(0, 150) + '...' : '')}
+                    {blogs[0].description}
                   </p>
                   
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">
-                      {formatDate(blogs[0].created_at)}
+                      {formatDate(blogs[0].publishedAtISO)}
                     </span>
                     <Button 
                       variant="ghost" 
@@ -141,7 +180,7 @@ const FeaturedBlogsSection = () => {
             {blogs.length > 1 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {blogs.slice(1).map((blog, index) => (
-                  <Link key={blog.id} href={`/blog/${blog.slug}`}>
+                  <Link key={blog.slug} href={`/blog2/${blog.slug}`}>
                     <motion.div
                       className="bg-white/80 backdrop-blur-sm rounded-lg p-4 shadow-md hover:scale-105 hover:border hover:border-primary/30 hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-200 min-h-[160px]"
                       initial={{ opacity: 0, y: 30 }}
@@ -154,7 +193,7 @@ const FeaturedBlogsSection = () => {
                           <BookOpen className="w-4 h-4 text-primary" />
                         </div>
                         <span className="text-xs text-primary font-medium">
-                          {blog.tags?.[0] || 'Blog'}
+                          Blog
                         </span>
                       </div>
                       
@@ -163,12 +202,12 @@ const FeaturedBlogsSection = () => {
                       </h4>
                       
                       <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
-                        {blog.excerpt || (blog.content ? blog.content.substring(0, 100) + '...' : '')}
+                        {blog.description}
                       </p>
                       
                       <div className="flex items-center justify-between mt-auto">
                         <span className="text-xs text-muted-foreground">
-                          {formatDate(blog.created_at)}
+                          {formatDate(blog.publishedAtISO)}
                         </span>
                         <Button 
                           variant="ghost" 
