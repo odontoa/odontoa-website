@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_blog_key_takeaways",
+  "info": {
+    "displayName": "Key Takeaway",
+    "description": "A key takeaway item for blog articles"
+  },
+  "options": {
+    "timestamps": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "icon": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    }
+  }
+}
