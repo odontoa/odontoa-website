@@ -174,6 +174,17 @@ export default async function BlogArticlePage({ params }: { params: { slug: stri
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
         />
+
+        {/* Dev-only debug of image URLs */}
+        {process.env.NODE_ENV !== 'production' && (
+          <div className="mt-10 text-xs text-slate-500 border-t border-slate-200 pt-4">
+            <p className="font-medium mb-2">Debug: Strapi image URLs</p>
+            <pre className="whitespace-pre-wrap break-all">
+{`coverImageUrl: ${article.coverImageUrl || 'null'}
+authorAvatarUrl: ${article.authorAvatarUrl || 'null'}`}
+            </pre>
+          </div>
+        )}
       </article>
     </div>
   );

@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['localhost', 'images.unsplash.com'],
+    domains: [
+      'localhost',
+      'images.unsplash.com',
+      // Strapi Cloud asset host
+      'inspiring-chocolate-0dd8ffdae3.strapiapp.com',
+    ],
     unoptimized: true,
   },
   trailingSlash: false,

@@ -1,17 +1,31 @@
 // TypeScript types for Strapi article response
 interface StrapiImage {
-  url: string;
-  formats?: {
-    medium?: {
-      url: string;
+  attributes?: {
+    url: string;
+    formats?: {
+      medium?: { url: string };
+      small?: { url: string };
+      thumbnail?: { url: string };
     };
-    small?: {
-      url: string;
-    };
-    thumbnail?: {
-      url: string;
-    };
-  };
+  } | null;
+  url?: string; // fallback for non-standard shapes
+  formats?: { medium?: { url: string } };
+}
+
+// Normalize Strapi base URL to root host (no trailing /, no /api or /admin suffixes)
+function normalizeBaseUrl(input?: string | null): string {
+  if (!input) return '';
+  let url = input.trim();
+  // remove trailing slash
+  if (url.endsWith('/')) url = url.slice(0, -1);
+  // strip common suffixes
+  for (const suffix of ['/api', '/admin']) {
+    if (url.toLowerCase().endsWith(suffix)) {
+      url = url.slice(0, -suffix.length);
+      if (url.endsWith('/')) url = url.slice(0, -1);
+    }
+  }
+  return url;
 }
 
 interface StrapiAuthor {
@@ -46,6 +60,11 @@ interface StrapiArticle {
   excerpt?: string;
   content?: string;
   body?: string;
+  // Strapi dynamic zone used in our Article schema
+  // Example item: { __component: 'shared.rich-text', body: '<p>...</p>' }
+  //                { __component: 'shared.media', file: { data: { url: '/uploads/..' } } }
+  //                { __component: 'shared.quote', text: '...', author: '...' }
+  blocks?: Array<Record<string, any>>;
   cover?: {
     data?: StrapiImage;
   };
@@ -132,16 +151,22 @@ export async function fetchBlogPosts(): Promise<StrapiResponse> {
 }
 
 export function normalizeStrapiArticles(raw: StrapiResponse): NormalizedArticle[] {
+  // Build absolute URL helper using env base
+  const baseUrl = normalizeBaseUrl(process.env.NEXT_PUBLIC_STRAPI_URL) || '';
+  const toAbsoluteUrl = (url?: string | null): string | null => {
+    if (!url) return null;
+    if (url.startsWith('http')) return url;
+    return `${baseUrl}${url}`;
+  };
   return raw.data.map((article) => {
     // Handle cover image URL with fallback logic
     let coverImageUrl: string | null = null;
     if (article.cover?.data) {
-      const cover = article.cover.data;
-      if (cover.formats?.medium?.url) {
-        coverImageUrl = cover.formats.medium.url;
-      } else if (cover.url) {
-        coverImageUrl = cover.url;
-      }
+      const cover = article.cover.data as StrapiImage;
+      const attrs = cover.attributes;
+      const medium = attrs?.formats?.medium?.url || cover.formats?.medium?.url;
+      const url = medium || attrs?.url || cover.url;
+      coverImageUrl = toAbsoluteUrl(url || null);
     }
 
     // Handle author name with fallback
@@ -180,7 +205,7 @@ export async function getPreviewArticles(): Promise<NormalizedArticle[]> {
 // New public blog functions
 export async function fetchPublicArticles(): Promise<ArticleSummary[]> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+    const baseUrl = normalizeBaseUrl(process.env.NEXT_PUBLIC_STRAPI_URL);
     if (!baseUrl) {
       console.warn('NEXT_PUBLIC_STRAPI_URL is not set');
       return [];
@@ -212,16 +237,21 @@ export async function fetchPublicArticles(): Promise<ArticleSummary[]> {
 
     console.log(`Successfully fetched ${data.data.length} articles from Strapi`);
 
+    const toAbsoluteUrl = (url?: string | null): string | null => {
+      if (!url) return null;
+      if (url.startsWith('http')) return url;
+      return `${baseUrl}${url}`;
+    };
+
     return data.data.map((article: StrapiArticle) => {
       // Handle cover image URL with fallback logic
       let coverImageUrl: string | null = null;
       if (article.cover?.data) {
-        const cover = article.cover.data;
-        if (cover.formats?.medium?.url) {
-          coverImageUrl = cover.formats.medium.url;
-        } else if (cover.url) {
-          coverImageUrl = cover.url;
-        }
+        const cover = article.cover.data as StrapiImage;
+        const attrs = cover.attributes;
+        const medium = attrs?.formats?.medium?.url || cover.formats?.medium?.url;
+        const url = medium || attrs?.url || cover.url;
+        coverImageUrl = toAbsoluteUrl(url || null);
       }
 
       // Handle author name with fallback
@@ -245,18 +275,29 @@ export async function fetchPublicArticles(): Promise<ArticleSummary[]> {
 
 export async function fetchArticleBySlug(slug: string): Promise<ArticleDetails | null> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+    const baseUrl = normalizeBaseUrl(process.env.NEXT_PUBLIC_STRAPI_URL);
     if (!baseUrl) {
       return null;
     }
 
-    const res = await fetch(
-      `${baseUrl}/api/articles?filters[slug][$eq]=${slug}&populate=*`,
-      {
-        method: "GET",
-        next: { revalidate: 60 },
-      }
-    );
+    const toAbsoluteUrl = (url?: string | null): string | null => {
+      if (!url) return null;
+      if (url.startsWith('http')) return url;
+      return `${baseUrl}${url}`;
+    };
+
+    // Deep populate cover, author.avatar and blocks to ensure media URLs are present
+    const encodedSlug = encodeURIComponent(slug);
+    const url = `${baseUrl}/api/articles?filters[slug][$eq]=${encodedSlug}`
+      + `&populate[cover][populate]=*`
+      + `&populate[author][populate][avatar][populate]=*`
+      + `&populate[blocks][populate]=*`
+      + `&publicationState=live`;
+
+    const res = await fetch(url, {
+      method: "GET",
+      next: { revalidate: 60 },
+    });
 
     if (!res.ok) {
       return null;
@@ -273,28 +314,60 @@ export async function fetchArticleBySlug(slug: string): Promise<ArticleDetails |
     // Handle cover image URL with fallback logic
     let coverImageUrl: string | null = null;
     if (article.cover?.data) {
-      const cover = article.cover.data;
-      if (cover.formats?.medium?.url) {
-        coverImageUrl = cover.formats.medium.url;
-      } else if (cover.url) {
-        coverImageUrl = cover.url;
-      }
+      const cover = article.cover.data as StrapiImage;
+      const attrs = cover.attributes;
+      const medium = attrs?.formats?.medium?.url || cover.formats?.medium?.url;
+      const url = medium || attrs?.url || cover.url;
+      coverImageUrl = toAbsoluteUrl(url || null);
     }
 
     // Handle author name and avatar with fallback
     const authorName = article.author?.data?.attributes?.name || null;
     let authorAvatarUrl: string | null = null;
     if (article.author?.data?.attributes?.avatar?.data) {
-      const avatar = article.author.data.attributes.avatar.data;
-      if (avatar.formats?.medium?.url) {
-        authorAvatarUrl = avatar.formats.medium.url;
-      } else if (avatar.url) {
-        authorAvatarUrl = avatar.url;
-      }
+      const avatar = article.author.data.attributes.avatar.data as StrapiImage;
+      const attrs = avatar.attributes;
+      const medium = attrs?.formats?.medium?.url || avatar.formats?.medium?.url;
+      const url = medium || attrs?.url || avatar.url;
+      authorAvatarUrl = toAbsoluteUrl(url || null);
     }
 
-    // Handle content - try different possible field names
-    const contentHtml = article.content || article.body || article.description || null;
+    // Handle content
+    // 1) Prefer dynamic zone `blocks` (shared.rich-text, shared.media, shared.quote)
+    // 2) Fallback to legacy fields: content/body/description
+    let blocksHtml: string | null = null;
+    if (Array.isArray(article.blocks) && article.blocks.length > 0) {
+      const parts: string[] = [];
+      for (const block of article.blocks) {
+        const type = block.__component as string | undefined;
+        if (!type) continue;
+        if (type.endsWith('rich-text') && typeof block.body === 'string') {
+          parts.push(block.body);
+        } else if (type.endsWith('media')) {
+          // Strapi media component frequently uses fields: file / image / media
+          const mediaObj = block.file || block.image || block.media;
+          const mediaData = mediaObj?.data as StrapiImage | undefined;
+          const attrs = mediaData?.attributes;
+          const medium = attrs?.formats?.medium?.url || mediaData?.formats?.medium?.url;
+          const mediaUrl = medium || attrs?.url || mediaData?.url || mediaObj?.url;
+          const abs = toAbsoluteUrl(mediaUrl || null);
+          if (abs) {
+            const alt = block.alt || block.caption || '';
+            parts.push(`<figure><img src="${abs}" alt="${alt}"><figcaption>${alt || ''}</figcaption></figure>`);
+          }
+        } else if (type.endsWith('quote')) {
+          const text = block.text || block.body || '';
+          const author = block.author || '';
+          if (text) {
+            parts.push(`<blockquote><p>${text}</p>${author ? `<footer>— ${author}</footer>` : ''}</blockquote>`);
+          }
+        }
+      }
+      blocksHtml = parts.length > 0 ? parts.join('\n') : null;
+    }
+
+    const contentHtml =
+      blocksHtml || article.content || article.body || article.description || null;
 
     return {
       title: article.title || 'Untitled',
