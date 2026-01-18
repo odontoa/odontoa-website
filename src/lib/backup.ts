@@ -1,4 +1,5 @@
-import { supabase } from './supabase'
+// Supabase removed - backup functionality disabled
+// import { supabase } from './supabase'
 
 export interface BackupData {
   blogs: any[]
@@ -12,6 +13,9 @@ export interface BackupData {
 }
 
 export const generateBackup = async (): Promise<BackupData> => {
+  // Supabase removed - backup functionality disabled
+  throw new Error('Backup functionality is disabled. Supabase has been removed.')
+  /* DISABLED
   try {
     // Fetch all blogs
     const { data: blogs, error: blogsError } = await supabase
@@ -49,6 +53,7 @@ export const generateBackup = async (): Promise<BackupData> => {
     console.error('Backup error:', error)
     throw error
   }
+  */ // END DISABLED
 }
 
 export const downloadBackup = async (format: 'json' | 'zip' = 'json') => {
@@ -82,6 +87,9 @@ export const downloadBackup = async (format: 'json' | 'zip' = 'json') => {
 }
 
 export const getBackupStats = async () => {
+  // Supabase removed - backup stats disabled
+  return { blogs: 0, glossary: 0, total: 0 }
+  /* DISABLED
   try {
     const { count: blogsCount } = await supabase
       .from('blogs')
@@ -100,4 +108,5 @@ export const getBackupStats = async () => {
     console.error('Backup stats error:', error)
     return { blogs: 0, glossary: 0, total: 0 }
   }
+  */ // END DISABLED
 } 
