@@ -85,7 +85,7 @@ interface BlogFormProps {
   initialData?: any
 }
 
-export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initialData }) => {
+export const BlogForm = ({ onSuccess, onCancel, initialData }: BlogFormProps): JSX.Element => {
   const { user, session, isAdmin } = useAuth()
   const { setDirty } = useFormDirty()
   const { executeProtectedAction } = useProtectedAction()
@@ -437,7 +437,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
         setError('Niste ulogovani kao admin')
         toast.error('Niste ulogovani kao admin')
         setLoading(false)
-        return
+        return Promise.resolve()
       }
 
 
@@ -455,7 +455,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
         } catch (e) {
           setError('Nevalidan FAQ Schema JSON format')
           setLoading(false)
-          return
+          return Promise.resolve()
         }
       }
 
@@ -569,11 +569,11 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
       }
   }
 
-  const onSubmit = (data: BlogFormData) => {
+  const onSubmit = (data: BlogFormData): void => {
     submitBlogRawHTTP(data, false) // Save as draft
   }
 
-  const handleCancel = () => {
+  const handleCancel = (): void => {
     executeProtectedAction(() => {
       if (initialData) {
         // Edit mode - restore original data
@@ -633,7 +633,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
     })
   }
 
-  const onPublish = (data: BlogFormData) => {
+  const onPublish = (data: BlogFormData): void => {
     // Validate required SEO fields before publishing
     const missingFields = []
     if (!data.meta_description || data.meta_description.length < 10) {
