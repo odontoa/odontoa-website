@@ -85,7 +85,7 @@ interface BlogFormProps {
   initialData?: any
 }
 
-export const BlogForm = ({ onSuccess, onCancel, initialData }: BlogFormProps): JSX.Element => {
+export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initialData }) => {
   const { user, session, isAdmin } = useAuth()
   const { setDirty } = useFormDirty()
   const { executeProtectedAction } = useProtectedAction()
