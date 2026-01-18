@@ -44,7 +44,8 @@ import {
   suggestRelatedContent
 } from '@/lib/utils'
 import { buildCombinedSchema } from '@/lib/schema/buildJsonLd'
-import { supabase } from '@/lib/supabase'
+// Supabase removed - admin panel needs Sanity migration
+// import { supabase } from '@/lib/supabase'
 
 const glossarySchema = z.object({
   term: z.string().min(1, 'Termin je obavezan'),
@@ -198,6 +199,10 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess, onCancel 
     const formData = form.getValues()
     if (formData.fullArticle) {
       try {
+        // Supabase removed - suggestions disabled
+        const existingBlogs: any[] = []
+        const existingGlossary: any[] = []
+        /* DISABLED
         // Fetch existing content for suggestions
         const { data: existingBlogs } = await supabase
           .from('blogs')
@@ -210,6 +215,7 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess, onCancel 
           .select('id, term, slug, related_terms, full_article')
           .eq('published', true)
           .limit(20)
+        */
 
         const allContent = [
           ...(existingBlogs || []),
@@ -396,47 +402,14 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess, onCancel 
         seo_score: seoScore,
       }
 
-      console.log('=== MAKING GLOSSARY RAW HTTP REQUEST ===')
-      console.log('Glossary data:', glossaryData)
-      console.log('Using session access_token:', session.access_token ? 'present' : 'missing')
-      
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/glossary`, {
-        method: 'POST',
-        headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqYmZtZGRyZWtqbWFjdHl0YWt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDA1NjEsImV4cCI6MjA2OTAxNjU2MX0.jkSPsLNdD1pfm5er4TgHm0T6vVdYaXorlnScFe_X99k',
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=representation'
-        },
-        body: JSON.stringify(glossaryData)
-      })
-
-      console.log('=== GLOSSARY RAW HTTP RESPONSE ===')
-      console.log('Status:', response.status)
-      console.log('OK:', response.ok)
-
-      if (response.ok) {
-        const insertedData = await response.json()
-        console.log('=== GLOSSARY RAW HTTP SUCCESS ===')
-        console.log('Inserted data:', insertedData)
-        
-        toast.success('Rečnički termin uspešno kreiran!')
-        form.reset()
-        window.dispatchEvent(new Event('storage'))
-        onSuccess?.()
-      } else {
-        const errorData = await response.text()
-        console.error('=== GLOSSARY RAW HTTP ERROR ===')
-        console.error('Error data:', errorData)
-        setError(`HTTP greška: ${response.status} - ${response.statusText}`)
-        toast.error(`HTTP greška: ${response.status}`)
-      }
+      // Supabase removed - glossary creation disabled
+      toast.error('Kreiranje rečnika je privremeno onemogućeno. Supabase je uklonjen.')
+      return
     } catch (err) {
       console.error('=== GLOSSARY RAW HTTP SUBMIT ERROR ===', err)
       console.error('Error details:', err)
       setError('Greška pri HTTP pozivu')
       toast.error('Greška pri HTTP pozivu')
-      // Don't call onSuccess on error
     } finally {
       setLoading(false)
       console.log('=== GLOSSARY RAW HTTP SUBMIT END ===')

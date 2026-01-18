@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ChevronRight, Menu, X, Zap, Shield, Calendar, Bell, TrendingUp, Star } from 'lucide-react';
 import CountUp from "react-countup";
@@ -12,20 +12,30 @@ import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
 const transitionVariants = {
+  container: {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.25,
+        delayChildren: 0.3,
+      },
+    },
+  },
   item: {
     hidden: {
       opacity: 0,
-      filter: 'blur(12px)',
-      y: 12,
+      filter: 'blur(8px)',
+      y: 20,
     },
     visible: {
       opacity: 1,
       filter: 'blur(0px)',
       y: 0,
       transition: {
-        type: 'spring' as const,
-        bounce: 0.3,
-        duration: 1.5,
+        type: 'easeOut' as const,
+        duration: 1.2,
+        ease: [0.16, 1, 0.3, 1],
       },
     },
   },
@@ -65,8 +75,51 @@ const dentistAvatars = [
 ];
 
 const HeroSection = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleTimeUpdate = () => {
+      if (video.duration && video.currentTime >= video.duration - 0.5) {
+        video.pause();
+      }
+    };
+
+    video.addEventListener('timeupdate', handleTimeUpdate);
+
+    return () => {
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+    };
+  }, []);
+
+  const handleVideoEnd = () => {
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
+  };
+
   return (
-    <main className="overflow-hidden">
+    <main className="overflow-hidden relative">
+      {/* Video Background */}
+      <video
+        ref={videoRef}
+        src="/videos/homepage-hero-video.mp4"
+        autoPlay
+        muted
+        playsInline
+        onEnded={handleVideoEnd}
+        className="absolute inset-0 w-full h-full object-cover z-0"
+        style={{ objectFit: 'cover', objectPosition: 'center' }}
+      />
+      
+      {/* Overlay for better text readability */}
+      <div className="absolute inset-0 bg-background/40 z-[1] pointer-events-none" />
+      
+      {/* Gradient overlay on left side for more authority */}
+      <div className="absolute inset-0 bg-gradient-to-r from-background/6 via-transparent to-transparent z-[1] pointer-events-none" />
+      
       <div
         aria-hidden
         className="z-[2] absolute inset-0 pointer-events-none isolate opacity-50 contain-strict hidden lg:block">
@@ -76,7 +129,7 @@ const HeroSection = () => {
       </div>
       
       {/* Animated Grid Pattern Background */}
-      <div className="absolute inset-0 z-[1] pointer-events-none">
+      <div className="absolute inset-0 z-[3] pointer-events-none">
         <AnimatedGridPattern
           numSquares={20}
           maxOpacity={0.03}
@@ -90,92 +143,48 @@ const HeroSection = () => {
           )}
         />
       </div>
-      <section className="section-spacing">
-        <div className="relative pt-24 md:pt-36">
-          <AnimatedGroup
-            variants={{
-              container: {
-                visible: {
-                  transition: {
-                    delayChildren: 1,
-                  },
-                },
-              },
-              item: {
-                hidden: {
-                  opacity: 0,
-                  y: 20,
-                },
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                  transition: {
-                    type: 'spring',
-                    bounce: 0.3,
-                    duration: 2,
-                  },
-                },
-              },
-            }}
-            className="absolute inset-0 -z-20">
-            {/* Plavkasti glow efekat iza slike */}
-            <div className="absolute inset-x-0 top-20 w-full h-[400px] bg-gradient-to-b from-[#EFF6FF]/40 via-transparent to-transparent rounded-full blur-3xl z-10" />
-            
-            {/* Animated Grid Pattern behind the dashboard image */}
-            <div className="absolute inset-x-0 top-20 p-4 z-15">
-              <div className="relative max-w-4xl mx-auto">
-                <AnimatedGridPattern
-                  numSquares={15}
-                  maxOpacity={0.08}
-                  duration={8}
-                  repeatDelay={3}
-                  width={80}
-                  height={80}
-                  className={cn(
-                    "[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]",
-                    "absolute inset-0 rounded-2xl",
-                  )}
-                />
-              </div>
-            </div>
-            
-            <div className="absolute inset-x-0 top-20 p-4 z-20">
-              {/* Plavkasti glow oko slike */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#EFF6FF]/30 via-transparent to-[#EFF6FF]/30 rounded-2xl blur-xl" />
-              <img
-                src="/images/doktori-dashboard.png"
-                alt="Odontoa Dashboard"
-                className="relative w-full h-auto rounded-2xl border border-[#DBEAFE]/50 shadow-[0_0_50px_rgba(2,132,199,0.25)] drop-shadow-[0_0_30px_rgba(2,132,199,0.15)] max-w-4xl mx-auto"
-                width="3276"
-                height="4095"
-              />
-            </div>
-          </AnimatedGroup>
-          <div aria-hidden className="absolute inset-0 -z-10 size-full [background:radial-gradient(125%_125%_at_50%_100%,transparent_0%,var(--background)_75%)]" />
-          <div className="mx-auto max-w-7xl px-6">
+      <section className="section-spacing relative z-[10]">
+        <div className="relative pt-32 md:pt-48">
+          <div aria-hidden className="absolute inset-0 size-full [background:radial-gradient(125%_125%_at_50%_100%,transparent_0%,var(--background)_75%)] z-[4]" />
+          <div className="mx-auto max-w-7xl px-6 relative z-[5]">
             <div className="text-center sm:mx-auto lg:mr-auto lg:mt-0">
               <AnimatedGroup variants={transitionVariants}>
-                <h1 className="mt-8 max-w-4xl mx-auto text-balance text-foreground font-normal">
+                <h1 className="mt-4 max-w-4xl mx-auto text-balance text-foreground font-normal">
                   Upravljajte ordinacijom<br />
                   bez stresa
                 </h1>
                 <div className="mx-auto mt-8 max-w-2xl text-balance text-lg text-muted-foreground leading-relaxed">
-                  <p>Kompletno rešenje za stomatološke prakse - automatsko zakazivanje, digitalni kartoni i pregled stanja u realnom vremenu.</p>
-                  <p className="mt-2 font-medium">Sve na jednom mestu.</p>
+                  <p>Kompletno rešenje za stomatološke prakse - automatizujte zakazivanje i administraciju</p>
                 </div>
               </AnimatedGroup>
 
               <AnimatedGroup
                 variants={{
                   container: {
+                    hidden: { opacity: 0 },
                     visible: {
+                      opacity: 1,
                       transition: {
-                        staggerChildren: 0.05,
-                        delayChildren: 0.75,
+                        staggerChildren: 0.15,
+                        delayChildren: 1.2,
                       },
                     },
                   },
-                  ...transitionVariants,
+                  item: {
+                    hidden: {
+                      opacity: 0,
+                      y: 15,
+                    },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: {
+                        type: 'easeOut' as const,
+                        duration: 0.8,
+                        ease: [0.16, 1, 0.3, 1],
+                      },
+                    },
+                  },
                 }}
                 className="mt-12 flex flex-col items-center justify-center gap-2 md:flex-row">
                 <div
@@ -208,28 +217,48 @@ const HeroSection = () => {
               <AnimatedGroup
                 variants={{
                   container: {
+                    hidden: { opacity: 0 },
                     visible: {
+                      opacity: 1,
                       transition: {
-                        staggerChildren: 0.05,
-                        delayChildren: 0.75,
+                        staggerChildren: 0.1,
+                        delayChildren: 1.8,
                       },
                     },
                   },
-                  ...transitionVariants,
+                  item: {
+                    hidden: {
+                      opacity: 0,
+                      y: 10,
+                    },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: {
+                        type: 'easeOut' as const,
+                        duration: 0.9,
+                        ease: [0.16, 1, 0.3, 1],
+                      },
+                    },
+                  },
                 }}
-                className="mt-8 flex flex-col items-center justify-center gap-4 text-muted-foreground text-sm">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                className="mt-8 flex flex-col items-center justify-center gap-4">
+                <div className="bg-white/90 backdrop-blur-md rounded-xl border border-gray-200/40 shadow-sm px-4 py-3">
+                  <div className="flex flex-col items-center justify-center gap-3 text-muted-foreground text-sm">
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-1">
+                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                      </div>
+                      <span className="font-medium text-foreground">4.9+</span>
+                      <AnimatedTooltip items={dentistAvatars} />
+                    </div>
+                    <span className="text-muted-foreground text-sm">Razvijeno uz podršku stomatologa širom regiona</span>
                   </div>
-                  <span className="font-medium text-foreground">4.9+</span>
-                  <AnimatedTooltip items={dentistAvatars} />
                 </div>
-                <span className="text-muted-foreground text-sm">Razvijeno uz podršku stomatologa širom regiona</span>
               </AnimatedGroup>
             </div>
           </div>
@@ -289,8 +318,11 @@ const HeroSection = () => {
         </div>
       </AnimatedGroup>
 
+      {/* Soft vertical gradient fade at bottom transitioning to white */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent via-background/60 to-background z-[6] pointer-events-none" />
+      
       {/* Metrics Section - ispod glavne slike */}
-      <div className="mt-16">
+      <div className="mt-16 relative z-[7] overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-6">
           <div className="text-center">
             <Calendar className="w-8 h-8 text-primary mb-4 mx-auto" />
@@ -355,6 +387,15 @@ const HeroSection = () => {
             </p>
           </div>
         </div>
+        
+        {/* Soft gradient fade at bottom transitioning to next section */}
+        <div 
+          className="absolute bottom-0 left-0 right-0 pointer-events-none"
+          style={{
+            height: '100px',
+            background: 'linear-gradient(to bottom, transparent 0%, hsl(0 0% 98% / 0.3) 40%, hsl(0 0% 98% / 0.7) 75%, hsl(0 0% 98%) 100%)'
+          }}
+        />
       </div>
         </div>
       </section>

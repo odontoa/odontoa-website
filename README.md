@@ -103,13 +103,13 @@ Blog sadržaj (naslovi, tekstovi, slike) se sada uređuje u Strapi Cloud. Odonto
 
 # Or manually configure:
 git config --local user.name "Odontoa Team"
-git config --local user.email "info@odontoa.com"
+git config --local user.email "odontoa.com@gmail.com"
 git remote set-url origin git@github.com-odontoa:odontoa/odontoa-website.git
 ```
 
 ### Account Rules:
 - ✅ **Always use**: `odontoa/odontoa-website` repository
-- ✅ **Email**: `info@odontoa.com` [[memory:7917533]]
+- ✅ **Git Email**: `odontoa.com@gmail.com` (for Git commits only)
 - ✅ **User**: `Odontoa Team`
 - ❌ **Never use**: Personal GitHub accounts
 - ❌ **Never push to**: Other repositories

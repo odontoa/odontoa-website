@@ -1,198 +1,272 @@
-'use client';
+import { sanityClient } from "@/lib/sanity.client";
+import {
+  glossaryTermBySlugQuery,
+  type SanityGlossaryTerm,
+} from "@/lib/sanity.queries";
+import { urlFor } from "@/lib/sanity.image";
+import { buildGlossaryJsonLd } from "@/lib/structured-data/glossary-jsonld";
+import PortableTextRenderer from "@/components/PortableTextRenderer";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { ArrowLeft } from "lucide-react";
+import CopyLinkButton from "@/components/glossary/CopyLinkButton";
+import TermInitialAvatar from "@/components/glossary/TermInitialAvatar";
 
-import React, { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
-import { PostLayout } from '@/components/PostLayout'
-import { SeoJsonLd } from '@/components/SeoJsonLd'
-import { buildCombinedSchema } from '@/lib/schema/buildJsonLd'
-import { validateSchemaData, validateDevelopmentWarnings } from '@/lib/schema/validators'
-import { notFound } from 'next/navigation'
+export const revalidate = 3600; // ISR: revalidate every hour
 
-interface GlossaryEntry {
-  id: string
-  term: string
-  slug: string
-  definition: string
-  full_article: string
-  why_it_matters?: string
-  related_blog_posts?: string[]
-  faq_schema?: string
-  related_terms: string[]
-  created_at: string
-  updated_at?: string
-  last_modified?: string
-  published: boolean
-  views_count?: number
-  reading_time?: number
-  seo_score?: number
-  category?: string
-  difficulty_level?: string
-  author?: string
-  author_url?: string
-  image_url?: string
-  alt_text?: string
-  meta_description?: string
+// Helper function to format date as dd.mm.yyyy
+function formatDateShort(isoString: string): string {
+  const date = new Date(isoString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}.${month}.${year}`;
 }
 
-interface PageProps {
-  params: {
-    slug: string
-  }
-}
-
-export default function GlossaryTermPage({ params }: PageProps) {
-  const [term, setTerm] = useState<GlossaryEntry | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [relatedBlogs, setRelatedBlogs] = useState<any[]>([])
-  const [schema, setSchema] = useState<any[]>([])
-  const [schemaError, setSchemaError] = useState<string>('')
-
-  useEffect(() => {
-    fetchTerm()
-  }, [params.slug])
-
-  const fetchTerm = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('glossary')
-        .select('*')
-        .eq('slug', params.slug)
-        .eq('published', true)
-        .single()
-
-      if (error || !data) {
-        console.error('Error fetching term:', error)
-        notFound()
-        return
-      }
-
-      setTerm(data)
-      
-      // Generate JSON-LD schema with enhanced validation
-      try {
-        const validationErrors = validateSchemaData(data, 'glossary')
-        if (validationErrors.length > 0) {
-          console.warn('❌ Schema validation errors:', validationErrors)
-          setSchemaError(validationErrors.join(', '))
-        } else {
-          const generatedSchema = buildCombinedSchema(data, 'glossary')
-          setSchema(generatedSchema)
-          
-          // Development mode warnings
-          validateDevelopmentWarnings(data, 'glossary')
-          
-          console.log('✅ Schema generated successfully:', {
-            webPage: generatedSchema.find(s => s['@type'] === 'WebPage') ? '✅' : '❌',
-            breadcrumbList: generatedSchema.find(s => s['@type'] === 'BreadcrumbList') ? '✅' : '❌',
-            article: generatedSchema.find(s => s['@type'] === 'Article') ? '✅' : '❌',
-            faqPage: generatedSchema.find(s => s['@type'] === 'FAQPage') ? '✅' : '❌'
-          })
-        }
-      } catch (error) {
-        console.error('❌ Error generating schema:', error)
-        setSchemaError(error instanceof Error ? error.message : 'Unknown error')
-      }
-      
-      // Increment view count
-      incrementViewCount(data.id)
-      
-      // Fetch related blogs if available
-      if (data.related_blog_posts && data.related_blog_posts.length > 0) {
-        fetchRelatedBlogs(data.related_blog_posts)
-      }
-    } catch (error) {
-      console.error('Error:', error)
-      notFound()
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const incrementViewCount = async (termId: string) => {
-    try {
-      await supabase
-        .from('glossary')
-        .update({ views_count: supabase.rpc('increment', { row_id: termId, column_name: 'views_count' }) })
-        .eq('id', termId)
-    } catch (error) {
-      console.error('Error incrementing view count:', error)
-    }
-  }
-
-  const fetchRelatedBlogs = async (blogIds: string[]) => {
-    try {
-      const { data, error } = await supabase
-        .from('blogs')
-        .select('*')
-        .in('id', blogIds)
-        .eq('published', true)
-
-      if (!error && data) {
-        setRelatedBlogs(data)
-      }
-    } catch (error) {
-      console.error('Error fetching related blogs:', error)
-    }
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div>
-      </div>
-    )
-  }
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const term = await sanityClient.fetch<SanityGlossaryTerm | null>(
+    glossaryTermBySlugQuery,
+    { slug: params.slug }
+  );
 
   if (!term) {
-    notFound()
+    return {
+      title: "Termin nije pronađen – Odontoa Rečnik",
+      description: "Traženi termin trenutno nije dostupan.",
+    };
   }
 
-  // Extract visible content for FAQ synchronization validation
-  const visibleContent = term.full_article.replace(/<[^>]*>/g, '')
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://odontoa.com";
+  const coverImageUrl = term.coverImage
+    ? urlFor(term.coverImage).width(1200).height(630).url()
+    : `${baseUrl}/og/odontoa-default.png`;
+
+  const title = term.seoTitle || term.term;
+  const description = term.metaDescription || term.definition || "";
+
+  return {
+    title: `${title} – Odontoa Rečnik`,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      publishedTime: term.publishedAt,
+      modifiedTime: term.updatedAt || term.publishedAt,
+      images: [{ url: coverImageUrl, width: 1200, height: 630, alt: term.term }],
+    },
+    alternates: {
+      canonical: term.canonicalUrl || `${baseUrl}/recnik/${params.slug}`,
+    },
+    robots: term.noindex
+      ? { index: false, follow: false }
+      : { index: true, follow: true },
+  };
+}
+
+export default async function GlossaryTermPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const term = await sanityClient.fetch<SanityGlossaryTerm | null>(
+    glossaryTermBySlugQuery,
+    { slug: params.slug }
+  );
+
+  if (!term) {
+    notFound();
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://odontoa.com";
+  const coverImageUrl = term.coverImage
+    ? urlFor(term.coverImage).width(1200).height(630).url()
+    : `${baseUrl}/og/odontoa-default.png`;
+
+  // Build JSON-LD schema (strictly follows Odontoa SEO/LLM rules)
+  const jsonLd = buildGlossaryJsonLd(
+    { ...term, coverImageUrl },
+    baseUrl
+  );
+
+  const currentUrl = `${baseUrl}/recnik/${params.slug}`;
+  const displayDate = formatDateShort(term.updatedAt || term.publishedAt);
 
   return (
     <>
-      {/* Enhanced SEO JSON-LD with visible content validation */}
-      {schema.length > 0 && (
-        <SeoJsonLd 
-          schema={schema}
-          pageTitle={`${term.term} | Odontoa Rečnik`}
-          pageDescription={term.meta_description || term.definition}
-          visibleContent={visibleContent}
-        />
-      )}
-      
-      {/* Schema error display in development */}
-      {process.env.NODE_ENV === 'development' && schemaError && (
-        <div className="fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50 max-w-md">
-          <strong>Schema Error:</strong> {schemaError}
-        </div>
-      )}
-
-      <PostLayout
-        post={{
-          id: term.id,
-          title: term.term,
-          content: term.full_article,
-          excerpt: term.definition,
-          author: term.author || 'Odontoa Tim',
-          created_at: term.created_at,
-          updated_at: term.updated_at,
-          last_modified: term.last_modified,
-          tags: term.related_terms || [],
-          featured_image: term.image_url,
-          image_url: term.image_url,
-          alt_text: term.alt_text,
-          slug: term.slug,
-          views_count: term.views_count,
-          reading_time: term.reading_time,
-          seo_score: term.seo_score,
-          related_glossary_terms: term.related_terms,
-          faq_schema: term.faq_schema
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd),
         }}
-        type="glossary"
-        showCTA={true}
       />
+
+      <article className="min-h-screen bg-background pt-20">
+        <div className="mx-auto max-w-4xl px-4 py-10">
+          {/* Breadcrumbs */}
+          <Breadcrumb className="mb-6">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="/">Početna</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="/recnik">Rečnik</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{term.term}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+
+          {/* Header */}
+          <header className="mb-8">
+            <div className="flex items-baseline justify-between gap-4">
+              <div className="flex items-center gap-4 flex-1">
+                {!term.coverImage && <TermInitialAvatar term={term.term} />}
+                <div className="flex-1">
+                  <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+                    {term.term}
+                  </h1>
+                  {term.definition && (
+                    <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed max-w-3xl">
+                      {term.definition}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <CopyLinkButton url={currentUrl} />
+            </div>
+
+            {/* Meta Row */}
+            <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+              {term.category && (
+                <Badge variant="secondary">{term.category}</Badge>
+              )}
+              <span>{displayDate}</span>
+              <Link href="/recnik">
+                <Button variant="ghost" size="sm" className="h-auto p-0 hover:text-foreground">
+                  <ArrowLeft className="h-3.5 w-3.5 mr-1.5" />
+                  Nazad na Rečnik
+                </Button>
+              </Link>
+            </div>
+          </header>
+
+          {/* Illustration */}
+          {term.coverImage && (
+            <div className="mb-10">
+              <h2 className="text-sm font-medium text-muted-foreground mb-3">
+                Ilustracija
+              </h2>
+              <Card>
+                <CardContent className="p-0">
+                  <Image
+                    src={coverImageUrl}
+                    alt={term.coverImageAlt || term.term}
+                    width={1200}
+                    height={630}
+                    className="w-full object-cover rounded-xl max-h-72"
+                    priority
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Full Article Content */}
+          {term.fullArticle ? (
+            <div className="prose prose-slate max-w-none mt-10 prose-headings:mt-8 prose-headings:mb-4 prose-p:my-4 prose-li:my-2">
+              <PortableTextRenderer content={term.fullArticle} />
+            </div>
+          ) : (
+            <div className="mt-10 text-muted-foreground italic">
+              Detaljno objašnjenje biće dodato uskoro.
+            </div>
+          )}
+
+          {/* Related Terms */}
+          {term.relatedTerms && term.relatedTerms.length > 0 && (
+            <>
+              <Separator className="my-10" />
+              <section>
+                <h2 className="text-2xl font-semibold text-foreground mb-6">
+                  Povezani termini
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {term.relatedTerms.slice(0, 8).map((related) => (
+                    <Link
+                      key={related.slug}
+                      href={`/recnik/${related.slug}`}
+                    >
+                      <Badge
+                        variant="outline"
+                        className="text-sm px-3 py-1.5 hover:bg-primary/5 hover:border-primary/30 transition-colors"
+                      >
+                        {related.term}
+                      </Badge>
+                    </Link>
+                  ))}
+                </div>
+            </section>
+            </>
+          )}
+
+          {/* FAQ Section - must match FAQPage JSON-LD (1:1 with visible content) */}
+          {term.faqs && term.faqs.length > 0 && (
+            <>
+              <Separator className="my-10" />
+              <section>
+                <h2 className="text-2xl font-semibold text-foreground mb-6">
+                Često postavljena pitanja
+              </h2>
+                <Accordion type="single" collapsible className="w-full">
+                  {term.faqs.map((faq, index) => (
+                    <AccordionItem key={index} value={`faq-${index}`} className="border-border/60">
+                      <AccordionTrigger className="text-left text-base font-semibold text-foreground">
+                        {faq.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-sm text-muted-foreground">
+                        <PortableTextRenderer content={faq.answer} />
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+            </section>
+            </>
+          )}
+        </div>
+      </article>
     </>
-  )
-} 
+  );
+}

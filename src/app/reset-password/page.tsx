@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
+// Supabase removed - reset password disabled
+// import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 
 export default function ResetPasswordPage() {
@@ -28,13 +29,8 @@ export default function ResetPasswordPage() {
 
     try {
       setLoading(true);
-      const { error: updateError } = await supabase.auth.updateUser({ password });
-      if (updateError) {
-        setError(updateError.message);
-      } else {
-        setSuccess("Password updated. You can now log in.");
-        setTimeout(() => router.push("/admin-panel"), 1200);
-      }
+      // Supabase removed - reset password disabled
+      setError("Password reset je privremeno onemogućen. Supabase je uklonjen.");
     } catch (err: any) {
       setError("Unexpected error while updating password.");
     } finally {

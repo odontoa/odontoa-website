@@ -1,11 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  swcMinify: false,
   images: {
     domains: [
       'localhost',
       'images.unsplash.com',
-      // Strapi Cloud asset host
-      'inspiring-chocolate-0dd8ffdae3.strapiapp.com',
     ],
     unoptimized: true,
   },
@@ -31,6 +30,20 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/blog3',
+        destination: '/blogovi',
+        permanent: true,
+      },
+      {
+        source: '/blog3/:slug',
+        destination: '/blogovi/:slug',
+        permanent: true,
+      },
+    ];
+  },
 };
 
-module.exports = nextConfig; 
+module.exports = nextConfig;

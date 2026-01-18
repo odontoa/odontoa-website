@@ -317,13 +317,13 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
           fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/blogs?select=id,title,slug,tags,content&published=eq.true&limit=20`, {
             headers: {
               'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-              'Authorization': `Bearer ${session?.access_token || ''}`,
+              'Authorization': `Bearer ${(session as any)?.access_token || ''}`,
             }
           }),
           fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/glossary?select=id,term,slug,related_terms,full_article&published=eq.true&limit=20`, {
             headers: {
               'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-              'Authorization': `Bearer ${session?.access_token || ''}`,
+              'Authorization': `Bearer ${(session as any)?.access_token || ''}`,
             }
           })
         ])
@@ -503,7 +503,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
         method,
         headers: {
           'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-          'Authorization': `Bearer ${session.access_token}`,
+          'Authorization': `Bearer ${(session as any)?.access_token || ''}`,
           'Content-Type': 'application/json',
           'Prefer': 'return=representation'
         },

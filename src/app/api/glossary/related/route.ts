@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { sanityClient } from '@/lib/sanity.client';
+import { groq } from 'next-sanity';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,18 +19,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json([]);
     }
 
-    // Fetch related glossary terms
-    const { data, error } = await supabase
-      .from('glossary')
-      .select('id, term, slug, definition, category, difficulty_level')
-      .in('slug', termSlugs)
-      .eq('published', true)
-      .order('term', { ascending: true });
+    // Fetch related glossary terms from Sanity
+    const query = groq`*[_type == "glossaryTerm" && !(_id in path("drafts.**")) && defined(slug.current) && defined(publishedAt) && slug.current in $termSlugs] | order(term asc){
+      _id,
+      term,
+      "slug": slug.current,
+      definition,
+      category
+    }`;
 
-    if (error) {
-      console.error('Error fetching related glossary terms:', error);
-      return NextResponse.json({ error: 'Failed to fetch related terms' }, { status: 500 });
-    }
+    const data = await sanityClient.fetch(query, { termSlugs });
 
     return NextResponse.json(data || []);
 

@@ -34,7 +34,8 @@ import {
   LogOut,
   Image
 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+// Supabase removed - admin panel needs Sanity migration
+// import { supabase } from '@/lib/supabase';
 import { BlogForm } from '@/components/BlogForm';
 import { GlossaryForm } from '@/components/GlossaryForm';
 import { ContentList } from '@/components/ContentList';

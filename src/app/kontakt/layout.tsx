@@ -1,4 +1,7 @@
 import type { Metadata } from 'next'
+import type { ReactNode } from "react";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: 'Kontakt | Odontoa - Digitalna stomatologija',
@@ -25,7 +28,13 @@ export const metadata: Metadata = {
 export default function ContactLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
-  return children
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navigation />
+      <main className="flex-1">{children}</main>
+      <Footer />
+    </div>
+  );
 } 

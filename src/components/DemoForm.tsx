@@ -124,7 +124,7 @@ export const DemoForm: React.FC<DemoFormProps> = ({
 
         <p className="text-xs text-gray-500 mt-2 text-center leading-relaxed">
           Vaši podaci su zaštićeni u skladu sa GDPR regulativom.{" "}
-          <a href="/privacy" className="text-blue-600 hover:underline">
+          <a href="/politika-privatnosti" className="text-blue-600 hover:underline">
             Politika privatnosti
           </a>
         </p>

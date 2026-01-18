@@ -9,6 +9,8 @@ import { motion } from "framer-motion";
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { businessConfig } from "@/lib/config/business";
+import { analytics } from "@/lib/analytics/events";
 
 export default function ContactPage() {
   const [contactForm, setContactForm] = useState({
@@ -41,6 +43,7 @@ export default function ContactPage() {
 
       if (response.ok) {
         setSubmitMessage({ type: 'success', text: data.message });
+        analytics.contactFormSubmit();
         setContactForm({
           name: '',
           email: '',
@@ -159,17 +162,17 @@ export default function ContactPage() {
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
                 <Mail className="h-8 w-8 text-blue-600 mx-auto mb-3" />
                 <h3 className="font-semibold text-gray-900 mb-2">Email</h3>
-                <p className="text-gray-600">info@odontoa.com</p>
+                <p className="text-gray-600">{businessConfig.email}</p>
               </div>
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
                 <Phone className="h-8 w-8 text-blue-600 mx-auto mb-3" />
                 <h3 className="font-semibold text-gray-900 mb-2">Telefon</h3>
-                <p className="text-gray-600">+381 11 123 4567</p>
+                <p className="text-gray-600">{businessConfig.phone}</p>
               </div>
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
                 <Clock className="h-8 w-8 text-blue-600 mx-auto mb-3" />
                 <h3 className="font-semibold text-gray-900 mb-2">Radno vreme</h3>
-                <p className="text-gray-600">Pon-Pet: 9-17h</p>
+                <p className="text-gray-600">{businessConfig.workingHours.weekdays}</p>
               </div>
             </motion.div>
           </div>
@@ -307,7 +310,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-lg font-medium text-foreground mb-2">Email</h3>
-                    <p className="text-muted-foreground">info@odontoa.com</p>
+                    <p className="text-muted-foreground">{businessConfig.email}</p>
                   </div>
                 </div>
 
@@ -317,7 +320,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-lg font-medium text-foreground mb-2">Telefon</h3>
-                    <p className="text-muted-foreground">+381 60 123 4567</p>
+                    <p className="text-muted-foreground">{businessConfig.phone}</p>
                   </div>
                 </div>
 
@@ -327,8 +330,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-lg font-medium text-foreground mb-2">Adresa</h3>
-                    <p className="text-muted-foreground">Krunska</p>
-                    <p className="text-muted-foreground">11000 Beograd, Srbija</p>
+                    <p className="text-muted-foreground">{businessConfig.address.street}</p>
+                    <p className="text-muted-foreground">{businessConfig.address.postalCode} {businessConfig.address.city}, {businessConfig.address.country}</p>
                   </div>
                 </div>
 
@@ -338,9 +341,9 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-lg font-medium text-foreground mb-2">Radno vreme</h3>
-                    <p className="text-muted-foreground">Ponedeljak - Petak: 9:00 - 17:00</p>
-                    <p className="text-muted-foreground">Subota: 9:00 - 13:00</p>
-                    <p className="text-muted-foreground">Nedelja: Zatvoreno</p>
+                    <p className="text-muted-foreground">{businessConfig.workingHours.weekdays}</p>
+                    <p className="text-muted-foreground">{businessConfig.workingHours.saturday}</p>
+                    <p className="text-muted-foreground">{businessConfig.workingHours.sunday}</p>
                   </div>
                 </div>
               </div>
@@ -352,7 +355,7 @@ export default function ContactPage() {
                 </p>
                 <div className="flex items-center space-x-2">
                   <Phone className="text-primary" size={16} />
-                  <span className="text-primary font-medium">+381 60 123 4567</span>
+                  <span className="text-primary font-medium">{businessConfig.phone}</span>
                 </div>
               </div>
             </div>
@@ -482,7 +485,7 @@ export default function ContactPage() {
 
                   <p className="text-xs text-gray-500 mt-2 text-center leading-relaxed">
                     Vaši podaci su zaštićeni u skladu sa GDPR regulativom.{" "}
-                    <a href="/privacy" className="text-primary hover:underline">
+                    <a href="/politika-privatnosti" className="text-primary hover:underline">
                       Politika privatnosti
                     </a>
                   </p>

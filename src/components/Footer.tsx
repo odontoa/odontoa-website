@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { businessConfig } from "@/lib/config/business";
 
 const Footer = () => {
   return (
@@ -31,15 +32,15 @@ const Footer = () => {
             <div className="space-y-3 mb-6">
               <div className="flex items-center space-x-2 text-muted-foreground text-sm">
                 <Mail size={16} />
-                <span>info@odontoa.com</span>
+                <span>{businessConfig.email}</span>
               </div>
               <div className="flex items-center space-x-2 text-muted-foreground text-sm">
                 <Phone size={16} />
-                <span>+381 60 123 4567</span>
+                <span>{businessConfig.phone}</span>
               </div>
               <div className="flex items-center space-x-2 text-muted-foreground text-sm">
                 <MapPin size={16} />
-                <span>Krunska, Beograd</span>
+                <span>{businessConfig.address.street}, {businessConfig.address.city}</span>
               </div>
             </div>
 
@@ -72,9 +73,9 @@ const Footer = () => {
             <h3 className="text-foreground font-semibold text-sm mb-4">Podrška i uslovi</h3>
             <ul className="space-y-2">
               <li><Link href="/pomoc-i-pravno#pomoc" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Pomoć</Link></li>
-              <li><Link href="/pomoc-i-pravno#privatnost" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Politika privatnosti</Link></li>
-              <li><Link href="/pomoc-i-pravno#uslovi" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Uslovi korišćenja</Link></li>
-              <li><Link href="/pomoc-i-pravno#gdpr" className="text-muted-foreground text-sm hover:text-foreground transition-colors">GDPR</Link></li>
+              <li><Link href="/politika-privatnosti" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Politika privatnosti</Link></li>
+              <li><Link href="/uslovi-koriscenja" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Uslovi korišćenja</Link></li>
+              <li><Link href="/gdpr" className="text-muted-foreground text-sm hover:text-foreground transition-colors">GDPR</Link></li>
               <li><Link href="/demo" className="text-muted-foreground text-sm hover:text-foreground transition-colors">Demo</Link></li>
               <li><Link href="/admin-panel" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/70 text-xs hover:text-muted-foreground transition-colors">Admin</Link></li>
             </ul>
@@ -115,7 +116,7 @@ const Footer = () => {
             {/* Social Media Links */}
             <div className="flex items-center space-x-2">
               <a 
-                href="https://www.linkedin.com/company/odontoa/" 
+                href={businessConfig.social.linkedin} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-8 h-8 bg-background border border-border rounded-lg flex items-center justify-center hover:bg-muted transition-colors"
@@ -125,7 +126,7 @@ const Footer = () => {
               </a>
 
               <a 
-                href="https://www.facebook.com/profile.php?id=61580254345083" 
+                href={businessConfig.social.facebook} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-8 h-8 bg-background border border-border rounded-lg flex items-center justify-center hover:bg-muted transition-colors"
@@ -135,7 +136,7 @@ const Footer = () => {
               </a>
 
               <a 
-                href="https://www.instagram.com/odontoa.app/"
+                href={businessConfig.social.instagram}
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-8 h-8 bg-background border border-border rounded-lg flex items-center justify-center hover:bg-muted transition-colors"

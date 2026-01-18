@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import { supabase, Blog, GlossaryEntry } from '@/lib/supabase'
+// Supabase removed - admin panel components disabled
+// import { supabase, Blog, GlossaryEntry } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -8,6 +9,10 @@ import { Switch } from '@/components/ui/switch'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Trash2, RefreshCw, Eye, EyeOff, Calendar, User, FileText, BookOpen, Edit, Archive, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
+
+// Temporary types - Supabase removed
+type Blog = any;
+type GlossaryEntry = any;
 
 interface ContentListProps {
   type: 'blogs' | 'glossary'
@@ -29,41 +34,11 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished,
     
     setLoading(true)
     try {
-      // TODO: Strapi CMS integration - replace Supabase with Strapi API
-      // For blogs: ${process.env.NEXT_PUBLIC_STRAPI_URL}/api/blog-posts?populate=*
-      // For glossary: ${process.env.NEXT_PUBLIC_STRAPI_URL}/api/glossary-entries?populate=*
-      // Fields mapping: title, slug, excerpt, cover_image, tags, read_time, main_content, faq, seo_schema, datePublished, author
-      
-      let query = supabase
-        .from(type)
-        .select('*')
-        .order('created_at', { ascending: false })
-
-      // Apply filter for blogs and glossary
-      if (filterPublished !== undefined) {
-        console.log('Applying published filter:', filterPublished)
-        query = query.eq('published', filterPublished)
-      }
-
-      // Apply archive filter for blogs (temporarily disabled due to RLS issues)
-      if (type === 'blogs' && showArchived === true) {
-        console.log('Archive functionality temporarily disabled')
-        // query = query.eq('archived', true)
-      }
-
-      console.log('Executing query...')
-      const { data, error } = await query
-
-      console.log('Query result - Data:', data?.length || 0, 'items')
-      console.log('Query result - Error:', error)
-
-      if (error) {
-        console.error('Fetch error:', error)
-        toast.error(`Greška pri učitavanju ${type}: ${error.message}`)
-      } else {
-        setItems(data || [])
-        console.log('✅ Items loaded successfully')
-      }
+      // Supabase removed - admin panel needs to be migrated to Sanity
+      // This component is temporarily disabled
+      console.warn('ContentList: Supabase removed. Admin panel needs Sanity migration.')
+      toast.error('Admin panel je privremeno onemogućen. Migracija na Sanity je u toku.')
+      setItems([])
     } catch (err) {
       console.error('Fetch exception:', err)
       toast.error('Dogodila se neočekivana greška')
@@ -102,31 +77,14 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished,
     // Listen for custom events (same tab)
     window.addEventListener('content-updated', handleCustomEvent)
     
-    // Set up real-time subscription for immediate updates
-    const channel = supabase
-      .channel(`${type}-changes`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: type
-        },
-        (payload) => {
-          console.log('=== REALTIME UPDATE RECEIVED ===', payload)
-          // Debounce the refresh to avoid multiple rapid updates
-          setTimeout(() => {
-            fetchItems()
-          }, 500)
-        }
-      )
-      .subscribe()
+    // Supabase removed - real-time subscription disabled
+    // DISABLED: Real-time updates
 
     return () => {
       console.log('=== REMOVING EVENT LISTENERS ===')
       window.removeEventListener('storage', handleStorageChange)
       window.removeEventListener('content-updated', handleCustomEvent)
-      supabase.removeChannel(channel)
+      // Supabase removed
     }
   }, [fetchItems, type])
 
@@ -139,64 +97,9 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished,
 
   const handleDelete = async (id: string) => {
     try {
-      console.log('=== SUPABASE ARCHIVE START ===')
-      console.log('Archiving item ID:', id, 'Type:', type)
-
-      // Get current session
-      const { data: { session: currentSession } } = await supabase.auth.getSession()
-      
-      if (!currentSession?.access_token) {
-        toast.error('Niste ulogovani. Molimo ulogujte se ponovo.')
-        return
-      }
-
-      if (type === 'blogs') {
-        // For blogs, use regular DELETE (archive temporarily disabled)
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/${type}?id=eq.${id}`, {
-          method: 'DELETE',
-          headers: {
-            'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            'Authorization': `Bearer ${currentSession.access_token}`,
-            'Content-Type': 'application/json'
-          }
-        })
-
-        if (response.ok) {
-          console.log('=== DELETE SUCCESS ===')
-          toast.success('Blog obrisan uspešno')
-        } else {
-          const errorData = await response.text()
-          console.error('=== DELETE ERROR ===', errorData)
-          toast.error(`Greška pri brisanju: ${response.status}`)
-          return
-        }
-      } else {
-        // For glossary terms, still use DELETE (no archive functionality for glossary yet)
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/${type}?id=eq.${id}`, {
-          method: 'DELETE',
-          headers: {
-            'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            'Authorization': `Bearer ${currentSession.access_token}`,
-            'Content-Type': 'application/json'
-          }
-        })
-
-        if (response.ok) {
-          console.log('=== DELETE SUCCESS ===')
-          toast.success('Glossary term obrisan uspešno')
-        } else {
-          const errorData = await response.text()
-          console.error('=== DELETE ERROR ===', errorData)
-          toast.error(`Greška pri brisanju: ${response.status}`)
-          return
-        }
-      }
-      
-      // Trigger immediate refresh
-      fetchItems()
-      
-      // Dispatch custom event for other components
-      window.dispatchEvent(new CustomEvent('content-updated'))
+      // Supabase removed - delete disabled
+      toast.error('Brisanje je privremeno onemogućeno. Supabase je uklonjen.')
+      return
     } catch (error) {
       console.error('=== ARCHIVE/DELETE EXCEPTION ===', error)
       toast.error('Greška pri arhiviranju/brisanju')
@@ -205,45 +108,9 @@ export const ContentList: React.FC<ContentListProps> = ({ type, filterPublished,
 
   const handleTogglePublished = async (id: string, currentPublished: boolean) => {
     try {
-      console.log('=== TOGGLE PUBLISHED START ===')
-      console.log('Item ID:', id, 'Current published:', currentPublished, 'Type:', type)
-      
-      setUpdating(id)
-      
-      // Get current session
-      const { data: { session: currentSession } } = await supabase.auth.getSession()
-      
-      if (!currentSession?.access_token) {
-        toast.error('Niste ulogovani. Molimo ulogujte se ponovo.')
-        return
-      }
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/${type}?id=eq.${id}`, {
-        method: 'PATCH',
-        headers: {
-          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-          'Authorization': `Bearer ${currentSession.access_token}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=representation'
-        },
-        body: JSON.stringify({ published: !currentPublished })
-      })
-
-      if (response.ok) {
-        console.log('=== TOGGLE SUCCESS ===')
-        const statusText = !currentPublished ? 'objavljen' : 'povučen'
-        toast.success(`${type === 'blogs' ? 'Blog' : 'Glossary term'} ${statusText} uspešno`)
-        
-        // Trigger immediate refresh
-        fetchItems()
-        
-        // Dispatch custom event for other components
-        window.dispatchEvent(new CustomEvent('content-updated'))
-      } else {
-        const errorData = await response.text()
-        console.error('=== TOGGLE ERROR ===', errorData)
-        toast.error(`Greška pri ažuriranju: ${response.status}`)
-      }
+      // Supabase removed - toggle published disabled
+      toast.error('Promena statusa je privremeno onemogućena. Supabase je uklonjen.')
+      return
     } catch (error) {
       console.error('=== TOGGLE EXCEPTION ===', error)
       toast.error('Greška pri ažuriranju')

@@ -24,7 +24,7 @@ function ExpandableCardDemo() {
         trust={{ rating: 5, text: "Koriste nas klinike u BG, NS, Nišu" }}
         info={["Bez automatizacije", "Ručno zakazivanje", "Rizik od no-show"]}
         primaryCta={undefined}
-        secondaryCta={{ label: "Saznajte više o problemima", href: "/blog/problemi-u-ordinaciji" }}
+        secondaryCta={{ label: "Saznajte više o problemima", href: "/blogovi/problemi-u-ordinaciji" }}
         gradientBg="bg-rose-50 border border-rose-200"
       />
 

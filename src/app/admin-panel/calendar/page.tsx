@@ -15,7 +15,8 @@ import {
   Clock,
   CheckCircle
 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+// Supabase removed - admin panel needs Sanity migration
+// import { supabase } from '@/lib/supabase';
 import { AdminRoute } from '@/components/AdminRoute';
 import { AdminLayout } from '@/components/AdminLayout';
 import { useRouter } from 'next/navigation';
@@ -48,43 +49,10 @@ export default function CalendarPage() {
   const fetchCalendarData = async () => {
     setLoading(true);
     try {
-      const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-      const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-
-      // Fetch blogs
-      const { data: blogs } = await supabase
-        .from('blogs')
-        .select('id, title, published, created_at, published_at')
-        .gte('created_at', startOfMonth.toISOString())
-        .lte('created_at', endOfMonth.toISOString());
-
-      // Fetch glossary terms
-      const { data: glossary } = await supabase
-        .from('glossary')
-        .select('id, term, published, created_at, published_at')
-        .gte('created_at', startOfMonth.toISOString())
-        .lte('created_at', endOfMonth.toISOString());
-
-      // Combine and organize data by date
-      const combinedData: CalendarData = {};
-      
-      [...(blogs || []), ...(glossary || [])].forEach(item => {
-        const date = new Date(item.created_at).toISOString().split('T')[0];
-        if (!combinedData[date]) {
-          combinedData[date] = [];
-        }
-        
-        combinedData[date].push({
-          id: item.id,
-          type: 'term' in item ? 'glossary' : 'blog',
-          title: 'term' in item ? item.term : item.title,
-          status: item.published ? 'published' : 'draft',
-          created_at: item.created_at,
-          published_at: item.published_at
-        });
-      });
-
-      setCalendarData(combinedData);
+      // Supabase removed - calendar disabled
+      console.warn('Calendar: Supabase removed. This component needs Sanity migration.')
+      toast.error('Kalendar je privremeno onemogućen. Migracija na Sanity je u toku.')
+      setCalendarData({});
     } catch (error) {
       console.error('Error fetching calendar data:', error);
       toast.error('Greška pri učitavanju kalendara');

@@ -25,7 +25,7 @@ import { Input } from "@/components/ui/input";
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
 import { DemoForm } from "@/components/DemoForm";
-import { Hero } from "@/components/ui/hero-with-group-of-images-text-and-two-buttons";
+import AboutSection3 from "@/components/ui/about-section";
 import OdontoaMissionSection from "@/components/ui/mission-section";
 
 
@@ -35,7 +35,7 @@ export default function AboutPage() {
     <div className="min-h-screen bg-background w-full pt-20">
       {/* Hero Section - Full Width */}
       <section className="w-full relative overflow-hidden">
-        <Hero />
+        <AboutSection3 />
       </section>
 
       {/* Mission Section */}

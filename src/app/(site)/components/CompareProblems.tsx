@@ -7,19 +7,18 @@ import { motion, useInView } from 'framer-motion';
 type Row = { feature: string; values: boolean[] };
 
 export function OdontoaCompareTable({
-  title = 'Prepoznajete li ove probleme? – 2',
+  title = 'Odontoa ili papir i Excel?',
   columns,
   rows,
-  emphasizeIndex = 0, // 0 = Odontoa
+  emphasizeIndex = 0,
 }: {
   title?: string;
   columns: string[];
   rows: Row[];
   emphasizeIndex?: number;
 }) {
-  // Odontoa brend
-  const BG = '#0C2E1C';      // dark green
-  const LIME = '#CFF86A';    // lime
+  const BG = 'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(37, 99, 235, 0.08) 25%, rgba(14, 165, 233, 0.05) 50%, rgba(37, 99, 235, 0.08) 75%, rgba(255, 255, 255, 0.4) 100%)';
+  const LIME = '#16A34A';
 
   const gridTemplate = {
     display: 'grid',
@@ -46,19 +45,18 @@ export function OdontoaCompareTable({
   return (
     <section ref={sectionRef} className="py-16 md:py-24">
       <div className="mx-auto max-w-6xl rounded-2xl px-5 pb-8 pt-6" style={{ background: BG }}>
-        {/* Header */}
         <motion.div
-          className="mx-auto max-w-5xl rounded-2xl bg-white px-6 py-4 shadow-sm sticky top-16 z-20"
+          className="hidden sm:block w-full rounded-2xl bg-white px-6 py-4 shadow-sm sticky top-16 z-20"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.6 }}
         >
           <div className="grid" style={gridTemplate}>
             <motion.div
-              className="text-2xl md:text-3xl font-extrabold text-neutral-900"
+              className="text-2xl md:text-3xl font-extrabold text-neutral-900 pl-6"
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.6, delay: 0.1 }}
             >
               {title}
             </motion.div>
@@ -66,10 +64,10 @@ export function OdontoaCompareTable({
             {columns.map((c, i) => (
               <motion.div
                 key={i}
-                className="flex items-center justify-center text-base md:text-lg font-semibold text-neutral-800 pt-[2px]"
+                className="flex items-center justify-center text-base md:text-lg font-semibold text-neutral-800 whitespace-nowrap"
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.6, delay: 0.2 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.6, delay: 0.2 + i * 0.1 }}
               >
                 {c}
               </motion.div>
@@ -77,7 +75,7 @@ export function OdontoaCompareTable({
           </div>
         </motion.div>
 
-        {/* Desktop tabela */}
+        {/* Desktop */}
         <div className="mx-auto mt-4 max-w-5xl hidden sm:block">
           <div className="relative" ref={tableRef}>
             {hilite && (
@@ -87,31 +85,38 @@ export function OdontoaCompareTable({
                 style={{
                   left: hilite.left,
                   width: hilite.width,
-                  background: 'rgba(255,255,255,0.05)',
-                  boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.10)',
-                  zIndex: 0,
+                  background: 'rgba(59, 130, 246, 0.1)',
+                  boxShadow: 'inset 0 0 0 1px rgba(59, 130, 246, 0.2)',
                 }}
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.96 }}
-                transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.8, delay: 0.5 }}
               />
             )}
 
-            <div className="relative z-10 space-y-0">
+            <div className="relative z-10">
               {rows.map((r, ri) => (
                 <motion.div
                   key={ri}
-                  className={`grid ${ri === 0 ? '' : 'border-t border-white/10'} py-5 md:py-6`}
+                  className={`grid ${ri === 0 ? '' : 'border-t border-slate-300/50'} py-5 md:py-6`}
                   style={gridTemplate}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                  transition={{ duration: 0.6, delay: 0.3 + ri * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  transition={{ 
+                    duration: 0.7, 
+                    delay: 0.3 + ri * 0.18,
+                    ease: [0.22, 1, 0.36, 1]
+                  }}
                 >
                   <motion.div
-                    className="pl-2 text-white/90 text-[15px] md:text-base"
+                    className="pl-6 text-slate-700 text-[15px] md:text-base"
                     initial={{ opacity: 0, x: -20 }}
                     animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-                    transition={{ duration: 0.6, delay: 0.4 + ri * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ 
+                      duration: 0.7, 
+                      delay: 0.35 + ri * 0.18,
+                      ease: [0.22, 1, 0.36, 1]
+                    }}
                   >
                     {r.feature}
                   </motion.div>
@@ -119,61 +124,40 @@ export function OdontoaCompareTable({
                   {r.values.map((v, vi) => (
                     <motion.div
                       key={vi}
-                      className="flex items-center justify-center"
+                      className="flex items-center justify-center pl-4"
                       data-row={ri}
                       data-col={vi}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+                      initial={{ opacity: 0 }}
+                      animate={isInView ? { opacity: 1 } : { opacity: 0 }}
                       transition={{
-                        duration: 0.5,
-                        delay: 0.5 + ri * 0.1 + vi * 0.05,
-                        ease: [0.22, 1, 0.36, 1],
-                        type: 'spring',
-                        stiffness: 200,
-                        damping: 20,
+                        duration: 0.4,
+                        delay: 0.45 + ri * 0.18 + vi * 0.05,
                       }}
                     >
                       {v ? (
                         <motion.span
                           className="inline-flex h-9 w-9 items-center justify-center rounded-full"
-                          style={{ background: 'rgba(207,248,106,0.18)' }}
-                          title="Uključeno"
-                          aria-label={`${columns[vi]}: uključeno`}
-                          whileHover={{ scale: 1.1 }}
-                          transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+                          style={{ background: 'rgba(22, 163, 74, 0.15)' }}
+                          initial={{ opacity: 0, scale: 0 }}
+                          animate={isInView ? { 
+                            opacity: 1, 
+                            scale: [0, 1.2, 1]
+                          } : { opacity: 0, scale: 0 }}
+                          transition={{
+                            duration: 0.6,
+                            delay: 0.5 + ri * 0.18 + vi * 0.05,
+                            ease: [0.34, 1.56, 0.64, 1]
+                          }}
                         >
-                          <motion.svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke={LIME}
-                            strokeWidth="3"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="h-5 w-5"
-                            initial={{ pathLength: 0 }}
-                            animate={isInView ? { pathLength: 1 } : { pathLength: 0 }}
-                            transition={{ duration: 0.8, delay: 0.7 + ri * 0.1 + vi * 0.05, ease: [0.22, 1, 0.36, 1] }}
-                          >
-                            <polyline points="20 6 9 17 4 12" />
-                          </motion.svg>
+                          <Check className="h-5 w-5" color={LIME} strokeWidth={3} />
                         </motion.span>
                       ) : (
-                        <motion.span
-                          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10"
+                        <span
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300/40"
                           style={{ background: 'rgba(255,92,92,0.15)' }}
-                          title="Nije uključeno"
-                          aria-label={`${columns[vi]}: nije uključeno`}
-                          whileHover={{ scale: 1.1 }}
-                          transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                         >
-                          <motion.div
-                            initial={{ rotate: -90, opacity: 0 }}
-                            animate={isInView ? { rotate: 0, opacity: 1 } : { rotate: -90, opacity: 0 }}
-                            transition={{ duration: 0.6, delay: 0.7 + ri * 0.1 + vi * 0.05, ease: [0.22, 1, 0.36, 1] }}
-                          >
-                            <X className="h-5 w-5" color="#FF5C5C" strokeWidth={2.5} />
-                          </motion.div>
-                        </motion.span>
+                          <X className="h-5 w-5" color="#FF5C5C" strokeWidth={2.5} />
+                        </span>
                       )}
                     </motion.div>
                   ))}
@@ -183,60 +167,87 @@ export function OdontoaCompareTable({
           </div>
         </div>
 
-        {/* Mobile cards */}
-        <div className="sm:hidden mt-4 space-y-3">
-          {rows.map((r, ri) => (
-            <motion.div
-              key={ri}
-              className="rounded-lg border border-white/10 bg-white/5 p-3"
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.6, delay: 0.3 + ri * 0.1, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <motion.div
-                className="text-white font-medium mb-3"
-                initial={{ opacity: 0, x: -20 }}
-                animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-                transition={{ duration: 0.6, delay: 0.4 + ri * 0.1, ease: [0.22, 1, 0.36, 1] }}
-              >
-                {r.feature}
-              </motion.div>
-              <div className="grid grid-cols-2 gap-3">
-                {columns.map((c, i) => {
-                  const v = r.values[i];
-                  const emphas = i === emphasizeIndex;
-                  return (
-                    <motion.div
-                      key={c}
-                      className="flex items-center justify-between rounded-lg bg-white/10 px-3 py-2"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.5, delay: 0.5 + ri * 0.1 + i * 0.05, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                      <span className={`text-xs ${emphas ? 'font-semibold text-white' : 'text-white/80'}`}>{c}</span>
-                      {v ? (
-                        <motion.span
-                          className={`inline-flex h-7 w-7 items-center justify-center rounded-full ${emphas ? 'bg-[rgba(207,248,106,0.28)]' : 'bg-[rgba(207,248,106,0.18)]'}`}
-                          whileHover={{ scale: 1.1 }}
-                          transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                        >
-                          <Check className="h-4 w-4" color={LIME} />
-                        </motion.span>
-                      ) : (
-                        <motion.span
-                          className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[rgba(255,92,92,0.15)] border border-white/10"
-                          whileHover={{ scale: 1.1 }}
-                          transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                        >
-                          <X className="h-4 w-4" color="#FF5C5C" strokeWidth={2.5} />
-                        </motion.span>
-                      )}
-                    </motion.div>
-                  );
-                })}
+        {/* Mobile */}
+        <div className="sm:hidden mt-4">
+          {/* Mobile Header */}
+          <motion.div
+            className="bg-white rounded-2xl px-4 py-4 mb-3 shadow-sm"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <div className="flex items-center justify-between">
+              <div className="text-xl font-extrabold text-neutral-900">
+                {title}
               </div>
-            </motion.div>
-          ))}
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-semibold text-neutral-800">Odontoa</span>
+                <span className="text-sm font-semibold text-neutral-800">Ručno</span>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Mobile Rows */}
+          <div className="space-y-2">
+            {rows.map((r, ri) => (
+              <motion.div
+                key={ri}
+                className="bg-white/60 rounded-lg border border-slate-300/50 px-4 py-3"
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                transition={{ 
+                  duration: 0.7, 
+                  delay: 0.3 + ri * 0.18, 
+                  ease: [0.22, 1, 0.36, 1] 
+                }}
+              >
+                <div className="flex items-center justify-between">
+                  <motion.div
+                    className="text-slate-700 font-medium text-sm flex-1"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                    transition={{ duration: 0.7, delay: 0.35 + ri * 0.18, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    {r.feature}
+                  </motion.div>
+                  <div className="flex items-center gap-6 ml-4">
+                    {r.values.map((v, vi) => (
+                      <motion.div
+                        key={vi}
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={isInView ? { 
+                          opacity: 1, 
+                          scale: [0, 1.2, 1]
+                        } : { opacity: 0, scale: 0 }}
+                        transition={{
+                          duration: 0.6,
+                          delay: 0.5 + ri * 0.18 + vi * 0.05,
+                          ease: [0.34, 1.56, 0.64, 1]
+                        }}
+                      >
+                        {v ? (
+                          <motion.span
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-full"
+                            style={{ 
+                              background: vi === emphasizeIndex ? 'rgba(22, 163, 74, 0.25)' : 'rgba(22, 163, 74, 0.15)'
+                            }}
+                          >
+                            <Check className="h-4 w-4" color={LIME} />
+                          </motion.span>
+                        ) : (
+                          <span
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[rgba(255,92,92,0.15)] border border-slate-300/40"
+                          >
+                            <X className="h-4 w-4" color="#FF5C5C" strokeWidth={2.5} />
+                          </span>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

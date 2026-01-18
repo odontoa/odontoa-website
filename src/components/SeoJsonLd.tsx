@@ -9,13 +9,15 @@ interface SeoJsonLdProps {
   pageTitle?: string
   pageDescription?: string
   visibleContent?: string // For FAQ content synchronization validation
+  canonicalUrl?: string // Canonical URL for the page
 }
 
 export const SeoJsonLd: React.FC<SeoJsonLdProps> = ({ 
   schema, 
   pageTitle = 'Odontoa',
   pageDescription = 'Stomatološka ordinacija Odontoa',
-  visibleContent = ''
+  visibleContent = '',
+  canonicalUrl
 }) => {
   // Validate schema in development mode
   if (process.env.NODE_ENV === 'development') {
@@ -101,6 +103,11 @@ export const SeoJsonLd: React.FC<SeoJsonLdProps> = ({
       {/* Schema.org hints */}
       <meta name="schema:type" content="WebPage" />
       <meta name="schema:language" content="sr" />
+      
+      {/* Canonical URL */}
+      {canonicalUrl && (
+        <link rel="canonical" href={canonicalUrl} />
+      )}
     </Head>
   )
 }

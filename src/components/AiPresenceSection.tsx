@@ -21,6 +21,30 @@ const AiPresenceSection = () => {
 
   const featureCards = [
     {
+      id: 5,
+      category: "Digitalni kartoni",
+      title: "DIGITALNI KARTONI",
+      description: "Kompletan medicinski karton na jednom mestu",
+      image: "/images/digitalni-kartoni.png",
+      alt: "Digitalni kartoni"
+    },
+    {
+      id: 6,
+      category: "Analitika",
+      title: "ANALITIKA",
+      description: "Detaljni izveštaji i finansijski pregled",
+      image: "/images/analitika.png",
+      alt: "Analitika i izveštaji"
+    },
+    {
+      id: 7,
+      category: "Komunikacija",
+      title: "KOMUNIKACIJA",
+      description: "Centralizovana komunikacija sa pacijentima",
+      image: "/images/komunikacija.png",
+      alt: "Komunikacija sa pacijentima"
+    },
+    {
       id: 1,
       category: "Online 24/7",
       title: "ZAKAZIVANJE",
@@ -70,7 +94,7 @@ const AiPresenceSection = () => {
 
 
   return (
-    <div className="section-spacing w-full min-h-screen relative bg-background">
+    <div className="w-full min-h-screen relative" style={{ backgroundColor: 'hsl(0 0% 98%)', paddingTop: '80px', paddingBottom: '80px' }}>
       <div className="max-w-7xl mx-auto px-4">
 
         {/* Introduction Heading */}
@@ -82,7 +106,11 @@ const AiPresenceSection = () => {
           transition={{ duration: 0.6 }}
         >
           <motion.h2 
-            className="text-4xl md:text-[44px] font-normal text-foreground leading-tight mb-8 max-w-[620px] mx-auto"
+            className="text-4xl md:text-[44px] text-foreground leading-tight mb-10 max-w-[620px] mx-auto"
+            style={{
+              fontFamily: 'Manrope, sans-serif',
+              fontWeight: 800
+            }}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -100,7 +128,11 @@ const AiPresenceSection = () => {
               <div className="w-full lg:w-1/2">
                 <span className="text-primary text-sm uppercase tracking-widest font-normal mb-4 block">KOMPLETNA KONTROLA</span>
                 <motion.h3 
-                  className="text-foreground text-4xl lg:text-5xl font-bold leading-tight mb-6"
+                  className="text-foreground text-4xl lg:text-5xl leading-tight mb-8"
+                  style={{
+                    fontFamily: 'Manrope, sans-serif',
+                    fontWeight: 700
+                  }}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
@@ -108,7 +140,7 @@ const AiPresenceSection = () => {
                 >
                   Digitalni kartoni + Analitika
                 </motion.h3>
-                <p className="text-muted-foreground text-lg leading-relaxed mb-8">
+                <p className="text-muted-foreground text-lg leading-relaxed mb-10">
                   Kompletan medicinski karton sa finansijskim pregledom i detaljnom analitikom na jednom ekranu
                 </p>
                 <div className="flex flex-wrap gap-4">
@@ -160,7 +192,15 @@ const AiPresenceSection = () => {
             >
               <div className="mb-4">
                 <span className="text-primary text-xs uppercase tracking-widest font-normal mb-2 block">{card.category}</span>
-                <h4 className="text-foreground text-xl font-bold mb-2">{card.title}</h4>
+                <h4 
+                  className="text-foreground text-xl mb-2"
+                  style={{
+                    fontFamily: 'Manrope, sans-serif',
+                    fontWeight: 700
+                  }}
+                >
+                  {card.title}
+                </h4>
                 <p className="text-muted-foreground text-sm mb-4">
                   {card.description}
                 </p>

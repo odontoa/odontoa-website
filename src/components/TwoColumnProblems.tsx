@@ -77,7 +77,7 @@ export default function TwoColumnProblems() {
             {/* CTA u istoj liniji (oba footera imaju mt-auto) */}
             <div className="mt-auto pt-6">
               <Link
-                href="/blog/problemi-u-ordinaciji"
+                href="/blogovi/problemi-u-ordinaciji"
                 className="inline-flex items-center gap-2 rounded-xl border px-5 py-3 text-zinc-900 hover:bg-white"
               >
                 Saznajte više o problemima

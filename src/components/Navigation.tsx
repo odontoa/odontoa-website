@@ -19,12 +19,16 @@ const Navigation = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleHomeClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.location.href = '/';
+  };
+
   const menuItems = [
     { name: 'Početna', href: '/' },
     { name: 'O nama', href: '/o-nama' },
     { name: 'Kontakt', href: '/kontakt' },
     { name: 'Blogovi', href: '/blogovi' },
-    { name: 'Blog2', href: '/blog2' }, // Temporary link for new Strapi-powered blog
     { name: 'Rečnik', href: '/recnik' },
   ];
 
@@ -39,6 +43,7 @@ const Navigation = () => {
               <Link
                 href="/"
                 aria-label="home"
+                onClick={handleHomeClick}
                 className="flex items-center space-x-2">
                 <Logo />
               </Link>
@@ -58,6 +63,7 @@ const Navigation = () => {
                   <li key={index}>
                     <Link
                       href={item.href}
+                      onClick={item.href === '/' ? handleHomeClick : undefined}
                       className="text-muted-foreground hover:text-accent-foreground block duration-150">
                       <span>{item.name}</span>
                     </Link>
@@ -74,7 +80,12 @@ const Navigation = () => {
                       <Link
                         href={item.href}
                         className="text-muted-foreground hover:text-accent-foreground block duration-150"
-                        onClick={() => setIsMenuOpen(false)}>
+                        onClick={(e) => {
+                          setIsMenuOpen(false);
+                          if (item.href === '/') {
+                            handleHomeClick(e);
+                          }
+                        }}>
                         <span>{item.name}</span>
                       </Link>
                     </li>
@@ -84,11 +95,9 @@ const Navigation = () => {
               <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
                 <Button
                   asChild
-                  variant={isScrolled ? "default" : "outline"}
+                  variant="default"
                   size="sm"
-                  className={cn(
-                    isScrolled ? "bg-primary text-white hover:bg-primary/90 hover:text-white" : "text-foreground hover:text-foreground"
-                  )}>
+                  className="bg-primary text-white hover:bg-primary/90 hover:text-white">
                   <a href="https://app.odontoa.com" target="_blank" rel="noopener noreferrer">
                     <span>Uloguj se</span>
                   </a>

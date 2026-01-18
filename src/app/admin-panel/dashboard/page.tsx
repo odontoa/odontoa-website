@@ -23,7 +23,8 @@ import {
   Image
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { supabase } from '@/lib/supabase';
+// Supabase removed - admin panel needs Sanity migration
+// import { supabase } from '@/lib/supabase';
 import { AdminRoute } from '@/components/AdminRoute';
 import { AdminLayout } from '@/components/AdminLayout';
 import { useRouter } from 'next/navigation';
@@ -77,6 +78,11 @@ export default function DashboardPage() {
   const fetchDashboardStats = async () => {
     setLoading(true);
     try {
+      // Supabase removed - dashboard disabled
+      console.warn('Dashboard: Supabase removed. This component needs Sanity migration.')
+      const blogs: any[] = []
+      const glossary: any[] = []
+      /* DISABLED
       // Fetch blog stats
       const { data: blogs } = await supabase
         .from('blogs')
@@ -127,6 +133,7 @@ export default function DashboardPage() {
         totalReservations: 0, // TODO: Add reservations
         recentActivity: allActivity
       });
+      */ // END DISABLED
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
       toast.error('Greška pri učitavanju statistika');
@@ -141,6 +148,10 @@ export default function DashboardPage() {
       const sixMonthsAgo = new Date();
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
+      // Supabase removed - chart data disabled
+      const blogs: any[] = []
+      const glossary: any[] = []
+      /* DISABLED
       // Fetch blogs data
       const { data: blogs } = await supabase
         .from('blogs')
@@ -193,6 +204,7 @@ export default function DashboardPage() {
       }));
 
       setChartData(chartDataArray);
+      */ // END DISABLED
     } catch (error) {
       console.error('Error fetching chart data:', error);
     }

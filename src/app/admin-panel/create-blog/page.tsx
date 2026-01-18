@@ -106,14 +106,8 @@ export default function CreateBlogPage() {
   useEffect(() => {
     const fetchGlossaryTerms = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/glossary?select=id,term,slug&published=eq.true&limit=50`, {
-          headers: {
-            'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            'Authorization': `Bearer ${session?.access_token || ''}`,
-          }
-        });
-        const terms = await response.json();
-        setGlossaryTerms(terms || []);
+        // Supabase removed - glossary fetch disabled
+        setGlossaryTerms([]);
       } catch (error) {
         console.error('Error fetching glossary terms:', error);
       }
@@ -281,11 +275,15 @@ export default function CreateBlogPage() {
         meta_keywords: tagsArray.join(', ')
       };
 
+      // Supabase removed - blog save disabled
+      toast.error('Čuvanje bloga je privremeno onemogućeno. Supabase je uklonjen.')
+      return
+      /* DISABLED
       const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/blogs`, {
         method: 'POST',
         headers: {
           'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-          'Authorization': `Bearer ${session.access_token}`,
+          'Authorization': `Bearer ${(session as any)?.access_token || ''}`,
           'Content-Type': 'application/json',
           'Prefer': 'return=representation'
         },
@@ -302,6 +300,7 @@ export default function CreateBlogPage() {
         console.error('Error saving blog:', errorData);
         toast.error('Greška pri čuvanju bloga');
       }
+      */ // END DISABLED
     } catch (error) {
       console.error('Error saving blog:', error);
       toast.error('Greška pri čuvanju bloga');
@@ -385,11 +384,15 @@ export default function CreateBlogPage() {
         meta_keywords: tagsArray.join(', ')
       };
 
+      // Supabase removed - blog publish disabled
+      toast.error('Objavljivanje bloga je privremeno onemogućeno. Supabase je uklonjen.')
+      return
+      /* DISABLED
       const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/blogs`, {
         method: 'POST',
         headers: {
           'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-          'Authorization': `Bearer ${session.access_token}`,
+          'Authorization': `Bearer ${(session as any)?.access_token || ''}`,
           'Content-Type': 'application/json',
           'Prefer': 'return=representation'
         },
@@ -404,6 +407,7 @@ export default function CreateBlogPage() {
         console.error('Error publishing blog:', errorData);
         toast.error('Greška pri objavljivanju bloga');
       }
+      */ // END DISABLED
     } catch (error) {
       console.error('Error publishing blog:', error);
       toast.error('Greška pri objavljivanju bloga');

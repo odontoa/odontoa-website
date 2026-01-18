@@ -7,7 +7,7 @@ echo "🔧 Setting up git configuration for odontoa project..."
 
 # Set local git configuration
 git config --local user.name "Odontoa Team"
-git config --local user.email "info@odontoa.com"
+git config --local user.email "odontoa.com@gmail.com"
 
 # Ensure remote is set to odontoa repository
 git remote set-url origin git@github.com-odontoa:odontoa/odontoa-website.git

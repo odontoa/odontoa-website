@@ -1,9 +1,12 @@
+'use client';
+
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Calendar, Clock, User, ArrowRight } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
+import { sanityClient } from '@/lib/sanity.client'
+import { allBlogPostsQuery, type SanityBlogPost } from '@/lib/sanity.queries'
 import { getRelatedPostsByTags } from '@/lib/utils'
 
 interface Post {
@@ -22,6 +25,7 @@ interface RelatedPostsProps {
   currentPost: {
     id: string
     tags: string[]
+    slug?: string
   }
 }
 
@@ -37,31 +41,36 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = ({ currentPost }) => {
     try {
       setLoading(true)
       
-      // TODO: Strapi CMS integration - replace Supabase with Strapi API
-      // Future mapping: ${process.env.NEXT_PUBLIC_STRAPI_URL}/api/blog-posts?populate=*
-      // Fields mapping: title, slug, excerpt, cover_image, tags, read_time, main_content, faq, seo_schema, datePublished, author
-      
-      // Prvo dohvati sve objavljene članke
-      const { data: allPosts, error } = await supabase
-        .from('blogs')
-        .select('*')
-        .eq('published', true)
-        .order('created_at', { ascending: false })
+      // Fetch all published blog posts from Sanity
+      const allPosts: SanityBlogPost[] = await sanityClient.fetch(allBlogPostsQuery)
 
-      if (error) {
-        console.error('Error fetching posts:', error)
-        return
-      }
+      // Convert Sanity posts to format expected by getRelatedPostsByTags
+      const convertedPosts = allPosts.map((post: SanityBlogPost) => ({
+        id: post._id,
+        title: post.title,
+        excerpt: post.excerpt || '',
+        slug: post.slug,
+        author: post.authorName || 'Odontoa Tim',
+        created_at: post.publishedAt,
+        tags: post.tags?.map(t => t.title) || [],
+        featured_image: post.coverImage ? undefined : undefined, // Will need image URL conversion if needed
+        image_url: undefined,
+      }))
 
-      // Koristi novu logiku za preporučivanje članaka
+      // Filter out current post by slug if available, otherwise by id
+      const filteredPosts = convertedPosts.filter(p => 
+        currentPost.slug ? p.slug !== currentPost.slug : p.id !== currentPost.id
+      )
+
+      // Use tag-based recommendation logic
       const relatedPostsWithScores = getRelatedPostsByTags(
         currentPost.tags || [],
-        allPosts || [],
+        filteredPosts,
         currentPost.id,
         3
       )
 
-      // Ukloni relevanceScore iz rezultata
+      // Remove relevanceScore from results
       const finalPosts = relatedPostsWithScores.map(({ relevanceScore, ...post }) => post)
 
       setRelatedPosts(finalPosts)
