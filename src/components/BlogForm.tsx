@@ -501,6 +501,13 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
       toast.error('Čuvanje bloga je privremeno onemogućeno. Supabase je uklonjen, migracija na Sanity je u toku.')
       setLoading(false)
       return Promise.resolve()
+    } catch (err) {
+      console.error('Error submitting blog:', err)
+      setError('Greška pri HTTP pozivu')
+      toast.error('Greška pri HTTP pozivu')
+    } finally {
+      setLoading(false)
+    }
       /* DISABLED - Supabase removed, needs Sanity migration
       // Determine if this is an edit (update) or create operation
       const isEditMode = !!initialData?.id
@@ -560,13 +567,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
           toast.error(`HTTP greška: ${response.status}`)
         }
       }
-          } catch (err) {
-        console.error('Error submitting blog:', err)
-        setError('Greška pri HTTP pozivu')
-        toast.error('Greška pri HTTP pozivu')
-      } finally {
-        setLoading(false)
-      }
+      */
   }
 
   const onSubmit = (data: BlogFormData): void => {
