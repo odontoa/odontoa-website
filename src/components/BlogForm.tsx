@@ -311,7 +311,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
   const generateRelatedContent = async () => {
     // Supabase removed - related content generation disabled
     toast.error('Generisanje povezanog sadržaja je privremeno onemogućeno. Supabase je uklonjen.')
-    return
+    return Promise.resolve()
     /* DISABLED - Supabase removed, needs Sanity migration
     const formData = form.getValues()
     if (formData.content) {
@@ -499,7 +499,8 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
 
       // Supabase removed - blog save disabled
       toast.error('Čuvanje bloga je privremeno onemogućeno. Supabase je uklonjen, migracija na Sanity je u toku.')
-      return
+      setLoading(false)
+      return Promise.resolve()
       /* DISABLED - Supabase removed, needs Sanity migration
       // Determine if this is an edit (update) or create operation
       const isEditMode = !!initialData?.id
