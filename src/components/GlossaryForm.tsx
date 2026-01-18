@@ -362,7 +362,7 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess, onCancel 
         setError('Niste ulogovani kao admin')
         toast.error('Niste ulogovani kao admin')
         setLoading(false)
-        return
+        return Promise.resolve()
       }
 
       console.log('=== PREPARING GLOSSARY RAW HTTP DATA ===')
@@ -377,7 +377,7 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess, onCancel 
         } catch (e) {
           setError('Nevalidan FAQ Schema JSON format')
           setLoading(false)
-          return
+          return Promise.resolve()
         }
       }
 
@@ -404,7 +404,7 @@ export const GlossaryForm: React.FC<GlossaryFormProps> = ({ onSuccess, onCancel 
 
       // Supabase removed - glossary creation disabled
       toast.error('Kreiranje rečnika je privremeno onemogućeno. Supabase je uklonjen.')
-      return
+      return Promise.resolve()
     } catch (err) {
       console.error('=== GLOSSARY RAW HTTP SUBMIT ERROR ===', err)
       console.error('Error details:', err)
