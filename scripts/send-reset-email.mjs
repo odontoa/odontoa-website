@@ -1,6 +1,12 @@
-import { createClient } from '@supabase/supabase-js';
-import dotenv from 'dotenv';
+// DISABLED - Supabase removed, this script is no longer functional
+// import { createClient } from '@supabase/supabase-js';
+// import dotenv from 'dotenv';
 
+console.log('⚠️  This script is disabled. Supabase has been removed from the project.');
+console.log('📧 Email functionality is now handled through Sanity CMS.');
+process.exit(0);
+
+/* DISABLED - Supabase removed
 // Load environment variables
 dotenv.config({ path: '.env.local' });
 
@@ -23,4 +29,5 @@ async function main() {
   console.log('✅ Reset email sent. Check inbox/spam.');
 }
 
-main(); 
+main();
+*/ 

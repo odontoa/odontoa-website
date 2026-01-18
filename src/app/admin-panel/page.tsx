@@ -34,16 +34,15 @@ import {
   LogOut,
   Image
 } from 'lucide-react';
-// Supabase removed - admin panel needs Sanity migration
-// import { supabase } from '@/lib/supabase';
-import { BlogForm } from '@/components/BlogForm';
-import { GlossaryForm } from '@/components/GlossaryForm';
-import { ContentList } from '@/components/ContentList';
-import { useAuth } from '@/contexts/AuthContext';
-import { useProtectedAction } from '@/hooks/useProtectedAction';
-import { downloadBackup, getBackupStats } from '@/lib/backup';
-import { toast } from 'sonner';
-import { MediaManager } from '@/components/MediaManager';
+// Supabase removed - admin panel components disabled
+// import { BlogForm } from '@/components/BlogForm';
+// import { GlossaryForm } from '@/components/GlossaryForm';
+// import { ContentList } from '@/components/ContentList';
+// import { useAuth } from '@/contexts/AuthContext';
+// import { useProtectedAction } from '@/hooks/useProtectedAction';
+// import { downloadBackup, getBackupStats } from '@/lib/backup';
+// import { toast } from 'sonner';
+// import { MediaManager } from '@/components/MediaManager';
 
 interface DashboardStats {
   totalBlogs: number

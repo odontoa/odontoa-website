@@ -37,4 +37,10 @@ next-env.d.ts
 .idea/
 
 # OS
-Thumbs.db 
+Thumbs.db
+
+# Backup files
+*.bak
+*.pre-*.bak
+postcss-fix-from.js
+scripts/trace-enoent.cjs 

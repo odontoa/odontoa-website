@@ -1,3 +1,8 @@
+// DISABLED - Supabase removed, this script is no longer functional
+console.log('⚠️  This script is disabled. Supabase has been removed from the project.');
+process.exit(0);
+
+/* DISABLED - Supabase removed
 import { createClient } from '@supabase/supabase-js'
 import dotenv from 'dotenv'
 
@@ -8,6 +13,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
+*/
 
 async function createAdminUser() {
   try {

@@ -309,6 +309,10 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
   }
 
   const generateRelatedContent = async () => {
+    // Supabase removed - related content generation disabled
+    toast.error('Generisanje povezanog sadržaja je privremeno onemogućeno. Supabase je uklonjen.')
+    return
+    /* DISABLED - Supabase removed, needs Sanity migration
     const formData = form.getValues()
     if (formData.content) {
       try {
@@ -349,6 +353,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
         console.error('Error generating related content:', error)
       }
     }
+    */
   }
 
   const handleGenerateFAQ = async () => {
@@ -492,6 +497,10 @@ export const BlogForm: React.FC<BlogFormProps> = ({ onSuccess, onCancel, initial
         meta_keywords: tagEnhancement.metaKeywords // Add meta keywords
       }
 
+      // Supabase removed - blog save disabled
+      toast.error('Čuvanje bloga je privremeno onemogućeno. Supabase je uklonjen, migracija na Sanity je u toku.')
+      return
+      /* DISABLED - Supabase removed, needs Sanity migration
       // Determine if this is an edit (update) or create operation
       const isEditMode = !!initialData?.id
       const method = isEditMode ? 'PATCH' : 'POST'

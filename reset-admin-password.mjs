@@ -1,3 +1,8 @@
+// DISABLED - Supabase removed, this script is no longer functional
+console.log('⚠️  This script is disabled. Supabase has been removed from the project.');
+process.exit(0);
+
+/* DISABLED - Supabase removed
 import { createClient } from '@supabase/supabase-js'
 import dotenv from 'dotenv'
 
@@ -14,6 +19,7 @@ const supabase = createClient(supabaseUrl, serviceRoleKey, {
     persistSession: false
   }
 })
+*/
 
 async function resetAdminPassword() {
   try {
