@@ -4,15 +4,8 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { Plus_Jakarta_Sans } from "next/font/google";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { AuthorRow } from "@/components/blog/AuthorRow";
-
-const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 interface Post {
   id: string;
@@ -49,30 +42,20 @@ export function RecentArticlesGrid({ posts }: RecentArticlesGridProps) {
   const canLoadMore = visibleCount < posts.length;
 
   return (
-    <section
-      className={cn(
-        plusJakarta.className,
-        "w-full bg-white py-14 md:py-16 lg:py-20"
-      )}
-    >
-      <div className="max-w-7xl mx-auto px-4 md:px-6">
-        {/* Constrained container for narrower cards (left-aligned) */}
-        <div className="max-w-7xl">
-          {/* Header Row */}
-          <div className="mb-8 md:mb-10">
-            {/* Title + Subtitle */}
-            <div>
-              <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">
-                Naši najnoviji članci
-              </h2>
-              <p className="mt-2 text-sm md:text-base text-slate-600 leading-relaxed">
-                Ostanite informisani sa našim najnovijim uvidima
-              </p>
-            </div>
-          </div>
+    <section className="w-full bg-white py-12 md:py-16">
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header Row */}
+        <div className="mb-8 md:mb-10 flex flex-col gap-3">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight leading-tight text-foreground">
+            Naši najnoviji članci
+          </h2>
+          <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+            Ostanite informisani sa našim najnovijim uvidima
+          </p>
+        </div>
 
-          {/* Articles Grid - tighter gaps */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10 items-start">
+        {/* Articles Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-start">
           {visiblePosts.map((post) => (
             <Link
               key={post.id}
@@ -103,15 +86,28 @@ export function RecentArticlesGrid({ posts }: RecentArticlesGridProps) {
                   </div>
                 </div>
 
-                {/* Text Block (Plain, No Box) */}
-                <div className="mt-4 p-5 md:p-6">
+                {/* Text Block (Plain, No Box) - Flush alignment */}
+                <div className="mt-5 px-0">
+                  {/* Tag Pill - Primary tag only */}
+                  {post.tags?.[0] && (
+                    <Link 
+                      href={`/blogovi/tag/${post.tags[0].slug}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-block mb-3"
+                    >
+                      <span className="inline-flex items-center rounded-full border border-border bg-card px-2.5 py-1 text-xs font-medium text-foreground hover:text-foreground/80 transition-colors">
+                        {post.tags[0].title}
+                      </span>
+                    </Link>
+                  )}
+                  
                   {/* Title */}
-                  <h3 className="text-lg md:text-xl font-semibold text-slate-900 leading-snug line-clamp-2 max-w-full group-hover:text-slate-700 transition-colors duration-200">
+                  <h3 className="text-lg md:text-xl font-semibold leading-tight text-foreground line-clamp-2 max-w-full group-hover:text-foreground/80 transition-colors duration-200">
                     {post.title}
                   </h3>
 
                   {/* Excerpt */}
-                  <p className="mt-3 text-sm md:text-base text-slate-600 leading-relaxed line-clamp-3">
+                  <p className="mt-3 text-sm md:text-base text-muted-foreground leading-relaxed line-clamp-3">
                     {post.summary}
                   </p>
 
@@ -144,8 +140,8 @@ export function RecentArticlesGrid({ posts }: RecentArticlesGridProps) {
           {canLoadMore && (
             <div className="mt-10 flex justify-center">
               <Button
-                variant="outline"
-                className="rounded-xl"
+                variant="pillSecondary"
+                size="pill"
                 onClick={() => setVisibleCount((prev) => Math.min(prev + STEP, posts.length))}
               >
                 Pogledaj više
@@ -153,7 +149,6 @@ export function RecentArticlesGrid({ posts }: RecentArticlesGridProps) {
             </div>
           )}
         </div>
-      </div>
     </section>
   );
 }

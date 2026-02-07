@@ -20,12 +20,18 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        pillPrimary:
+          "rounded-full font-semibold bg-blue-600 text-white shadow-sm hover:bg-blue-700 transition-colors duration-200 focus-visible:ring-blue-500/30 active:scale-[0.99]",
+        pillSecondary:
+          "rounded-full font-semibold bg-white text-slate-900 border border-slate-300/90 shadow-sm hover:bg-slate-50 transition-colors duration-200 focus-visible:ring-black/20 active:scale-[0.99]",
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-lg px-3",
         lg: "h-11 rounded-lg px-8",
         icon: "h-10 w-10",
+        pill: "rounded-full h-14 px-7 md:px-8 text-sm md:text-base",
+        pillSm: "rounded-full h-10 px-4 text-sm",
       },
     },
     defaultVariants: {

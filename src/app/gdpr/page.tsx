@@ -44,10 +44,10 @@ export default function GDPRPage() {
             transition={{ duration: 0.6 }}
             className="mb-12"
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-4 font-['Poppins']">
+            <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-4">
               GDPR izjava
             </h1>
-            <p className="text-lg text-muted-foreground font-['Inter']">
+            <p className="text-lg text-muted-foreground">
               Informacije o obradi podataka u skladu sa Opštom uredbom EU o zaštiti podataka (GDPR) i Zakonom o zaštiti podataka o ličnosti Republike Srbije (ZZPL).
             </p>
           </motion.div>
@@ -60,11 +60,11 @@ export default function GDPRPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <h2 className="text-3xl font-semibold text-foreground mb-4 font-['Poppins']">1. Uloge u obradi</h2>
-              <p className="text-muted-foreground leading-relaxed font-['Inter'] mb-3">
+              <h2 className="text-3xl font-semibold text-foreground mb-4">1. Uloge u obradi</h2>
+              <p className="text-muted-foreground leading-relaxed mb-3">
                 U kontekstu obrade podataka pacijenata:
               </p>
-              <ul className="text-muted-foreground leading-relaxed font-['Inter'] space-y-2 list-disc ml-6">
+              <ul className="text-muted-foreground leading-relaxed space-y-2 list-disc ml-6">
                 <li><strong className="text-foreground">Ordinacija (korisnik aplikacije)</strong> = rukovalac podataka (data controller).</li>
                 <li><strong className="text-foreground">Odontoa</strong> = obrađivač podataka (data processor).</li>
               </ul>
@@ -76,11 +76,11 @@ export default function GDPRPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <h2 className="text-3xl font-semibold text-foreground mb-4 font-['Poppins']">2. Obaveze Odontoa</h2>
-              <p className="text-muted-foreground leading-relaxed font-['Inter'] mb-3">
+              <h2 className="text-3xl font-semibold text-foreground mb-4">2. Obaveze Odontoa</h2>
+              <p className="text-muted-foreground leading-relaxed mb-3">
                 Odontoa se obavezuje da:
               </p>
-              <ul className="text-muted-foreground leading-relaxed font-['Inter'] space-y-2 list-disc ml-6">
+              <ul className="text-muted-foreground leading-relaxed space-y-2 list-disc ml-6">
                 <li>obrađuje podatke samo po instrukcijama ordinacije.</li>
                 <li>obezbeđuje tehničke i organizacione mere zaštite (enkripcija, kontrola pristupa, backup).</li>
                 <li>ne koristi podatke pacijenata u sopstvene svrhe.</li>
@@ -94,11 +94,11 @@ export default function GDPRPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <h2 className="text-3xl font-semibold text-foreground mb-4 font-['Poppins']">3. Prava pacijenata</h2>
-              <p className="text-muted-foreground leading-relaxed font-['Inter'] mb-3">
+              <h2 className="text-3xl font-semibold text-foreground mb-4">3. Prava pacijenata</h2>
+              <p className="text-muted-foreground leading-relaxed mb-3">
                 Pacijenti imaju pravo da od svoje ordinacije zahtevaju:
               </p>
-              <ul className="text-muted-foreground leading-relaxed font-['Inter'] space-y-2 list-disc ml-6">
+              <ul className="text-muted-foreground leading-relaxed space-y-2 list-disc ml-6">
                 <li>brisanje podataka.</li>
                 <li>prenos podataka drugom pružaocu usluge.</li>
                 <li>informacije o svrsi obrade i periodu čuvanja.</li>
@@ -111,8 +111,8 @@ export default function GDPRPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <h2 className="text-3xl font-semibold text-foreground mb-4 font-['Poppins']">4. Lokacija i prenos podataka</h2>
-              <p className="text-muted-foreground leading-relaxed font-['Inter'] mb-3">
+              <h2 className="text-3xl font-semibold text-foreground mb-4">4. Lokacija i prenos podataka</h2>
+              <p className="text-muted-foreground leading-relaxed mb-3">
                 Podaci se čuvaju u EU i Srbiji. U slučaju prenosa podataka van EU, primenjuju se standardne ugovorne klauzule EU i ZZPL.
               </p>
             </motion.div>
@@ -124,10 +124,10 @@ export default function GDPRPage() {
               transition={{ duration: 0.6, delay: 0.5 }}
               className="pt-8 mt-12 border-t border-border"
             >
-              <p className="text-sm text-muted-foreground font-['Inter']">
+              <p className="text-sm text-muted-foreground">
                 Važi od: 2025
               </p>
-              <p className="text-sm text-muted-foreground font-['Inter'] mt-2">
+              <p className="text-sm text-muted-foreground mt-2">
                 Poslednje ažuriranje: novembar 2025.
               </p>
             </motion.div>

@@ -121,17 +121,12 @@ const Home2BlogSection = () => {
                   {post.excerpt}
                 </p>
                 <Button
-                  variant="outline"
-                  className="border-[#3267FF] text-[#3267FF] hover:bg-[#3267FF]/10 rounded-[4px] px-6 py-2 h-auto"
-                  style={{
-                    fontFamily: 'Manrope, sans-serif',
-                    fontWeight: 700,
-                    fontSize: '15px',
-                    lineHeight: '1.6em'
-                  }}
+                  variant="pillSecondary"
+                  size="pill"
+                  className="gap-2"
                 >
                   Read More
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <ArrowRight className="w-4 h-4" />
                 </Button>
               </div>
             </div>

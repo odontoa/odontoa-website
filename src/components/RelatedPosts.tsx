@@ -98,11 +98,11 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = ({ currentPost }) => {
 
   if (loading) {
     return (
-      <section className="py-16 px-6 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
+      <section className="py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
+        <div className="max-w-[1240px] mx-auto">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Učitavam slične članke...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Učitavam slične članke...</p>
           </div>
         </div>
       </section>
@@ -132,7 +132,7 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = ({ currentPost }) => {
               className="group cursor-pointer"
             >
               <Link href={`/blogovi/${post.slug}`} className="block">
-                <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:scale-[1.01]">
+                <div className="bg-card rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-border hover:scale-[1.01]">
                   <div className="relative overflow-hidden">
                     <img 
                       src={post.image_url || post.featured_image || '/images/blog-placeholder.jpg'} 
@@ -143,7 +143,7 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = ({ currentPost }) => {
                     <div className="absolute top-4 left-4">
                       <div className="flex flex-wrap gap-2">
                         {post.tags && post.tags.slice(0, 2).map((tag, index) => (
-                          <Badge key={index} className="bg-white/90 text-gray-800 text-xs font-medium">
+                          <Badge key={index} className="bg-card/90 text-foreground text-xs font-medium">
                             {tag}
                           </Badge>
                         ))}
@@ -152,7 +152,7 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = ({ currentPost }) => {
                   </div>
                   
                   <div className="p-6">
-                    <div className="flex items-center gap-3 text-sm text-gray-500 mb-3">
+                    <div className="flex items-center gap-3 text-xs md:text-sm text-muted-foreground mb-3">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
                         <span>{formatDate(post.created_at)}</span>
@@ -163,21 +163,21 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = ({ currentPost }) => {
                       </div>
                     </div>
                     
-                    <h3 className="text-xl font-normal text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2 leading-tight">
+                    <h3 className="text-lg md:text-xl font-semibold leading-tight text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-2">
                       {post.title}
                     </h3>
                     
-                    <p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed">
+                    <p className="text-base md:text-lg text-muted-foreground mb-4 line-clamp-3 leading-relaxed">
                       {post.excerpt}
                     </p>
                     
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <div className="flex items-center justify-between pt-4 border-t border-border">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <User className="h-4 w-4" />
                         <span>{post.author}</span>
                       </div>
                       
-                      <div className="flex items-center gap-2 text-blue-600 font-medium text-sm group-hover:gap-3 transition-all duration-300">
+                      <div className="flex items-center gap-2 text-primary font-medium text-sm group-hover:gap-3 transition-all duration-300">
                         <span>Pročitajte</span>
                         <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                       </div>
@@ -192,12 +192,12 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = ({ currentPost }) => {
         <div className="text-center mt-12">
           <Link href="/blogovi">
             <Button 
-              variant="outline"
-              size="lg"
-              className="px-8 py-3 rounded-full border-gray-200 text-gray-700 hover:bg-gray-50"
+              variant="pillSecondary"
+              size="pill"
+              className="gap-2"
             >
               Pogledajte sve članke
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <ArrowRight className="h-5 w-5" />
             </Button>
           </Link>
         </div>

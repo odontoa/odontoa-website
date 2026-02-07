@@ -45,6 +45,7 @@ export interface AuthorRowProps {
   publishedAt?: string | null;
   updatedAt?: string | null;
   size?: "sm" | "md";
+  showDate?: boolean;
 }
 
 export function AuthorRow({
@@ -54,10 +55,12 @@ export function AuthorRow({
   publishedAt,
   updatedAt,
   size = "sm",
+  showDate = true,
 }: AuthorRowProps) {
   // Date fallback: publishedAt ?? updatedAt ?? ""
   const dateToFormat = publishedAt ?? updatedAt ?? "";
-  const formattedDate = formatSrDate(dateToFormat);
+  const formattedDate = showDate ? formatSrDate(dateToFormat) : "";
+  const hasDate = showDate && !!dateToFormat && formattedDate !== "";
 
   const avatarSize = size === "md" ? "h-8 w-8" : "h-7 w-7";
   const avatarSizePx = size === "md" ? "32px" : "28px";
@@ -108,33 +111,32 @@ export function AuthorRow({
   );
 
   return (
-    <div className="flex items-start gap-3">
+    <div className={cn("flex gap-3", hasDate ? "items-start" : "items-center")}>
       {url ? (
-        <>
+        <Link
+          href={url}
+          className="flex items-center hover:opacity-80 transition-opacity shrink-0"
+        >
+          {AvatarComponent}
+        </Link>
+      ) : (
+        AvatarComponent
+      )}
+      <div className={cn("min-w-0", hasDate ? "flex flex-col leading-snug" : "flex items-center")}>
+        {url ? (
           <Link
             href={url}
-            className="flex items-center gap-3 hover:opacity-80 transition-opacity shrink-0"
+            className="text-sm font-medium text-slate-900 hover:opacity-80 transition-opacity"
           >
-            {AvatarComponent}
-            <span className="text-sm font-medium text-slate-900">{name}</span>
+            {name}
           </Link>
-          {formattedDate && (
-            <div className="flex flex-col leading-snug min-w-0 -ml-3 mt-5">
-              <span className="text-xs text-slate-500">{formattedDate}</span>
-            </div>
-          )}
-        </>
-      ) : (
-        <>
-          {AvatarComponent}
-          <div className="flex flex-col leading-snug min-w-0">
-            <span className="text-sm font-medium text-slate-900 truncate">{name}</span>
-            {formattedDate && (
-              <span className="text-xs text-slate-500">{formattedDate}</span>
-            )}
-          </div>
-        </>
-      )}
+        ) : (
+          <span className="text-sm font-medium text-slate-900 truncate">{name}</span>
+        )}
+        {hasDate && formattedDate && (
+          <span className="text-xs text-slate-500">{formattedDate}</span>
+        )}
+      </div>
     </div>
   );
 }

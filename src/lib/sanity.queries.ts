@@ -214,6 +214,46 @@ export const relatedGlossaryTermsQuery = groq`*[_type == "glossaryTerm" && !(_id
   category
 }`;
 
+// Tag Queries
+export const allTagsQuery = groq`*[_type == "tag" && defined(slug.current)] | order(title asc){
+  _id,
+  title,
+  "slug": slug.current
+}`;
+
+export const allTagSlugsQuery = groq`*[_type == "tag" && defined(slug.current)]{
+  "slug": slug.current
+}`;
+
+export const tagBySlugQuery = groq`*[_type == "tag" && slug.current == $slug][0]{
+  _id,
+  title,
+  "slug": slug.current
+}`;
+
+export const postsByTagSlugQuery = groq`*[_type == "blogPost" && defined(slug.current) && $tagSlug in tags[]->slug.current] | order(publishedAt desc){
+  _id,
+  title,
+  "slug": slug.current,
+  excerpt,
+  coverImage,
+  publishedAt,
+  "updatedAt": coalesce(updatedAt, publishedAt),
+  "author": author->{
+    name,
+    url,
+    "avatarUrl": avatar.asset->url
+  },
+  tags[]->{ title, "slug": slug.current }
+}`;
+
+// TypeScript type for tags
+export type SanityTag = {
+  _id: string;
+  title: string;
+  slug: string;
+};
+
 // TypeScript type for glossary terms
 // NOTE: GROQ returns "slug": slug.current, so in TypeScript we use term.slug (string), never slug.current
 export type SanityGlossaryTerm = {

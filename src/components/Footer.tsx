@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Mail, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { businessConfig } from "@/lib/config/business";
@@ -34,10 +34,11 @@ const Footer = () => {
                 <Mail size={16} />
                 <span>{businessConfig.email}</span>
               </div>
-              <div className="flex items-center space-x-2 text-muted-foreground text-sm">
+              {/* Telefon sakriven dok se ne registruje office broj */}
+              {/* <div className="flex items-center space-x-2 text-muted-foreground text-sm">
                 <Phone size={16} />
                 <span>{businessConfig.phone}</span>
-              </div>
+              </div> */}
               <div className="flex items-center space-x-2 text-muted-foreground text-sm">
                 <MapPin size={16} />
                 <span>{businessConfig.address.street}, {businessConfig.address.city}</span>
@@ -45,7 +46,7 @@ const Footer = () => {
             </div>
 
             <p className="text-muted-foreground/70 text-xs">
-              © 2025 Odontoa. Sva prava zadržana.
+              © 2026 Odontoa. Sva prava zadržana.
             </p>
           </div>
 
@@ -99,19 +100,15 @@ const Footer = () => {
                 placeholder="Vaša email adresa"
                 className="flex-1 px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary text-sm"
               />
-              <Button className="bg-primary text-white hover:bg-primary/80 transition-colors duration-200 font-semibold px-6 py-3" style={{borderRadius: '8px'}}>
+              <Button variant="pillPrimary" size="pill">
                 Prijavite se
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Bottom section */}
-        <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between">
-          <div className="text-muted-foreground/70 text-xs mb-4 md:mb-0">
-            Napravljeno sa ❤️ za stomatološke ordinacije u regionu
-          </div>
-          
+        {/* Bottom section - social links */}
+        <div className="pt-8 border-t border-border flex justify-end">
           <div className="flex items-center space-x-4">
             {/* Social Media Links */}
             <div className="flex items-center space-x-2">

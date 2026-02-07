@@ -267,7 +267,9 @@ export default function ContactPage() {
                 <Button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="w-full bg-primary text-white hover:bg-primary/90 transition-colors duration-200 font-medium py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                  variant="pillPrimary"
+                  size="pill"
+                  className="w-full disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     <>
@@ -477,10 +479,12 @@ export default function ContactPage() {
                   />
                   
                   <Button 
-                    className="px-5 py-3 transition-colors duration-200 w-full rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
+                    variant="pillPrimary"
+                    size="pill"
+                    className="w-full gap-2"
                   >
                     Zakaži demo
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <ArrowRight className="h-4 w-4" />
                   </Button>
 
                   <p className="text-xs text-gray-500 mt-2 text-center leading-relaxed">

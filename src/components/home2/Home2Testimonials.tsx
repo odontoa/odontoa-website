@@ -65,15 +65,7 @@ const Home2Testimonials = () => {
             >
               Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient.
             </p>
-            <Button
-              className="bg-[#3267FF] text-white hover:bg-[#3267FF]/90 rounded-[4px] px-9 py-4 h-auto"
-              style={{
-                fontFamily: 'Manrope, sans-serif',
-                fontWeight: 700,
-                fontSize: '15px',
-                lineHeight: '1.6em'
-              }}
-            >
+            <Button variant="pillPrimary" size="pill">
               See All Review
             </Button>
           </div>

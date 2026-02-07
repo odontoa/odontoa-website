@@ -5,46 +5,57 @@ import Image from "next/image";
 import { sanityClient } from "@/lib/sanity.client";
 import { allBlogPostsQuery, type SanityBlogPost } from "@/lib/sanity.queries";
 import { urlFor } from "@/lib/sanity.image";
+import { Plus_Jakarta_Sans } from "next/font/google";
+import { cn } from "@/lib/utils";
+import { AuthorRow } from "@/components/blog/AuthorRow";
 
-function formatToSerbianDate(isoString: string): string {
-  const date = new Date(isoString);
-  const months = [
-    "januar", "februar", "mart", "april", "maj", "jun",
-    "jul", "avgust", "septembar", "oktobar", "novembar", "decembar"
-  ];
-  
-  const day = date.getDate();
-  const month = months[date.getMonth()];
-  const year = date.getFullYear();
-  
-  return `${day}. ${month} ${year}`;
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+// Helper function to transform Sanity post to component format (same as blogovi/page.tsx)
+function transformPost(post: SanityBlogPost) {
+  const coverImageUrl = post.coverImage
+    ? urlFor(post.coverImage).width(1200).height(800).url()
+    : "/images/blog-cover-new.png";
+
+  return {
+    id: post.slug,
+    _id: post._id,
+    title: post.title || "",
+    summary: post.excerpt || "",
+    slug: post.slug,
+    tags: post.tags || [],
+    author: post.author, // Pass author object directly
+    publishedAt: post.publishedAt, // Keep ISO string for AuthorRow
+    updatedAt: post.updatedAt, // For date fallback
+    url: `/blogovi/${post.slug}`,
+    image: coverImageUrl,
+    content: post.content,
+  };
 }
 
 async function getFeaturedBlogs() {
   try {
-    const sanityPosts = await sanityClient.fetch<SanityBlogPost[]>(allBlogPostsQuery);
+    // Fetch all posts and get the latest 3
+    const allSanityPosts = await sanityClient.fetch<SanityBlogPost[]>(
+      allBlogPostsQuery,
+      {},
+      { cache: "no-store" } as any
+    );
     
-    // Uzmi poslednja 3 članka
-    const posts = (sanityPosts || []).slice(0, 3).map((post) => {
-      const coverImageUrl = post.coverImage
-        ? urlFor(post.coverImage).width(400).height(200).url()
-        : "";
-
-      return {
-        id: post.slug,
-        title: post.title,
-        summary: post.excerpt || "",
-        label: post.tags && post.tags.length > 0 ? post.tags[0].title : "Aktuelno",
-        author: post.authorName || "Odontoa tim",
-        published: formatToSerbianDate(post.publishedAt),
-        url: `/blogovi/${post.slug}`,
-        image: coverImageUrl,
-      };
-    });
+    // Get latest 3 posts (already sorted by publishedAt desc in query)
+    const latestPosts = (allSanityPosts || [])
+      .filter((post) => post?.title && post?.slug)
+      .slice(0, 3);
+    
+    // Transform posts
+    const posts = latestPosts.map(transformPost);
     
     return posts;
   } catch (error) {
-    console.error("Error fetching blog posts from Sanity:", error);
+    console.error("Error fetching latest blog posts from Sanity:", error);
     return [];
   }
 }
@@ -53,96 +64,115 @@ const FeaturedBlogsSection = async () => {
   const blogs = await getFeaturedBlogs();
 
   return (
-    <section className="section-spacing w-full px-6 bg-background">
-      <div className="max-w-screen-xl mx-auto">
+    <section
+      className={cn(
+        plusJakarta.className,
+        "w-full bg-white py-14 md:py-16 lg:py-20"
+      )}
+    >
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-normal text-foreground mb-3 leading-tight">
-            Preporučeni članci
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
-            Naši najbolji članci i vodiči za digitalizaciju ordinacije
-          </p>
+        <div className="mb-8 md:mb-10">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">
+              Naši najnoviji članci
+            </h2>
+            <p className="mt-2 text-sm md:text-base text-slate-600 leading-relaxed">
+              Najnoviji članci i vodiči za digitalizaciju ordinacije
+            </p>
+          </div>
         </div>
 
         {/* Blog Cards Grid - 3 članka */}
         {blogs.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10 items-start">
             {blogs.map((post) => (
-              <Link key={post.id} href={post.url}>
-                <div className="group cursor-pointer border border-slate-200 bg-white hover:shadow-lg transition-all duration-300 overflow-hidden rounded-xl h-full flex flex-col">
-                  <div className="p-0 flex-shrink-0">
-                    <div className="relative overflow-hidden">
+              <Link
+                key={post.id}
+                href={post.url}
+                className="flex flex-col h-full group cursor-pointer"
+              >
+                <article className="flex flex-col h-full">
+                  {/* Image Tile (No border, just rounded) */}
+                  <div className="relative w-full rounded-2xl overflow-hidden bg-slate-100">
+                    <div className="relative h-44 md:h-48 lg:h-52 w-full overflow-hidden">
                       {post.image ? (
-                        <Image 
-                          src={post.image} 
-                          alt={post.title} 
-                          width={400}
-                          height={200}
-                          className="w-full h-36 object-cover transition-transform duration-500 group-hover:scale-105" 
-                          loading="lazy"
+                        <Image
+                          src={post.image}
+                          alt={post.title}
+                          fill
+                          className="object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+                          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                         />
                       ) : (
-                        <div className="w-full h-36 bg-gray-200 flex items-center justify-center">
-                          <span className="text-gray-500 text-xs">No image</span>
-                        </div>
+                        <Image
+                          src="/images/blog-cover-new.png"
+                          alt={post.title}
+                          fill
+                          className="object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+                          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                        />
                       )}
                     </div>
                   </div>
-                  
-                  <div className="p-4 flex-1 flex flex-col">
-                    <div className="flex items-center gap-3 text-xs text-gray-500 mb-2">
-                      <div className="flex items-center">
-                        {post.published}
-                      </div>
-                      {post.label && (
-                        <div className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs font-medium">
-                          {post.label}
-                        </div>
-                      )}
-                    </div>
-                    
-                    <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">
+
+                  {/* Text Block (Plain, No Box) */}
+                  <div className="mt-4 p-5 md:p-6">
+                    {/* Title */}
+                    <h3 className="text-lg md:text-xl font-semibold text-slate-900 leading-snug line-clamp-2 max-w-full group-hover:text-slate-700 transition-colors duration-200">
                       {post.title}
                     </h3>
-                    
-                    <p className="text-sm text-gray-600 mb-3 line-clamp-3 leading-relaxed flex-1">
+
+                    {/* Excerpt */}
+                    <p className="mt-3 text-sm md:text-base text-slate-600 leading-relaxed line-clamp-3">
                       {post.summary}
                     </p>
-                    
-                    <div className="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
-                      <div className="flex items-center text-xs text-gray-500">
-                        {post.author}
+
+                    {/* Author Row */}
+                    {post.author && (
+                      <div className="mt-4">
+                        <AuthorRow
+                          name={post.author.name || "Odontoa tim"}
+                          avatarUrl={post.author.avatarUrl}
+                          url={post.author.url}
+                          publishedAt={post.publishedAt}
+                          updatedAt={post.updatedAt}
+                          size="sm"
+                        />
                       </div>
-                      
-                      <div className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-full px-3 py-1.5 text-xs font-medium">
-                        Pročitaj više
-                      </div>
+                    )}
+
+                    {/* Read More Link */}
+                    <div className="inline-flex items-center gap-1 mt-5 md:mt-6 text-sm font-medium text-primary hover:text-primary/90 transition-colors duration-200">
+                      Pročitaj više
+                      <ArrowRight className="h-4 w-4 translate-y-[1px] transition-transform duration-200 group-hover:translate-x-1" />
                     </div>
                   </div>
-                </div>
+                </article>
               </Link>
             ))}
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">
+            <p className="text-slate-600">
               Trenutno nema dostupnih blog postova.
             </p>
           </div>
         )}
 
         {/* CTA Button */}
-        <div className="text-center">
-          <Link href="/blogovi">
-            <Button 
-              size="lg" 
-              className="rounded-full bg-primary text-white px-8 py-3 hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl"
-            >
+        <div className="mt-10 flex justify-center">
+          <Button
+            variant="pillSecondary"
+            size="pill"
+            asChild
+            className="gap-2"
+          >
+            <Link href="/blogovi">
               Pogledaj sve članke
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
         </div>
       </div>
     </section>

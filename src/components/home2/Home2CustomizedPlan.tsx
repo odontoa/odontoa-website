@@ -315,21 +315,12 @@ const Home2CustomizedPlan = () => {
                 {/* Button */}
                 <div className="mt-auto">
                   <Button
-                    variant={plan.variant}
-                    className={`w-full ${
-                      plan.featured
-                        ? "bg-[#3267FF] text-white hover:bg-[#3267FF]/90"
-                        : "border-[#EEEEEE] text-[#000A2D] hover:bg-[#F9FAFB]"
-                    }`}
-                    style={{
-                      fontFamily: "Manrope, sans-serif",
-                      fontWeight: 600,
-                      fontSize: "16px",
-                      lineHeight: "1.2em",
-                    }}
+                    variant={plan.featured ? "pillPrimary" : "pillSecondary"}
+                    size="pill"
+                    className="w-full gap-2"
                   >
                     {plan.buttonText}
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <ArrowRight className="h-4 w-4" />
                   </Button>
                 </div>
               </div>

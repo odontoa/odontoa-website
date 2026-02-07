@@ -2,46 +2,10 @@
 
 import React, { useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Star, Calendar, Bell, TrendingUp } from 'lucide-react';
+import { ArrowRight, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AnimatedGroup } from '@/components/ui/animated-group';
-import { AnimatedTooltip } from '@/components/ui/animated-tooltip';
-import { AnimatedGridPattern } from '@/components/ui/animated-grid-pattern';
-import { cn } from '@/lib/utils';
 import CountUp from "react-countup";
-
-const dentistAvatars = [
-  {
-    id: 1,
-    name: "Dr. Ana Petrović",
-    designation: "Ortodont",
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 2,
-    name: "Dr. Marko Jovanović",
-    designation: "Oralni hirurg",
-    image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 3,
-    name: "Dr. Jelena Nikolić",
-    designation: "Endodont",
-    image: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 4,
-    name: "Dr. Stefan Đorđević",
-    designation: "Stomatolog opšte prakse",
-    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 5,
-    name: "Dr. Marija Stojanović",
-    designation: "Parodontolog",
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-  },
-];
 
 const Home2Hero = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -71,7 +35,7 @@ const Home2Hero = () => {
 
   return (
     <>
-    <section className="relative w-full overflow-hidden bg-background">
+    <section className="relative w-full min-h-screen min-h-[100svh] flex items-center pt-24 pb-12 overflow-hidden bg-background [@media_(max-height:800px)]:pt-20 [@media_(max-height:800px)]:pb-6">
       {/* Video Background */}
       <video
         ref={videoRef}
@@ -99,32 +63,16 @@ const Home2Hero = () => {
         <div className="h-[80rem] -translate-y-[350px] absolute left-0 top-0 w-56 -rotate-45 bg-[radial-gradient(50%_50%_at_50%_50%,hsla(0,0%,85%,.04)_0,hsla(0,0%,45%,.02)_80%,transparent_100%)]" />
       </div>
       
-      {/* Animated Grid Pattern Background */}
-      <div className="absolute inset-0 z-[3] pointer-events-none">
-        <AnimatedGridPattern
-          numSquares={20}
-          maxOpacity={0.03}
-          duration={6}
-          repeatDelay={2}
-          width={60}
-          height={60}
-          className={cn(
-            "[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]",
-            "opacity-40",
-          )}
-        />
-      </div>
-      
-      <div className="relative z-[10] mx-auto max-w-[1240px] px-[10px] py-0">
-        <div className="flex flex-col lg:flex-row items-center gap-0" style={{ paddingTop: '70px', minHeight: '811.42px' }}>
+      <div className="relative z-[10] w-full min-w-0 mx-auto max-w-[1240px] px-[10px] py-0">
+        <div className="w-full min-w-0 flex flex-col lg:flex-row items-center gap-y-6 lg:gap-8 [@media_(max-height:800px)]:gap-y-4">
           {/* Left Column - Content - Exact Figma layout */}
-          <div className="w-full lg:w-[620px] flex flex-col justify-center relative" style={{ paddingTop: '0px' }}>
+          <div className="w-full min-w-0 max-w-[620px] lg:max-w-[640px] xl:max-w-[820px] 2xl:max-w-[900px] flex flex-col justify-center relative">
+            <div className="min-w-0">
             <AnimatedGroup>
-              {/* Main Heading - Exact Figma positioning */}
-              <div style={{ paddingLeft: '5px', paddingTop: '20px' }}>
-                <h1 className="mt-8 max-w-4xl text-balance text-foreground font-normal">
-                  Upravljajte ordinacijom<br />
-                  bez stresa
+              {/* Main Heading - typography locked to 2 lines, font-semibold 600 */}
+              <div className="min-w-0" style={{ paddingLeft: '5px', paddingTop: '20px' }}>
+                <h1 className="font-semibold tracking-tight text-foreground text-5xl sm:text-6xl lg:text-6xl xl:text-7xl leading-[0.95] max-w-[18ch] sm:max-w-[20ch] lg:max-w-[19ch] xl:max-w-[28ch] 2xl:max-w-[30ch] [@media_(max-height:800px)]:text-5xl whitespace-normal break-words">
+                  Upravljajte ordinacijom <br className="hidden lg:block" /> bez stresa
                 </h1>
               </div>
 
@@ -135,60 +83,69 @@ const Home2Hero = () => {
                 </p>
               </div>
 
-              {/* CTA Buttons - Identical to main homepage */}
-              <div style={{ paddingLeft: '10px', paddingTop: '24px' }}>
-                <div className="flex flex-col items-start gap-2 md:flex-row">
-                  <div className="bg-foreground/10 rounded-lg border p-0.5 w-full max-w-xs md:w-auto">
-                    <Button
-                      asChild
-                      size="lg"
-                      className="rounded-lg px-5 py-3 text-base text-white h-auto w-full">
-                      <Link href="#demo">
-                        <span className="text-nowrap text-white">Zakaži demo</span>
-                        <ArrowRight className="ml-2 h-4 w-4 text-white" />
-                      </Link>
-                    </Button>
-                  </div>
+              {/* CTA + social proof + metrics - PulseIQ style (single wrapper, Tailwind-only) */}
+              <div className="pl-2.5 pt-5 lg:pt-6 [@media_(max-height:800px)]:pt-4">
+                <div className="flex flex-col items-start gap-2 md:flex-row md:items-center">
                   <Button
                     asChild
-                    size="lg"
-                    variant="outline"
-                    className="rounded-xl px-5 h-12">
+                    variant="pillPrimary"
+                    size="pill"
+                    className="w-full max-w-xs md:w-auto gap-2">
+                    <Link href="#demo">
+                      <span className="text-nowrap">Zakaži demo</span>
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button
+                    asChild
+                    variant="pillSecondary"
+                    size="pill"
+                    className="w-full max-w-xs md:w-auto">
                     <Link href="#features">
-                      <span className="text-nowrap">
-                        Pogledaj kako radi
-                      </span>
+                      <span className="text-nowrap">Pogledaj kako radi</span>
                     </Link>
                   </Button>
                 </div>
-              </div>
-            </AnimatedGroup>
 
-            {/* Trust Badge - Identical to main homepage */}
-            <div style={{ paddingLeft: '10px', paddingTop: '24px' }}>
-              <AnimatedGroup className="flex flex-col items-start gap-4">
-                <div className="bg-white/90 backdrop-blur-md rounded-xl border border-gray-200/40 shadow-sm px-4 py-3">
-                  <div className="flex flex-col items-start gap-3 text-muted-foreground text-sm">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-                      </div>
-                      <span className="font-medium text-foreground">4.9+</span>
-                      <AnimatedTooltip items={dentistAvatars} />
+                {/* Social proof - PulseIQ style */}
+                <div className="mt-5 lg:mt-6 [@media_(max-height:800px)]:mt-4 flex items-center gap-2 text-sm text-slate-600">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-slate-900 stroke-slate-900" />
+                  ))}
+                  <span className="font-medium text-slate-900">4.9+</span>
+                  <span className="text-slate-300">|</span>
+                  <span className="text-slate-500">50+ ocena</span>
+                </div>
+
+                {/* Metrics row - PulseIQ style (no icons/cards; animate on mount) */}
+                <div className="mt-8 lg:mt-10 [@media_(max-height:800px)]:mt-6 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-10 [@media_(max-height:800px)]:gap-4 [@media_(max-height:800px)]:sm:gap-6">
+                  <div>
+                    <div className="text-3xl font-semibold tracking-tight text-slate-900">
+                      <CountUp end={120} duration={2.5} /> min
                     </div>
-                    <span className="text-muted-foreground text-sm">Razvijeno uz podršku stomatologa širom regiona</span>
+                    <p className="mt-1 text-sm text-slate-500">Ušteda vremena dnevno</p>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-semibold tracking-tight text-slate-900">3×</div>
+                    <p className="mt-1 text-sm text-slate-500">Više ponovnih dolazaka</p>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-semibold tracking-tight text-slate-900">
+                      <CountUp end={92} duration={2.5} />%
+                    </div>
+                    <p className="mt-1 text-sm text-slate-500">Manje propuštenih termina</p>
                   </div>
                 </div>
-              </AnimatedGroup>
+
+                {/* Sakriveno za sada */}
+                {/* <p className="mt-6 text-xs text-slate-500">Razvijeno uz podršku stomatologa širom regiona</p> */}
+              </div>
+            </AnimatedGroup>
             </div>
           </div>
 
           {/* Right Column - Floating Elements - Exact Figma positioning */}
-          <div className="w-full lg:w-[620px] lg:ml-0 mt-[40px] lg:mt-0 relative">
+          <div className="w-full min-w-0 lg:w-[620px] lg:ml-0 mt-[40px] lg:mt-0 relative">
             <div className="relative w-full overflow-visible" style={{ height: '581.42px', marginTop: '-20px', marginBottom: '-20px' }}>
               {/* Decorative glow effect */}
               <div className="absolute inset-0 rounded-[4px] bg-gradient-to-r from-transparent via-blue-50/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none z-0" />
@@ -200,83 +157,6 @@ const Home2Hero = () => {
       {/* Soft vertical gradient fade at bottom transitioning to white */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent via-background/60 to-background z-[5] pointer-events-none" />
     </section>
-    
-    {/* Metrics Section - Below hero section, outside video background */}
-    <div className="relative z-[10] bg-background py-16 overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-6">
-            <div className="text-center">
-              <Calendar className="w-8 h-8 text-primary mb-4 mx-auto" />
-              <h3 className="text-3xl md:text-4xl font-normal text-foreground mb-2">
-                <CountUp
-                  end={120}
-                  duration={2.5}
-                  separator=","
-                  enableScrollSpy
-                  scrollSpyOnce
-                />
-                <span className="text-xl md:text-2xl font-normal">
-                  {" "}minuta dnevno uštede
-                </span>
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed max-w-xs mx-auto">
-                Vreme koje uštedite na telefonskim pozivima i vođenju papirnih kartona
-              </p>
-            </div>
-            
-            <div className="text-center relative">
-              <div className="hidden md:block absolute top-1/2 -left-4 transform -translate-y-1/2">
-                <ArrowRight className="w-6 h-6 text-primary" />
-              </div>
-              <Bell className="w-8 h-8 text-primary mb-4 mx-auto" />
-              <h3 className="text-3xl md:text-4xl font-normal text-foreground mb-2">
-                <CountUp
-                  end={3}
-                  duration={2.5}
-                  separator=","
-                  enableScrollSpy
-                  scrollSpyOnce
-                />
-                <span className="text-xl md:text-2xl font-normal">
-                  x više pacijenata se vraća
-                </span>
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed max-w-xs mx-auto">
-                Jer ih automatski podsetimo na kontrole i čišćenje zuba
-              </p>
-              <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                <ArrowRight className="w-6 h-6 text-primary" />
-              </div>
-            </div>
-            
-            <div className="text-center">
-              <TrendingUp className="w-8 h-8 text-primary mb-4 mx-auto" />
-              <h3 className="text-3xl md:text-4xl font-normal text-foreground mb-2">
-                <CountUp
-                  end={92}
-                  duration={2.5}
-                  separator=","
-                  enableScrollSpy
-                  scrollSpyOnce
-                />
-                <span className="text-xl md:text-2xl font-normal">
-                  % manje propuštenih termina
-                </span>
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed max-w-xs mx-auto">
-                Zahvaljujući pametnom SMS/email sistemu podsetnika
-              </p>
-            </div>
-          </div>
-          
-          {/* Soft gradient fade at bottom transitioning to next section */}
-          <div 
-            className="absolute bottom-0 left-0 right-0 pointer-events-none"
-            style={{
-              height: '100px',
-              background: 'linear-gradient(to bottom, transparent 0%, hsl(0 0% 98% / 0.3) 40%, hsl(0 0% 98% / 0.7) 75%, hsl(0 0% 98%) 100%)'
-            }}
-          />
-    </div>
     </>
   );
 };

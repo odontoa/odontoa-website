@@ -39,11 +39,11 @@ function AboutHeroSection() {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <Button size="lg" className="rounded-lg px-6 py-6 text-base text-white h-auto w-full sm:w-auto">
-                Zakaži poziv <PhoneCall className="ml-2 h-4 w-4 text-white" />
+              <Button variant="pillPrimary" size="pill" className="w-full sm:w-auto gap-2">
+                Zakaži poziv <PhoneCall className="h-4 w-4" />
               </Button>
-              <Button size="lg" variant="outline" className="rounded-lg px-6 py-6 h-auto w-full sm:w-auto">
-                Prijavi se ovde <MoveRight className="ml-2 h-4 w-4" />
+              <Button variant="pillSecondary" size="pill" className="w-full sm:w-auto gap-2">
+                Prijavi se ovde <MoveRight className="h-4 w-4" />
               </Button>
             </motion.div>
 

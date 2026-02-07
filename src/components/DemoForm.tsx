@@ -16,7 +16,7 @@ export const DemoForm: React.FC<DemoFormProps> = ({
   className = "",
   title = "Zakažite demo",
   description = "Kontaktirajte nas za besplatan demo Odontoa sistema",
-  buttonText = "Zakaži demo"
+  buttonText = "Zakažite demo"
 }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -97,7 +97,9 @@ export const DemoForm: React.FC<DemoFormProps> = ({
         <Button 
           type="submit"
           disabled={isSubmitting}
-          className="px-5 py-3 transition-colors duration-200 w-full rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
+          variant="pillPrimary"
+          size="pill"
+          className="w-full gap-2"
         >
           {isSubmitting ? (
             <>

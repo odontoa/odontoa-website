@@ -1,14 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Plus_Jakarta_Sans } from "next/font/google";
-import { cn } from "@/lib/utils";
 import { calculateReadingTime } from "@/lib/blog-utils";
 import { AuthorRow } from "@/components/blog/AuthorRow";
-
-const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 interface Post {
   id: string;
@@ -37,20 +30,15 @@ export function PinnedFeaturedSection({ posts }: PinnedFeaturedSectionProps) {
   }
 
   return (
-    <section
-      className={cn(
-        plusJakarta.className,
-        "w-full bg-white py-12"
-      )}
-    >
-      <div className="mx-auto max-w-6xl px-4">
-        <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+    <section className="w-full bg-white py-12 md:py-16">
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-8 md:gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           {/* LEFT: Copy */}
-          <div>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal text-slate-900 mb-6 leading-tight">
+          <div className="flex flex-col gap-3">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight leading-tight text-foreground">
               Preporučeni vodiči
             </h2>
-            <p className="mt-2 max-w-prose text-sm text-slate-600 mb-8">
+            <p className="max-w-prose text-base md:text-lg text-muted-foreground leading-relaxed mb-6">
               Tri članka koja preporučujemo da prvo pročitate. Kratko, praktično i odmah primenljivo u radu ordinacije.
             </p>
 
@@ -98,7 +86,7 @@ export function PinnedFeaturedSection({ posts }: PinnedFeaturedSectionProps) {
 
                     {/* Right: Content */}
                     <div className="flex-1 min-w-0 flex flex-col h-[160px]">
-                      {/* Category - plain text in purple */}
+                      {/* Category */}
                       <div className="mb-1.5">
                         <span className="text-xs font-medium text-purple-600">
                           {category}
@@ -106,13 +94,13 @@ export function PinnedFeaturedSection({ posts }: PinnedFeaturedSectionProps) {
                       </div>
 
                       {/* Title */}
-                      <h3 className="line-clamp-2 text-base font-semibold text-slate-900 mb-2">
+                      <h3 className="line-clamp-2 text-lg md:text-xl font-semibold leading-tight text-foreground mb-2">
                         {post.title}
                       </h3>
 
                       {/* Excerpt */}
                       {post.summary && (
-                        <p className="line-clamp-2 text-sm text-slate-600 mb-3 flex-1">
+                        <p className="line-clamp-2 text-sm text-muted-foreground mb-3 flex-1">
                           {post.summary}
                         </p>
                       )}
@@ -127,12 +115,13 @@ export function PinnedFeaturedSection({ posts }: PinnedFeaturedSectionProps) {
                             publishedAt={post.publishedAt}
                             updatedAt={post.updatedAt}
                             size="sm"
+                            showDate={false}
                           />
                         </div>
                       )}
 
                       {/* Read More Link - positioned at bottom to align with image bottom */}
-                      <div className="inline-flex items-center gap-1 text-sm font-medium text-[#2F6BFF] group-hover:gap-2 transition-all mt-auto">
+                      <div className="inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:gap-2 transition-all mt-auto">
                         Pročitaj više
                         <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
                       </div>

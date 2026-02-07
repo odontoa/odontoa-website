@@ -3,7 +3,9 @@ import {
   allBlogPostsQuery, 
   heroFeaturedPostQuery,
   pinnedFeaturedPostsQuery,
-  type SanityBlogPost 
+  allTagsQuery,
+  type SanityBlogPost,
+  type SanityTag
 } from "@/lib/sanity.queries";
 import { Metadata } from "next";
 import { urlFor } from "@/lib/sanity.image";
@@ -11,6 +13,7 @@ import { FeaturedBlogHero } from "@/components/sections/blog/FeaturedBlogHero";
 import { FeaturedHeroReplica } from "@/components/sections/blog/FeaturedHeroReplica";
 import { PinnedFeaturedSection } from "@/components/sections/blog/PinnedFeaturedSection";
 import { RecentArticlesGrid } from "@/components/sections/blog/RecentArticlesGrid";
+import { CategoryPills } from "@/components/sections/blog/CategoryPills";
 import { TopicCarousel } from "@/components/sections/blog/TopicCarousel";
 import { BlogCTABanner } from "@/components/sections/blog/BlogCTABanner";
 import { NewsletterBand } from "@/components/sections/blog/NewsletterBand";
@@ -75,6 +78,7 @@ export default async function BlogoviPage() {
   let pinnedPosts: any[] = [];
   let allPosts: any[] = [];
   let sanityPosts: SanityBlogPost[] = [];
+  let tags: SanityTag[] = [];
 
   try {
     // Fetch hero post
@@ -94,6 +98,13 @@ export default async function BlogoviPage() {
     // Fetch all posts for recent/trending sections
     sanityPosts = await sanityClient.fetch<SanityBlogPost[]>(
       allBlogPostsQuery,
+      {},
+      { cache: "no-store" } as any
+    );
+
+    // Fetch all tags for category pills
+    tags = await sanityClient.fetch<SanityTag[]>(
+      allTagsQuery,
       {},
       { cache: "no-store" } as any
     );
@@ -132,6 +143,15 @@ export default async function BlogoviPage() {
       {/* {heroPost && (
         <FeaturedBlogHero post={heroPost} />
       )} */}
+
+      {/* Category Pills - Above Recent Articles Grid */}
+      {tags.length > 0 && (
+        <section className="w-full bg-white py-12 md:py-16">
+          <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
+            <CategoryPills tags={tags} />
+          </div>
+        </section>
+      )}
 
       {/* Recent Articles Grid */}
       {recentPosts.length > 0 && (

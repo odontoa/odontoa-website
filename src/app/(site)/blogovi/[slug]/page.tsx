@@ -166,21 +166,21 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </Button>
           </div>
 
-          <header className="mb-8">
-            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
+          <header className="mb-8 flex flex-col gap-3">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold tracking-tight leading-tight text-foreground dark:text-white">
               {post.title}
             </h1>
-            <div className="mt-4 flex items-center gap-3 text-sm text-slate-500">
+            <div className="flex items-center gap-3 text-xs md:text-sm text-muted-foreground">
               <div className="flex flex-col">
                 <span className="font-medium text-slate-700 dark:text-slate-200">
                   {post.author?.name || "Odontoa tim"}
                 </span>
                 <div className="flex flex-col gap-1">
-                  <time dateTime={post.publishedAt} className="text-xs text-slate-500">
+                  <time dateTime={post.publishedAt} className="text-xs text-muted-foreground">
                     Objavljeno: {publishedAt}
                   </time>
                   {updatedAt && (
-                    <time dateTime={post.updatedAt} className="text-xs text-slate-500">
+                    <time dateTime={post.updatedAt} className="text-xs text-muted-foreground">
                       Ažurirano: {updatedAt}
                     </time>
                   )}
@@ -233,7 +233,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           {/* FAQ Section - must match FAQPage JSON-LD */}
           {post.faqs && post.faqs.length > 0 && (
             <section className="mt-12 border-t border-slate-200 pt-8">
-              <h2 className="text-2xl font-semibold mb-6 text-slate-900 dark:text-white">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight leading-tight text-foreground mb-6 dark:text-white">
                 Često postavljena pitanja
               </h2>
               <Accordion type="single" collapsible className="w-full">

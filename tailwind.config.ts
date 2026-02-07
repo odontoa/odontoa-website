@@ -6,11 +6,7 @@ const config = {
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
-    './src/app/**/*.{ts,tsx}',
-    './src/components/**/*.{ts,tsx}',
-    './src/contexts/**/*.{ts,tsx}',
-    './src/hooks/**/*.{ts,tsx}',
-    // Exclude lib/ folder to avoid ENOENT issues with TypeScript files
+    './src/**/*.{ts,tsx}',
   ],
   prefix: "",
   theme: {
@@ -176,18 +172,18 @@ const config = {
             },
             h1: {
               color: 'var(--tw-prose-headings)',
-              fontWeight: '800',
+              fontWeight: '600',
             },
             'h1 strong': {
-              fontWeight: '900',
+              fontWeight: '700',
               color: 'inherit',
             },
             h2: {
               color: 'var(--tw-prose-headings)',
-              fontWeight: '700',
+              fontWeight: '600',
             },
             'h2 strong': {
-              fontWeight: '800',
+              fontWeight: '700',
               color: 'inherit',
             },
             h3: {

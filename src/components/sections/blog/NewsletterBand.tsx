@@ -1,13 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Plus_Jakarta_Sans } from "next/font/google";
-import { cn } from "@/lib/utils";
-
-const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 export function NewsletterBand() {
   const [email, setEmail] = React.useState("");
@@ -20,12 +13,7 @@ export function NewsletterBand() {
   }
 
   return (
-    <section
-      className={cn(
-        plusJakarta.className,
-        "relative bg-white overflow-hidden antialiased [text-rendering:optimizeLegibility]"
-      )}
-    >
+    <section className="relative bg-white overflow-hidden antialiased">
       {/* Subtle tech lines background */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.14]">
         <svg
@@ -55,14 +43,14 @@ export function NewsletterBand() {
       {/* Soft bottom band (very subtle) */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-slate-900/[0.03]" />
 
-      <div className="relative mx-auto max-w-[1200px] px-6 lg:px-10 py-[56px] lg:py-[64px]">
-        <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14 items-center">
+      <div className="relative max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
+        <div className="grid gap-8 md:gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14 items-center">
           {/* Left */}
-          <div>
-            <h2 className="text-[26px] md:text-[30px] lg:text-[34px] font-semibold text-slate-900 leading-[1.08] tracking-[-0.02em]">
+          <div className="flex flex-col gap-3">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight leading-tight text-foreground">
               Optimizujte rad ordinacije uz Odontoa
             </h2>
-            <p className="mt-3 text-[13px] md:text-[14px] text-slate-500 leading-[1.6] max-w-[52ch]">
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-[52ch]">
               Praktični saveti o digitalnoj kartoteci, zakazivanju, zalihama i organizaciji tima.
               Kratko, konkretno i bez spama.
             </p>
@@ -70,8 +58,8 @@ export function NewsletterBand() {
 
           {/* Right */}
           <div className="lg:justify-self-end w-full lg:max-w-[420px]">
-            <div className="text-[13px] font-semibold text-slate-900">Newsletter</div>
-            <div className="mt-1 text-[12px] text-slate-400 leading-[1.45]">
+            <div className="text-sm font-semibold text-foreground">Newsletter</div>
+            <div className="mt-1 text-xs md:text-sm text-muted-foreground leading-relaxed">
               Prijavite se da dobijate nove vodiče i uvid u najbolje prakse.
             </div>
 
@@ -85,18 +73,18 @@ export function NewsletterBand() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Vaša email adresa"
-                className="h-[38px] flex-1 rounded-[10px] border border-slate-200/80 bg-white px-3 text-[13px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]/20 focus:border-[#2F6BFF]/40"
+                className="h-10 flex-1 rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
                 required
               />
               <button
                 type="submit"
-                className="h-[38px] rounded-[10px] bg-[#2F6BFF] px-4 text-[13px] font-semibold text-white transition active:scale-[0.98] hover:bg-[#2A60F0]"
+                className="h-10 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition active:scale-[0.98] hover:bg-primary/90"
               >
                 Prijavi se
               </button>
             </form>
 
-            <div className="mt-3 text-[11px] text-slate-400">
+            <div className="mt-3 text-xs text-muted-foreground">
               Možete se odjaviti u bilo kom trenutku. Vaša privatnost nam je važna.
             </div>
           </div>

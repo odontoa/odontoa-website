@@ -119,13 +119,13 @@ function AnimatedFeatureBlock({
       <div
         ref={ref}
         id={feature.id}
-        className={`grid grid-cols-1 gap-12 lg:gap-16 ${
+        className={`grid grid-cols-1 gap-12 lg:gap-16 lg:items-stretch ${
           isReversed ? 'lg:grid-cols-[65%_35%]' : 'lg:grid-cols-[35%_65%]'
         }`}
       >
-          {/* Text Content */}
+          {/* Text Content - visina kolone = visina reda, tekst vertikalno centriran */}
           <div 
-            className={`flex flex-col items-start justify-start transition-all duration-700 ease-out ${
+            className={`flex flex-col items-start justify-center min-h-0 transition-all duration-700 ease-out ${
               isReversed ? 'lg:col-start-2' : 'lg:col-start-1'
             } ${
               isVisible 
@@ -133,15 +133,7 @@ function AnimatedFeatureBlock({
                 : 'opacity-0 translate-y-6'
             }`}
           >
-            <h3
-              className="text-[#000A2D] mb-6"
-              style={{
-                fontFamily: 'Manrope, sans-serif',
-                fontWeight: 700,
-                fontSize: '32px',
-                lineHeight: '1.2em'
-              }}
-            >
+            <h3 className="text-xl md:text-2xl font-semibold leading-tight text-foreground mb-6">
               {feature.title}
             </h3>
             
@@ -156,16 +148,8 @@ function AnimatedFeatureBlock({
                   }`}
                   style={{ transitionDelay: `${(bulletIndex * 80) + 150}ms` }}
                 >
-                  <Check className="w-5 h-5 text-[#3267FF] mt-0.5 mr-3 flex-shrink-0" />
-                  <span
-                    className="text-[#000A2D]"
-                    style={{
-                      fontFamily: 'Archivo, sans-serif',
-                      fontWeight: 400,
-                      fontSize: '16px',
-                      lineHeight: '1.6em'
-                    }}
-                  >
+                  <Check className="w-5 h-5 text-primary mt-0.5 mr-3 flex-shrink-0" />
+                  <span className="text-base md:text-lg text-foreground leading-relaxed">
                     {bullet}
                   </span>
                 </li>
@@ -173,18 +157,12 @@ function AnimatedFeatureBlock({
             </ul>
 
             <p
-              className={`text-[#636571] transition-all duration-500 ease-out ${
+              className={`text-base md:text-lg text-muted-foreground leading-relaxed transition-all duration-500 ease-out ${
                 isVisible 
                   ? 'opacity-100 translate-y-0' 
                   : 'opacity-0 translate-y-4'
               }`}
-              style={{
-                fontFamily: 'Archivo, sans-serif',
-                fontWeight: 400,
-                fontSize: '16px',
-                lineHeight: '1.6em',
-                transitionDelay: '400ms'
-              }}
+              style={{ transitionDelay: '400ms' }}
             >
               {feature.description}
             </p>
@@ -192,7 +170,7 @@ function AnimatedFeatureBlock({
 
           {/* Image */}
           <div 
-            className={`flex items-start justify-center w-full relative z-0 overflow-visible transition-all duration-700 ease-out ${
+            className={`flex items-center justify-center w-full relative z-0 overflow-visible transition-all duration-700 ease-out ${
               isReversed 
                 ? 'lg:col-start-1 lg:row-start-1 lg:justify-end' 
                 : 'lg:col-start-2 lg:justify-start'
@@ -221,13 +199,13 @@ function AnimatedFeatureBlock({
     <div
       ref={ref}
       id={feature.id}
-      className={`grid grid-cols-1 gap-12 lg:gap-16 ${
+      className={`grid grid-cols-1 gap-12 lg:gap-16 lg:items-stretch ${
         shouldReverse ? 'lg:grid-cols-[65%_35%]' : 'lg:grid-cols-[35%_65%]'
       }`}
     >
-      {/* Text Content */}
+      {/* Text Content - visina kolone = visina reda, tekst vertikalno centriran */}
       <div 
-        className={`flex flex-col relative z-10 transition-all duration-700 ease-out ${
+        className={`flex flex-col items-start justify-center min-h-0 relative z-10 transition-all duration-700 ease-out ${
           shouldReverse ? 'lg:col-start-2' : 'lg:col-start-1'
         } ${
           isVisible 
@@ -235,15 +213,7 @@ function AnimatedFeatureBlock({
             : 'opacity-0 translate-y-6'
         }`}
       >
-        <h3
-          className="text-[#000A2D] mb-6"
-          style={{
-            fontFamily: 'Manrope, sans-serif',
-            fontWeight: 700,
-            fontSize: '32px',
-            lineHeight: '1.2em'
-          }}
-        >
+        <h3 className="text-xl md:text-2xl font-semibold leading-tight text-foreground mb-6">
           {feature.title}
         </h3>
         
@@ -258,16 +228,8 @@ function AnimatedFeatureBlock({
               }`}
               style={{ transitionDelay: `${(bulletIndex * 80) + 150}ms` }}
             >
-              <Check className="w-5 h-5 text-[#3267FF] mt-0.5 mr-3 flex-shrink-0" />
-              <span
-                className="text-[#000A2D]"
-                style={{
-                  fontFamily: 'Archivo, sans-serif',
-                  fontWeight: 400,
-                  fontSize: '16px',
-                  lineHeight: '1.6em'
-                }}
-              >
+              <Check className="w-5 h-5 text-primary mt-0.5 mr-3 flex-shrink-0" />
+              <span className="text-base md:text-lg text-foreground leading-relaxed">
                 {bullet}
               </span>
             </li>
@@ -275,26 +237,20 @@ function AnimatedFeatureBlock({
         </ul>
 
         <p
-          className={`text-[#636571] transition-all duration-500 ease-out ${
+          className={`text-base md:text-lg text-muted-foreground leading-relaxed transition-all duration-500 ease-out ${
             isVisible 
               ? 'opacity-100 translate-y-0' 
               : 'opacity-0 translate-y-4'
           }`}
-          style={{
-            fontFamily: 'Archivo, sans-serif',
-            fontWeight: 400,
-            fontSize: '16px',
-            lineHeight: '1.6em',
-            transitionDelay: '400ms'
-          }}
+          style={{ transitionDelay: '400ms' }}
         >
           {feature.description}
         </p>
       </div>
 
-      {/* Visual Placeholder or Calendar Mockup */}
+      {/* Visual Placeholder or Calendar Mockup - centriran u visini reda */}
       <div 
-        className={`relative transition-all duration-700 ease-out ${
+        className={`flex items-center relative transition-all duration-700 ease-out ${
           shouldReverse ? 'lg:col-start-1 lg:row-start-1' : 'lg:col-start-2'
         } ${
           isVisible 
@@ -304,7 +260,7 @@ function AnimatedFeatureBlock({
         style={{ transitionDelay: '100ms' }}
       >
         {feature.id === 'funkcija-kalendar' ? (
-          <div className="flex justify-center lg:justify-start">
+          <div className="flex w-full justify-center lg:justify-start">
             <div className="w-full">
               <div 
                 className="rounded-3xl border border-slate-200/60 bg-white overflow-hidden relative"
@@ -399,7 +355,7 @@ function AnimatedFeatureBlock({
           </div>
         ) : (
           <div 
-            className="relative w-full h-[400px] bg-gradient-to-br from-[#F1F8FF] to-[#FBFDFF] border border-slate-200/60 rounded-3xl overflow-hidden"
+            className="relative w-full h-[400px] bg-gradient-to-br from-muted/50 to-background border border-border rounded-3xl overflow-hidden"
             style={{
               boxShadow: `
                 0 35px 100px rgba(15, 23, 42, 0.15),
@@ -429,40 +385,16 @@ function AnimatedFeatureBlock({
             />
             <div className="relative z-10 h-full">
               <div className="absolute top-4 right-4 z-20">
-                <div
-                  className="px-3 py-1 rounded-full bg-white border border-[#EEEEEE] text-[#636571]"
-                  style={{
-                    fontFamily: 'Manrope, sans-serif',
-                    fontWeight: 600,
-                    fontSize: '12px',
-                    lineHeight: '1.2em'
-                  }}
-                >
+                <div className="px-3 py-1 rounded-full bg-white border border-border text-muted-foreground text-xs font-semibold leading-tight">
                   Screenshot
                 </div>
               </div>
               <div className="absolute inset-0 flex items-center justify-center z-10">
                 <div className="text-center">
-                  <div
-                    className="text-[#636571] mb-2"
-                    style={{
-                      fontFamily: 'Archivo, sans-serif',
-                      fontWeight: 400,
-                      fontSize: '14px',
-                      lineHeight: '1.5em'
-                    }}
-                  >
+                  <div className="text-muted-foreground mb-2 text-sm leading-relaxed">
                     {feature.title}
                   </div>
-                  <div
-                    className="text-[#3267FF]"
-                    style={{
-                      fontFamily: 'Manrope, sans-serif',
-                      fontWeight: 600,
-                      fontSize: '12px',
-                      lineHeight: '1.2em'
-                    }}
-                  >
+                  <div className="text-primary text-xs font-semibold leading-tight">
                     Placeholder slika
                   </div>
                 </div>
@@ -515,79 +447,79 @@ const FeatureWalkthroughV3 = () => {
   const features = [
     {
       id: 'funkcija-dashboard-overview',
-      title: 'Kontrola ordinacije na prvi pogled',
+      title: 'Pregled ordinacije u realnom vremenu',
       bullets: [
-        'Ključne informacije dostupne odmah po ulasku u sistem',
-        'Jasan pregled pacijenata, termina i opterećenja ordinacije',
-        'Brze akcije bez pretrage kroz više ekrana'
+        'Pregled dana u 5 sekundi: pacijenti, termini, tim',
+        'Statusi: zakazani, završeni, otkazani',
+        'Jedan klik do ključnih akcija'
       ],
-      description: 'Sve važne informacije nalaze se na jednom mestu — da biste u svakom trenutku znali kako ordinacija funkcioniše i gde je potrebna reakcija.',
+      description: 'Sve što je bitno za operativni rad ordinacije nalazi se na jednom ekranu, bez "kopanja" kroz menije.',
       imagePosition: 'right' as const
     },
     {
       id: 'funkcija-daily-operations',
-      title: 'Dnevni rad bez zastoja',
+      title: 'Dnevni pregled i aktivnosti u realnom vremenu',
       bullets: [
-        'Brz uvid u današnje termine i izmene rasporeda',
-        'Evidencija nedavnih aktivnosti u realnom vremenu',
-        'Manje grešaka i jasnija komunikacija unutar tima'
+        'Pregled termina i statusa',
+        'Praćenje izmena i aktivnosti (ko, šta, kada)',
+        'Brza reakcija bez konfuzije'
       ],
-      description: 'Pratite šta se dešava tokom dana i reagujte odmah — bez preklapanja termina, zaboravljenih obaveza ili ručnih beleški.',
+      description: 'Sve izmene se beleže automatski, pa su raspored i kartoni uvek usklađeni.',
       imagePosition: 'left' as const
     },
     {
       id: 'funkcija-kalendar',
-      title: 'Kalendar za zakazivanje',
+      title: 'Kalendar termina i smena',
       bullets: [
-        'Zakazivanje u nekoliko klikova, sa jasnim pregledom dana i smena.',
-        'Manje preklapanja i "rupa" u rasporedu.',
-        'Brzo pomeranje termina i evidencija otkazivanja.'
+        'Zakazivanje i pomeranje termina u par klikova',
+        'Pregled po danu, nedelji i smeni',
+        'Evidencija otkazivanja i promena'
       ],
-      description: 'Kalendar je centralno mesto rada. Planirajte dan unapred i reagujte brzo kada se termin promeni.',
+      description: 'Jedan kalendar za ceo tim. Brže planiranje i jasna organizacija rada kroz dan.',
       imagePosition: 'right' as const
     },
     {
       id: 'funkcija-sms',
-      title: 'SMS podsetnici bez dodatnih troškova',
+      title: 'Automatski SMS i email podsetnici',
       bullets: [
         'Manje propuštenih termina uz automatske podsetnike.',
-        'Standardizovana komunikacija prema pacijentima (bez ručnog slanja).',
-        'Bolja popunjenost rasporeda i manje stresa na recepciji.'
+        'Automatsko slanje podsetnika, bez poziva i poruka "ručno"',
+        'Stabilniji raspored i manje poziva tokom dana.'
       ],
-      description: 'Podsetnici se šalju automatski po vašim pravilima. Tim štedi vreme, a pacijenti dobijaju jasnu potvrdu.',
+      description: 'Podesite pravila jednom. Podsetnici se šalju automatski, uz evidenciju aktivnosti.',
       imagePosition: 'left' as const
     },
     {
       id: 'funkcija-terapije',
-      title: 'Grafički prikaz statusa i terapija',
+      title: 'Brži pregled kartona kroz odontogram',
       bullets: [
-        'Jasno vidite status slučaja i sledeći korak terapije.',
-        'Lakše praćenje plana: urađeno, u toku, zakazano, čekanje.',
-        'Brži pregled istorije bez "kopanja" po beleškama.'
+        'Grafički status zuba i terapija',
+        'Sledeći korak je odmah vidljiv',
+        'Brži uvid u istoriju'
       ],
-      description: 'Sve terapije i statusi su pregledni i konzistentni, tako da i vi i tim uvek znate gde je pacijent u procesu.',
+      description: 'Sve je povezano sa pacijentovim planom, pa se odluke donose brže.',
       imagePosition: 'left' as const
     },
     {
       id: 'funkcija-ortodoncija',
-      title: 'Ortodontski karton',
+      title: 'Karton za ortodontsku terapiju',
       bullets: [
-        'Strukturisan ortodontski pregled na jednom mestu.',
-        'Lakše praćenje faza terapije i kontrola.',
-        'Brz uvid u fotografije, nalaze i napomene.'
+        'Sve procene i nalazi na jednom mestu',
+        'Faze terapije jasno povezane kroz kontrole',
+        'Brz uvid u fotografije i beleške'
       ],
-      description: 'Ortodontski slučajevi zahtevaju kontinuitet. Karton je organizovan tako da svaki pregled ima kontekst.',
+      description: 'Sve je zabeleženo i povezano, pa tim odmah vidi istoriju i sledeći korak terapije.',
       imagePosition: 'right' as const
     },
     {
       id: 'funkcija-izvestaji',
-      title: 'Kreiranje izveštaja',
+      title: 'Kontrola poslovanja kroz izveštaje',
       bullets: [
-        'Brzi izveštaji za internu kontrolu i organizaciju rada.',
-        'Pregled aktivnosti po periodu (termini, dolasci, otkazivanja).',
-        'Lakše donošenje odluka na osnovu podataka.'
+        'Izvoz podataka po periodu, doktoru i stolici',
+        'Pregled termina, dolazaka i otkazivanja',
+        'Brža kontrola rada i planiranje kapaciteta'
       ],
-      description: 'Umesto "osećaja", dobijate jasne brojke. Izveštaji pomažu da optimizujete raspored i opterećenje tima.',
+      description: 'Jasni brojevi umesto procene. Napravite izveštaj za par sekundi i optimizujte raspored i organizaciju rada.',
       imagePosition: 'right' as const
     }
   ];
@@ -601,37 +533,20 @@ const FeatureWalkthroughV3 = () => {
   ];
 
   return (
-    <section id="funkcije" className="w-full" style={{ backgroundColor: 'hsl(0 0% 98%)', paddingTop: '80px', paddingBottom: '80px' }}>
+    <section id="funkcije" className="w-full scroll-mt-24 bg-muted/30 py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div 
           ref={headerRef}
-          className={`text-center mb-20 lg:mb-24 transition-all duration-700 ease-out ${
+          className={`text-center mb-16 lg:mb-20 transition-all duration-700 ease-out flex flex-col gap-4 ${
             headerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          <h2
-            className="text-[#000A2D] mb-8"
-            style={{
-              fontFamily: 'Manrope, sans-serif',
-              fontWeight: 800,
-              fontSize: '52px',
-              lineHeight: '1.1em',
-              letterSpacing: '-2.88%'
-            }}
-          >
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-tight text-foreground">
             Jedno mesto za kompletan rad ordinacije
           </h2>
-          <p
-            className="text-[#636571] max-w-2xl mx-auto"
-            style={{
-              fontFamily: 'Archivo, sans-serif',
-              fontWeight: 400,
-              fontSize: '16px',
-              lineHeight: '1.6em'
-            }}
-          >
-            Od kartona i zakazivanja do podsetnika i izveštaja, Odontoa pojednostavljuje svakodnevni rad ordinacije.
+          <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+            Sve što vam treba za dnevni rad: pacijenti, termini, terapije, dokumenti i uvid u performanse.
           </p>
         </div>
 
@@ -660,7 +575,7 @@ const FeatureWalkthroughV3 = () => {
         {/* Cloud Security Section */}
         <div 
           ref={cloudSecurityRef}
-          className="mt-20 lg:mt-24 pt-16 border-t border-[#EEEEEE]"
+          className="mt-16 lg:mt-20 pt-16 border-t border-border"
         >
           <div className="grid grid-cols-1 lg:grid-cols-[35%_65%] gap-12 lg:gap-16">
             {/* Text Content */}
@@ -671,24 +586,15 @@ const FeatureWalkthroughV3 = () => {
                   : 'opacity-0 translate-y-6'
               }`}
             >
-              <h3
-                className="text-[#000A2D] mb-6"
-                style={{
-                  fontFamily: 'Manrope, sans-serif',
-                  fontWeight: 700,
-                  fontSize: '32px',
-                  lineHeight: '1.2em'
-                }}
-              >
-                Podaci bezbedno čuvani u cloud-u
+              <h3 className="text-xl md:text-2xl font-semibold leading-tight text-foreground mb-6">
+                Podaci zaštićeni, dostupni kad god zatreba
               </h3>
               
               <ul className="space-y-5 mb-8">
                 {[
-                  'Svi podaci se čuvaju u sigurnom cloud okruženju sa visokim standardima zaštite.',
-                  'Automatski backup se radi dva puta dnevno, bez prekida u radu.',
-                  'Pristup podacima je zaštićen i dostupan samo ovlašćenim korisnicima.',
-                  'Vaši pacijenti, kartoni i termini su bezbedni - čak i u slučaju kvara, gubitka uređaja ili greške.'
+                  'Cloud čuvanje i zaštita pristupa',
+                  'Podaci se čuvaju automatski.',
+                  'Sigurnost kartona i termina u svakom scenariju'
                 ].map((bullet, bulletIndex) => (
                   <li 
                     key={bulletIndex}
@@ -699,16 +605,8 @@ const FeatureWalkthroughV3 = () => {
                     }`}
                     style={{ transitionDelay: `${(bulletIndex * 80) + 150}ms` }}
                   >
-                    <Check className="w-5 h-5 text-[#3267FF] mt-0.5 mr-3 flex-shrink-0" />
-                    <span
-                      className="text-[#000A2D]"
-                      style={{
-                        fontFamily: 'Archivo, sans-serif',
-                        fontWeight: 400,
-                        fontSize: '16px',
-                        lineHeight: '1.6em'
-                      }}
-                    >
+                    <Check className="w-5 h-5 text-primary mt-0.5 mr-3 flex-shrink-0" />
+                    <span className="text-base md:text-lg text-foreground leading-relaxed">
                       {bullet}
                     </span>
                   </li>
@@ -716,20 +614,14 @@ const FeatureWalkthroughV3 = () => {
               </ul>
 
               <p
-                className={`text-[#636571] transition-all duration-500 ease-out ${
+                className={`text-base md:text-lg text-muted-foreground leading-relaxed transition-all duration-500 ease-out ${
                   cloudSecurityVisible 
                     ? 'opacity-100 translate-y-0' 
                     : 'opacity-0 translate-y-4'
                 }`}
-                style={{
-                  fontFamily: 'Archivo, sans-serif',
-                  fontWeight: 400,
-                  fontSize: '16px',
-                  lineHeight: '1.6em',
-                  transitionDelay: '450ms'
-                }}
+                style={{ transitionDelay: '450ms' }}
               >
-                Odontoa brine o infrastrukturi, kako biste vi mogli da se fokusirate na rad sa pacijentima.
+                Pouzdana infrastruktura u pozadini, fokus na pacijentima u praksi.
               </p>
             </div>
 
@@ -743,7 +635,7 @@ const FeatureWalkthroughV3 = () => {
               style={{ transitionDelay: '100ms' }}
             >
               <div 
-                className="relative w-full h-[400px] bg-gradient-to-br from-[#F1F8FF] to-[#FBFDFF] border border-slate-200/60 rounded-3xl overflow-hidden"
+                className="relative w-full h-[400px] bg-gradient-to-br from-muted/50 to-background border border-border rounded-3xl overflow-hidden"
                 style={{
                   boxShadow: `
                     0 35px 100px rgba(15, 23, 42, 0.15),
@@ -773,26 +665,10 @@ const FeatureWalkthroughV3 = () => {
                 />
                 <div className="relative z-10 h-full flex items-center justify-center">
                   <div className="text-center">
-                    <div
-                      className="text-[#636571] mb-2"
-                      style={{
-                        fontFamily: 'Archivo, sans-serif',
-                        fontWeight: 400,
-                        fontSize: '14px',
-                        lineHeight: '1.5em'
-                      }}
-                    >
+                    <div className="text-muted-foreground mb-2 text-sm leading-relaxed">
                       Cloud Security Mockup
                     </div>
-                    <div
-                      className="text-[#3267FF]"
-                      style={{
-                        fontFamily: 'Manrope, sans-serif',
-                        fontWeight: 600,
-                        fontSize: '12px',
-                        lineHeight: '1.2em'
-                      }}
-                    >
+                    <div className="text-primary text-xs font-semibold leading-tight">
                       Placeholder slika
                     </div>
                   </div>
@@ -805,39 +681,22 @@ const FeatureWalkthroughV3 = () => {
         {/* Trusted By Section - Hidden for now */}
         {/* <div 
           ref={trustedByRef}
-          className={`mt-20 lg:mt-24 pt-16 border-t border-[#EEEEEE] transition-all duration-700 ease-out ${
+          className={`mt-20 lg:mt-24 pt-16 border-t border-border transition-all duration-700 ease-out ${
             trustedByVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
           <div className="text-center mb-8">
-            <p
-              className="text-[#636571] mb-6"
-              style={{
-                fontFamily: 'Archivo, sans-serif',
-                fontWeight: 400,
-                fontSize: '14px',
-                lineHeight: '1.5em',
-                textTransform: 'uppercase',
-                letterSpacing: '0.1em'
-              }}
-            >
+            <p className="text-muted-foreground mb-6 text-sm leading-relaxed uppercase tracking-wider">
               Veruju nam
             </p>
             <div className="flex flex-wrap justify-center items-center gap-6">
               {trustedBy.map((name, index) => (
                 <div
                   key={index}
-                  className={`px-6 py-3 bg-white border border-[#EEEEEE] rounded-lg transition-all duration-500 ease-out ${
+                  className={`px-6 py-3 bg-white border border-border rounded-lg text-sm font-semibold leading-tight text-muted-foreground transition-all duration-500 ease-out ${
                     trustedByVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
                   }`}
-                  style={{
-                    fontFamily: 'Manrope, sans-serif',
-                    fontWeight: 600,
-                    fontSize: '14px',
-                    lineHeight: '1.2em',
-                    color: '#636571',
-                    transitionDelay: `${index * 100 + 200}ms`
-                  }}
+                  style={{ transitionDelay: `${index * 100 + 200}ms` }}
                 >
                   {name}
                 </div>

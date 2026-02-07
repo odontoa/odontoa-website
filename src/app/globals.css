@@ -14,27 +14,12 @@
   }
 }
 
-/* Custom Prose Styles for Blog Content */
+/* Custom Prose Styles for Blog Content - heading weights/sizes from Tailwind typography plugin (tailwind.config.ts) */
 .prose {
   @apply text-slate-600 leading-8 font-sans;
 }
 
-.prose h1 {
-  @apply text-3xl font-normal text-slate-900 mt-10 mb-6 leading-tight;
-}
-
-.prose h2 {
-  @apply text-2xl font-normal text-slate-900 mt-10 mb-4 leading-tight;
-}
-
-.prose h3 {
-  @apply text-xl font-normal text-slate-900 mt-8 mb-3 leading-tight;
-}
-
-.prose h4 {
-  @apply text-lg font-normal text-slate-900 mt-6 mb-2 leading-tight;
-}
-
+/* Prose h1/h2/h3/h4 removed: single source of truth is typography plugin (font-semibold 600, consistent hierarchy) */
 .prose p {
   @apply text-lg leading-8 mt-4 mb-4;
 }
@@ -109,8 +94,9 @@ article img,
   @apply text-blue-600 hover:text-blue-700 underline;
 }
 
+/* strong: bold emphasis (typography plugin sets fontWeight 600) */
 .prose strong {
-  @apply font-normal text-slate-900;
+  @apply font-semibold text-slate-900;
 }
 
 .prose em {

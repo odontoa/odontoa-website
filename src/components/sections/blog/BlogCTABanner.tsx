@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 
 export function BlogCTABanner() {
   return (
-    <section className="w-full py-16 md:py-20 lg:py-24 bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="w-full py-16 md:py-20 bg-background">
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-card border border-border rounded-2xl shadow-lg overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left Column - Image */}
@@ -21,18 +21,18 @@ export function BlogCTABanner() {
             </div>
 
             {/* Right Column - Content */}
-            <div className="p-8 lg:p-12 flex flex-col gap-6">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal text-foreground leading-tight">
+            <div className="p-8 lg:p-12 flex flex-col gap-4">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight leading-tight text-foreground">
                 Uvedite red u ordinaciju bez komplikacija.
               </h2>
-              <p className="text-lg text-muted-foreground leading-relaxed">
+              <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
                 Kartoni, zakazivanje, zalihe i tim na jednom mestu. Pogledajte kako izgleda u praksi.
               </p>
               <div className="mt-4">
                 <Button
                   asChild
-                  size="lg"
-                  className="text-white"
+                  variant="pillPrimary"
+                  size="pill"
                 >
                   <Link href="/kontakt">
                     Zakaži demo

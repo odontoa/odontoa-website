@@ -130,7 +130,7 @@ function AuthorRow({
           sizes={variant === "hero" ? "32px" : "28px"}
         />
       ) : (
-        <span className="text-xs font-semibold text-slate-700">
+        <span className="text-xs font-semibold text-muted-foreground">
           {getInitials(authorName)}
         </span>
       )}
@@ -139,11 +139,11 @@ function AuthorRow({
 
   const TextBlock = (
     <div className="flex flex-col leading-tight min-w-0">
-      <span className="text-sm font-medium text-slate-900 truncate">
+      <span className="text-sm font-medium text-foreground truncate">
         {authorName}
       </span>
       {formattedDate && (
-        <span className="text-xs text-slate-500">{formattedDate}</span>
+        <span className="text-xs text-muted-foreground">{formattedDate}</span>
       )}
     </div>
   );
@@ -223,12 +223,12 @@ export const BlogPostCard = React.forwardRef<HTMLDivElement, BlogPostCardProps>(
                 <Pills tag={tag} readTime={readTime} />
               </div>
 
-              <h3 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl lg:text-[40px] leading-[1.1] pb-2">
+              <h3 className="text-lg md:text-xl font-semibold leading-tight text-foreground pb-2">
                 {title}
               </h3>
 
               {description ? (
-                <p className="mt-3 line-clamp-3 text-sm text-slate-600 md:text-base">
+                <p className="mt-3 line-clamp-3 text-sm md:text-base text-muted-foreground">
                   {description}
                 </p>
               ) : null}
@@ -241,10 +241,10 @@ export const BlogPostCard = React.forwardRef<HTMLDivElement, BlogPostCardProps>(
               />
 
               <div className="mt-6">
-                <Button asChild className="rounded-xl">
+                <Button asChild variant="pillSecondary" size="pill" className="gap-2">
                   <Link href={href} aria-label={`Pročitaj: ${title}`}>
                     {ctaText}
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                    <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
                   </Link>
                 </Button>
               </div>
@@ -327,12 +327,12 @@ export const BlogPostCard = React.forwardRef<HTMLDivElement, BlogPostCardProps>(
             <Pills tag={tag} readTime={readTime} />
           </div>
 
-          <h3 className="line-clamp-2 text-base font-semibold text-slate-900">
+          <h3 className="line-clamp-2 text-lg md:text-xl font-semibold leading-tight text-foreground">
             {title}
           </h3>
 
           {description ? (
-            <p className="mt-2 line-clamp-2 text-sm text-slate-600">
+            <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
               {description}
             </p>
           ) : null}
@@ -344,7 +344,7 @@ export const BlogPostCard = React.forwardRef<HTMLDivElement, BlogPostCardProps>(
             variant="grid"
           />
 
-          <div className="mt-4 inline-flex items-center text-sm font-medium text-blue-700">
+          <div className="mt-4 inline-flex items-center text-sm font-medium text-primary">
             {ctaText}
             <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
           </div>

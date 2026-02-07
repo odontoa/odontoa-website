@@ -65,14 +65,14 @@ const topics: Topic[] = [
 
 export function TopicCarousel() {
   return (
-    <section className="w-full py-16 md:py-20 lg:py-24 bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="w-full py-12 md:py-16 bg-background">
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="mb-12">
-          <h2 className="text-3xl md:text-4xl font-normal text-foreground mb-3">
+        <div className="mb-8 md:mb-10 flex flex-col gap-3">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight leading-tight text-foreground">
             Saveti i vodiči za efikasniji rad
           </h2>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
             Otkrijte vredne uvide za optimizaciju vašeg poslovanja i maksimalnu efikasnost
           </p>
         </div>
@@ -110,7 +110,7 @@ export function TopicCarousel() {
 
                 {/* Title */}
                 <h3
-                  className={`text-xl font-normal mb-2 ${
+                  className={`text-lg md:text-xl font-semibold leading-tight mb-2 ${
                     isHighlighted ? "text-primary-foreground" : "text-foreground"
                   }`}
                 >

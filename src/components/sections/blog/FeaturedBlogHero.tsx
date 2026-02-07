@@ -47,14 +47,14 @@ export function FeaturedBlogHero({ post }: FeaturedBlogHeroProps) {
         }}
       />
 
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-10 py-12 lg:py-16">
+      <div className="relative max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-16 items-start">
           {/* Left Column - Image Card with floating stat cards */}
           <div className="relative">
             {/* Outer framed card */}
             <div className="relative rounded-2xl border border-slate-200/70 bg-white p-3 shadow-[0_22px_70px_-40px_rgba(15,23,42,0.35)]">
-              {/* Inner image container */}
-              <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100">
+              {/* Inner image container - fixed height so card grows vertically with title */}
+              <div className="relative h-[260px] md:h-[320px] lg:h-[360px] w-full overflow-hidden rounded-xl bg-slate-100">
                 <Image
                   src={imageUrl}
                   alt={post.title || "Featured blog post"}
@@ -67,22 +67,22 @@ export function FeaturedBlogHero({ post }: FeaturedBlogHeroProps) {
                 {/* Floating stat cards */}
                 {/* Card 1: Zakazani termini (top-left, blue bar) */}
                 <div className="absolute left-8 top-8 w-[185px] rounded-xl border border-slate-200/70 bg-white px-3.5 py-2.5 shadow-[0_12px_30px_-18px_rgba(15,23,42,0.35)]">
-                  <p className="text-[10px] font-medium text-slate-500">Zakazani termini</p>
-                  <p className="mt-0.5 text-[18px] font-semibold tracking-tight text-slate-900">1,234</p>
-                  <div className="mt-2 h-[3px] w-full rounded-full bg-[#2F6BFF]" />
+                  <p className="text-xs font-medium text-muted-foreground">Zakazani termini</p>
+                  <p className="mt-0.5 text-base font-semibold tracking-tight text-foreground">1,234</p>
+                  <div className="mt-2 h-1 w-full rounded-full bg-primary" />
                 </div>
 
                 {/* Card 2: Novi pacijenti (upper-right, orange bar) */}
                 <div className="absolute right-10 top-[84px] w-[185px] rounded-xl border border-slate-200/70 bg-white px-3.5 py-2.5 shadow-[0_12px_30px_-18px_rgba(15,23,42,0.35)]">
-                  <p className="text-[10px] font-medium text-slate-500">Novi pacijenti</p>
-                  <p className="mt-0.5 text-[18px] font-semibold tracking-tight text-slate-900">456</p>
-                  <div className="mt-2 h-[3px] w-full rounded-full bg-[#F59E0B]" />
+                  <p className="text-xs font-medium text-muted-foreground">Novi pacijenti</p>
+                  <p className="mt-0.5 text-base font-semibold tracking-tight text-foreground">456</p>
+                  <div className="mt-2 h-1 w-full rounded-full bg-amber-500" />
                 </div>
 
                 {/* Card 3: Stanje zaliha (bottom-left, red bar) */}
                 <div className="absolute left-[110px] bottom-10 w-[185px] rounded-xl border border-slate-200/70 bg-white px-3.5 py-2.5 shadow-[0_12px_30px_-18px_rgba(15,23,42,0.35)]">
-                  <p className="text-[10px] font-medium text-slate-500">Stanje zaliha</p>
-                  <p className="mt-0.5 text-[18px] font-semibold tracking-tight text-slate-900">2,890</p>
+                  <p className="text-xs font-medium text-muted-foreground">Stanje zaliha</p>
+                  <p className="mt-0.5 text-base font-semibold tracking-tight text-foreground">2,890</p>
                   <div className="mt-2 h-[3px] w-full rounded-full bg-[#EF4444]" />
                 </div>
               </div>
@@ -90,31 +90,31 @@ export function FeaturedBlogHero({ post }: FeaturedBlogHeroProps) {
           </div>
 
           {/* Right Column - Text content */}
-          <div className="flex flex-col">
+          <div className="min-w-0 flex flex-col">
             {/* Pill + Reading time row */}
             <div className="flex items-center gap-3">
-              <span className="inline-flex items-center rounded-full bg-[#2F6BFF] px-3 py-1 text-xs font-medium text-white">
+              <span className="inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
                 News!
               </span>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-muted-foreground">
                 {readingTime} mins read
               </span>
             </div>
 
-            {/* Headline */}
-            <h1 className="mt-4 max-w-[14ch] text-[46px] leading-[1.05] tracking-[-0.02em] font-semibold text-slate-900 lg:text-[52px]">
+            {/* Headline - full title visible, no truncation */}
+            <h1 className="mt-4 text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.05] text-foreground whitespace-normal break-words">
               {post.title || "Digitalni vodič kroz organizaciju vaše ordinacije"}
             </h1>
 
-            {/* Summary/Excerpt - plain text, no card */}
-            <p className="mt-4 max-w-[62ch] text-sm leading-6 text-slate-600 line-clamp-3">
+            {/* Summary/Excerpt */}
+            <p className="mt-4 max-w-[62ch] text-base md:text-lg text-muted-foreground leading-relaxed line-clamp-3">
               {post.summary || "Praktični saveti, studije slučaja i vodiči za digitalizaciju kartona pacijenata, zakazivanje, zalihe i timski rad – iz perspektive svakodnevnog života u ordinaciji."}
             </p>
 
             {/* Read more link */}
             <Link
               href={postUrl}
-              className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-[#2F6BFF] hover:opacity-80 transition-opacity"
+              className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-primary hover:opacity-80 transition-opacity"
             >
               Read More
               <ArrowRight className="h-4 w-4" />

@@ -187,29 +187,25 @@ const HeroSection = () => {
                   },
                 }}
                 className="mt-12 flex flex-col items-center justify-center gap-2 md:flex-row">
-                <div
+                <Button
                   key={1}
-                  className="bg-foreground/10 rounded-lg border p-0.5 w-full max-w-xs md:w-auto">
-                  <Button
-                    asChild
-                    size="lg"
-                    className="rounded-lg px-5 py-3 text-base text-white h-auto w-full">
-                    <Link href="#demo">
-                      <span className="text-nowrap text-white">Zakaži demo</span>
-                      <ArrowRight className="ml-2 h-4 w-4 text-white" />
-                    </Link>
-                  </Button>
-                </div>
+                  asChild
+                  variant="pillPrimary"
+                  size="pill"
+                  className="w-full max-w-xs md:w-auto gap-2">
+                  <Link href="#demo">
+                    <span className="text-nowrap">Zakaži demo</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
                 <Button
                   key={2}
                   asChild
-                  size="lg"
-                  variant="outline"
-                  className="rounded-xl px-5 h-12">
+                  variant="pillSecondary"
+                  size="pill"
+                  className="w-full max-w-xs md:w-auto">
                   <Link href="#features">
-                    <span className="text-nowrap">
-                      Pogledaj kako radi
-                    </span>
+                    <span className="text-nowrap">Pogledaj kako radi</span>
                   </Link>
                 </Button>
               </AnimatedGroup>
@@ -256,7 +252,8 @@ const HeroSection = () => {
                       <span className="font-medium text-foreground">4.9+</span>
                       <AnimatedTooltip items={dentistAvatars} />
                     </div>
-                    <span className="text-muted-foreground text-sm">Razvijeno uz podršku stomatologa širom regiona</span>
+                    {/* Sakriveno za sada */}
+                    {/* <span className="text-muted-foreground text-sm">Razvijeno uz podršku stomatologa širom regiona</span> */}
                   </div>
                 </div>
               </AnimatedGroup>

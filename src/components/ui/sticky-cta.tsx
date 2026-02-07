@@ -48,7 +48,7 @@ export function StickyCTA({ className }: StickyCTAProps) {
             <p className="text-xs text-gray-500 mb-3 leading-relaxed">
               Vidite kako Odontoa može da transformiše vašu ordinaciju
             </p>
-            <Button asChild size="sm" className="w-full text-white">
+            <Button asChild variant="pillPrimary" size="pill" className="w-full">
               <Link href="#demo">
                 Zakaži demo
               </Link>

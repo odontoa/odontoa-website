@@ -4,6 +4,7 @@ import { VerticalCutReveal } from "@/components/ui/vertical-cut-reveal";
 import { ArrowRight, PhoneCall, Facebook, Instagram, Linkedin } from "lucide-react";
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { businessConfig } from "@/lib/config/business";
 
 export default function AboutSection3() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -61,7 +62,7 @@ export default function AboutSection3() {
                 animationNum={0}
                 timelineRef={heroRef}
                 customVariants={revealVariants}
-                href="https://www.facebook.com/profile.php?id=61580254345083"
+                href={businessConfig.social.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="md:w-8 md:h-8 sm:w-6 w-5 sm:h-6 h-5 border border-border bg-muted rounded-lg flex items-center justify-center cursor-pointer hover:bg-muted/80 transition-colors"
@@ -73,7 +74,7 @@ export default function AboutSection3() {
                 animationNum={1}
                 timelineRef={heroRef}
                 customVariants={revealVariants}
-                href="https://www.instagram.com/odontoa.app/"
+                href={businessConfig.social.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="md:w-8 md:h-8 sm:w-6 w-5 sm:h-6 h-5 border border-border bg-muted rounded-lg flex items-center justify-center cursor-pointer hover:bg-muted/80 transition-colors"
@@ -85,7 +86,7 @@ export default function AboutSection3() {
                 animationNum={2}
                 timelineRef={heroRef}
                 customVariants={revealVariants}
-                href="https://www.linkedin.com/company/odontoa/"
+                href={businessConfig.social.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="md:w-8 md:h-8 sm:w-6 w-5 sm:h-6 h-5 border border-border bg-muted rounded-lg flex items-center justify-center cursor-pointer hover:bg-muted/80 transition-colors"
@@ -247,15 +248,16 @@ export default function AboutSection3() {
                 className="flex flex-col gap-3"
               >
                 <Button
-                  size="lg"
-                  className="bg-foreground hover:bg-foreground/90 shadow-lg shadow-foreground/20 border border-border flex w-full gap-2 hover:gap-4 transition-all duration-300 ease-in-out text-background px-5 py-3 rounded-lg font-semibold"
+                  variant="pillPrimary"
+                  size="pill"
+                  className="w-full gap-2"
                 >
                   Zakaži poziv <PhoneCall className="h-4 w-4" />
                 </Button>
                 <Button
-                  size="lg"
-                  variant="outline"
-                  className="flex w-full gap-2 hover:gap-4 transition-all duration-300 ease-in-out px-5 py-3 rounded-lg font-semibold"
+                  variant="pillSecondary"
+                  size="pill"
+                  className="w-full gap-2"
                 >
                   Prijavi se ovde <ArrowRight className="h-4 w-4" />
                 </Button>

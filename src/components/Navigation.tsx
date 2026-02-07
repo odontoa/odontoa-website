@@ -37,7 +37,7 @@ const Navigation = () => {
       <nav
         data-state={isMenuOpen && 'active'}
         className="fixed z-20 w-full px-2 group">
-        <div className={cn('mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12', isScrolled && 'bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5')}>
+        <div className={cn('mx-auto mt-2 max-w-[1240px] px-4 sm:px-6 lg:px-8 transition-all duration-300', isScrolled && 'bg-background/50 rounded-2xl border backdrop-blur-lg')}>
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             <div className="flex w-full justify-between lg:w-auto">
               <Link
@@ -57,8 +57,9 @@ const Navigation = () => {
               </button>
             </div>
 
-            <div className="absolute inset-0 m-auto hidden size-fit lg:block">
-              <ul className="flex gap-8 text-sm">
+            <div className="bg-background group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:flex-row lg:items-center lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
+              {/* Desktop nav links: right-aligned row, only on lg+ */}
+              <ul className="hidden lg:flex lg:items-center lg:gap-7 text-sm">
                 {menuItems.map((item, index) => (
                   <li key={index}>
                     <Link
@@ -70,9 +71,6 @@ const Navigation = () => {
                   </li>
                 ))}
               </ul>
-            </div>
-
-            <div className="bg-background group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
               <div className="lg:hidden">
                 <ul className="space-y-6 text-base">
                   {menuItems.map((item, index) => (
@@ -95,9 +93,9 @@ const Navigation = () => {
               <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
                 <Button
                   asChild
-                  variant="default"
-                  size="sm"
-                  className="bg-primary text-white hover:bg-primary/90 hover:text-white">
+                  variant="pillPrimary"
+                  size="pillSm"
+                >
                   <a href="https://app.odontoa.com" target="_blank" rel="noopener noreferrer">
                     <span>Uloguj se</span>
                   </a>

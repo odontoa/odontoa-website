@@ -160,15 +160,7 @@ const Home2Footer = () => {
                     fontSize: '16px'
                   }}
                 />
-                <Button 
-                  className="bg-[#1644EF] text-white hover:bg-[#1644EF]/90 rounded-[5px] px-8 py-3 h-auto"
-                  style={{
-                    fontFamily: 'Archivo, sans-serif',
-                    fontWeight: 600,
-                    fontSize: '16px',
-                    lineHeight: '1em'
-                  }}
-                >
+                <Button variant="pillPrimary" size="pill">
                   Sign Up
                 </Button>
               </div>

@@ -21,6 +21,6 @@ export const businessConfig = {
   social: {
     linkedin: 'https://www.linkedin.com/company/odontoa/',
     facebook: 'https://www.facebook.com/profile.php?id=61580254345083',
-    instagram: 'https://www.instagram.com/odontoa.app/',
+    instagram: 'https://www.instagram.com/odontoa.app?igsh=ZmE3N3N6Mjhhamli&utm_source=qr',
   },
 } as const;

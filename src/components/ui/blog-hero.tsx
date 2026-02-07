@@ -30,9 +30,9 @@ export function BlogHero() {
             <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
               <Button
                 asChild
-                size="lg"
-                variant="default"
-                className="gap-2 shadow-sm w-full sm:w-auto text-white"
+                variant="pillPrimary"
+                size="pill"
+                className="gap-2 w-full sm:w-auto"
               >
                 <Link href="#latest-posts">
                   Pogledaj najnovije članke
@@ -42,8 +42,8 @@ export function BlogHero() {
               
               <Button
                 asChild
-                size="lg"
-                variant="outline"
+                variant="pillSecondary"
+                size="pill"
                 className="gap-2 w-full sm:w-auto"
               >
                 <Link href="/o-nama">

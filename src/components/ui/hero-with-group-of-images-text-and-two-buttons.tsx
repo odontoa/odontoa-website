@@ -44,13 +44,11 @@ function Hero() {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <div className="bg-foreground/10 rounded-lg border p-0.5">
-                <Button size="lg" className="rounded-lg px-5 py-3 text-base text-white h-auto w-full">
-                  Zakaži poziv <PhoneCall className="ml-2 h-4 w-4 text-white" />
-                </Button>
-              </div>
-              <Button size="lg" variant="outline" className="rounded-xl px-5 h-12">
-                Prijavi se ovde <MoveRight className="ml-2 h-4 w-4" />
+              <Button variant="pillPrimary" size="pill" className="w-full sm:w-auto gap-2">
+                Zakaži poziv <PhoneCall className="h-4 w-4" />
+              </Button>
+              <Button variant="pillSecondary" size="pill" className="w-full sm:w-auto gap-2">
+                Prijavi se ovde <MoveRight className="h-4 w-4" />
               </Button>
             </motion.div>
           </div>
