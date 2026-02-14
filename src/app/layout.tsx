@@ -73,13 +73,13 @@ const defaultMetadata: Metadata = {
 }
 
 const comingSoonMetadata: Metadata = {
-  title: 'Odontoa | Uskoro stiže',
-  description: 'CRM i platforma za upravljanje stomatološkom ordinacijom. Manje administracije, više vremena za pacijente. Prva verzija u pripremi.',
+  title: 'Odontoa je online',
+  description: 'Platforma za upravljanje stomatološkom ordinacijom. Termini, kartoni i tim na jednom mestu.',
   metadataBase: new URL('https://odontoa.com'),
   alternates: { canonical: '/' },
   openGraph: {
-    title: 'Odontoa | Uskoro stiže',
-    description: 'CRM i platforma za upravljanje stomatološkom ordinacijom. Manje administracije, više vremena za pacijente.',
+    title: 'Odontoa je online',
+    description: 'Platforma za upravljanje stomatološkom ordinacijom. Termini, kartoni i tim na jednom mestu.',
     url: 'https://odontoa.com',
     siteName: 'Odontoa',
     images: [
@@ -87,7 +87,7 @@ const comingSoonMetadata: Metadata = {
         url: '/images/Odontoa - logo pack/social_media_profile_image.png',
         width: 1200,
         height: 630,
-        alt: 'Odontoa - Uskoro stiže',
+        alt: 'Odontoa - Platforma za upravljanje ordinacijom',
       },
     ],
     locale: 'sr_RS',
@@ -95,8 +95,8 @@ const comingSoonMetadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Odontoa | Uskoro stiže',
-    description: 'CRM i platforma za upravljanje stomatološkom ordinacijom. Manje administracije, više vremena za pacijente.',
+    title: 'Odontoa je online',
+    description: 'Platforma za upravljanje stomatološkom ordinacijom. Termini, kartoni i tim na jednom mestu.',
     images: ['/images/Odontoa - logo pack/social_media_profile_image.png'],
   },
   robots: { index: true, follow: true },
