@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Nav height for hero first-fold (e.g. min-h-[calc(100svh-var(--nav-h))]) */
+:root {
+  --nav-h: 72px;
+}
+
 /* Ensure Inter font is applied globally */
 @layer base {
   html {
@@ -12,6 +17,24 @@
   body {
     font-family: var(--font-inter), 'Inter', ui-sans-serif, system-ui, sans-serif;
   }
+}
+
+/* Prevent horizontal scroll at root only; hero/image use overflow-visible. Fallback: clip not supported everywhere */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+@supports (overflow: clip) {
+  html,
+  body {
+    overflow-x: clip;
+  }
+}
+
+/* Manrope za hero / naslove (PulseIQ vibe), ostaje opcioni */
+.font-manrope {
+  font-family: var(--font-manrope), var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Custom Prose Styles for Blog Content - heading weights/sizes from Tailwind typography plugin (tailwind.config.ts) */

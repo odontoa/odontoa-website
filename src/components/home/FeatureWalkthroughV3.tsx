@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
-import { Check } from 'lucide-react';
+import { Check, Workflow } from 'lucide-react';
 import { CalendarMockup } from '@/components/CalendarMockup';
 import ReminderMockup from '@/components/marketing/ReminderMockup';
 import DashboardMockupA from '@/components/DashboardMockupA';
@@ -103,6 +103,8 @@ function AnimatedFeatureBlock({
     title: string;
     bullets: string[];
     description: string;
+    microLine?: string;
+    calloutLabel?: string;
     imagePosition: 'left' | 'right';
   };
   index: number;
@@ -156,16 +158,40 @@ function AnimatedFeatureBlock({
               ))}
             </ul>
 
-            <p
-              className={`text-base md:text-lg text-muted-foreground leading-relaxed transition-all duration-500 ease-out ${
-                isVisible 
-                  ? 'opacity-100 translate-y-0' 
-                  : 'opacity-0 translate-y-4'
-              }`}
-              style={{ transitionDelay: '400ms' }}
-            >
-              {feature.description}
-            </p>
+            {!feature.microLine && (
+              <p
+                className={`text-base md:text-lg text-muted-foreground leading-relaxed transition-all duration-500 ease-out ${
+                  isVisible 
+                    ? 'opacity-100 translate-y-0' 
+                    : 'opacity-0 translate-y-4'
+                }`}
+                style={{ transitionDelay: '400ms' }}
+              >
+                {feature.description}
+              </p>
+            )}
+            {feature.microLine && (
+              <div
+                className={`mt-2 inline-flex max-w-lg items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 shadow-sm transition-all duration-500 ease-out ${
+                  isVisible 
+                    ? 'opacity-100 translate-y-0' 
+                    : 'opacity-0 translate-y-4'
+                }`}
+                style={{ transitionDelay: '500ms' }}
+              >
+                <div className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-600/10 text-blue-700">
+                  <Workflow className="h-4 w-4" />
+                </div>
+                <p className="leading-relaxed">
+                  {feature.calloutLabel && (
+                    <>
+                      <span className="font-semibold text-slate-900">{feature.calloutLabel}</span>{" "}
+                    </>
+                  )}
+                  {feature.microLine}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Image */}
@@ -236,16 +262,40 @@ function AnimatedFeatureBlock({
           ))}
         </ul>
 
-        <p
-          className={`text-base md:text-lg text-muted-foreground leading-relaxed transition-all duration-500 ease-out ${
-            isVisible 
-              ? 'opacity-100 translate-y-0' 
-              : 'opacity-0 translate-y-4'
-          }`}
-          style={{ transitionDelay: '400ms' }}
-        >
-          {feature.description}
-        </p>
+        {!feature.microLine && (
+          <p
+            className={`text-base md:text-lg text-muted-foreground leading-relaxed transition-all duration-500 ease-out ${
+              isVisible 
+                ? 'opacity-100 translate-y-0' 
+                : 'opacity-0 translate-y-4'
+            }`}
+            style={{ transitionDelay: '400ms' }}
+          >
+            {feature.description}
+          </p>
+        )}
+        {feature.microLine && (
+          <div
+            className={`mt-2 inline-flex max-w-lg items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 shadow-sm transition-all duration-500 ease-out ${
+              isVisible 
+                ? 'opacity-100 translate-y-0' 
+                : 'opacity-0 translate-y-4'
+            }`}
+            style={{ transitionDelay: '500ms' }}
+          >
+            <div className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-600/10 text-blue-700">
+              <Workflow className="h-4 w-4" />
+            </div>
+            <p className="leading-relaxed">
+              {feature.calloutLabel && (
+                <>
+                  <span className="font-semibold text-slate-900">{feature.calloutLabel}</span>{" "}
+                </>
+              )}
+              {feature.microLine}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Visual Placeholder or Calendar Mockup - centriran u visini reda */}
@@ -447,79 +497,93 @@ const FeatureWalkthroughV3 = () => {
   const features = [
     {
       id: 'funkcija-dashboard-overview',
-      title: 'Pregled ordinacije u realnom vremenu',
+      title: 'Kontrolna tabla vaše ordinacije',
       bullets: [
-        'Pregled dana u 5 sekundi: pacijenti, termini, tim',
-        'Statusi: zakazani, završeni, otkazani',
-        'Jedan klik do ključnih akcija'
+        'Dnevni pregled na jednom ekranu: termini, pacijenti, tim',
+        'Jasni statusi poseta da znate šta je u toku i šta je završeno',
+        'Brze akcije bez traženja kroz menije'
       ],
-      description: 'Sve što je bitno za operativni rad ordinacije nalazi se na jednom ekranu, bez "kopanja" kroz menije.',
+      description: 'Sve što vam treba za operativne odluke tokom dana nalazi se na jednom mestu, sa jasnim uvidom u tok rada i učinak.',
+      microLine: 'Termini, karton i posete rade zajedno, za jasan pregled i brže odluke.',
+      calloutLabel: 'Sve u jednom toku.',
       imagePosition: 'right' as const
     },
     {
       id: 'funkcija-daily-operations',
-      title: 'Dnevni pregled i aktivnosti u realnom vremenu',
+      title: 'Dnevni tok rada, bez nesporazuma u timu',
       bullets: [
-        'Pregled termina i statusa',
-        'Praćenje izmena i aktivnosti (ko, šta, kada)',
-        'Brza reakcija bez konfuzije'
+        'Jasan pregled termina i statusa poseta',
+        'Istorija promena: ko je šta uradio i kada',
+        'Brza koordinacija asistenta i doktora'
       ],
-      description: 'Sve izmene se beleže automatski, pa su raspored i kartoni uvek usklađeni.',
+      description: 'Sve promene se beleže automatski, pa su raspored i dokumentacija uvek usklađeni.',
+      microLine: 'Sve promene se beleže automatski, pa su raspored i evidencija poseta uvek usklađeni.',
+      calloutLabel: 'Uvek usklađeno.',
       imagePosition: 'left' as const
     },
     {
       id: 'funkcija-kalendar',
       title: 'Kalendar termina i smena',
       bullets: [
-        'Zakazivanje i pomeranje termina u par klikova',
-        'Pregled po danu, nedelji i smeni',
-        'Evidencija otkazivanja i promena'
+        'Zakazivanje i pomeranje termina bez konfuzije',
+        'Pregled po danu i nedelji, za ceo tim',
+        'Jasna evidencija otkazivanja i promena'
       ],
-      description: 'Jedan kalendar za ceo tim. Brže planiranje i jasna organizacija rada kroz dan.',
+      description: 'Jedan raspored za celu ordinaciju, sa jasnim pregledom zauzetosti i toka dana.',
+      microLine: 'Tim uvek zna ko, kada i gde radi.',
+      calloutLabel: 'Jedan raspored.',
       imagePosition: 'right' as const
     },
     {
       id: 'funkcija-sms',
       title: 'Automatski SMS i email podsetnici',
       bullets: [
-        'Manje propuštenih termina uz automatske podsetnike.',
-        'Automatsko slanje podsetnika, bez poziva i poruka "ručno"',
-        'Stabilniji raspored i manje poziva tokom dana.'
+        'Manje propuštenih termina i manje praznih rupa u rasporedu',
+        'Automatsko slanje podsetnika',
+        'Manje poziva tokom dana i mirnija organizacija'
       ],
-      description: 'Podesite pravila jednom. Podsetnici se šalju automatski, uz evidenciju aktivnosti.',
+      description: 'Podesite pravila jednom. Podsetnici se šalju automatski i beleže u istoriji aktivnosti.',
+      microLine: 'Podsetnici se šalju automatski i beleže u istoriji aktivnosti.',
+      calloutLabel: 'Podesite jednom.',
       imagePosition: 'left' as const
     },
     {
       id: 'funkcija-terapije',
-      title: 'Brži pregled kartona kroz odontogram',
+      title: 'Odontogram za brz klinički uvid',
       bullets: [
-        'Grafički status zuba i terapija',
-        'Sledeći korak je odmah vidljiv',
-        'Brži uvid u istoriju'
+        'Status i terapije po zubu, jasno označeni',
+        'Plan terapije na dohvat ruke',
+        'Istorija intervencija bez traženja kroz karton'
       ],
-      description: 'Sve je povezano sa pacijentovim planom, pa se odluke donose brže.',
+      description: 'Sve je objedinjeno po pacijentu, pa brže dolazite do odluke i sledećeg koraka.',
+      microLine: 'Sve je objedinjeno po pacijentu, pa brže dolazite do odluke i sledećeg koraka.',
+      calloutLabel: 'Brz uvid.',
       imagePosition: 'left' as const
     },
     {
       id: 'funkcija-ortodoncija',
-      title: 'Karton za ortodontsku terapiju',
+      title: 'Ortodontski karton za ceo tok terapije',
       bullets: [
-        'Sve procene i nalazi na jednom mestu',
-        'Faze terapije jasno povezane kroz kontrole',
-        'Brz uvid u fotografije i beleške'
+        'Procene, nalazi i dokumentacija na jednom mestu',
+        'Faze terapije i kontrole jasno povezane',
+        'Fotografije, beleške i istorija bez traženja'
       ],
-      description: 'Sve je zabeleženo i povezano, pa tim odmah vidi istoriju i sledeći korak terapije.',
+      description: 'Jedan karton, jedan tok terapije, potpuna preglednost.',
+      microLine: 'Jedan tok terapije, potpuna preglednost.',
+      calloutLabel: 'Jedan karton.',
       imagePosition: 'right' as const
     },
     {
       id: 'funkcija-izvestaji',
-      title: 'Kontrola poslovanja kroz izveštaje',
+      title: 'Finansije i izveštaji na jednom mestu',
       bullets: [
-        'Izvoz podataka po periodu, doktoru i stolici',
-        'Pregled termina, dolazaka i otkazivanja',
-        'Brža kontrola rada i planiranje kapaciteta'
+        'Pregled prihoda po periodu, doktoru i stolici',
+        'Uvid u naplatu, dugovanja i status poseta',
+        'Planiranje kapaciteta i ciljeva na osnovu podataka'
       ],
-      description: 'Jasni brojevi umesto procene. Napravite izveštaj za par sekundi i optimizujte raspored i organizaciju rada.',
+      description: 'Jasni brojevi umesto procene. U par sekundi dobijate pregled finansija i rada ordinacije.',
+      microLine: 'U par sekundi dobijate pregled finansija i rada ordinacije.',
+      calloutLabel: 'Jasni brojevi umesto procene.',
       imagePosition: 'right' as const
     }
   ];
@@ -587,14 +651,14 @@ const FeatureWalkthroughV3 = () => {
               }`}
             >
               <h3 className="text-xl md:text-2xl font-semibold leading-tight text-foreground mb-6">
-                Podaci zaštićeni, dostupni kad god zatreba
+                Podaci zaštićeni. Dostupni kada zatrebaju.
               </h3>
               
               <ul className="space-y-5 mb-8">
                 {[
-                  'Cloud čuvanje i zaštita pristupa',
-                  'Podaci se čuvaju automatski.',
-                  'Sigurnost kartona i termina u svakom scenariju'
+                  'Siguran cloud pristup, sa kontrolom naloga i uloga',
+                  'Automatsko čuvanje i rezervne kopije podataka',
+                  'Karton i termini uvek dostupni celom timu, uz kontrolu pristupa'
                 ].map((bullet, bulletIndex) => (
                   <li 
                     key={bulletIndex}
@@ -621,7 +685,7 @@ const FeatureWalkthroughV3 = () => {
                 }`}
                 style={{ transitionDelay: '450ms' }}
               >
-                Pouzdana infrastruktura u pozadini, fokus na pacijentima u praksi.
+                Pouzdana infrastruktura u pozadini, da vi možete da se fokusirate na rad sa pacijentima.
               </p>
             </div>
 
