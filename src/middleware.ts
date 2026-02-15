@@ -2,10 +2,10 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 /**
- * Middleware for canonical domain redirects and optional coming_soon mode.
+ * Middleware for optional coming_soon mode and http → https redirect.
  *
  * Coming_soon (SITE_MODE=coming_soon): all routes redirect 302 to "/" except allowlist.
- * Default: www → non-www (301), http → https (301).
+ * Default: http → https (301) in production. Canonical domain (www vs apex) is handled by Vercel Domain settings.
  */
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
@@ -29,13 +29,6 @@ export function middleware(request: NextRequest) {
   const hostname = request.headers.get('host') || ''
   const url = request.nextUrl.clone()
 
-  // Redirect www to non-www
-  if (hostname.startsWith('www.')) {
-    url.hostname = hostname.replace('www.', '')
-    url.protocol = 'https:'
-    return NextResponse.redirect(url, 301)
-  }
-  
   // Redirect http to https (only in production)
   // In development, allow http for local testing
   if (
