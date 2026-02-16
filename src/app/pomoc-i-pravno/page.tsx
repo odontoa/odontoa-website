@@ -42,7 +42,7 @@ export default function PomocIPravnoPage() {
                 <Mail className="h-5 w-5 text-primary" />
                 <div>
                   <p className="font-medium">Email</p>
-                  <p className="text-sm text-muted-foreground">info@odontoa.com</p>
+                  <p className="text-sm text-muted-foreground">info@odontoa.info</p>
                 </div>
               </div>
               
@@ -129,7 +129,7 @@ export default function PomocIPravnoPage() {
                 podataka o ličnosti RS.
               </p>
               <p className="text-muted-foreground">
-                Zahteve možete uputiti putem emaila: <strong>info@odontoa.com</strong>
+                Zahteve možete uputiti putem emaila: <strong>info@odontoa.info</strong>
               </p>
             </div>
 
@@ -156,7 +156,7 @@ export default function PomocIPravnoPage() {
               <div className="bg-muted/50 p-4 rounded-lg">
                 <p className="font-medium mb-2">Odontoa d.o.o.</p>
                 <p className="text-muted-foreground">📍 Krunska, Beograd 11000, Srbija</p>
-                <p className="text-muted-foreground">📧 info@odontoa.com</p>
+                <p className="text-muted-foreground">📧 info@odontoa.info</p>
               </div>
             </div>
           </CardContent>
@@ -279,7 +279,7 @@ export default function PomocIPravnoPage() {
               Za sve informacije ili zahteve:
             </p>
             <div className="bg-muted/50 p-4 rounded-lg">
-              <p className="text-muted-foreground">📧 info@odontoa.com</p>
+              <p className="text-muted-foreground">📧 info@odontoa.info</p>
               <p className="text-muted-foreground">📍 Krunska, Beograd 11000, Srbija</p>
             </div>
             <p className="text-sm text-muted-foreground mt-4">

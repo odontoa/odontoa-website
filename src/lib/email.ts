@@ -32,7 +32,7 @@ export class EmailService {
     }
 
     const emailContent = {
-      to: ['info@odontoa.com', 'ognjen.drinic31@gmail.com'],
+      to: ['info@odontoa.info', 'ognjen.drinic31@gmail.com'],
       from: 'odontoa.com@gmail.com',
       subject: `Nova kontakt forma - ${data.subject}`,
       html: `
@@ -91,7 +91,7 @@ export class EmailService {
     }
 
     const emailContent = {
-      to: ['info@odontoa.com', 'ognjen.drinic31@gmail.com'],
+      to: ['info@odontoa.info', 'ognjen.drinic31@gmail.com'],
       from: 'odontoa.com@gmail.com',
       subject: 'Novi zahtev za demo - Odontoa',
       html: `

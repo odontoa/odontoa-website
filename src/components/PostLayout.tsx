@@ -20,7 +20,7 @@ import { toast } from 'sonner'
 import { RelatedPosts } from './RelatedPosts'
 import { ShareButtons } from './ShareButtons'
 import { TableOfContents } from './TableOfContents'
-import { CTABlock } from './CTABlock'
+import Home2CTA from '@/components/home2/Home2CTA'
 import { generateCombinedSchema } from '@/lib/utils'
 
 interface PostLayoutProps {
@@ -325,11 +325,7 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
 
               {/* CTA at the bottom */}
               <div className="mt-12">
-                <CTABlock 
-                  type={type} 
-                  data={post}
-                  variant="gradient"
-                />
+                <Home2CTA />
               </div>
 
               {/* FAQ Schema Display */}

@@ -130,32 +130,32 @@ export default function AboutSection3() {
             </svg>
           </TimelineContent>
 
-          {/* Stats */}
-          <div className="flex flex-wrap lg:justify-start justify-between items-center py-3 text-sm">
+          {/* Stats – ispod slike, bez preklapanja */}
+          <div className="flex flex-wrap justify-between items-center gap-4 py-4 text-sm border-t border-border mt-2">
             <TimelineContent
               as="div"
               animationNum={5}
               timelineRef={heroRef}
               customVariants={revealVariants}
-              className="flex gap-4"
+              className="flex flex-wrap gap-4"
             >
-              <div className="flex items-center gap-2 mb-2 sm:text-base text-xs">
+              <div className="flex items-center gap-2 sm:text-base text-xs">
                 <span className="text-primary font-bold">10+</span>
                 <span className="text-muted-foreground">sati uštede nedeljno</span>
-                <span className="text-muted-foreground/30">|</span>
               </div>
-              <div className="flex items-center gap-2 mb-2 sm:text-base text-xs">
+              <div className="flex items-center gap-2 sm:text-base text-xs">
+                <span className="text-muted-foreground/30 hidden sm:inline">|</span>
                 <span className="text-primary font-bold">100%</span>
                 <span className="text-muted-foreground">sigurnost podataka</span>
               </div>
             </TimelineContent>
-            <div className="lg:absolute right-0 bottom-16 flex lg:flex-col flex-row-reverse lg:gap-0 gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <TimelineContent
                 as="div"
                 animationNum={6}
                 timelineRef={heroRef}
                 customVariants={revealVariants}
-                className="flex lg:text-4xl sm:text-3xl text-2xl items-center gap-2 mb-2"
+                className="flex lg:text-4xl sm:text-3xl text-2xl items-center gap-2"
               >
                 <span className="text-primary font-semibold">50+</span>
                 <span className="text-muted-foreground uppercase">ordinacija</span>
@@ -165,11 +165,11 @@ export default function AboutSection3() {
                 animationNum={7}
                 timelineRef={heroRef}
                 customVariants={revealVariants}
-                className="flex items-center gap-2 mb-2 sm:text-base text-xs"
+                className="flex items-center gap-2 sm:text-base text-xs"
               >
+                <span className="text-muted-foreground/30 hidden sm:inline">|</span>
                 <span className="text-primary font-bold">30%</span>
                 <span className="text-muted-foreground">više efikasnosti</span>
-                <span className="text-muted-foreground/30 lg:hidden block">|</span>
               </TimelineContent>
             </div>
           </div>

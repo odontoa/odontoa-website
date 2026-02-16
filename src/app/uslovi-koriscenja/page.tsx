@@ -271,7 +271,7 @@ export default function TermsOfServicePage() {
                 Za sva pitanja u vezi uslova korišćenja, možete nas kontaktirati na:
               </p>
               <p className="text-muted-foreground leading-relaxed">
-                <a href="mailto:support@odontoa.com" className="text-[#3267FF] hover:underline">support@odontoa.com</a>
+                <a href="mailto:info@odontoa.info" className="text-[#3267FF] hover:underline">info@odontoa.info</a>
               </p>
             </motion.div>
 

@@ -5,7 +5,7 @@
  */
 export const businessConfig = {
   name: 'Odontoa',
-  email: 'info@odontoa.com',
+  email: 'info@odontoa.info',
   phone: '+381 60 123 4567', // Update with real number when available
   address: {
     street: 'Krunska',

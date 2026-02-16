@@ -102,7 +102,7 @@ export default function TestEmailPage() {
             {testType === 'contact' ? (
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  Test the contact form email functionality. This will send an email to info@odontoa.com and ognjen.drinic31@gmail.com
+                  Test the contact form email functionality. This will send an email to info@odontoa.info and ognjen.drinic31@gmail.com
                 </p>
                 <Button 
                   onClick={testContactForm}
@@ -115,7 +115,7 @@ export default function TestEmailPage() {
             ) : (
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  Test the demo form email functionality. This will send an email to info@odontoa.com and ognjen.drinic31@gmail.com
+                  Test the demo form email functionality. This will send an email to info@odontoa.info and ognjen.drinic31@gmail.com
                 </p>
                 <Button 
                   onClick={testDemoForm}

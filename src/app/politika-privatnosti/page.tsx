@@ -194,7 +194,7 @@ export default function PrivacyPolicyPage() {
                 <li>pravo na prigovor</li>
               </ul>
               <p className="text-muted-foreground leading-relaxed">
-                Zahtev možete poslati na: <a href="mailto:support@odontoa.com" className="text-[#3267FF] hover:underline">support@odontoa.com</a>.
+                Zahtev možete poslati na: <a href="mailto:info@odontoa.info" className="text-[#3267FF] hover:underline">info@odontoa.info</a>.
               </p>
             </motion.div>
 
@@ -251,7 +251,7 @@ export default function PrivacyPolicyPage() {
                 Za sva pitanja u vezi privatnosti, možete nas kontaktirati na:
               </p>
               <p className="text-muted-foreground leading-relaxed">
-                <a href="mailto:support@odontoa.com" className="text-[#3267FF] hover:underline">support@odontoa.com</a>
+                <a href="mailto:info@odontoa.info" className="text-[#3267FF] hover:underline">info@odontoa.info</a>
               </p>
             </motion.div>
 

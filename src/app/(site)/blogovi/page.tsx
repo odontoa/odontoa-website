@@ -15,7 +15,7 @@ import { PinnedFeaturedSection } from "@/components/sections/blog/PinnedFeatured
 import { RecentArticlesGrid } from "@/components/sections/blog/RecentArticlesGrid";
 import { CategoryPills } from "@/components/sections/blog/CategoryPills";
 import { TopicCarousel } from "@/components/sections/blog/TopicCarousel";
-import { BlogCTABanner } from "@/components/sections/blog/BlogCTABanner";
+import Home2CTA from "@/components/home2/Home2CTA";
 import { NewsletterBand } from "@/components/sections/blog/NewsletterBand";
 
 export const dynamic = "force-dynamic";
@@ -165,7 +165,7 @@ export default async function BlogoviPage() {
       <TopicCarousel />
 
       {/* CTA Banner */}
-      <BlogCTABanner />
+      <Home2CTA />
 
       {/* Newsletter Band */}
       <NewsletterBand />

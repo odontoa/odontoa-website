@@ -38,8 +38,8 @@ const Navigation = () => {
         data-state={isMenuOpen && 'active'}
         className="fixed z-20 w-full px-2 group">
         <div className={cn('mx-auto mt-2 max-w-[1240px] px-4 sm:px-6 lg:px-8 transition-all duration-300', isScrolled && 'bg-background/50 rounded-2xl border backdrop-blur-lg')}>
-          <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
-            <div className="flex w-full justify-between lg:w-auto">
+          <div className="relative flex flex-wrap items-start justify-between gap-6 py-3 lg:flex-nowrap lg:gap-0 lg:py-4">
+            <div className="flex w-full items-center justify-between lg:w-auto lg:items-start">
               <Link
                 href="/"
                 aria-label="home"
@@ -57,7 +57,7 @@ const Navigation = () => {
               </button>
             </div>
 
-            <div className="bg-background group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:flex-row lg:items-center lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
+            <div className="bg-background group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:flex-row lg:h-8 lg:items-center lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
               {/* Desktop nav links: right-aligned row, only on lg+ */}
               <ul className="hidden lg:flex lg:items-center lg:gap-7 text-sm">
                 {menuItems.map((item, index) => (
@@ -111,13 +111,13 @@ const Navigation = () => {
 
 const Logo = ({ className }: { className?: string }) => {
   return (
-    <div className={cn('flex items-center', className)}>
+    <div className={cn('flex items-center leading-none', className)}>
       <Image 
         src="/images/Odontoa - logo pack/Full_logo_horizontal_color.png" 
         alt="Odontoa Logo" 
         width={120}
         height={36}
-        className="h-8 w-auto"
+        className="block h-8 w-auto object-contain"
         priority
       />
     </div>
