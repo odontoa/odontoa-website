@@ -261,7 +261,7 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
             <div className="flex items-center gap-6 mb-8 text-gray-600">
               <div className="flex items-center gap-2">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="/images/Odontoa - logo pack/Icon_color.png" />
+                  <AvatarImage src="/images/Odontoa-New-logo-pack-2026/favicon_color.png" />
                   <AvatarFallback className="bg-blue-100 text-blue-600 text-xs">
                     {getAuthorInitials(post.author)}
                   </AvatarFallback>
@@ -417,7 +417,7 @@ export const PostLayout: React.FC<PostLayoutProps> = ({
                   </h3>
                   <div className="flex items-center gap-3">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src="/images/Odontoa - logo pack/Icon_color.png" />
+                      <AvatarImage src="/images/Odontoa-New-logo-pack-2026/favicon_color.png" />
                       <AvatarFallback className="bg-blue-100 text-blue-600">
                         {getAuthorInitials(post.author)}
                       </AvatarFallback>

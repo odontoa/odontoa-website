@@ -6,8 +6,8 @@ import { Zap, Shield, Clock } from 'lucide-react';
 
 const Home2CTA = () => {
   return (
-    <section id="demo" className="w-full bg-background py-16 md:py-20 scroll-mt-24">
-      <div className="mx-auto max-w-[1240px] px-[10px]">
+    <section id="demo" className="w-full bg-background py-16 md:py-24 scroll-mt-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row items-center gap-12 bg-card/40 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-2xl border border-gray-200 bg-gradient-to-r from-primary/30 via-secondary/20 to-primary/30">
           {/* Left Column - Content */}
           <div className="w-full lg:w-[620px]">

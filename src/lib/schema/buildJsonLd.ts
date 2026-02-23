@@ -88,7 +88,7 @@ export function buildWebPage(data: SchemaData, pageType: 'blog' | 'glossary' | '
       "url": "https://odontoa.com",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://odontoa.com/images/Odontoa - logo pack/social_media_profile_image.png"
+        "url": "https://odontoa.com/images/Odontoa-New-logo-pack-2026/horiyotal_color.png"
       }
     }
   }
@@ -197,7 +197,7 @@ export function buildArticle(data: SchemaData, pageType: 'blog' | 'glossary' | '
       "url": "https://odontoa.com",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://odontoa.com/images/Odontoa - logo pack/social_media_profile_image.png"
+        "url": "https://odontoa.com/images/Odontoa-New-logo-pack-2026/horiyotal_color.png"
       }
     },
     "mainEntityOfPage": {

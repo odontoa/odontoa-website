@@ -15,11 +15,11 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="flex items-center mb-4 hover:opacity-80 transition-opacity">
               <Image 
-                src="/images/Odontoa - logo pack/Full_logo_horizontal_color.png" 
+                src="/images/Odontoa-New-logo-pack-2026/horiyotal_color.png" 
                 alt="Odontoa Logo" 
-                width={120}
-                height={36}
-                className="h-9 w-auto"
+                width={160}
+                height={48}
+                className="h-12 w-auto"
                 priority
               />
             </Link>

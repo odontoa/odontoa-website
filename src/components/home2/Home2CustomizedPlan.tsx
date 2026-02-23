@@ -87,48 +87,20 @@ const Home2CustomizedPlan = () => {
   ];
 
   return (
-    <section className="w-full bg-white py-20">
+    <section className="w-full bg-white py-16 md:py-24">
       <GooeyFilter />
-      <div className="mx-auto max-w-[1240px] px-[10px]">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="mb-4">
-            <div
-              className="inline-flex items-center gap-[0.97px] border rounded-[4px]"
-              style={{
-                padding: "6px 15.81px 7.39px 16.97px",
-                borderColor: "#EEEEEE",
-                fontFamily: "Manrope, sans-serif",
-                fontWeight: 700,
-                fontSize: "14px",
-                lineHeight: "1.6em",
-                color: "#3267FF",
-              }}
-            >
+            <div className="inline-flex items-center border rounded px-4 py-1.5 border-[#EEEEEE] font-manrope font-bold text-sm leading-relaxed text-[#3267FF]">
               Odaberite paket prema broju stolica
             </div>
           </div>
-          <h2
-            className="text-[#000A2D] mb-6"
-            style={{
-              fontFamily: "Manrope, sans-serif",
-              fontWeight: 800,
-              fontSize: "52px",
-              lineHeight: "1.1em",
-              letterSpacing: "-2.88%",
-            }}
-          >
+          <h2 className="font-manrope font-extrabold text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight text-[#000A2D] mb-6">
             Tri paketa za svaku ordinaciju
           </h2>
-          <p
-            className="text-[#636571] max-w-2xl mx-auto"
-            style={{
-              fontFamily: "Archivo, sans-serif",
-              fontWeight: 400,
-              fontSize: "16px",
-              lineHeight: "1.6em",
-            }}
-          >
+          <p className="text-base leading-relaxed text-[#636571] max-w-2xl mx-auto">
             Sve funkcionalnosti su uključene u svaki paket. Razlikuju se samo u
             broju stolica i nivou podrške.
           </p>
@@ -138,17 +110,9 @@ const Home2CustomizedPlan = () => {
         <div className="flex flex-col items-center mb-10">
           <div className="flex items-center gap-4">
             <span
-              className={`text-sm font-medium ${
-                billingPeriod === "monthly"
-                  ? "text-[#000A2D]"
-                  : "text-[#636571]"
+              className={`text-sm font-semibold font-manrope ${
+                billingPeriod === "monthly" ? "text-[#000A2D]" : "text-[#636571]"
               }`}
-              style={{
-                fontFamily: "Manrope, sans-serif",
-                fontWeight: 600,
-                fontSize: "14px",
-                lineHeight: "1.2em",
-              }}
             >
               Mesečno
             </span>
@@ -160,34 +124,20 @@ const Home2CustomizedPlan = () => {
               variant="default"
             />
             <span
-              className={`text-sm font-medium ${
+              className={`text-sm font-semibold font-manrope ${
                 billingPeriod === "yearly" ? "text-[#000A2D]" : "text-[#636571]"
               }`}
-              style={{
-                fontFamily: "Manrope, sans-serif",
-                fontWeight: 600,
-                fontSize: "14px",
-                lineHeight: "1.2em",
-              }}
             >
               Godišnje (-20%)
             </span>
           </div>
-          <p
-            className="text-center mt-4 text-sm text-[#636571]"
-            style={{
-              fontFamily: "Archivo, sans-serif",
-              fontWeight: 400,
-              fontSize: "14px",
-              lineHeight: "1.5em",
-            }}
-          >
+          <p className="text-center mt-4 text-sm leading-relaxed text-[#636571]">
             Popust od 20% važi za godišnje plaćanje.
           </p>
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {plans.map((plan, index) => {
             const IconComponent = plan.icon;
             const priceToDisplay =
@@ -207,15 +157,7 @@ const Home2CustomizedPlan = () => {
               >
                 {/* Badge */}
                 {plan.featured && plan.badge && (
-                  <div
-                    className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#3267FF] text-white px-6 py-1.5 rounded-full z-20 shadow-lg"
-                    style={{
-                      fontFamily: "Manrope, sans-serif",
-                      fontWeight: 600,
-                      fontSize: "14px",
-                      lineHeight: "1.2em",
-                    }}
-                  >
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#3267FF] text-white px-6 py-1.5 rounded-full z-20 shadow-lg text-sm font-semibold font-manrope leading-tight">
                     {plan.badge}
                   </div>
                 )}
@@ -225,27 +167,11 @@ const Home2CustomizedPlan = () => {
                   <div className="mb-6">
                     <div className="flex items-center gap-2 mb-3">
                       <IconComponent className="w-5 h-5 text-[#3267FF]" />
-                      <h3
-                        className="text-[#000A2D]"
-                        style={{
-                          fontFamily: "Manrope, sans-serif",
-                          fontWeight: 700,
-                          fontSize: "24px",
-                          lineHeight: "1.2em",
-                        }}
-                      >
+                      <h3 className="font-manrope font-bold text-2xl leading-tight text-[#000A2D]">
                         {plan.name}
                       </h3>
                     </div>
-                    <p
-                      className="text-[#636571]"
-                      style={{
-                        fontFamily: "Archivo, sans-serif",
-                        fontWeight: 400,
-                        fontSize: "14px",
-                        lineHeight: "1.5em",
-                      }}
-                    >
+                    <p className="text-sm leading-relaxed text-[#636571]">
                       {plan.description}
                     </p>
                   </div>
@@ -253,18 +179,10 @@ const Home2CustomizedPlan = () => {
                   {/* Price */}
                   <div className="mb-8">
                     <div className="flex items-baseline">
-                      <span
-                        className="text-[#000A2D]"
-                        style={{
-                          fontFamily: "Manrope, sans-serif",
-                          fontWeight: 800,
-                          fontSize: "44px",
-                          lineHeight: "1em",
-                        }}
-                      >
+                      <span className="font-manrope font-extrabold text-4xl leading-none text-[#000A2D]">
                         {priceToDisplay}
                       </span>
-                      <span className="text-[#636571] ml-2">
+                      <span className="text-[#636571] ml-2 text-sm">
                         {periodToDisplay}
                       </span>
                     </div>
@@ -276,15 +194,7 @@ const Home2CustomizedPlan = () => {
                       {plan.features.map((feature, featureIndex) => (
                         <div key={featureIndex} className="flex items-start">
                           <Check className="w-4 h-4 text-[#3267FF] mt-0.5 mr-3 flex-shrink-0" />
-                          <p
-                            className="text-[#000A2D]"
-                            style={{
-                              fontFamily: "Archivo, sans-serif",
-                              fontWeight: 400,
-                              fontSize: "14px",
-                              lineHeight: "1.5em",
-                            }}
-                          >
+                          <p className="text-sm leading-relaxed text-[#000A2D]">
                             {feature}
                           </p>
                         </div>
@@ -295,15 +205,7 @@ const Home2CustomizedPlan = () => {
                       {plan.limitations.map((limitation, limitIndex) => (
                         <div key={limitIndex} className="flex items-start">
                           <Check className="w-4 h-4 text-[#636571] mt-0.5 mr-3 flex-shrink-0" />
-                          <p
-                            className="text-[#636571]"
-                            style={{
-                              fontFamily: "Archivo, sans-serif",
-                              fontWeight: 400,
-                              fontSize: "14px",
-                              lineHeight: "1.5em",
-                            }}
-                          >
+                          <p className="text-sm leading-relaxed text-[#636571]">
                             {limitation}
                           </p>
                         </div>
@@ -329,15 +231,7 @@ const Home2CustomizedPlan = () => {
         </div>
 
         {/* Note */}
-        <p
-          className="text-center mt-10 text-sm text-[#636571]"
-          style={{
-            fontFamily: "Archivo, sans-serif",
-            fontWeight: 400,
-            fontSize: "14px",
-            lineHeight: "1.5em",
-          }}
-        >
+        <p className="text-center mt-10 text-sm leading-relaxed text-[#636571]">
           Za 6+ stolica pripremamo individualnu ponudu.
         </p>
       </div>

@@ -34,11 +34,11 @@ function ProblemSolutionSection({ problems, solutions, className }: ProblemSolut
           {/* Logo */}
           <div className="mb-6">
             <Image
-              src="/images/Odontoa - logo pack/Full_logo_horizontal_color.png"
+              src="/images/Odontoa-New-logo-pack-2026/horiyotal_color.png"
               alt="Odontoa Logo"
-              width={200}
-              height={60}
-              className="h-auto"
+              width={280}
+              height={84}
+              className="h-16 w-auto sm:h-20"
               priority
             />
           </div>

@@ -31,6 +31,15 @@ const defaultMetadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL('https://odontoa.com'),
+  icons: {
+    icon: [
+      { url: '/images/Odontoa-New-logo-pack-2026/favicons/favicon.ico', sizes: 'any' },
+      { url: '/images/Odontoa-New-logo-pack-2026/favicons/favicon.svg', type: 'image/svg+xml' },
+      { url: '/images/Odontoa-New-logo-pack-2026/favicons/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+    ],
+    shortcut: '/images/Odontoa-New-logo-pack-2026/favicons/favicon.ico',
+    apple: '/images/Odontoa-New-logo-pack-2026/favicons/apple-touch-icon.png',
+  },
   alternates: {
     canonical: '/',
   },
@@ -41,7 +50,7 @@ const defaultMetadata: Metadata = {
     siteName: 'Odontoa',
     images: [
       {
-        url: '/images/Odontoa - logo pack/social_media_profile_image.png',
+        url: '/images/Odontoa-New-logo-pack-2026/horiyotal_color.png',
         width: 1200,
         height: 630,
         alt: 'Odontoa - Stomatološka ordinacija',
@@ -54,7 +63,7 @@ const defaultMetadata: Metadata = {
     card: 'summary_large_image',
     title: 'Odontoa - Napredni sistem za upravljanje stomatološkom ordinacijom',
     description: 'Kompletno rešenje za upravljanje stomatološkom ordinacijom.',
-    images: ['/images/Odontoa - logo pack/social_media_profile_image.png'],
+    images: ['/images/Odontoa-New-logo-pack-2026/horiyotal_color.png'],
   },
   robots: {
     index: true,
@@ -84,7 +93,7 @@ const comingSoonMetadata: Metadata = {
     siteName: 'Odontoa',
     images: [
       {
-        url: '/images/Odontoa - logo pack/social_media_profile_image.png',
+        url: '/images/Odontoa-New-logo-pack-2026/horiyotal_color.png',
         width: 1200,
         height: 630,
         alt: 'Odontoa - Platforma za upravljanje ordinacijom',
@@ -97,7 +106,7 @@ const comingSoonMetadata: Metadata = {
     card: 'summary_large_image',
     title: 'Odontoa je online',
     description: 'Platforma za upravljanje stomatološkom ordinacijom. Termini, kartoni i tim na jednom mestu.',
-    images: ['/images/Odontoa - logo pack/social_media_profile_image.png'],
+    images: ['/images/Odontoa-New-logo-pack-2026/horiyotal_color.png'],
   },
   robots: { index: true, follow: true },
 }

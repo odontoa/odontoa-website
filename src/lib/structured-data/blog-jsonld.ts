@@ -89,7 +89,7 @@ export function buildBlogJsonLd(post: SanityBlogPost & { coverImageUrl?: string 
       url: baseUrl,
       logo: {
         "@type": "ImageObject",
-        url: `${baseUrl}/images/Odontoa - logo pack/social_media_profile_image.png`,
+        url: `${baseUrl}/images/Odontoa-New-logo-pack-2026/horiyotal_color.png`,
       },
     },
   };
@@ -144,7 +144,7 @@ export function buildBlogJsonLd(post: SanityBlogPost & { coverImageUrl?: string 
       url: baseUrl,
       logo: {
         "@type": "ImageObject",
-        url: `${baseUrl}/images/Odontoa - logo pack/social_media_profile_image.png`,
+        url: `${baseUrl}/images/Odontoa-New-logo-pack-2026/horiyotal_color.png`,
       },
     },
     inLanguage: "sr",

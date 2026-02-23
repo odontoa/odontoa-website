@@ -10,7 +10,10 @@
     "lint": "next lint",
     "send:reset": "node scripts/send-reset-email.mjs ognjen.drinic31@gmail.com",
     "seed:glossary": "tsx scripts/seedGlossaryTerms.ts",
-    "import:glossary": "tsx scripts/importGlossaryTerms.ts"
+    "import:glossary": "tsx scripts/importGlossaryTerms.ts",
+    "composite:mockup": "node scripts/composite-phone-mockup.mjs",
+    "composite:laptop": "node scripts/composite-laptop-dashboard.mjs",
+    "composite:full": "node scripts/composite-full-mockup.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -134,6 +137,7 @@
     "globals": "^15.9.0",
     "postcss": "^8.4.47",
     "sanity": "^3.99.0",
+    "sharp": "^0.34.5",
     "tailwindcss": "^3.4.11",
     "tsx": "^4.21.0",
     "typescript": "^5.5.3",

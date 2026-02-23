@@ -607,7 +607,7 @@ const FeatureWalkthroughV3 = () => {
           }`}
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight leading-tight text-foreground">
-            Jedno mesto za kompletan rad ordinacije
+            Kako izgleda rad u praksi
           </h2>
           <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
             Sve što vam treba za dnevni rad: pacijenti, termini, terapije, dokumenti i uvid u performanse.

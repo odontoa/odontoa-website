@@ -16,10 +16,7 @@ const MASK_GRADIENT =
  */
 const NewHeroDesigne2026 = () => {
   return (
-    <section
-      className="relative isolate w-full h-[calc(100svh-var(--nav-h))] min-h-[calc(100svh-var(--nav-h))] bg-background"
-      style={{ maxWidth: '100%' }}
-    >
+    <section className="relative isolate w-full min-h-[calc(100svh-var(--nav-h))] bg-background overflow-hidden">
       {/* Glow behind phone – z-0 */}
       <div
         className="pointer-events-none absolute inset-0 z-0"
@@ -29,48 +26,17 @@ const NewHeroDesigne2026 = () => {
         aria-hidden
       />
 
-      {/* Phone layer: anchored to viewport bottom-right, above glow – z-[1]; pointer-events-none only here */}
-      <div className="pointer-events-none absolute inset-0 z-[1]" aria-hidden>
-        <div
-          className="absolute right-4 bottom-0 origin-bottom-right scale-[0.95] lg:right-6 xl:right-10 w-[min(520px,38vw)] xl:w-[min(640px,42vw)] 2xl:w-[min(760px,44vw)] [@media_(min-width:1800px)]:w-[min(860px,46vw)] max-w-[95vw] translate-y-[17vh] md:translate-y-[15vh] lg:translate-y-[13vh] xl:translate-y-[11vh] 2xl:translate-y-[7vh] [@media_(max-height:820px)]:translate-y-[19vh] [@media_(max-height:740px)]:translate-y-[21vh] [@media_(min-width:1800px)]:translate-y-[8vh] [@media_(min-width:2200px)]:translate-y-[7vh] [@media_(min-width:1024px)_and_(max-width:1720px)]:translate-y-[14vh] [@media_(min-width:1024px)_and_(max-width:1720px)]:scale-[0.855] [@media_(min-width:1800px)]:scale-[0.99] [@media_(min-width:2200px)]:scale-[1.02]"
-        >
-          <div
-            className="relative w-full overflow-visible"
-            style={{
-              maskImage: MASK_GRADIENT,
-              WebkitMaskImage: MASK_GRADIENT,
-              maskSize: '100% 100%',
-              WebkitMaskSize: '100% 100%',
-              maskRepeat: 'no-repeat',
-              WebkitMaskRepeat: 'no-repeat',
-            }}
-          >
-            <Image
-              src="/images/features-new-homepage3/New Hero Hanf Phone Photo.svg"
-              alt="Odontoa na računaru i mobilnom"
-              width={1059}
-              height={1505}
-              className="w-full h-auto object-contain bg-transparent"
-              sizes="(max-width: 640px) 380px, (max-width: 1024px) 520px, (max-width: 1280px) 600px, 660px"
-              priority
-              placeholder="empty"
-              style={{ filter: 'drop-shadow(0 12px 28px rgba(0,0,0,0.08))' }}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Content grid – z-10 */}
-      <div className="relative z-10 mx-auto h-full w-full max-w-7xl px-6 lg:px-10">
-        <div className="grid h-full items-center gap-10 lg:grid-cols-2">
-          {/* Left column: pushed down slightly for balance with phone */}
-          <div className="translate-y-[7vh] [@media_(min-width:1024px)_and_(max-width:1720px)]:translate-y-[9vh] [@media_(min-width:1024px)_and_(max-width:1720px)_and_(max-height:900px)]:translate-y-[11vh]">
+      {/* Content container – z-10 */}
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 lg:pt-[clamp(4rem,5vh,8rem)] pb-16 lg:pb-24">
+        <div className="grid items-center gap-10 lg:grid-cols-[1fr_minmax(0,440px)] xl:grid-cols-[1fr_minmax(0,520px)] lg:gap-12">
+          {/* Left column: text content */}
+          <div className="order-1">
             <AnimatedGroup>
-              <h1 className="font-manrope font-semibold text-[48px] leading-[55px] tracking-[-0.03em] text-black sm:text-[62px] sm:leading-[70px] lg:text-[83px] lg:leading-[94px] [@media_(max-height:900px)]:text-[68px] [@media_(max-height:900px)]:leading-[76px] [@media_(max-height:800px)]:text-[53px] [@media_(max-height:800px)]:leading-[58px]">
+              <h1 className="font-manrope font-semibold text-4xl sm:text-5xl lg:text-7xl tracking-tight leading-[1.15] text-foreground">
                 Digitalna ordinacija
               </h1>
 
-              <p className="mt-5 lg:mt-6 max-w-[52ch] text-[16px] leading-[24px] text-slate-600 sm:text-[17px] sm:leading-[26px]">
+              <p className="mt-5 lg:mt-6 max-w-[52ch] text-base sm:text-lg leading-relaxed text-slate-600">
                 Kompletno rešenje za stomatološke prakse – automatizujte zakazivanje i administraciju
               </p>
 
@@ -92,7 +58,7 @@ const NewHeroDesigne2026 = () => {
                   size="pill"
                   className="w-full sm:w-auto"
                 >
-                  <Link href="#features">
+                  <Link href="#video-demo">
                     <span className="text-nowrap">Pogledaj kako radi</span>
                   </Link>
                 </Button>
@@ -107,7 +73,7 @@ const NewHeroDesigne2026 = () => {
                 <span className="text-slate-500">30+ ordinacija aktivno</span>
               </div>
 
-              <div className="mt-12 lg:mt-14 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-10">
+              <div className="mt-10 lg:mt-14 grid grid-cols-3 gap-6 sm:gap-10">
                 <div>
                   <div className="text-2xl sm:text-3xl lg:text-[1.75rem] font-semibold tracking-tight text-slate-900">
                     <CountUp end={120} duration={2.5} /> min
@@ -128,8 +94,31 @@ const NewHeroDesigne2026 = () => {
             </AnimatedGroup>
           </div>
 
-          {/* Right column: spacer on lg+ so layout stays two columns */}
-          <div className="hidden lg:block" />
+          {/* Right column: phone image in grid flow */}
+          <div className="order-2 relative mx-auto w-full max-w-xs sm:max-w-sm lg:max-w-none">
+            <div
+              style={{
+                maskImage: MASK_GRADIENT,
+                WebkitMaskImage: MASK_GRADIENT,
+                maskSize: '100% 100%',
+                WebkitMaskSize: '100% 100%',
+                maskRepeat: 'no-repeat',
+                WebkitMaskRepeat: 'no-repeat',
+              }}
+            >
+              <Image
+                src="/images/features-new-homepage3/New Hero Hanf Phone Photo.svg"
+                alt="Odontoa na računaru i mobilnom"
+                width={1059}
+                height={1505}
+                className="w-full h-auto"
+                sizes="(max-width: 640px) 320px, (max-width: 1024px) 384px, (max-width: 1280px) 440px, 520px"
+                priority
+                placeholder="empty"
+                style={{ filter: 'drop-shadow(0 12px 28px rgba(0,0,0,0.08))' }}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </section>

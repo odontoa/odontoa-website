@@ -48,7 +48,7 @@ export default function AboutPage() {
 
       {/* Values Section */}
       <section className="section-spacing">
-        <div className="max-w-screen-xl mx-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
             className="text-center mb-20"
             initial={{ opacity: 0, y: 50 }}
@@ -140,7 +140,7 @@ export default function AboutPage() {
 
       {/* Team Section */}
       <section className="py-20 px-4 relative">
-        <div className="max-w-screen-xl mx-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
             className="text-center mb-20"
             initial={{ opacity: 0, y: 50 }}

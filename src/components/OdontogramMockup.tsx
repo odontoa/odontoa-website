@@ -1,109 +1,113 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { FileText, ChevronRight } from 'lucide-react';
 
-export const OdontogramMockup = () => {
-  return (
-    <div className="w-full max-w-[90rem] mx-auto p-3" style={{ pointerEvents: 'none' }}>
-      {/* Main Container */}
-      <div 
-        className="bg-white rounded-2xl overflow-hidden"
-        style={{
-          boxShadow: '0 30px 80px -12px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.05)',
-          border: '1px solid rgba(255, 255, 255, 0.8)',
-        }}
+// ── Dentino palette ─────────────────────────────
+const C = {
+  navy:   '#1B2B6B',
+  bg:     '#EEF0F8',
+  border: '#F1F5F9',
+  chart:  '#2563EB',
+} as const;
+
+const SHADOW = '0 1px 3px rgba(15,23,42,0.05)';
+
+// ── Legend entries ───────────────────────────────
+const LEGEND = [
+  { color: '#94a3b8', label: 'Nema terapije' },
+  { color: '#f97316', label: 'Endodontska' },
+  { color: '#3b82f6', label: 'Restaurativna' },
+];
+
+// ── Component ───────────────────────────────────
+export const OdontogramMockup = () => (
+  <div className="h-full flex flex-col" style={{ background: C.bg }}>
+
+    {/* Header */}
+    <header
+      className="flex-shrink-0 bg-white flex items-center justify-between px-3"
+      style={{ height: 30, borderBottom: `1px solid ${C.border}` }}
+    >
+      <div className="flex items-center gap-1.5">
+        <div
+          className="h-5 w-5 rounded-md flex items-center justify-center flex-shrink-0"
+          style={{ background: C.navy }}
+        >
+          <FileText className="h-2.5 w-2.5 text-white" />
+        </div>
+        <div>
+          <div className="text-[9px] font-bold text-slate-900 leading-tight">Odontogram</div>
+          <div className="text-[6px] text-slate-400 leading-tight">Grafički prikaz statusa</div>
+        </div>
+      </div>
+      <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-50">
+        <div className="w-1 h-1 rounded-full bg-emerald-500" />
+        <span className="text-[6px] font-medium text-emerald-700">Aktivan</span>
+      </div>
+    </header>
+
+    {/* Content */}
+    <div className="flex-1 p-2 flex flex-col gap-1.5 min-h-0 overflow-hidden">
+
+      {/* Segmented control */}
+      <div
+        className="flex-shrink-0 flex items-center gap-[2px] bg-white rounded-md p-[2px]"
+        style={{ boxShadow: SHADOW }}
       >
-        {/* Header Bar */}
-        <div 
-          className="px-5 py-4 border-b border-slate-100 flex items-center justify-between"
-          style={{
-            background: 'linear-gradient(to right, rgba(59, 130, 246, 0.04), rgba(255, 255, 255, 0))'
-          }}
+        <div
+          className="flex-1 text-center text-[7px] font-semibold py-1 rounded text-white"
+          style={{ background: C.navy }}
         >
-          <div className="flex items-center gap-3">
-            <div 
-              className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center"
-              style={{
-                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
-              }}
-            >
-              <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
-            <div>
-              <div className="text-lg font-semibold text-slate-900">Odontogram Pacijenta</div>
-              <div className="text-sm text-slate-500">Grafički prikaz statusa zuba</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/60 flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-              <span className="text-sm font-medium text-emerald-700">Aktivan</span>
-            </div>
-          </div>
+          Stalni zubi
         </div>
-        
-        {/* Odontogram Image Container */}
-        <div 
-          className="flex items-center justify-center"
-          style={{
-            padding: "16px 20px",
-            background: "#f8fafc"
-          }}
-        >
-          <img 
-            src="/images/features-new-homepage3/odontogram0staticna-slika2.png" 
-            alt="Odontogram pacijenta" 
-            className="w-full h-auto object-contain mx-auto block"
-            loading="eager"
-            decoding="async"
-            style={{ 
-              display: "block", 
-              margin: "0 auto",
-              width: "100%",
-              height: "auto",
-              filter: "contrast(1.1) brightness(0.98)",
-              imageRendering: "-webkit-optimize-contrast" as any,
-              WebkitImageRendering: "-webkit-optimize-contrast" as any,
-              msInterpolationMode: "bicubic" as any
-            } as React.CSSProperties}
-          />
+        <div className="flex-1 text-center text-[7px] font-semibold py-1 rounded text-slate-400">
+          Mlečni zubi
         </div>
-        
-        {/* Footer Bar with Legend */}
-        <div 
-          className="px-5 py-3.5 flex items-center justify-between flex-wrap gap-3 border-t border-slate-200/60"
+      </div>
+
+      {/* SVG Container */}
+      <motion.div
+        className="bg-white rounded-lg flex-1 min-h-0 flex items-center justify-center overflow-hidden"
+        style={{ boxShadow: SHADOW }}
+        initial={{ opacity: 0, y: 8 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <img
+          src="/images/features-new-homepage3/Odontogram-premium-v2.svg"
+          alt="Odontogram pacijenta"
+          className="w-full h-full object-contain p-2"
+          loading="eager"
+          decoding="async"
           style={{
-            background: "rgba(248, 250, 252, 0.8)"
+            filter: 'contrast(1.05) brightness(0.99)',
           }}
-        >
-          <div className="flex items-center gap-5 flex-wrap">
-            <div className="flex items-center gap-2">
-              <div className="w-3.5 h-3.5 rounded" style={{ background: "#94a3b8" }}></div>
-              <span className="text-sm text-slate-600">Nema terapije</span>
+        />
+      </motion.div>
+
+      {/* Legend footer */}
+      <div
+        className="flex-shrink-0 bg-white rounded-lg px-2 py-1.5 flex items-center justify-between"
+        style={{ boxShadow: SHADOW }}
+      >
+        <div className="flex items-center gap-3">
+          {LEGEND.map(l => (
+            <div key={l.label} className="flex items-center gap-1">
+              <div className="w-2 h-2 rounded-sm" style={{ background: l.color }} />
+              <span className="text-[6px] text-slate-500">{l.label}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3.5 h-3.5 rounded" style={{ background: "#f97316" }}></div>
-              <span className="text-sm text-slate-600">Endodontska terapija</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3.5 h-3.5 rounded" style={{ background: "#3b82f6" }}></div>
-              <span className="text-sm text-slate-600">Restaurativna terapija</span>
-            </div>
-          </div>
-          <button 
-            className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1.5 transition-colors"
-          >
-            Vidi sve terapije
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+          ))}
+        </div>
+        <div className="flex items-center gap-0.5 text-[6px] font-medium" style={{ color: C.chart }}>
+          Vidi terapije
+          <ChevronRight className="h-2 w-2" />
         </div>
       </div>
     </div>
-  );
-};
+  </div>
+);
 
 export default OdontogramMockup;

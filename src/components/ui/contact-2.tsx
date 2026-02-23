@@ -75,8 +75,8 @@ export const Contact2 = ({
 
   return (
     <section className="py-20 md:py-32 font-sans">
-      <div className="container px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-screen-xl flex-col justify-between gap-10 lg:flex-row lg:gap-20">
+      <div className="px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-10 lg:flex-row lg:gap-20">
           <div className="mx-auto flex max-w-sm flex-col justify-between gap-5">
             <div className="text-center lg:text-left">
               <h1 className="font-manrope mb-2 text-4xl font-semibold text-foreground lg:mb-1 lg:text-5xl xl:text-6xl">

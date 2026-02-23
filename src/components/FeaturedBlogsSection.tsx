@@ -67,10 +67,10 @@ const FeaturedBlogsSection = async () => {
     <section
       className={cn(
         plusJakarta.className,
-        "w-full bg-white py-14 md:py-16 lg:py-20"
+        "w-full bg-white py-16 md:py-24"
       )}
     >
-      <div className="max-w-7xl mx-auto px-4 md:px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8 md:mb-10">
           <div>
@@ -117,7 +117,7 @@ const FeaturedBlogsSection = async () => {
                   </div>
 
                   {/* Text Block (Plain, No Box) */}
-                  <div className="mt-4 p-5 md:p-6">
+                  <div className="mt-4">
                     {/* Title */}
                     <h3 className="text-lg md:text-xl font-semibold text-slate-900 leading-snug line-clamp-2 max-w-full group-hover:text-slate-700 transition-colors duration-200">
                       {post.title}

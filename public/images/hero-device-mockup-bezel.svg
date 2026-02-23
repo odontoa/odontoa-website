@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1684 1190">
+  <defs>
+    <!-- Drop shadow for laptop group -->
+    <filter id="sf-l" x="-10%" y="-5%" width="125%" height="135%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <!-- Drop shadow for phone group -->
+    <filter id="sf-p" x="-8%" y="-5%" width="122%" height="120%">
+      <feDropShadow dx="0" dy="14" stdDeviation="24" flood-color="#0f172a" flood-opacity="0.20"/>
+    </filter>
+    <!-- Hinge / base gradient -->
+    <linearGradient id="hg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d4d4d8"/>
+      <stop offset="100%" stop-color="#a1a1aa"/>
+    </linearGradient>
+    <!-- Laptop screen mask — black area becomes transparent hole -->
+    <mask id="lm">
+      <rect width="1684" height="1190" fill="white"/>
+      <rect x="34" y="30" width="1061" height="690" rx="5" fill="black"/>
+    </mask>
+    <!-- Phone screen mask — black area becomes transparent hole -->
+    <mask id="pm">
+      <rect width="1684" height="1190" fill="white"/>
+      <rect x="943" y="488" width="438" height="655" rx="20" fill="black"/>
+    </mask>
+  </defs>
+
+  <!-- ══ LAPTOP (drawn first = behind phone) ══ -->
+  <g filter="url(#sf-l)">
+    <!-- Main body with screen cutout -->
+    <rect x="8" y="5" width="1092" height="727" rx="12" fill="#2a2a2e" mask="url(#lm)"/>
+    <!-- Hinge / base platform -->
+    <rect x="-50" y="732" width="1200" height="24" rx="5" fill="url(#hg)"/>
+    <!-- Trackpad hint (front lip) -->
+    <rect x="405" y="756" width="290" height="7" rx="3" fill="#d4d4d8"/>
+  </g>
+  <!-- Camera dot (no filter — sits above body) -->
+  <circle cx="553" cy="19" r="5" fill="#1a1a1c"/>
+  <!-- Screen inner border ring (subtle, shows through SVG overlay) -->
+  <rect x="34" y="30" width="1061" height="690" rx="5" fill="none" stroke="rgba(0,0,0,0.10)" stroke-width="1"/>
+
+  <!-- ══ PHONE (drawn second = in front of laptop) ══ -->
+  <g filter="url(#sf-p)">
+    <!-- Main body with screen cutout -->
+    <rect x="927" y="474" width="502" height="701" rx="38" fill="#1a1a1a" mask="url(#pm)"/>
+  </g>
+  <!-- Dynamic Island -->
+  <rect x="1104" y="493" width="92" height="16" rx="8" fill="#000"/>
+  <!-- Screen inner border ring -->
+  <rect x="943" y="488" width="438" height="655" rx="20" fill="none" stroke="rgba(0,0,0,0.10)" stroke-width="1"/>
+  <!-- Volume buttons (left side) -->
+  <rect x="924" y="552" width="5" height="40" rx="2" fill="#222"/>
+  <rect x="924" y="606" width="5" height="40" rx="2" fill="#222"/>
+  <!-- Power button (right side) -->
+  <rect x="1426" y="568" width="5" height="52" rx="2" fill="#222"/>
+  <!-- Home indicator bar (bottom) -->
+  <rect x="1092" y="1147" width="146" height="5" rx="2.5" fill="#555"/>
+</svg>

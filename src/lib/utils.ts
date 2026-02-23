@@ -144,7 +144,7 @@ export function generateStructuredData(type: 'article' | 'glossary' | 'blog', da
       "name": "Odontoa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://odontoa.com/images/Odontoa - logo pack/social_media_profile_image.png"
+        "url": "https://odontoa.com/images/Odontoa-New-logo-pack-2026/horiyotal_color.png"
       }
     },
     "url": `https://odontoa.com/${type === 'article' ? 'blogovi' : 'recnik'}/${safeData.slug || ''}`,
@@ -868,7 +868,7 @@ export function generateCombinedSchema(data: any, type: 'blog' | 'glossary'): an
       "name": "Odontoa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://odontoa.com/images/Odontoa - logo pack/social_media_profile_image.png",
+        "url": "https://odontoa.com/images/Odontoa-New-logo-pack-2026/horiyotal_color.png",
         "width": 120,
         "height": 60
       }

@@ -69,7 +69,7 @@ const faqItems = [
 const Home2FAQ = () => {
   return (
     <section className="section-spacing border-t border-border bg-background">
-      <div className="max-w-screen-xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-normal text-foreground mb-6">
             Često postavljena <span className="text-primary">pitanja</span>

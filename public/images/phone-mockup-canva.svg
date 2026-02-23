@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 600" width="280" height="560">
+  <defs>
+    <linearGradient id="phoneFrame" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="50%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="innerBezel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <clipPath id="screenClip">
+      <rect x="10" y="10" width="260" height="540" rx="32" ry="32"/>
+    </clipPath>
+  </defs>
+  <g transform="translate(20, 20)">
+    <rect x="0" y="0" width="280" height="560" rx="40" ry="40" fill="url(#phoneFrame)" stroke="#0f172a" stroke-width="2"/>
+    <rect x="8" y="8" width="264" height="544" rx="34" ry="34" fill="url(#innerBezel)"/>
+    <g clip-path="url(#screenClip)">
+    <rect x="10" y="10" width="260" height="540" rx="32" ry="32" fill="#ffffff"/>
+    <text x="28" y="52" font-family="Arial" font-size="10" font-weight="bold" fill="#0f172a">9:41</text>
+    <text x="252" y="52" font-family="Arial" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="end">100 %</text>
+    <line x1="10" y1="70" x2="270" y2="70" stroke="#e2e8f0" stroke-width="1"/>
+    <path d="M 28 88 L 22 82 L 28 76" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="140" y="88" font-family="Arial" font-size="12" font-weight="bold" fill="#0f172a" text-anchor="middle">Odontoa</text>
+    <circle cx="258" cy="84" r="1.5" fill="#64748b"/>
+    <circle cx="258" cy="88" r="1.5" fill="#64748b"/>
+    <circle cx="258" cy="92" r="1.5" fill="#64748b"/>
+    <rect x="18" y="105" width="228" height="88" rx="18" ry="18" fill="#E9E9EB"/>
+    <text x="30" y="125" font-family="Arial" font-size="11" fill="#0f172a"><tspan x="30" dy="0">Podsetnik: termin 15. dec u 14:30</tspan><tspan x="30" dy="16">(Dr. Ana Nikoli&#263;). Adresa: Knez</tspan><tspan x="30" dy="16">Mihailova 15. Molimo do&#273;ite 10 min</tspan><tspan x="30" dy="16">ranije.</tspan></text>
+    <rect x="130" y="205" width="116" height="32" rx="16" ry="16" fill="#007AFF"/>
+    <text x="188" y="225" font-family="Arial" font-size="11" fill="white" text-anchor="middle">Hvala, dolazim!</text>
+    <rect x="10" y="498" width="260" height="52" fill="#ffffff"/>
+    <line x1="10" y1="498" x2="270" y2="498" stroke="#e2e8f0" stroke-width="1"/>
+    <circle cx="32" cy="524" r="12" fill="none" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="32" y="528" font-family="Arial" font-size="14" fill="#94a3b8" text-anchor="middle">+</text>
+    <rect x="52" y="512" width="176" height="24" rx="12" ry="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="140" y="528" font-family="Arial" font-size="10" fill="#94a3b8" text-anchor="middle">iMessage</text>
+    </g>
+  </g>
+</svg>

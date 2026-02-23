@@ -1,5 +1,9 @@
 import NewHeroDesigne2026 from '@/components/hero/NewHeroDesigne2026';
-import FeatureWalkthroughV3 from '@/components/home/FeatureWalkthroughV3';
+import { Features } from '@/components/ui/features-4';
+import { AccordionFeatureSection } from '@/components/ui/accordion-feature-section';
+import { VideoDemoPlaceholder } from '@/components/ui/video-demo-placeholder';
+// import FeatureWalkthroughV3 from '@/components/home/FeatureWalkthroughV3'; // sakriveno – horizontalni skrol
+import PatientRemindersSection from '@/components/marketing/PatientRemindersSection';
 import Home2CTA from '@/components/home2/Home2CTA';
 import FeaturedBlogsSection from '@/components/FeaturedBlogsSection';
 import Home2CustomizedPlan from '@/components/home2/Home2CustomizedPlan';
@@ -13,7 +17,12 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen bg-background w-full">
       <NewHeroDesigne2026 />
-      <FeatureWalkthroughV3 />
+      <Features />
+      <AccordionFeatureSection />
+      <VideoDemoPlaceholder />
+      {/* Sekcija "Jedno mesto..." sa horizontalnim skrolom – privremeno sakrivena */}
+      {/* <FeatureWalkthroughV3 /> */}
+      <PatientRemindersSection />
       <Home2CTA />
       <FeaturedBlogsSection />
       <Home2CustomizedPlan />

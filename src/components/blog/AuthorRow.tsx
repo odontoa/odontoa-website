@@ -4,7 +4,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const TEAM_NAME = "Odontoa tim";
-const TEAM_AVATAR_SRC = "/images/Odontoa - logo pack/Icon_color.png";
+const TEAM_AVATAR_SRC = "/images/Odontoa-New-logo-pack-2026/favicon_color.png";
 
 function formatSrDate(iso?: string | null): string {
   if (!iso) return "";
