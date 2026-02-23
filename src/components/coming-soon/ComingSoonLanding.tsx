@@ -162,7 +162,14 @@ export default function ComingSoonLanding() {
     <main className="relative min-h-screen overflow-hidden w-full bg-[#0f172a]">
       <div ref={mountRef} className="fixed inset-0 w-full h-full" style={{ zIndex: 0 }} />
 
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-16">
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-16">
+        <div className="mb-8 flex justify-center">
+          <img
+            src="/images/Odontoa-New-logo-pack-2026/horiyotal_light.png"
+            alt="Odontoa Logo"
+            className="h-10 sm:h-12 w-auto"
+          />
+        </div>
         <div className="relative w-full max-w-[420px]">
           <div
             className={cn(
