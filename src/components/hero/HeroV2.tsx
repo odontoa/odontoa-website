@@ -58,8 +58,8 @@ const HeroV2 = () => {
                   size="pill"
                   className="w-full sm:w-auto"
                 >
-                  <Link href="#video-demo">
-                    <span className="text-nowrap">Pogledaj kako radi</span>
+                  <Link href="#demo">
+                    <span className="text-nowrap">Registruj svoju ordinaciju</span>
                   </Link>
                 </Button>
               </div>
