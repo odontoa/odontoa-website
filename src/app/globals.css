@@ -76,13 +76,6 @@ body {
   background: transparent !important;
 }
 
-/* Fix for white images in blog content */
-.prose img[src*="supabase"] {
-  @apply block;
-  background: transparent !important;
-  opacity: 1 !important;
-}
-
 /* Ensure images are visible in blog posts */
 article img {
   @apply block max-w-full h-auto;
