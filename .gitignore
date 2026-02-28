@@ -44,4 +44,7 @@ Thumbs.db
 *.bak
 *.pre-*.bak
 postcss-fix-from.js
-scripts/trace-enoent.cjs 
+scripts/trace-enoent.cjs
+
+# UI Lab - read-only reference copy (do NOT commit)
+odontoa-frontend-main/

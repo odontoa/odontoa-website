@@ -1,0 +1,114 @@
+/*
+ * UI Lab — scoped design tokens
+ * Mirrors the Odontoa app's neutral/monochrome palette (shadcn "New York" style).
+ * Values converted from OKLch → HSL to work with the website's Tailwind v3 config.
+ * Scoped under .ui-lab so they never leak into marketing pages.
+ */
+
+.ui-lab {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 9%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 9%;
+  --primary: 0 0% 15%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 0% 96%;
+  --secondary-foreground: 0 0% 15%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 45%;
+  --accent: 0 0% 96%;
+  --accent-foreground: 0 0% 15%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --ring: 0 0% 61%;
+  --radius: 0.625rem;
+
+  /* Sidebar */
+  --sidebar: 0 0% 98%;
+  --sidebar-foreground: 0 0% 9%;
+  --sidebar-primary: 0 0% 15%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 0 0% 96%;
+  --sidebar-accent-foreground: 0 0% 15%;
+  --sidebar-border: 0 0% 90%;
+  --sidebar-ring: 0 0% 61%;
+
+  /* Charts */
+  --chart-1: 25 75% 47%;
+  --chart-2: 185 40% 42%;
+  --chart-3: 227 30% 28%;
+  --chart-4: 48 55% 65%;
+  --chart-5: 35 60% 55%;
+
+  /* ─── Moodify Palette (archive — source of truth for V2 semantic layer) ─── */
+  --moodify-white:          #fcfcfd;
+  --moodify-surface:        #fffdfc;
+  --moodify-purple-light:   #9281ff;
+  --moodify-purple-dark:    #2a2c4c;
+  --moodify-purple-bg:      #e4e8ff;
+  --moodify-black:          #0b0b13;
+  --moodify-on-surface:     #1a1615;
+  --moodify-on-surface-2:   #66615e;
+  --moodify-gray-30:        #6d6d71;
+  --moodify-gray-20:        #b6b6b8;
+  --moodify-gray-line:      #e2e2e3;
+  --moodify-gray-subtle:    #f5f5f6;
+  --moodify-green:          #48e48a;
+  --moodify-green-light:    #b6f4d0;
+  --moodify-red:            #ff5d6f;
+  --moodify-red-light:      #ffced4;
+  --moodify-yellow:         #ffd05c;
+  --moodify-yellow-light:   #ffe9b4;
+}
+
+/* ─── V2 Semantic Layer (only applies when .ui-lab-v2 is present) ─────────── */
+/* To remap for Odontoa brand: only update --v2-* values here — zero JSX rewrite */
+.ui-lab.ui-lab-v2 {
+  /* backgrounds */
+  --v2-bg:              var(--moodify-gray-subtle);
+  --v2-surface:         var(--moodify-white);
+
+  /* text */
+  --v2-text:            var(--moodify-black);
+  --v2-text-muted:      var(--moodify-gray-30);
+  --v2-text-heading:    var(--moodify-on-surface);
+
+  /* primary accent */
+  --v2-primary:         var(--moodify-purple-light);
+  --v2-primary-dark:    var(--moodify-purple-dark);
+  --v2-primary-bg:      var(--moodify-purple-bg);
+  --v2-primary-fg:      var(--moodify-white);
+
+  /* borders / inputs */
+  --v2-border:          var(--moodify-gray-line);
+  --v2-input-bg:        var(--moodify-gray-subtle);
+
+  /* status badges */
+  --v2-status-confirmed-bg:  var(--moodify-purple-dark);
+  --v2-status-confirmed-fg:  var(--moodify-purple-bg);
+  --v2-status-pending-bg:    var(--moodify-red-light);
+  --v2-status-pending-fg:    var(--moodify-black);
+  --v2-status-ongoing-bg:    var(--moodify-purple-bg);
+  --v2-status-ongoing-fg:    var(--moodify-purple-dark);
+  --v2-status-cancelled-bg:  var(--moodify-red-light);
+  --v2-status-cancelled-fg:  var(--moodify-red);
+
+  /* layout */
+  --v2-sidebar-w:   243px;
+  --v2-topbar-h:    40px;
+
+  /* shape */
+  --v2-radius-card:   20px;
+  --v2-radius-pill:   20px;
+  --v2-radius-nav:    24px;
+  --v2-radius-icon:   24px;
+  --v2-radius-badge:  6px;
+  --v2-radius-avatar: 32px;
+
+  /* shadow — tooltip only, NOT cards */
+  --v2-shadow-tooltip: 0px 4px 12px 0px rgba(0, 0, 0, 0.08);
+}
