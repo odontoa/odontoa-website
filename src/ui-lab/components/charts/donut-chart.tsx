@@ -94,12 +94,14 @@ export function DonutChart({
   );
 
   const legend = legendBelow ? (
+    // Figma: gap-20px between items, label 14px, number (muted) | separator | percentage (bold dark 14px 28px wide)
     <div className="flex flex-col gap-[10px] w-full">
       {data.map((item, idx) => {
         const computedPct = Math.round((item.value / total) * 100);
         const displayPct = item.percentage ?? `${computedPct}%`;
+        const displayNum = item.value.toLocaleString("en-US");
         return (
-          <div key={idx} className="flex items-center gap-2.5">
+          <div key={idx} className="flex items-center gap-[8px]">
             <div
               className="flex-shrink-0"
               style={{
@@ -111,15 +113,30 @@ export function DonutChart({
             />
             <div
               className="flex-1 min-w-0"
-              style={{ fontSize: "12px", color: "var(--v2-text-heading, #1a1615)" }}
+              style={{ fontSize: "14px", color: "var(--v2-text-heading, #1a1615)" }}
             >
               {item.label}
             </div>
-            <div
-              className="font-bold flex-shrink-0"
-              style={{ fontSize: "14px", color: "var(--v2-primary-dark, #2a2c4c)" }}
-            >
-              {displayPct}
+            <div className="flex items-center gap-[4px] flex-shrink-0">
+              <span
+                style={{ fontSize: "14px", color: "var(--v2-text-muted, #6d6d71)" }}
+              >
+                {displayNum}
+              </span>
+              <div
+                className="self-stretch w-px"
+                style={{ background: "var(--v2-border, #e2e2e3)" }}
+              />
+              <span
+                className="font-bold text-right"
+                style={{
+                  fontSize: "14px",
+                  color: "var(--v2-primary-dark, #2a2c4c)",
+                  width: "28px",
+                }}
+              >
+                {displayPct}
+              </span>
             </div>
           </div>
         );
@@ -149,7 +166,7 @@ export function DonutChart({
 
   if (legendBelow) {
     return (
-      <div className="flex flex-col items-center gap-[10px]">
+      <div className="flex flex-col items-center gap-[20px]">
         {donut}
         {legend}
       </div>

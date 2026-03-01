@@ -259,16 +259,16 @@ export const mockUpcomingAppointments = [
 // Figma: https://www.figma.com/design/mYp2a6a5Lmanh6P1Dk6FId/Moodify---Mental-Health-Analytics-Admin-Dashboard--Community-?node-id=16:1146
 
 export const mockV2Stats = [
-  { label: "Total Appointments", value: "120", icon: "calendar" },
-  { label: "Available Doctors", value: "15", icon: "stethoscope" },
-  { label: "Total Medicine", value: "56", icon: "pill" },
-  { label: "Total Earnings", value: "$34,500", icon: "dollar" },
+  { label: "Ukupno termina danas", value: "18", icon: "calendar" },
+  { label: "Ukupan broj pacijenata", value: "452", icon: "stethoscope" },
+  { label: "Dostupni doktori", value: "6", icon: "pill" },
+  { label: "To be added", value: "—", icon: "dollar" },
 ];
 
 export const mockV2TaskChips = [
-  { count: 5, label: "New Patient Appointments" },
-  { count: 7, label: "Follow-up Consultations" },
-  { count: 4, label: "Review Therapy Progress Reports" },
+  { count: 5, label: "Novi termini pacijenata" },
+  { count: 7, label: "Kontrolne konsultacije" },
+  { count: 4, label: "Pregled izveštaja o napretku terapije" },
 ];
 
 export const mockV2EarningStats = [
@@ -276,66 +276,67 @@ export const mockV2EarningStats = [
   { month: "Feb", profit: 900, expenses: 500 },
   { month: "Mar", profit: 800, expenses: 600 },
   { month: "Apr", profit: 1100, expenses: 700 },
-  { month: "May", profit: 950, expenses: 750 },
+  { month: "Maj", profit: 950, expenses: 750 },
   { month: "Jun", profit: 1580, expenses: 900 },
   { month: "Jul", profit: 1300, expenses: 850 },
-  { month: "Aug", profit: 1600, expenses: 950 },
+  { month: "Avg", profit: 1600, expenses: 950 },
   { month: "Sep", profit: 1400, expenses: 800 },
-  { month: "Oct", profit: 1700, expenses: 1000 },
+  { month: "Okt", profit: 1700, expenses: 1000 },
   { month: "Nov", profit: 1500, expenses: 900 },
   { month: "Dec", profit: 1900, expenses: 1100 },
 ];
 
 export const mockV2AgeStages = [
-  { day: "Mon", children: 20, teens: 35, adults: 45 },
-  { day: "Tue", children: 25, teens: 40, adults: 50 },
-  { day: "Wed", children: 38, teens: 56, adults: 17 },
-  { day: "Thu", children: 30, teens: 45, adults: 55 },
-  { day: "Fri", children: 22, teens: 38, adults: 48 },
-  { day: "Sat", children: 15, teens: 30, adults: 40 },
-  { day: "Sun", children: 10, teens: 20, adults: 35 },
+  { day: "Pon", children: 20, teens: 35, adults: 45 },
+  { day: "Uto", children: 25, teens: 40, adults: 50 },
+  { day: "Sre", children: 38, teens: 56, adults: 17 },
+  { day: "Čet", children: 30, teens: 45, adults: 55 },
+  { day: "Pet", children: 22, teens: 38, adults: 48 },
+  { day: "Sub", children: 15, teens: 30, adults: 40 },
+  { day: "Ned", children: 10, teens: 20, adults: 35 },
 ];
 
 export const mockV2GenderStats = [
-  { day: "Mon", male: 900, female: 850 },
-  { day: "Tue", male: 1184, female: 1230 },
-  { day: "Wed", male: 1184, female: 1230 },
-  { day: "Thu", male: 1050, female: 980 },
-  { day: "Fri", male: 900, female: 870 },
-  { day: "Sat", male: 750, female: 700 },
-  { day: "Sun", male: 600, female: 580 },
+  { day: "Pon", male: 900, female: 850 },
+  { day: "Uto", male: 1184, female: 1230 },
+  { day: "Sre", male: 1184, female: 1230 },
+  { day: "Čet", male: 1050, female: 980 },
+  { day: "Pet", male: 900, female: 870 },
+  { day: "Sub", male: 750, female: 700 },
+  { day: "Ned", male: 600, female: 580 },
 ];
 
 export const mockV2ConsultationTypes = [
-  { label: "Mood Disorders",       value: 6999, color: "#2a2c4c", percentage: "40%" },
-  { label: "Anxiety Disorders",    value: 4900, color: "#9281ff", percentage: "28%" },
-  { label: "Personality Disorder", value: 3150, color: "#e4e8ff", percentage: "18%" },
-  { label: "Psychotic Disorders",  value: 2449, color: "#b6b6b8", percentage: "14%" },
+  { label: "Poremećaji raspoloženja", value: 6999, color: "#2a2c4c", percentage: "40%" },
+  { label: "Anksiozni poremećaji", value: 4900, color: "#9281ff", percentage: "28%" },
+  { label: "Poremećaj ličnosti", value: 3150, color: "#e4e8ff", percentage: "18%" },
+  { label: "Psihotični poremećaji", value: 2449, color: "#b6b6b8", percentage: "14%" },
 ];
 
 export const mockV2DoctorsList = [
-  { name: "Dr. Paul Carter", specialty: "Clinical Psychologist", status: "Available", initials: "PC" },
-  { name: "Dr. Bella Stevens", specialty: "Psychiatrist", status: "Full Booked", initials: "BS" },
-  { name: "Dr. Laurent Blake", specialty: "Child Psychologist", status: "On Duty", initials: "LB" },
-  { name: "Dr. Gemma O'Connor", specialty: "Cognitive Behavioral Therapist", status: "Absent", initials: "GO" },
-  { name: "Dr. Tyson Ford", specialty: "Marriage & Family Therapist", status: "Available", initials: "TF" },
+  { name: "Dr Marko Marković", specialty: "Klinički psiholog", status: "Available", initials: "MM" },
+  { name: "Dr Jelena Stevanović", specialty: "Psihijatar", status: "Full Booked", initials: "JS" },
+  { name: "Dr Nikola Blagojević", specialty: "Dečji psiholog", status: "On Duty", initials: "NB" },
+  { name: "Dr Ana Ognjenović", specialty: "Kognitivno-bihevioralni terapeut", status: "Absent", initials: "AO" },
+  { name: "Dr Stefan Petrović", specialty: "Porodični terapeut", status: "Available", initials: "SP" },
+  { name: "Dr Laura Mitrović", specialty: "Psihoterapeut", status: "Available", initials: "LM" },
 ];
 
 export const mockV2CounsellingList = [
-  { id: "MDF-P006", date: "2028-09-20", time: "09:00", name: "Amanda Richards", doctor: "Dr. Paul Carter", appointFor: "Anxiety Management", report: "Individual Counseling", status: "Confirmed" },
-  { id: "MDF-P005", date: "2028-09-20", time: "11:00", name: "John Davidson", doctor: "Dr. Bella Stevens", appointFor: "Depression Treatment", report: "Psychiatric Counseling", status: "Ongoing" },
-  { id: "MDF-P004", date: "2028-09-20", time: "01:00", name: "Michael Lee", doctor: "Dr. Laurent Blake", appointFor: "Child Behavioral Issues", report: "Family Counseling", status: "Ongoing" },
-  { id: "MDF-P003", date: "2028-09-20", time: "02:30", name: "Samantha Brown", doctor: "Dr. Gemma O'Connor", appointFor: "Cognitive Behavioral Therapy", report: "Individual Counseling", status: "Cancelled" },
-  { id: "MDF-P002", date: "2028-09-21", time: "03:00", name: "Emily Stone", doctor: "Dr. Tyson Ford", appointFor: "Marriage Counseling", report: "Couples Counseling", status: "Confirmed" },
-  { id: "MDF-P001", date: "2028-09-21", time: "10:30", name: "Robert Smith", doctor: "Dr. Laura Mitchell", appointFor: "Stress Management", report: "Group Counseling", status: "Pending" },
+  { id: "MDF-P006", date: "20.09.2028", time: "09:00", name: "Ana Ristić", doctor: "Dr Marko Marković", appointFor: "Upravljanje anksioznošću", report: "Individualno savetovanje", status: "Confirmed" },
+  { id: "MDF-P005", date: "20.09.2028", time: "11:00", name: "Marko Davidović", doctor: "Dr Jelena Stevanović", appointFor: "Lečenje depresije", report: "Psihijatrijsko savetovanje", status: "Ongoing" },
+  { id: "MDF-P004", date: "20.09.2028", time: "13:00", name: "Stefan Jovičić", doctor: "Dr Nikola Blagojević", appointFor: "Problemi u ponašanju dece", report: "Porodično savetovanje", status: "Ongoing" },
+  { id: "MDF-P003", date: "20.09.2028", time: "14:30", name: "Jelena Brajović", doctor: "Dr Ana Ognjenović", appointFor: "Kognitivno-bihevioralna terapija", report: "Individualno savetovanje", status: "Cancelled" },
+  { id: "MDF-P002", date: "21.09.2028", time: "15:00", name: "Milica Stojanović", doctor: "Dr Stefan Petrović", appointFor: "Bračno savetovanje", report: "Savetovanje parova", status: "Confirmed" },
+  { id: "MDF-P001", date: "21.09.2028", time: "10:30", name: "Nikola Simić", doctor: "Dr Laura Mitrović", appointFor: "Upravljanje stresom", report: "Grupno savetovanje", status: "Pending" },
 ];
 
 export const mockV2RecentActivity = [
-  { time: "10:30 AM", text: "Emily Stone's appointment with Dr. Tyson Ford confirmed by admin." },
-  { time: "10:10 AM", text: "Samantha Brown's appointment with Dr. Gemma O'Connor was cancelled." },
-  { time: "09:45 AM", text: "Counselling session status for John Davidson marked as 'Ongoing' by Dr. Bella Stevens." },
-  { time: "09:30 AM", text: "New patient profile created for Amanda Richards." },
-  { time: "09:15 AM", text: "Milla Willow updated the schedule for Dr. Paul Carter's appointments." },
+  { time: "10:30", text: "Termin Milice Stojanović sa Dr Stefanom Petrovićem potvrđen od strane administratora." },
+  { time: "10:10", text: "Termin Jelene Brajović sa Dr Anom Ognjenović otkazan." },
+  { time: "09:45", text: "Status savetovanja za Marka Davidovića označen kao 'U toku' od strane Dr Jelene Stevanović." },
+  { time: "09:30", text: "Kreiran novi profil pacijenta za Anu Ristić." },
+  { time: "09:15", text: "Dr Marko Marković ažurirao raspored termina." },
 ];
 
 // ─── Helpers ─────────────────────────────────────────────

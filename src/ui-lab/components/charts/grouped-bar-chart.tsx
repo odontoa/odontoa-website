@@ -12,6 +12,7 @@ interface GroupedBarChartProps {
   series: GroupedBarSeries[];
   width?: number;
   height?: number;
+  variant?: "grouped" | "stacked";
 }
 
 // Figma: rounded-tl-[24px] rounded-tr-[24px] — top corners only, radius capped at bar width/2
@@ -29,12 +30,30 @@ function topRoundedBar(x: number, y: number, w: number, h: number): string {
   );
 }
 
+// Figma stacked bars: 12px all-corner rounding
+function allRoundedBar(x: number, y: number, w: number, h: number, r = 12): string {
+  if (h <= 0) return "";
+  const cr = Math.min(r, w / 2, h / 2);
+  return (
+    `M ${x + cr},${y} ` +
+    `L ${x + w - cr},${y} ` +
+    `Q ${x + w},${y} ${x + w},${y + cr} ` +
+    `L ${x + w},${y + h - cr} ` +
+    `Q ${x + w},${y + h} ${x + w - cr},${y + h} ` +
+    `L ${x + cr},${y + h} ` +
+    `Q ${x},${y + h} ${x},${y + h - cr} ` +
+    `L ${x},${y + cr} ` +
+    `Q ${x},${y} ${x + cr},${y} Z`
+  );
+}
+
 export function GroupedBarChart({
   data,
   labelKey,
   series,
   width = 400,
   height = 180,
+  variant = "grouped",
 }: GroupedBarChartProps) {
   const padLeft = 36;
   const padRight = 8;
@@ -43,13 +62,25 @@ export function GroupedBarChart({
   const chartW = width - padLeft - padRight;
   const chartH = height - padTop - padBottom;
 
-  const allValues = data.flatMap((row) => series.map((s) => Number(row[s.key]) || 0));
+  const isStacked = variant === "stacked";
+
+  // Max value: for stacked, scale by the max total stack per group
+  const allValues = isStacked
+    ? data.map((row) => series.reduce((sum, s) => sum + (Number(row[s.key]) || 0), 0))
+    : data.flatMap((row) => series.map((s) => Number(row[s.key]) || 0));
   const maxVal = Math.max(...allValues) || 1;
 
   const groupWidth = chartW / data.length;
-  // Figma: gap-[4px] between bars within a group
+
+  // Grouped layout params
   const barPad = 4;
   const barWidth = (groupWidth - barPad * (series.length + 1)) / series.length;
+
+  // Stacked layout params — Figma: px-[8px] horizontal column padding, gap-[4px] between bars
+  const colPadX = 8;
+  const stackedBarW = groupWidth - 2 * colPadX;
+  const stackBarGap = 4;
+  const stackedBottomPad = 6;
 
   const toY = (v: number) => padTop + chartH - (v / maxVal) * chartH;
   const toH = (v: number) => (v / maxVal) * chartH;
@@ -82,10 +113,10 @@ export function GroupedBarChart({
               strokeWidth="1"
             />
             <text
-              x={padLeft - 4}
+              x={padLeft - 8}
               y={y + 4}
               textAnchor="end"
-              fontSize="9"
+              fontSize="11"
               fill="var(--v2-text-muted)"
             >
               {label}
@@ -93,40 +124,90 @@ export function GroupedBarChart({
           </g>
         ))}
 
-        {/* Bars — top-only rounded corners (24px, capped at barWidth/2) */}
-        {data.map((row, gi) => {
-          const groupX = padLeft + gi * groupWidth + barPad;
-          return (
-            <g key={gi}>
-              {series.map((s, si) => {
+        {isStacked ? (
+          /* ── Stacked bars (Patients by Gender) ── */
+          <>
+            {data.map((row, gi) => {
+              const groupX = padLeft + gi * groupWidth;
+              const barX = groupX + colPadX;
+              const baseline = padTop + chartH - stackedBottomPad;
+
+              // Stack bottom-first: series[0]=Male(bottom), series[1]=Female(top)
+              let currentY = baseline;
+              const bars = series.map((s) => {
                 const val = Number(row[s.key]) || 0;
-                const x = groupX + si * (barWidth + barPad);
-                const h = toH(val);
-                const y = toY(val);
-                const d = topRoundedBar(x, y, barWidth, h);
-                if (!d) return null;
-                return (
-                  <path
-                    key={s.key}
-                    d={d}
-                    fill={s.color}
-                    className="transition-opacity hover:opacity-80"
-                  />
-                );
-              })}
-              {/* X-axis label */}
-              <text
-                x={groupX + (series.length * (barWidth + barPad)) / 2 - barPad / 2}
-                y={padTop + chartH + 16}
-                textAnchor="middle"
-                fontSize="9"
-                fill="var(--v2-text-muted)"
-              >
-                {String(row[labelKey])}
-              </text>
-            </g>
-          );
-        })}
+                const h = (val / maxVal) * (chartH - stackedBottomPad);
+                const y = currentY - h;
+                currentY = y - stackBarGap;
+                return { s, h, y };
+              });
+
+              return (
+                <g key={gi}>
+                  {bars.map(({ s, h, y }) => {
+                    const d = allRoundedBar(barX, y, stackedBarW, h);
+                    if (!d) return null;
+                    return (
+                      <path
+                        key={s.key}
+                        d={d}
+                        fill={s.color}
+                        className="transition-opacity hover:opacity-80"
+                      />
+                    );
+                  })}
+                  {/* X-axis label */}
+                  <text
+                    x={groupX + groupWidth / 2}
+                    y={padTop + chartH + 16}
+                    textAnchor="middle"
+                    fontSize="11"
+                    fill="var(--v2-text-muted)"
+                  >
+                    {String(row[labelKey])}
+                  </text>
+                </g>
+              );
+            })}
+          </>
+        ) : (
+          /* ── Grouped bars (Patients by Age Stages etc.) ── */
+          <>
+            {data.map((row, gi) => {
+              const groupX = padLeft + gi * groupWidth + barPad;
+              return (
+                <g key={gi}>
+                  {series.map((s, si) => {
+                    const val = Number(row[s.key]) || 0;
+                    const x = groupX + si * (barWidth + barPad);
+                    const h = toH(val);
+                    const y = toY(val);
+                    const d = topRoundedBar(x, y, barWidth, h);
+                    if (!d) return null;
+                    return (
+                      <path
+                        key={s.key}
+                        d={d}
+                        fill={s.color}
+                        className="transition-opacity hover:opacity-80"
+                      />
+                    );
+                  })}
+                  {/* X-axis label */}
+                  <text
+                    x={groupX + (series.length * (barWidth + barPad)) / 2 - barPad / 2}
+                    y={padTop + chartH + 16}
+                    textAnchor="middle"
+                    fontSize="11"
+                    fill="var(--v2-text-muted)"
+                  >
+                    {String(row[labelKey])}
+                  </text>
+                </g>
+              );
+            })}
+          </>
+        )}
       </svg>
     </div>
   );
