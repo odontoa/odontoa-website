@@ -1,5 +1,6 @@
 import {
   Calendar,
+  CalendarDays,
   Stethoscope,
   Pill,
   DollarSign,
@@ -15,6 +16,10 @@ import {
   FileText,
   CreditCard,
   BarChart3,
+  ListChecks,
+  FlaskConical,
+  BookOpen,
+  Info,
   type LucideIcon,
 } from "lucide-react";
 
@@ -25,26 +30,38 @@ export interface NavItem {
   icon: LucideIcon;
   href?: string;
   badge?: number;
+  exact?: boolean;
   children?: NavItem[];
 }
 
 export const sidebarNav: NavItem[] = [
-  { label: "Kontrolna tabla", icon: LayoutDashboard, href: "/ui-lab/figma-dashboard" },
+  { label: "Kontrolna tabla", icon: LayoutDashboard, href: "/ui-lab/figma-dashboard", exact: true },
+  { label: "Kalendar",        icon: CalendarDays,    href: "/ui-lab/figma-dashboard/calendar" },
   { label: "Savetovanje",     icon: MessageCircle },
   { label: "Doktori",         icon: Stethoscope },
   { label: "Pacijenti",       icon: Users },
-  { label: "Tehnika",         icon: Wrench,          href: "/ui-lab/technika" },
   { label: "Odeljenja",       icon: Building2 },
   { label: "Lekovi",          icon: Pill },
   {
     label: "Finansije",
     icon: DollarSign,
-    href: "/ui-lab/finansije",
+    href: "/ui-lab/finansije/predracun",
     children: [
       { label: "Predračun",  icon: FileText,   href: "/ui-lab/finansije/predracun" },
       { label: "Uplate",     icon: CreditCard, href: "/ui-lab/finansije/uplate" },
-      { label: "Tehnika",    icon: Wrench,     href: "/ui-lab/finansije/tehnika" },
+      { label: "Izveštaj tehnike", icon: Wrench, href: "/ui-lab/finansije/tehnika" },
       { label: "Izveštaji",  icon: BarChart3,  href: "/ui-lab/finansije/izvestaji" },
+    ],
+  },
+  {
+    label: "Ordinacija",
+    icon: Building2,
+    href: "/ui-lab/ordinacija/podaci",
+    children: [
+      { label: "Podaci",    icon: Info,         href: "/ui-lab/ordinacija/podaci" },
+      { label: "Cenovnik",  icon: ListChecks,   href: "/ui-lab/ordinacija/cenovnik" },
+      { label: "Tehnika",   icon: FlaskConical, href: "/ui-lab/ordinacija/tehnika" },
+      { label: "MKB-10",    icon: BookOpen,     href: "/ui-lab/ordinacija/mkb-10" },
     ],
   },
   { label: "E-pošta",         icon: Mail, badge: 5 },

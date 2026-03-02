@@ -1,10 +1,7 @@
-import FinansijeHubScreen from "@/ui-lab/screens/finansije/FinansijeHubScreen";
+import { redirect } from "next/navigation";
 
-export const metadata = {
-  title: "Finansije | UI Lab",
-  robots: "noindex, nofollow",
-};
-
+// Canonical entry point is Finansije → Predračun.
+// This route is kept for bookmark compatibility only.
 export default function FinansijePage() {
-  return <FinansijeHubScreen />;
+  redirect("/ui-lab/finansije/predracun");
 }

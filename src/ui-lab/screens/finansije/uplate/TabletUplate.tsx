@@ -164,7 +164,10 @@ export default function TabletUplate({ className }: { className?: string }) {
       <FigmaTabletSidebar />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden py-[16px] pr-[24px] gap-[16px]" style={{ background: "var(--v2-surface)" }}>
         <header className="flex items-center justify-between flex-shrink-0 pl-[4px]" style={{ height: "var(--v2-topbar-h)" }}>
-          <h1 className="font-semibold" style={{ fontSize: "20px", color: "var(--v2-text)" }}>Uplate</h1>
+          <div className="flex flex-col justify-center">
+            <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: "var(--v2-primary)" }}>Finansije</p>
+            <h1 className="font-semibold leading-[1.2]" style={{ fontSize: "20px", color: "var(--v2-text)" }}>Uplate</h1>
+          </div>
           <div className="flex items-center gap-[10px]">
             <button onClick={openAdd} className="flex items-center gap-[6px] text-[12px] font-medium" style={{ padding: "8px 14px", borderRadius: "var(--v2-radius-pill)", background: "var(--v2-primary)", color: "var(--v2-primary-fg)" }}>
               <Plus className="h-3.5 w-3.5" /> Dodaj

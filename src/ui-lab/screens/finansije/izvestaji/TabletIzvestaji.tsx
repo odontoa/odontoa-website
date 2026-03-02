@@ -24,7 +24,10 @@ export default function TabletIzvestaji({ className }: { className?: string }) {
       <FigmaTabletSidebar />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden py-[16px] pr-[24px] gap-[16px]" style={{ background: "var(--v2-surface)" }}>
         <header className="flex items-center justify-between flex-shrink-0 pl-[4px]" style={{ height: "var(--v2-topbar-h)" }}>
-          <h1 className="font-semibold" style={{ fontSize: "20px", color: "var(--v2-text)" }}>Izveštaji</h1>
+          <div className="flex flex-col justify-center">
+            <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: "var(--v2-primary)" }}>Finansije</p>
+            <h1 className="font-semibold leading-[1.2]" style={{ fontSize: "20px", color: "var(--v2-text)" }}>Izveštaji</h1>
+          </div>
           <div className="flex items-center gap-[10px]">
             <button className="flex items-center justify-center" style={{ padding: "10px", borderRadius: "20px", background: "var(--v2-primary-bg)" }}>
               <Bell className="h-5 w-5" style={{ color: "var(--v2-primary-dark)" }} />

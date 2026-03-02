@@ -1,0 +1,79 @@
+[
+  {
+    "id": "1",
+    "firstName": "Marko",
+    "lastName": "Marković",
+    "phone": "064123456",
+    "email": "marko@example.com",
+    "address": "Beograd",
+    "profileImage": null,
+    "birthDate": "1990-01-01",
+    "staffId": null
+  },
+  {
+    "id": "2",
+    "firstName": "Ana",
+    "lastName": "Anić",
+    "phone": "063111222",
+    "email": "ana@example.com",
+    "address": "Novi Sad",
+    "profileImage": null,
+    "birthDate": "1985-05-15",
+    "staffId": null
+  },
+  {
+    "id": "3",
+    "firstName": "Petar",
+    "lastName": "Petrović",
+    "phone": "061999888",
+    "email": "petar@example.com",
+    "address": "Niš",
+    "profileImage": null,
+    "birthDate": "1978-03-30",
+    "staffId": null
+  },
+  {
+    "id": "4",
+    "firstName": "Jelena",
+    "lastName": "Janković",
+    "phone": "062123456",
+    "email": "jelena@example.com",
+    "address": "Kragujevac",
+    "profileImage": null,
+    "birthDate": "1995-07-22",
+    "staffId": null
+  },
+  {
+    "id": "5",
+    "firstName": "Nikola",
+    "lastName": "Nikolić",
+    "phone": "060456789",
+    "email": "nikola@example.com",
+    "address": "Subotica",
+    "profileImage": null,
+    "birthDate": "1982-11-11",
+    "staffId": null
+  },
+  {
+    "id": "6",
+    "firstName": "Milica",
+    "lastName": "Milić",
+    "phone": "069333444",
+    "email": "milica@example.com",
+    "address": "Zrenjanin",
+    "profileImage": null,
+    "birthDate": "1993-09-09",
+    "staffId": null
+  },
+  {
+    "id": "7",
+    "firstName": "Stefan",
+    "lastName": "Stanković",
+    "phone": "065777888",
+    "email": "stefan@example.com",
+    "address": "Čačak",
+    "profileImage": null,
+    "birthDate": "1989-12-05",
+    "staffId": null
+  }
+]

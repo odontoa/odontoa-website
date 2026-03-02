@@ -1,5 +1,6 @@
 import { Urbanist } from "next/font/google";
 import "@/ui-lab/ui-lab-tokens.css";
+import { UILabProviders } from "./providers";
 
 const urbanist = Urbanist({ subsets: ["latin"] });
 
@@ -18,7 +19,7 @@ export default function UILabV2Layout({
       className={`ui-lab ui-lab-v2 min-h-screen ${urbanist.className}`}
       style={{ background: "var(--v2-bg)" }}
     >
-      {children}
+      <UILabProviders>{children}</UILabProviders>
     </div>
   );
 }

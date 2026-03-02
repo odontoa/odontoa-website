@@ -1,8 +1,9 @@
 // Figma base: Invoices — node-id=63:12897 (reports placeholder)
 "use client";
 
-import { Settings, Bell, BarChart3, ChevronDown, FileText, CreditCard, Download } from "lucide-react";
+import { BarChart3, ChevronDown, FileText, CreditCard, Download } from "lucide-react";
 import { FigmaDesktopSidebar } from "../../figma-dashboard/sidebars";
+import { V2PageHeader } from "@/ui-lab/components/ui/V2PageHeader";
 import { SEED_PROFORMAS, SEED_TEHNIKA_FIN, formatRSD } from "../shared";
 
 // ─── Derive totals from seed ─────────────────────────────
@@ -33,22 +34,7 @@ export default function DesktopIzvestaji({ className }: { className?: string }) 
     <div className={`flex h-full overflow-hidden ${className ?? ""}`} style={{ background: "var(--v2-bg)" }}>
       <FigmaDesktopSidebar />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden py-[16px] pr-[24px] gap-[16px]" style={{ background: "var(--v2-surface)" }}>
-        <header className="flex items-center justify-between flex-shrink-0 pl-[4px]" style={{ height: "var(--v2-topbar-h)" }}>
-          <div>
-            <h1 className="font-semibold" style={{ fontSize: "22px", color: "var(--v2-text)" }}>Izveštaji</h1>
-            <p className="text-[12px]" style={{ color: "var(--v2-text-muted)" }}>Finansijski izveštaji i statistike</p>
-          </div>
-          <div className="flex items-center gap-[12px]">
-            <button className="flex items-center justify-center" style={{ padding: "10px", borderRadius: "20px", background: "var(--v2-primary-bg)" }}>
-              <Settings className="h-5 w-5" style={{ color: "var(--v2-primary-dark)" }} />
-            </button>
-            <button className="relative flex items-center justify-center" style={{ padding: "10px", borderRadius: "20px", background: "var(--v2-primary-bg)" }}>
-              <Bell className="h-5 w-5" style={{ color: "var(--v2-primary-dark)" }} />
-              <span className="absolute h-[8px] w-[8px] rounded-full" style={{ top: "4px", right: "4px", background: "var(--v2-primary)" }} />
-            </button>
-            <div className="flex items-center justify-center font-semibold text-[12px]" style={{ height: "40px", width: "40px", borderRadius: "var(--v2-radius-avatar)", background: "var(--v2-primary)", color: "var(--v2-primary-fg)" }}>MM</div>
-          </div>
-        </header>
+        <V2PageHeader section="Finansije" title="Izveštaji" />
 
         <div className="flex-1 overflow-y-auto p-[20px] flex flex-col gap-[24px] rounded-[24px]" style={{ background: "var(--v2-bg)" }}>
 

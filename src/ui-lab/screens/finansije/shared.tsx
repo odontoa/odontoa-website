@@ -186,6 +186,15 @@ const SEED_PAYMENTS: Uplata[] = [
 
 // ─── Tehnika finance seed (read-only, derived from technika module) ──
 
+// ─── Technician payment model (MVP) ──────────────────────────────────────────
+
+export interface TechnicianPayment {
+  id: string;
+  technicianId: string;
+  amount: number;
+  paidAt: string;
+}
+
 export interface TehFinRow {
   id: string;
   naziv: string;
@@ -195,6 +204,7 @@ export interface TehFinRow {
   placenoDo: string;
   status: "aktivan" | "neaktivan";
   poslednjiRadovi: TehFinWork[];
+  payments: TechnicianPayment[];
 }
 
 export interface TehFinWork {
@@ -208,7 +218,7 @@ export interface TehFinWork {
 
 export const SEED_TEHNIKA_FIN: TehFinRow[] = [
   {
-    id: "t1", naziv: "Dental Lab Pro d.o.o.", brojRadova: 47, dug: 145000, placeno: 289000, placenoDo: "2026-01-31", status: "aktivan",
+    id: "t1", naziv: "Dental Lab Pro d.o.o.", brojRadova: 47, dug: 145000, placeno: 289000, placenoDo: "2026-01-31", status: "aktivan", payments: [],
     poslednjiRadovi: [
       { id: "tw1", datum: "2026-02-14", pacijent: "Milena Đorđević", vrstaRada: "Keramička krunica", iznos: 12000, statusNaplate: "placeno" },
       { id: "tw2", datum: "2026-02-08", pacijent: "Stefan Nikolić", vrstaRada: "Most (3 člana)", iznos: 28000, statusNaplate: "placeno" },
@@ -218,7 +228,7 @@ export const SEED_TEHNIKA_FIN: TehFinRow[] = [
     ],
   },
   {
-    id: "t2", naziv: "Miroslav Petrović", brojRadova: 23, dug: 68000, placeno: 185000, placenoDo: "2026-02-28", status: "aktivan",
+    id: "t2", naziv: "Miroslav Petrović", brojRadova: 23, dug: 68000, placeno: 185000, placenoDo: "2026-02-28", status: "aktivan", payments: [],
     poslednjiRadovi: [
       { id: "tw6", datum: "2026-02-25", pacijent: "Dragan Todorović", vrstaRada: "Implant krunica", iznos: 22000, statusNaplate: "placeno" },
       { id: "tw7", datum: "2026-02-18", pacijent: "Ivana Kovač", vrstaRada: "Inlay (×2)", iznos: 15000, statusNaplate: "placeno" },
@@ -226,7 +236,7 @@ export const SEED_TEHNIKA_FIN: TehFinRow[] = [
     ],
   },
   {
-    id: "t3", naziv: "Zlatozub d.o.o.", brojRadova: 91, dug: 312000, placeno: 640000, placenoDo: "2025-12-31", status: "aktivan",
+    id: "t3", naziv: "Zlatozub d.o.o.", brojRadova: 91, dug: 312000, placeno: 640000, placenoDo: "2025-12-31", status: "aktivan", payments: [],
     poslednjiRadovi: [
       { id: "tw9", datum: "2026-02-20", pacijent: "Petar Simić", vrstaRada: "Metalna krunica", iznos: 8000, statusNaplate: "placeno" },
       { id: "tw10", datum: "2026-02-12", pacijent: "Marina Obradović", vrstaRada: "Parcijalna proteza", iznos: 24000, statusNaplate: "nijeplaceno" },
@@ -234,14 +244,14 @@ export const SEED_TEHNIKA_FIN: TehFinRow[] = [
     ],
   },
   {
-    id: "t4", naziv: "Ana Jovanović", brojRadova: 12, dug: 0, placeno: 30500, placenoDo: "2026-02-01", status: "aktivan",
+    id: "t4", naziv: "Ana Jovanović", brojRadova: 12, dug: 0, placeno: 30500, placenoDo: "2026-02-01", status: "aktivan", payments: [],
     poslednjiRadovi: [
       { id: "tw12", datum: "2026-02-01", pacijent: "Tijana Ilić", vrstaRada: "Faseta (×2)", iznos: 19000, statusNaplate: "placeno" },
       { id: "tw13", datum: "2026-01-15", pacijent: "Bojan Perić", vrstaRada: "Keramička krunica", iznos: 11500, statusNaplate: "placeno" },
     ],
   },
   {
-    id: "t5", naziv: "Stara laboratorija", brojRadova: 134, dug: 0, placeno: 520000, placenoDo: "2023-06-30", status: "neaktivan",
+    id: "t5", naziv: "Stara laboratorija", brojRadova: 134, dug: 0, placeno: 520000, placenoDo: "2023-06-30", status: "neaktivan", payments: [],
     poslednjiRadovi: [
       { id: "tw14", datum: "2023-06-15", pacijent: "Arhivski pacijent", vrstaRada: "Proteza", iznos: 15000, statusNaplate: "placeno" },
     ],

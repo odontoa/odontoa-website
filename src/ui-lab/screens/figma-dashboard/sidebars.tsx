@@ -28,10 +28,14 @@ function DesktopAccordionGroup({ item, pathname }: { item: NavItem & { children:
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Auto-expand when navigating into the section
+  // Auto-expand when navigating into the section and persist so other accordions
+  // don't collapse it on the next remount (sidebar re-mounts on every navigation).
   useEffect(() => {
-    if (isUnder) setOpen(true);
-  }, [isUnder]);
+    if (isUnder) {
+      setOpen(true);
+      try { localStorage.setItem(lsKey, "true"); } catch { /* noop */ }
+    }
+  }, [isUnder, lsKey]);
 
   const toggle = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -41,9 +45,10 @@ function DesktopAccordionGroup({ item, pathname }: { item: NavItem & { children:
     try { localStorage.setItem(lsKey, String(next)); } catch { /* noop */ }
   };
 
-  const isParentExactPage = pathname === item.href;
   const isChildActive = item.children.some(c => c.href && pathname.startsWith(c.href));
-  const parentActive = isUnder && !isChildActive || isParentExactPage;
+  // Parent is active only when we're under its section but no child is the active page.
+  // Never highlight the parent when a child is already highlighted — tablet sidebar already does this correctly.
+  const parentActive = isUnder && !isChildActive;
 
   return (
     <>
@@ -132,7 +137,9 @@ export function FigmaDesktopSidebar() {
           }
 
           const Icon = item.icon;
-          const isActive = item.href ? pathname.startsWith(item.href) : false;
+          const isActive = item.href
+            ? item.exact ? pathname === item.href : pathname.startsWith(item.href)
+            : false;
           const itemStyle = {
             borderRadius: "var(--v2-radius-nav)",
             background: isActive ? "var(--v2-primary)" : "transparent",
@@ -245,8 +252,11 @@ function TabletAccordionGroup({ item, pathname }: { item: NavItem & { children: 
   }, []);
 
   useEffect(() => {
-    if (isUnder) setOpen(true);
-  }, [isUnder]);
+    if (isUnder) {
+      setOpen(true);
+      try { localStorage.setItem(lsKey, "true"); } catch { /* noop */ }
+    }
+  }, [isUnder, lsKey]);
 
   const toggle = () => {
     const next = !open;
@@ -342,7 +352,9 @@ export function FigmaTabletSidebar() {
           }
 
           const Icon = item.icon;
-          const isActive = item.href ? pathname.startsWith(item.href) : false;
+          const isActive = item.href
+            ? item.exact ? pathname === item.href : pathname.startsWith(item.href)
+            : false;
           const itemStyle = {
             borderRadius: "var(--v2-radius-nav)",
             background: isActive ? "var(--v2-primary)" : "transparent",

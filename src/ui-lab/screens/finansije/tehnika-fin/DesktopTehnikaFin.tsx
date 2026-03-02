@@ -2,8 +2,9 @@
 "use client";
 
 import { useState } from "react";
-import { Settings, Bell, X, ChevronDown, Wrench } from "lucide-react";
+import { X, ChevronDown, Wrench } from "lucide-react";
 import { FigmaDesktopSidebar } from "../../figma-dashboard/sidebars";
+import { V2PageHeader } from "@/ui-lab/components/ui/V2PageHeader";
 import {
   SEED_TEHNIKA_FIN, WorkStatusBadge, formatDate, formatRSD, getInitials,
   type TehFinRow,
@@ -74,6 +75,34 @@ function DetailPanel({ row, onClose }: { row: TehFinRow; onClose: () => void }) 
 
       <div className="h-px mx-[16px]" style={{ background: "var(--v2-border)" }} />
 
+      {/* Dugovanje summary */}
+      <div className="p-[16px] flex flex-col gap-[8px]">
+        <p className="text-[11px] font-medium uppercase tracking-wide" style={{ color: "var(--v2-text-muted)" }}>Dugovanje</p>
+        <div
+          className="flex items-center justify-between p-[12px] rounded-[10px] border"
+          style={{ borderColor: "var(--v2-border)", background: "var(--v2-input-bg)" }}
+        >
+          <div className="flex flex-col gap-[2px]">
+            <span className="text-[10px]" style={{ color: "var(--v2-text-muted)" }}>Preostalo dugovanje</span>
+            <span className="font-bold text-[15px]" style={{ color: row.dug > 0 ? "#ef4444" : "#10b981" }}>
+              {formatRSD(row.dug)}
+            </span>
+          </div>
+          <button
+            type="button"
+            disabled
+            title="Uskoro dostupno"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] font-semibold opacity-40 cursor-not-allowed"
+            style={{ background: "var(--v2-primary-bg)", color: "var(--v2-primary)" }}
+          >
+            <Wrench className="h-3.5 w-3.5" />
+            Označi kao plaćeno
+          </button>
+        </div>
+      </div>
+
+      <div className="h-px mx-[16px]" style={{ background: "var(--v2-border)" }} />
+
       <div className="p-[16px] flex flex-col gap-[8px]">
         <p className="text-[11px] font-medium uppercase tracking-wide" style={{ color: "var(--v2-text-muted)" }}>Poslednji radovi</p>
         {row.poslednjiRadovi.length === 0 ? (
@@ -105,28 +134,16 @@ export default function DesktopTehnikaFin({ className }: { className?: string })
   const totalRadova = rows.reduce((s, r) => s + r.brojRadova, 0);
   const ukupanDug = rows.reduce((s, r) => s + r.dug, 0);
   const ukupnoPlaceno = rows.reduce((s, r) => s + r.placeno, 0);
-  const preostalo = ukupanDug;
+  const preostalo = ukupanDug - ukupnoPlaceno;
 
   return (
     <div className={`flex h-full overflow-hidden ${className ?? ""}`} style={{ background: "var(--v2-bg)" }}>
       <FigmaDesktopSidebar />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden py-[16px] pr-[24px] gap-[16px]" style={{ background: "var(--v2-surface)" }}>
-        <header className="flex items-center justify-between flex-shrink-0 pl-[4px]" style={{ height: "var(--v2-topbar-h)" }}>
-          <div>
-            <h1 className="font-semibold" style={{ fontSize: "22px", color: "var(--v2-text)" }}>Izveštaj tehnike</h1>
-            <p className="text-[12px]" style={{ color: "var(--v2-text-muted)" }}>Finansijski pregled saradnje sa tehničkim laboratorijama</p>
-          </div>
-          <div className="flex items-center gap-[12px]">
-            <button className="flex items-center justify-center" style={{ padding: "10px", borderRadius: "20px", background: "var(--v2-primary-bg)" }}>
-              <Settings className="h-5 w-5" style={{ color: "var(--v2-primary-dark)" }} />
-            </button>
-            <button className="relative flex items-center justify-center" style={{ padding: "10px", borderRadius: "20px", background: "var(--v2-primary-bg)" }}>
-              <Bell className="h-5 w-5" style={{ color: "var(--v2-primary-dark)" }} />
-              <span className="absolute h-[8px] w-[8px] rounded-full" style={{ top: "4px", right: "4px", background: "var(--v2-primary)" }} />
-            </button>
-            <div className="flex items-center justify-center font-semibold text-[12px]" style={{ height: "40px", width: "40px", borderRadius: "var(--v2-radius-avatar)", background: "var(--v2-primary)", color: "var(--v2-primary-fg)" }}>MM</div>
-          </div>
-        </header>
+        <V2PageHeader
+          section="Finansije"
+          title="Izveštaj tehnike"
+        />
 
         <div className="flex-1 overflow-hidden p-[20px] flex gap-[20px] rounded-[24px]" style={{ background: "var(--v2-bg)" }}>
           <div className="flex-1 flex flex-col gap-[20px] overflow-y-auto min-w-0">

@@ -111,4 +111,21 @@
 
   /* shadow — tooltip only, NOT cards */
   --v2-shadow-tooltip: 0px 4px 12px 0px rgba(0, 0, 0, 0.08);
+
+  /* ─── Calendar appointment status colors ───────────────────────────────────── */
+  /* Swap ALL calendar status colors here — zero component rewrite */
+  --v2-cal-zakazano:         #3b82f6;               /* blue-500  */
+  --v2-cal-zakazano-bar:     #60a5fa;               /* blue-400  */
+  --v2-cal-zakazano-bg:      rgba(239, 246, 255, 0.8);  /* blue-50/80  */
+  --v2-cal-zakazano-border:  rgba(191, 219, 254, 0.5);  /* blue-200/50 */
+
+  --v2-cal-zavrseno:         #10b981;               /* emerald-500 */
+  --v2-cal-zavrseno-bar:     #34d399;               /* emerald-400 */
+  --v2-cal-zavrseno-bg:      rgba(236, 253, 245, 0.8);  /* emerald-50/80 */
+  --v2-cal-zavrseno-border:  rgba(167, 243, 208, 0.5);  /* emerald-200/50 */
+
+  --v2-cal-hitno:            #ef4444;               /* red-500  */
+  --v2-cal-hitno-bar:        #f87171;               /* red-400  */
+  --v2-cal-hitno-bg:         rgba(254, 242, 242, 0.8);  /* red-50/80  */
+  --v2-cal-hitno-border:     rgba(254, 202, 202, 0.5);  /* red-200/50 */
 }
