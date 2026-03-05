@@ -39,7 +39,7 @@ export const sidebarNav: NavItem[] = [
   { label: "Kalendar",        icon: CalendarDays,    href: "/ui-lab/figma-dashboard/calendar" },
   { label: "Savetovanje",     icon: MessageCircle },
   { label: "Doktori",         icon: Stethoscope },
-  { label: "Pacijenti",       icon: Users },
+  { label: "Pacijenti",       icon: Users, href: "/ui-lab/pacijenti", exact: true },
   { label: "Odeljenja",       icon: Building2 },
   { label: "Lekovi",          icon: Pill },
   {
@@ -135,6 +135,73 @@ export function StatusBadge({ status }: { status: string }) {
     >
       {label}
     </span>
+  );
+}
+
+// ─── Chart card header (title+value left | dropdown+legends right) ──
+
+interface LegendItem { label: string; color: string }
+
+export function ChartCardHeader({
+  title,
+  dropdownLabel,
+  subtext,
+  value,
+  legends,
+  legendGap = "25px",
+}: {
+  title: string;
+  dropdownLabel: string;
+  subtext: string;
+  value: string;
+  legends: LegendItem[];
+  /** Gap between legend items — use "16px" on tablet for 3-legend cards to prevent overflow */
+  legendGap?: string;
+}) {
+  return (
+    <div className="grid grid-cols-[1fr_auto] items-start gap-3">
+      {/* Left: title, then subtext + value — min-w-0 prevents overflow */}
+      <div className="flex flex-col gap-[12px] min-w-0">
+        <h3
+          className="font-semibold leading-[1.25]"
+          style={{ fontSize: "14px", color: "var(--v2-text-heading)" }}
+        >
+          {title}
+        </h3>
+        <div className="flex flex-col gap-[4px]">
+          <span
+            className="text-[11px] leading-[1.24]"
+            style={{ color: "var(--v2-text-muted)" }}
+          >
+            {subtext}
+          </span>
+          <span
+            className="font-bold leading-[1.1]"
+            style={{ fontSize: "24px", color: "var(--v2-primary-dark)" }}
+          >
+            {value}
+          </span>
+        </div>
+      </div>
+      {/* Right: shrink-0 + whitespace-nowrap keeps dropdown in one line */}
+      <div className="flex flex-col items-end gap-[12px] shrink-0 whitespace-nowrap">
+        <DropdownPill>{dropdownLabel}</DropdownPill>
+        {/* flex-wrap + whitespace-normal so legends can wrap on narrow viewports */}
+        <div className="flex items-center flex-wrap whitespace-normal" style={{ gap: legendGap }}>
+          {legends.map((l) => (
+            <div key={l.label} className="flex items-center gap-[8px]">
+              <span
+                className="inline-block flex-shrink-0"
+                style={{ width: "8px", height: "8px", borderRadius: "4px", background: l.color }}
+              />
+              <span className="text-[12px] leading-[1.3]" style={{ color: "var(--v2-text)" }}>
+                {l.label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 

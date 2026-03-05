@@ -24,6 +24,12 @@ import {
   BadgeCheck,
   Download,
   Ban,
+  GripVertical,
+  X,
+  Repeat,
+  Maximize2,
+  Minimize2,
+  ChevronDown,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { CreateAppointmentDrawer } from "./CreateAppointmentDrawer";
@@ -50,6 +56,21 @@ type DayInfo = {
 };
 
 type MonthCell = { day: number | null; dateStr: string | null };
+
+type PendingReschedule = {
+  apptId: string;
+  patientName: string;
+  fromDateISO: string;
+  fromTime: string;
+  fromChair: 1 | 2 | 3 | 4;
+  toDateISO: string;
+  toTime: string;
+  toChair: 1 | 2 | 3 | 4;
+  hasConflict: boolean;
+  isSeries: boolean;
+  fromLabel: string;
+  toLabel: string;
+};
 
 // ─── Status styles (single source of truth) ──────────────────────────────────
 
@@ -287,6 +308,7 @@ function CalendarTopBar({
   onExport,
   exportDisabled,
   onNewAppointment,
+  onFullscreen,
 }: {
   view: CalendarView;
   onViewChange: (v: CalendarView) => void;
@@ -301,6 +323,7 @@ function CalendarTopBar({
   onExport: () => void;
   exportDisabled: boolean;
   onNewAppointment: () => void;
+  onFullscreen?: () => void;
 }) {
   const viewOptions = layout === "mobile" ? VIEW_OPTIONS_MOBILE : VIEW_OPTIONS_ALL;
 
@@ -442,6 +465,17 @@ function CalendarTopBar({
               );
             })}
           </div>
+          {onFullscreen && (
+            <button
+              onClick={onFullscreen}
+              className="flex-shrink-0 h-9 w-9 rounded-[var(--v2-radius-badge)] flex items-center justify-center border border-[color:var(--v2-border)] transition-opacity hover:opacity-80"
+              style={{ background: "var(--v2-surface)" }}
+              aria-label="Uvecaj"
+              title="Prikaz celog ekrana"
+            >
+              <Maximize2 className="h-4 w-4" style={{ color: "var(--v2-text-muted)" }} />
+            </button>
+          )}
           <button
             onClick={onExport}
             disabled={exportDisabled}
@@ -484,6 +518,17 @@ function CalendarTopBar({
           </div>
         </div>
         <div className="flex items-center gap-2.5">
+          {onFullscreen && (
+            <button
+              onClick={onFullscreen}
+              className="h-9 px-3.5 rounded-[var(--v2-radius-pill)] border border-[color:var(--v2-border)] bg-[color:var(--v2-surface)] text-[13px] font-medium transition-opacity hover:opacity-80 flex items-center gap-2 whitespace-nowrap"
+              style={{ color: "var(--v2-text)" }}
+              title="Prikaz celog ekrana"
+            >
+              <Maximize2 className="h-3.5 w-3.5" style={{ color: "var(--v2-text-muted)" }} />
+              Uvecaj
+            </button>
+          )}
           <button
             onClick={onExport}
             disabled={exportDisabled}
@@ -557,6 +602,229 @@ function CalendarTopBar({
   );
 }
 
+// ─── Reschedule confirm modal ─────────────────────────────────────────────────
+
+function RescheduleConfirmModal({
+  open,
+  pending,
+  onConfirm,
+  onCancel,
+}: {
+  open: boolean;
+  pending: PendingReschedule | null;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  if (!open || !pending) return null;
+
+  return (
+    <>
+      <div
+        className="fixed inset-0 z-[60]"
+        style={{ background: "rgba(0,0,0,0.35)", backdropFilter: "blur(2px)" }}
+        onClick={onCancel}
+        aria-hidden="true"
+      />
+      <div
+        className="fixed z-[61] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col"
+        style={{
+          width: "min(420px, calc(100vw - 32px))",
+          background: "var(--v2-surface)",
+          border: "1px solid var(--v2-border)",
+          borderRadius: "var(--v2-radius-card)",
+          boxShadow: "0 24px 64px rgba(0,0,0,0.18)",
+        }}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Potvrda premestanja"
+      >
+        {/* Header */}
+        <div className="flex items-start justify-between px-6 pt-5 pb-4 border-b border-[color:var(--v2-border)]">
+          <div className="flex items-start gap-3">
+            <div
+              className="h-10 w-10 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: "var(--v2-primary-bg)" }}
+            >
+              <CalendarDays className="h-5 w-5" style={{ color: "var(--v2-primary-dark)" }} />
+            </div>
+            <div>
+              <h3 className="font-semibold text-[15px] leading-tight" style={{ color: "var(--v2-text-heading)" }}>
+                Premesti termin?
+              </h3>
+              <p className="text-[12px] mt-0.5" style={{ color: "var(--v2-text-muted)" }}>
+                {pending.patientName}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onCancel}
+            className="h-7 w-7 rounded-full flex items-center justify-center transition-colors hover:bg-[color:var(--v2-input-bg)] flex-shrink-0 ml-2"
+            aria-label="Zatvori"
+          >
+            <X className="h-3.5 w-3.5" style={{ color: "var(--v2-text-muted)" }} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="px-6 py-5 flex flex-col gap-3">
+          {/* From */}
+          <div
+            className="flex items-center gap-3 px-4 py-3 rounded-xl border"
+            style={{ borderColor: "var(--v2-border)" }}
+          >
+            <span className="text-[11px] font-bold uppercase tracking-wider flex-shrink-0 w-[24px]" style={{ color: "var(--v2-text-muted)" }}>Sa</span>
+            <span className="text-[13px] font-medium" style={{ color: "var(--v2-text-heading)" }}>{pending.fromLabel}</span>
+          </div>
+          {/* Arrow */}
+          <div className="flex justify-center">
+            <ChevronDown className="h-4 w-4" style={{ color: "var(--v2-text-muted)" }} />
+          </div>
+          {/* To */}
+          <div
+            className="flex items-center gap-3 px-4 py-3 rounded-xl border"
+            style={{
+              borderColor: pending.hasConflict
+                ? "var(--v2-status-cancelled-fg)"
+                : "color-mix(in srgb, var(--v2-primary) 30%, transparent)",
+              background: pending.hasConflict
+                ? "var(--v2-status-cancelled-bg)"
+                : "var(--v2-primary-bg)",
+            }}
+          >
+            <span className="text-[11px] font-bold uppercase tracking-wider flex-shrink-0 w-[24px]" style={{ color: "var(--v2-text-muted)" }}>Na</span>
+            <span className="text-[13px] font-medium" style={{ color: "var(--v2-text-heading)" }}>{pending.toLabel}</span>
+          </div>
+
+          {/* Conflict warning */}
+          {pending.hasConflict && (
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ background: "var(--v2-status-cancelled-bg)" }}>
+              <AlertCircle className="h-4 w-4 flex-shrink-0" style={{ color: "var(--v2-status-cancelled-fg)" }} />
+              <p className="text-[12px] font-medium" style={{ color: "var(--v2-status-cancelled-fg)" }}>
+                Termin se preklapa sa postojecim terminom.
+              </p>
+            </div>
+          )}
+
+          {/* Series note */}
+          {pending.isSeries && (
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ background: "var(--v2-primary-bg)" }}>
+              <Repeat className="h-3.5 w-3.5 flex-shrink-0" style={{ color: "var(--v2-primary-dark)" }} />
+              <p className="text-[12px] font-medium" style={{ color: "var(--v2-primary-dark)" }}>
+                Ovo ce premestiti samo ovaj termin iz serije.
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 pb-5 flex gap-3">
+          <button
+            onClick={onCancel}
+            className="flex-1 h-10 rounded-[var(--v2-radius-pill)] text-[13px] font-medium border transition-colors hover:bg-[color:var(--v2-input-bg)]"
+            style={{ borderColor: "var(--v2-border)", color: "var(--v2-text)" }}
+          >
+            Odustani
+          </button>
+          <button
+            onClick={onConfirm}
+            disabled={pending.hasConflict}
+            className="flex-[1.5] h-10 rounded-[var(--v2-radius-pill)] text-[13px] font-semibold transition-opacity hover:opacity-90 active:opacity-75 disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{ background: "var(--v2-primary)", color: "var(--v2-primary-fg)" }}
+          >
+            Premesti
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ─── Drag ghost preview ──────────────────────────────────────────────────────
+
+function DragGhost({
+  top,
+  height,
+}: {
+  top: number;
+  height: number;
+}) {
+  return (
+    <div
+      className="absolute left-1.5 right-1.5 rounded-lg pointer-events-none"
+      style={{
+        top,
+        height,
+        background: "color-mix(in srgb, var(--v2-primary) 15%, transparent)",
+        border: "2px dashed var(--v2-primary)",
+        zIndex: 15,
+      }}
+    />
+  );
+}
+
+// ─── Fullscreen shell ─────────────────────────────────────────────────────────
+
+function FullscreenShell({
+  children,
+  onClose,
+}: {
+  children: React.ReactNode;
+  onClose: () => void;
+}) {
+  // Scroll lock
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, []);
+
+  // ESC to close
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[50] flex flex-col"
+      style={{ background: "var(--v2-surface)" }}
+    >
+      {/* Close bar */}
+      <div
+        className="flex items-center justify-between px-5 py-2.5 flex-shrink-0 border-b border-[color:var(--v2-border)]"
+        style={{ background: "var(--v2-surface)" }}
+      >
+        <div className="flex items-center gap-3">
+          <div
+            className="h-8 w-8 rounded-lg flex items-center justify-center"
+            style={{ background: "var(--v2-primary)" }}
+          >
+            <CalendarDays className="h-4 w-4 text-white" />
+          </div>
+          <span className="text-[14px] font-semibold" style={{ color: "var(--v2-text-heading)" }}>
+            Kalendar termina
+          </span>
+        </div>
+        <button
+          onClick={onClose}
+          className="h-8 px-3 rounded-[var(--v2-radius-pill)] border border-[color:var(--v2-border)] text-[12px] font-medium flex items-center gap-2 transition-colors hover:bg-[color:var(--v2-input-bg)]"
+          style={{ color: "var(--v2-text)" }}
+        >
+          <Minimize2 className="h-3.5 w-3.5" style={{ color: "var(--v2-text-muted)" }} />
+          Smanji
+        </button>
+      </div>
+      {/* Calendar fills remaining space */}
+      <div className="flex-1 min-h-0 flex flex-col gap-3 p-4 overflow-hidden">
+        {children}
+      </div>
+    </div>
+  );
+}
+
 // ─── Appointment card ─────────────────────────────────────────────────────────
 
 function AppointmentCard({
@@ -565,32 +833,60 @@ function AppointmentCard({
   height,
   maxHeight,
   onCardClick,
+  onDragStart: onDragStartProp,
 }: {
   appointment: Appointment;
   top: number;
   height: number;
   maxHeight: number;
   onCardClick?: (appt: Appointment) => void;
+  onDragStart?: (appt: Appointment, offsetY: number) => void;
 }) {
   const displayStatus = getDisplayStatus(appointment.status, appointment.isUrgent);
   const s = STATUS_STYLES[displayStatus];
   const cardHeight = Math.min(clamp(height, 48, 300), maxHeight);
   const isCompact  = cardHeight < 65;
   const isCanceled = appointment.status === "OTKAZANO";
+  const isDraggable = !!onDragStartProp && !isCanceled;
 
   return (
     <div
       className={`absolute left-1.5 right-1.5 rounded-lg border overflow-hidden transition-all duration-150 ${isCanceled ? "" : "hover:-translate-y-px hover:shadow-md"} focus-within:ring-2 focus-within:ring-[color:var(--v2-primary)] focus-within:ring-offset-1 ${s.card}`}
-      style={{ top, height: cardHeight, maxHeight, cursor: onCardClick ? "pointer" : "default" }}
+      style={{
+        top,
+        height: cardHeight,
+        maxHeight,
+        cursor: onCardClick ? "pointer" : "default",
+      }}
       tabIndex={0}
       role="button"
-      aria-label={`${appointment.patientName} — ${appointment.procedureLabel}, ${appointment.startTime}`}
+      draggable={isDraggable}
+      aria-label={`${appointment.patientName} - ${appointment.procedureLabel}, ${appointment.startTime}`}
       onClick={(e) => { e.stopPropagation(); onCardClick?.(appointment); }}
+      onDragStart={isDraggable ? (e) => {
+        // Suppress default browser drag ghost — show our own DragGhost in grid
+        const img = new Image();
+        img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+        e.dataTransfer.setDragImage(img, 0, 0);
+        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+        const offsetY = e.clientY - rect.top;
+        e.dataTransfer.setData("apptId", appointment.id);
+        e.dataTransfer.setData("offsetY", String(Math.round(offsetY)));
+        e.dataTransfer.effectAllowed = "move";
+        onDragStartProp(appointment, offsetY);
+      } : undefined}
     >
       <div className="h-full grid grid-cols-[3px_1fr]">
         <div className={s.bar} />
         <div className={`flex flex-col min-w-0 overflow-hidden ${isCompact ? "px-1.5 py-1" : "px-2 py-1.5"}`}>
           <div className="flex items-center justify-between gap-1 mb-0.5 flex-shrink-0">
+            {/* Drag handle indicator */}
+            {isDraggable && !isCompact && (
+              <GripVertical
+                className="h-3 w-3 flex-shrink-0 cursor-grab"
+                style={{ color: "var(--v2-text-muted)", opacity: 0.4, marginLeft: -2 }}
+              />
+            )}
             <span className="text-[10px] font-semibold tabular-nums" style={{ color: "var(--v2-text-muted)" }}>
               {appointment.startTime}
             </span>
@@ -658,6 +954,7 @@ function CurrentTimeLine({
 function CalendarGrid({
   days,
   visibleAppointments,
+  allChairAppts,
   pxPerMin,
   view,
   includeWeekend,
@@ -666,9 +963,11 @@ function CalendarGrid({
   onSlotClick,
   onSlotPlusClick,
   onCardClick,
+  onPendingReschedule,
 }: {
   days: readonly DayInfo[];
   visibleAppointments: Appointment[];
+  allChairAppts?: Appointment[];
   pxPerMin: number;
   view: "daily" | "weekly";
   includeWeekend: boolean;
@@ -677,8 +976,98 @@ function CalendarGrid({
   onSlotClick?: (e: React.MouseEvent<HTMLDivElement>, dateISO: string, chairId: 1 | 2 | 3 | 4) => void;
   onSlotPlusClick?: (dateISO: string, chairId: 1 | 2 | 3 | 4) => void;
   onCardClick?: (appt: Appointment) => void;
+  onPendingReschedule?: (payload: PendingReschedule) => void;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // ── DnD state ──────────────────────────────────────────────────────────────
+  const [dropTarget, setDropTarget]   = useState<string | null>(null); // dateISO
+  const [dragHint, setDragHint]       = useState<{ x: number; y: number; text: string } | null>(null);
+  const [draggedAppt, setDraggedAppt] = useState<Appointment | null>(null);
+  const [dragPreview, setDragPreview] = useState<{ dateISO: string; timeMin: number } | null>(null);
+
+  // Clear DnD state on global dragend (fires on source element)
+  useEffect(() => {
+    const clear = () => { setDragHint(null); setDropTarget(null); setDraggedAppt(null); setDragPreview(null); };
+    document.addEventListener("dragend", clear);
+    return () => document.removeEventListener("dragend", clear);
+  }, []);
+
+  // ── DnD helpers ────────────────────────────────────────────────────────────
+
+  /** Compute snapped time (15-min) from a Y position within the scrollable body. */
+  function yToSnappedTime(clientY: number, colRect: DOMRect): string {
+    const scrollTop = scrollRef.current?.scrollTop ?? 0;
+    const relY = clientY - colRect.top + scrollTop - 8; // -8 for paddingTop spacer
+    const minsFromStart = Math.floor(relY / pxPerMin / 15) * 15;
+    const totalMin = clamp(GRID_START_MIN + minsFromStart, GRID_START_MIN, GRID_END_MIN - 15);
+    return `${padTime(Math.floor(totalMin / 60))}:${padTime(totalMin % 60)}`;
+  }
+
+  function handleDragOver(e: React.DragEvent<HTMLDivElement>, day: DayInfo) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDropTarget(day.dateISO);
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const snappedTime = yToSnappedTime(e.clientY, rect);
+    const snappedMin = toMinutes(snappedTime);
+    setDragPreview({ dateISO: day.dateISO, timeMin: snappedMin });
+    setDragHint({
+      x: e.clientX,
+      y: e.clientY,
+      text: `${day.label.slice(0, 3)}, ${snappedTime}, Stolica ${selectedChair}`,
+    });
+  }
+
+  function handleDrop(e: React.DragEvent<HTMLDivElement>, day: DayInfo) {
+    e.preventDefault();
+    const apptId  = e.dataTransfer.getData("apptId");
+    if (!apptId) return;
+
+    const appt = visibleAppointments.find((a) => a.id === apptId);
+    if (!appt) return;
+
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const scrollTop = scrollRef.current?.scrollTop ?? 0;
+    const offsetY  = parseFloat(e.dataTransfer.getData("offsetY") ?? "0");
+    const relY = e.clientY - rect.top + scrollTop - 8 - offsetY; // subtract card-top offset
+    const minsFromStart = Math.floor(relY / pxPerMin / 15) * 15;
+    const totalMin = clamp(GRID_START_MIN + minsFromStart, GRID_START_MIN, GRID_END_MIN - 15);
+    const newTime = `${padTime(Math.floor(totalMin / 60))}:${padTime(totalMin % 60)}`;
+
+    // Conflict check — use full set (allChairAppts) if provided
+    const endMin   = totalMin + appt.durationMin;
+    const checkSet = allChairAppts ?? visibleAppointments;
+    const hasConflict = checkSet.some((a) =>
+      a.id !== apptId &&
+      a.chairId === selectedChair &&
+      a.dateISO === day.dateISO &&
+      a.status !== "OTKAZANO" &&
+      toMinutes(a.startTime) < endMin &&
+      (toMinutes(a.startTime) + a.durationMin) > totalMin,
+    );
+
+    // Emit pending reschedule for confirmation modal
+    onPendingReschedule?.({
+      apptId: appt.id,
+      patientName: appt.patientName,
+      fromDateISO: appt.dateISO,
+      fromTime: appt.startTime,
+      fromChair: appt.chairId,
+      toDateISO: day.dateISO,
+      toTime: newTime,
+      toChair: selectedChair,
+      hasConflict,
+      isSeries: !!appt.seriesId,
+      fromLabel: `${appt.startTime}, Stolica ${appt.chairId}`,
+      toLabel: `${day.label.slice(0, 3)} ${day.date}, ${newTime}, Stolica ${selectedChair}`,
+    });
+
+    setDropTarget(null);
+    setDragHint(null);
+    setDraggedAppt(null);
+    setDragPreview(null);
+  }
 
   // On mount, scroll to 08:00 (1 hour from GRID_START 07:00).
   // The user can still scroll up to see 07:00.
@@ -700,9 +1089,10 @@ function CalendarGrid({
   const todayVisible = days.some((d) => d.dayKey === TODAY_KEY);
 
   return (
-    // overflow: clip — clips to border-radius without creating a scroll context,
-    // so position:sticky inside the child overflow-auto works correctly.
-    // Graceful degradation: Safari < 16 shows no corner clip but layout is correct.
+    <>
+    {/* overflow: clip — clips to border-radius without creating a scroll context,
+        so position:sticky inside the child overflow-auto works correctly.
+        Graceful degradation: Safari < 16 shows no corner clip but layout is correct. */}
     <div
       className="rounded-[var(--v2-radius-card)] border border-[color:var(--v2-border)] bg-[color:var(--v2-surface)] flex flex-col flex-1 min-h-0"
       style={{ overflow: "clip" }}
@@ -779,9 +1169,10 @@ function CalendarGrid({
 
           {/* Day columns */}
           {days.map((day) => {
-            const isToday   = day.dayKey === TODAY_KEY;
-            const isWeekend = WEEKEND_KEYS.includes(day.dayKey);
-            const dayAppts  = visibleAppointments.filter((a) => a.dayKey === day.dayKey);
+            const isToday      = day.dayKey === TODAY_KEY;
+            const isWeekend    = WEEKEND_KEYS.includes(day.dayKey);
+            const dayAppts     = visibleAppointments.filter((a) => a.dayKey === day.dayKey);
+            const isDropTarget = onPendingReschedule && dropTarget === day.dateISO;
 
             return (
               <div
@@ -799,12 +1190,22 @@ function CalendarGrid({
                   style={{ height: gridHeight, cursor: onSlotClick ? "pointer" : "default" }}
                   className="relative group"
                   onClick={onSlotClick ? (e) => onSlotClick(e, day.dateISO, selectedChair) : undefined}
+                  onDragOver={onPendingReschedule ? (e) => handleDragOver(e, day) : undefined}
+                  onDragLeave={onPendingReschedule ? () => { setDropTarget(null); setDragPreview(null); } : undefined}
+                  onDrop={onPendingReschedule ? (e) => handleDrop(e, day) : undefined}
                 >
                   {/* Slot hover tint — pointer-events-none so it doesn't block card clicks */}
                   {onSlotClick && (
                     <div
                       className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-100 pointer-events-none"
                       style={{ background: "color-mix(in srgb, var(--v2-primary) 8%, transparent)", zIndex: 0 }}
+                    />
+                  )}
+                  {/* Drop target highlight */}
+                  {isDropTarget && (
+                    <div
+                      className="absolute inset-0 pointer-events-none"
+                      style={{ background: "color-mix(in srgb, var(--v2-primary) 12%, transparent)", zIndex: 1 }}
                     />
                   )}
                   {/* Plus affordance — separate callback avoids Y-offset bug (button rect ≠ slot rect) */}
@@ -858,9 +1259,17 @@ function CalendarGrid({
                         height={h}
                         maxHeight={maxH}
                         onCardClick={onCardClick}
+                        onDragStart={onPendingReschedule ? (appt) => setDraggedAppt(appt) : undefined}
                       />
                     );
                   })}
+                  {/* Drag ghost preview */}
+                  {dragPreview && draggedAppt && dragPreview.dateISO === day.dateISO && (
+                    <DragGhost
+                      top={Math.round((dragPreview.timeMin - GRID_START_MIN) * pxPerMin)}
+                      height={Math.round(draggedAppt.durationMin * pxPerMin)}
+                    />
+                  )}
                 </div>
               </div>
             );
@@ -873,7 +1282,24 @@ function CalendarGrid({
         </div>
         </div> {/* /paddingTop spacer */}
       </div>
+
     </div>
+
+    {/* ── Drag hint (fixed, follows cursor) ── */}
+    {dragHint && (
+      <div
+        className="fixed z-[100] pointer-events-none px-2.5 py-1 rounded-lg text-[11px] font-semibold"
+        style={{
+          left: dragHint.x + 14,
+          top: dragHint.y - 10,
+          background: "var(--v2-primary)",
+          color: "var(--v2-primary-fg)",
+        }}
+      >
+        {dragHint.text}
+      </div>
+    )}
+    </>
   );
 }
 
@@ -1015,12 +1441,17 @@ export function CalendarNewDesignOgie({
   );
 
   // ── Appointments from shared context ──────────────────────────────────────
-  const { appointments, addAppointment, cancelAppointment } = useAppointments();
+  const { appointments, addAppointment, cancelAppointment, rescheduleAppointment, updateAppointment } = useAppointments();
   const router = useRouter();
 
   // ── Appointment details drawer state ───────────────────────────────────────
   const [detailsOpen, setDetailsOpen]       = useState(false);
   const [selectedAppt, setSelectedAppt]     = useState<Appointment | null>(null);
+
+  // ── Edit-appointment state ────────────────────────────────────────────────
+  const [editingAppt, setEditingAppt] = useState<Appointment | null>(null);
+  const [pendingReschedule, setPendingReschedule] = useState<PendingReschedule | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // ── Create-appointment drawer state ────────────────────────────────────────
   const [drawerOpen, setDrawerOpen]               = useState(false);
@@ -1126,8 +1557,23 @@ export function CalendarNewDesignOgie({
     router.push(`/ui-lab/figma-dashboard/calendar/appointments/${id}/complete`);
   };
 
-  return (
-    <div className="flex-1 min-h-0 flex flex-col gap-3">
+  const handleEditAppt = (appt: Appointment) => {
+    setEditingAppt(appt);
+    setDrawerInitialDate(appt.dateISO);
+    setDrawerInitialTime(appt.startTime);
+    setDrawerInitialChairId(appt.chairId);
+    setDetailsOpen(false);
+    setSelectedAppt(null);
+    setDrawerOpen(true);
+  };
+
+  const handleDrawerOpenChange = (open: boolean) => {
+    setDrawerOpen(open);
+    if (!open) setEditingAppt(null);
+  };
+
+  const calendarContent = (
+    <>
       <CalendarTopBar
         view={view}
         onViewChange={setView}
@@ -1142,6 +1588,7 @@ export function CalendarNewDesignOgie({
         onExport={handleExport}
         exportDisabled={exportableAppts.length === 0}
         onNewAppointment={handleNewAppointment}
+        onFullscreen={!isFullscreen ? () => setIsFullscreen(true) : undefined}
       />
 
       {view === "monthly" ? (
@@ -1155,6 +1602,7 @@ export function CalendarNewDesignOgie({
         <CalendarGrid
           days={DAYS}
           visibleAppointments={visibleAppointments}
+          allChairAppts={chairAppointments}
           pxPerMin={pxPerMin}
           view={view}
           includeWeekend={includeWeekend}
@@ -1163,16 +1611,34 @@ export function CalendarNewDesignOgie({
           onSlotClick={handleSlotClick}
           onSlotPlusClick={handlePlusClick}
           onCardClick={handleCardClick}
+          onPendingReschedule={(payload) => setPendingReschedule(payload)}
         />
+      )}
+    </>
+  );
+
+  return (
+    <div className="flex-1 min-h-0 flex flex-col gap-3">
+      {isFullscreen ? (
+        <FullscreenShell onClose={() => setIsFullscreen(false)}>
+          {calendarContent}
+        </FullscreenShell>
+      ) : (
+        calendarContent
       )}
 
       <CreateAppointmentDrawer
         open={drawerOpen}
-        onOpenChange={setDrawerOpen}
+        onOpenChange={handleDrawerOpenChange}
         initialDate={drawerInitialDate}
         initialTime={drawerInitialTime}
         initialChairId={drawerInitialChairId}
         onCreated={handleAppointmentCreated}
+        editingAppointment={editingAppt}
+        onUpdated={(id, patch) => {
+          updateAppointment(id, patch);
+          setEditingAppt(null);
+        }}
       />
 
       <AppointmentDetailsDrawer
@@ -1181,6 +1647,23 @@ export function CalendarNewDesignOgie({
         appointment={selectedAppt}
         onCancel={handleCancelAppt}
         onComplete={handleCompleteAppt}
+        onEdit={handleEditAppt}
+      />
+
+      <RescheduleConfirmModal
+        open={!!pendingReschedule}
+        pending={pendingReschedule}
+        onConfirm={() => {
+          if (pendingReschedule) {
+            rescheduleAppointment(pendingReschedule.apptId, {
+              dateISO: pendingReschedule.toDateISO,
+              startTime: pendingReschedule.toTime,
+              chairId: pendingReschedule.toChair,
+            });
+          }
+          setPendingReschedule(null);
+        }}
+        onCancel={() => setPendingReschedule(null)}
       />
     </div>
   );

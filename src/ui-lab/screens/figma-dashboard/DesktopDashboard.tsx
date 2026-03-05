@@ -28,6 +28,7 @@ import {
   statIcon,
   StatusBadge,
   DropdownPill,
+  ChartCardHeader,
   statusLabels,
 } from "./shared";
 
@@ -243,55 +244,17 @@ export default function DesktopDashboard({ className }: { className?: string }) 
                 borderRadius: "var(--v2-radius-card)",
               }}
             >
-              {/* Header row: title + dropdown */}
-              <div className="flex items-center justify-between">
-                <h3
-                  className="font-semibold leading-[1.25]"
-                  style={{ fontSize: "14px", color: "var(--v2-text-heading)" }}
-                >
-                  Statistika zarade
-                </h3>
-                <DropdownPill>Ove godine</DropdownPill>
-              </div>
-
-              {/* Body */}
-              <div className="flex flex-col gap-[16px]">
-                {/* Revenue & Legends row */}
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col gap-[4px]">
-                    <span
-                      className="text-[11px] leading-[1.24]"
-                      style={{ color: "var(--v2-text-muted)" }}
-                    >
-                      Ukupan prihod
-                    </span>
-                    <span
-                      className="font-bold leading-[1.1]"
-                      style={{ fontSize: "24px", color: "var(--v2-primary-dark)" }}
-                    >
-                      $129,850
-                    </span>
-                  </div>
-                  {/* Legends — Figma: gap-[25px] between items, dot size-[8px] rounded-[4px], item gap-[8px] */}
-                  <div className="flex items-center gap-[25px]">
-                    <div className="flex items-center gap-[8px]">
-                      <span
-                        className="inline-block flex-shrink-0"
-                        style={{ width: "8px", height: "8px", borderRadius: "4px", background: "var(--v2-primary)" }}
-                      />
-                      <span className="text-[12px] leading-[1.3]" style={{ color: "var(--v2-text)" }}>Dobit</span>
-                    </div>
-                    <div className="flex items-center gap-[8px]">
-                      <span
-                        className="inline-block flex-shrink-0"
-                        style={{ width: "8px", height: "8px", borderRadius: "4px", background: "var(--v2-primary-dark)" }}
-                      />
-                      <span className="text-[12px] leading-[1.3]" style={{ color: "var(--v2-text)" }}>Troškovi</span>
-                    </div>
-                  </div>
-                </div>
-                <LineAreaChart data={mockV2EarningStats} height={186} smooth />
-              </div>
+              <ChartCardHeader
+                title="Statistika zarade"
+                dropdownLabel="Ove godine"
+                subtext="Ukupan prihod"
+                value="$129,850"
+                legends={[
+                  { label: "Dobit",    color: "var(--v2-primary)" },
+                  { label: "Troškovi", color: "var(--v2-primary-dark)" },
+                ]}
+              />
+              <LineAreaChart data={mockV2EarningStats} height={186} smooth />
             </div>
 
             {/* Patients by Age Stages — same structure as Earning widget */}
@@ -302,71 +265,27 @@ export default function DesktopDashboard({ className }: { className?: string }) 
                 borderRadius: "var(--v2-radius-card)",
               }}
             >
-              {/* Header row */}
-              <div className="flex items-center justify-between">
-                <h3
-                  className="font-semibold leading-[1.25]"
-                  style={{ fontSize: "14px", color: "var(--v2-text-heading)" }}
-                >
-                  Pacijenti po starosnim grupama
-                </h3>
-                <DropdownPill>Ove nedelje</DropdownPill>
-              </div>
-
-              {/* Body */}
-              <div className="flex flex-col gap-[16px]">
-                {/* Revenue & Legends — Figma: Children=#e2e2e3 (Gray-Line = var(--v2-border)) */}
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col gap-[4px]">
-                    <span
-                      className="text-[11px] leading-[1.24]"
-                      style={{ color: "var(--v2-text-muted)" }}
-                    >
-                      Ukupno pacijenata
-                    </span>
-                    <span
-                      className="font-bold leading-[1.1]"
-                      style={{ fontSize: "24px", color: "var(--v2-primary-dark)" }}
-                    >
-                      685
-                    </span>
-                  </div>
-                  {/* Legends — gap-[25px], dot size-[8px] rounded-[4px] */}
-                  <div className="flex items-center gap-[25px]">
-                    <div className="flex items-center gap-[8px]">
-                      <span
-                        className="inline-block flex-shrink-0"
-                        style={{ width: "8px", height: "8px", borderRadius: "4px", background: "var(--v2-border)" }}
-                      />
-                      <span className="text-[12px] leading-[1.3]" style={{ color: "var(--v2-text)" }}>Children</span>
-                    </div>
-                    <div className="flex items-center gap-[8px]">
-                      <span
-                        className="inline-block flex-shrink-0"
-                        style={{ width: "8px", height: "8px", borderRadius: "4px", background: "var(--v2-primary)" }}
-                      />
-                      <span className="text-[12px] leading-[1.3]" style={{ color: "var(--v2-text)" }}>Teens</span>
-                    </div>
-                    <div className="flex items-center gap-[8px]">
-                      <span
-                        className="inline-block flex-shrink-0"
-                        style={{ width: "8px", height: "8px", borderRadius: "4px", background: "var(--v2-primary-dark)" }}
-                      />
-                      <span className="text-[12px] leading-[1.3]" style={{ color: "var(--v2-text)" }}>Adults</span>
-                    </div>
-                  </div>
-                </div>
-                <GroupedBarChart
-                  data={mockV2AgeStages}
-                  labelKey="day"
-                  series={[
-                    { key: "children", color: "var(--v2-border)" },
-                    { key: "teens",    color: "var(--v2-primary)" },
-                    { key: "adults",   color: "var(--v2-primary-dark)" },
-                  ]}
-                  height={186}
-                />
-              </div>
+              <ChartCardHeader
+                title="Pacijenti po starosnim grupama"
+                dropdownLabel="Ove nedelje"
+                subtext="Ukupno pacijenata"
+                value="685"
+                legends={[
+                  { label: "Children", color: "var(--v2-border)" },
+                  { label: "Teens",    color: "var(--v2-primary)" },
+                  { label: "Adults",   color: "var(--v2-primary-dark)" },
+                ]}
+              />
+              <GroupedBarChart
+                data={mockV2AgeStages}
+                labelKey="day"
+                series={[
+                  { key: "children", color: "var(--v2-border)" },
+                  { key: "teens",    color: "var(--v2-primary)" },
+                  { key: "adults",   color: "var(--v2-primary-dark)" },
+                ]}
+                height={186}
+              />
             </div>
           </div>
 
@@ -381,64 +300,26 @@ export default function DesktopDashboard({ className }: { className?: string }) 
                 borderRadius: "var(--v2-radius-card)",
               }}
             >
-              {/* Header row: title + dropdown */}
-              <div className="flex items-center justify-between">
-                <h3
-                  className="font-semibold leading-[1.25]"
-                  style={{ fontSize: "14px", color: "var(--v2-text-heading)" }}
-                >
-                  Pacijenti po polu
-                </h3>
-                <DropdownPill>Poslednjih 7 meseci</DropdownPill>
-              </div>
-
-              {/* Body */}
-              <div className="flex flex-col gap-[16px]">
-                {/* Revenue & Legends row */}
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col gap-[4px]">
-                    <span
-                      className="text-[11px] leading-[1.24]"
-                      style={{ color: "var(--v2-text-muted)" }}
-                    >
-                      Ukupno pacijenata
-                    </span>
-                    <span
-                      className="font-bold leading-[1.1]"
-                      style={{ fontSize: "24px", color: "var(--v2-primary-dark)" }}
-                    >
-                      17,498
-                    </span>
-                  </div>
-                  {/* Legends — Figma: gap-[25px], dot size-[8px] rounded-[4px] */}
-                  <div className="flex items-center gap-[25px]">
-                    <div className="flex items-center gap-[8px]">
-                      <span
-                        className="inline-block flex-shrink-0"
-                        style={{ width: "8px", height: "8px", borderRadius: "4px", background: "var(--v2-primary-dark)" }}
-                      />
-                      <span className="text-[12px] leading-[1.3]" style={{ color: "var(--v2-text)" }}>Muški</span>
-                    </div>
-                    <div className="flex items-center gap-[8px]">
-                      <span
-                        className="inline-block flex-shrink-0"
-                        style={{ width: "8px", height: "8px", borderRadius: "4px", background: "var(--v2-primary)" }}
-                      />
-                      <span className="text-[12px] leading-[1.3]" style={{ color: "var(--v2-text)" }}>Ženski</span>
-                    </div>
-                  </div>
-                </div>
-                <GroupedBarChart
-                  data={mockV2GenderStats}
-                  labelKey="day"
-                  series={[
-                    { key: "male",   color: "var(--v2-primary-dark)" },
-                    { key: "female", color: "var(--v2-primary)" },
-                  ]}
-                  height={212}
-                  variant="stacked"
-                />
-              </div>
+              <ChartCardHeader
+                title="Pacijenti po polu"
+                dropdownLabel="Poslednjih 7 meseci"
+                subtext="Ukupno pacijenata"
+                value="17,498"
+                legends={[
+                  { label: "Muški",  color: "var(--v2-primary-dark)" },
+                  { label: "Ženski", color: "var(--v2-primary)" },
+                ]}
+              />
+              <GroupedBarChart
+                data={mockV2GenderStats}
+                labelKey="day"
+                series={[
+                  { key: "male",   color: "var(--v2-primary-dark)" },
+                  { key: "female", color: "var(--v2-primary)" },
+                ]}
+                height={212}
+                variant="stacked"
+              />
             </div>
 
             {/* Patients by Consultation */}

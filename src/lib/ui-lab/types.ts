@@ -31,6 +31,34 @@ export type Appointment = {
   apptType?: ApptType;
   treatments?: Treatment[];
   completedAt?: string;
+  // Recurrence fields
+  seriesId?: string;       // FK → RecurrenceSeries.id; undefined = standalone
+  isException?: boolean;   // true if manually detached/edited from series
+  originalDateISO?: string; // original scheduled date if instance was moved
+};
+
+// ─── Recurrence Series ────────────────────────────────────────────────────────
+
+export type SeriesFrequency = "weekly";
+export type SeriesStatus    = "active" | "completed" | "cancelled";
+
+export type RecurrenceSeries = {
+  id: string;
+  patientName: string;
+  procedureLabel: string;
+  doctorName?: string;
+  chairId: 1 | 2 | 3 | 4;
+  frequency: SeriesFrequency;
+  weekdays: (0 | 1 | 2 | 3 | 4 | 5 | 6)[]; // 0=Mon … 6=Sun, sorted ascending, min 1 element
+  startTime: string;           // "HH:MM"
+  durationMin: number;
+  seriesStartDate: string;     // "YYYY-MM-DD" — first occurrence
+  seriesEndDate: string | null; // null when using maxOccurrences
+  maxOccurrences: number | null; // null when using seriesEndDate
+  skippedDates: string[];      // "YYYY-MM-DD"[] — excluded during generation
+  status: SeriesStatus;
+  notes?: string;
+  createdAt: string;           // ISO timestamp
 };
 
 // ─── Treatment ────────────────────────────────────────────────────────────────

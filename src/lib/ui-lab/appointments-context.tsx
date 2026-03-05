@@ -8,7 +8,15 @@ import React, {
   useCallback,
   type ReactNode,
 } from "react";
-import type { Appointment, Treatment, ApptType } from "./types";
+import type { Appointment, DayKey, Treatment, ApptType, RecurrenceSeries, SeriesStatus } from "./types";
+
+// ─── Local helper ─────────────────────────────────────────────────────────────
+
+const DAY_KEYS_BY_JS_DOW: DayKey[] = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+
+function dateToDayKey(iso: string): DayKey {
+  return DAY_KEYS_BY_JS_DOW[new Date(iso + "T12:00:00").getDay()];
+}
 
 // ─── Seed data (mirrors MOCK_APPTS_INITIAL in CalendarNewDesign) ──────────────
 // Keeping the seed here so CalendarNewDesign can drop its local useState.
@@ -39,7 +47,35 @@ const SEED_APPOINTMENTS: Appointment[] = [
   { id: "apt-019", patientName: "Đorđe Vasić",       procedureLabel: "Vađenje umnjaka",     startTime: "14:00", dateISO: "2025-12-12", dayKey: "fri", chairId: 3, status: "ZAKAZANO",  isUrgent: true, durationMin: 60 },
 ];
 
-const STORAGE_KEY = "odontoa_v2_appointments";
+const STORAGE_KEY        = "odontoa_v2_appointments";
+const SERIES_STORAGE_KEY = "odontoa_v2_series";
+
+function loadSeriesFromStorage(): RecurrenceSeries[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(SERIES_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as RecurrenceSeries[];
+    // Migration: old format had singular `weekday: number`; migrate to `weekdays: number[]`
+    return parsed.map((s) => {
+      const legacy = s as RecurrenceSeries & { weekday?: number };
+      if (legacy.weekday !== undefined && !s.weekdays) {
+        const { weekday, ...rest } = legacy;
+        return { ...rest, weekdays: [weekday] } as RecurrenceSeries;
+      }
+      return s;
+    });
+  } catch {
+    return [];
+  }
+}
+
+function saveSeriesToStorage(series: RecurrenceSeries[]): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(SERIES_STORAGE_KEY, JSON.stringify(series));
+  } catch {}
+}
 
 function loadFromStorage(): Appointment[] {
   if (typeof window === "undefined") return SEED_APPOINTMENTS;
@@ -63,13 +99,28 @@ function saveToStorage(appointments: Appointment[]): void {
 
 // ─── Context shape ────────────────────────────────────────────────────────────
 
+type CancelPayload = { reason: string; note?: string };
+
 type AppointmentsContextValue = {
   appointments: Appointment[];
+  series: RecurrenceSeries[];
   addAppointment: (appt: Appointment) => void;
-  cancelAppointment: (id: string, payload: { reason: string; note?: string }) => void;
+  cancelAppointment: (id: string, payload: CancelPayload) => void;
   completeAppointment: (
     id: string,
     payload: { apptType: ApptType; treatments: Treatment[] },
+  ) => void;
+  // Series operations
+  addSeries: (s: RecurrenceSeries, instances: Appointment[]) => void;
+  updateSeriesField: (seriesId: string, patch: Partial<RecurrenceSeries>) => void;
+  cancelSeriesFuture: (seriesId: string, fromDateISO: string, payload: CancelPayload) => void;
+  cancelSeriesAll: (seriesId: string, payload: CancelPayload) => void;
+  // Edit (update any field; series instance: mark as exception)
+  updateAppointment: (id: string, patch: Partial<Appointment>) => void;
+  // Reschedule (standalone: update date/time/chair; series instance: mark as exception)
+  rescheduleAppointment: (
+    id: string,
+    patch: { dateISO: string; startTime: string; chairId: 1 | 2 | 3 | 4 },
   ) => void;
 };
 
@@ -79,16 +130,17 @@ const AppointmentsContext = createContext<AppointmentsContextValue | null>(null)
 
 export function AppointmentsProvider({ children }: { children: ReactNode }) {
   const [appointments, setAppointments] = useState<Appointment[]>(SEED_APPOINTMENTS);
+  const [series, setSeries]             = useState<RecurrenceSeries[]>([]);
 
   // Hydrate from localStorage on mount (client only)
   useEffect(() => {
     setAppointments(loadFromStorage());
+    setSeries(loadSeriesFromStorage());
   }, []);
 
   // Persist to localStorage whenever appointments change
-  useEffect(() => {
-    saveToStorage(appointments);
-  }, [appointments]);
+  useEffect(() => { saveToStorage(appointments); }, [appointments]);
+  useEffect(() => { saveSeriesToStorage(series); }, [series]);
 
   const addAppointment = useCallback((appt: Appointment) => {
     setAppointments((prev) => [...prev, appt]);
@@ -115,8 +167,8 @@ export function AppointmentsProvider({ children }: { children: ReactNode }) {
 
   const completeAppointment = useCallback(
     (id: string, payload: { apptType: ApptType; treatments: Treatment[] }) => {
-      setAppointments((prev) =>
-        prev.map((a) =>
+      setAppointments((prev) => {
+        const next = prev.map((a) =>
           a.id === id
             ? {
                 ...a,
@@ -126,7 +178,119 @@ export function AppointmentsProvider({ children }: { children: ReactNode }) {
                 completedAt: new Date().toISOString(),
               }
             : a,
+        );
+        // Auto-complete series if no ZAKAZANO instances remain
+        const completed = next.find((a) => a.id === id);
+        if (completed?.seriesId) {
+          const sid = completed.seriesId;
+          const hasRemaining = next.some((a) => a.seriesId === sid && a.status === "ZAKAZANO");
+          if (!hasRemaining) {
+            setSeries((prev) =>
+              prev.map((s) => s.id === sid ? { ...s, status: "completed" as SeriesStatus } : s),
+            );
+          }
+        }
+        return next;
+      });
+    },
+    [],
+  );
+
+  // ─── Series operations ──────────────────────────────────────────────────────
+
+  const addSeries = useCallback((s: RecurrenceSeries, instances: Appointment[]) => {
+    setSeries((prev) => [...prev, s]);
+    setAppointments((prev) => [...prev, ...instances]);
+  }, []);
+
+  const updateSeriesField = useCallback((seriesId: string, patch: Partial<RecurrenceSeries>) => {
+    setSeries((prev) =>
+      prev.map((s) => s.id === seriesId ? { ...s, ...patch } : s),
+    );
+  }, []);
+
+  const cancelSeriesFuture = useCallback(
+    (seriesId: string, fromDateISO: string, payload: { reason: string; note?: string }) => {
+      const now = new Date().toISOString();
+      setAppointments((prev) =>
+        prev.map((a) =>
+          a.seriesId === seriesId && a.status === "ZAKAZANO" && a.dateISO >= fromDateISO
+            ? { ...a, status: "OTKAZANO" as const, cancelReason: payload.reason, cancelNote: payload.note, canceledAt: now }
+            : a,
         ),
+      );
+      // Update series end date to day before fromDateISO
+      setSeries((prev) =>
+        prev.map((s) => {
+          if (s.id !== seriesId) return s;
+          const d = new Date(fromDateISO + "T00:00:00");
+          d.setDate(d.getDate() - 1);
+          return { ...s, seriesEndDate: d.toISOString().slice(0, 10), status: "completed" as SeriesStatus };
+        }),
+      );
+    },
+    [],
+  );
+
+  const rescheduleAppointment = useCallback(
+    (id: string, patch: { dateISO: string; startTime: string; chairId: 1 | 2 | 3 | 4 }) => {
+      setAppointments((prev) =>
+        prev.map((a) => {
+          if (a.id !== id) return a;
+          const isSeriesAppt = !!a.seriesId;
+          return {
+            ...a,
+            dateISO: patch.dateISO,
+            dayKey: dateToDayKey(patch.dateISO),
+            startTime: patch.startTime,
+            chairId: patch.chairId,
+            ...(isSeriesAppt
+              ? {
+                  isException: true,
+                  originalDateISO: a.originalDateISO ?? a.dateISO,
+                }
+              : {}),
+          };
+        }),
+      );
+    },
+    [],
+  );
+
+  const updateAppointment = useCallback(
+    (id: string, patch: Partial<Appointment>) => {
+      setAppointments((prev) =>
+        prev.map((a) => {
+          if (a.id !== id) return a;
+          const updated = { ...a, ...patch };
+          // Recompute dayKey if dateISO changed
+          if (patch.dateISO) {
+            updated.dayKey = dateToDayKey(patch.dateISO);
+          }
+          // Series instance: mark as exception
+          if (a.seriesId) {
+            updated.isException = true;
+            updated.originalDateISO = a.originalDateISO ?? a.dateISO;
+          }
+          return updated;
+        }),
+      );
+    },
+    [],
+  );
+
+  const cancelSeriesAll = useCallback(
+    (seriesId: string, payload: { reason: string; note?: string }) => {
+      const now = new Date().toISOString();
+      setAppointments((prev) =>
+        prev.map((a) =>
+          a.seriesId === seriesId && a.status === "ZAKAZANO"
+            ? { ...a, status: "OTKAZANO" as const, cancelReason: payload.reason, cancelNote: payload.note, canceledAt: now }
+            : a,
+        ),
+      );
+      setSeries((prev) =>
+        prev.map((s) => s.id === seriesId ? { ...s, status: "cancelled" as SeriesStatus } : s),
       );
     },
     [],
@@ -134,7 +298,19 @@ export function AppointmentsProvider({ children }: { children: ReactNode }) {
 
   return (
     <AppointmentsContext.Provider
-      value={{ appointments, addAppointment, cancelAppointment, completeAppointment }}
+      value={{
+        appointments,
+        series,
+        addAppointment,
+        cancelAppointment,
+        completeAppointment,
+        addSeries,
+        updateSeriesField,
+        cancelSeriesFuture,
+        cancelSeriesAll,
+        updateAppointment,
+        rescheduleAppointment,
+      }}
     >
       {children}
     </AppointmentsContext.Provider>
