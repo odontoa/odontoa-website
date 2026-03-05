@@ -4,6 +4,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Settings, Bell, MessageCircle, Pencil, MoreHorizontal, Plus, Trash2, FileText } from "lucide-react";
+import { DokumentiDrawer } from "./DokumentiDrawer";
 import { FigmaDesktopSidebar } from "@/ui-lab/screens/figma-dashboard/sidebars";
 import { DropdownPill } from "@/ui-lab/screens/figma-dashboard/shared";
 import type { PatientForDetails } from "./mock";
@@ -233,7 +234,7 @@ function formatDateOfBirth(iso: string): string {
 // ─── Card A: General Info (557×142) + Well-Being Progress (557×260) ──────────
 // Combined into single card (557×422) with internal divider — Figma node 168:7122
 
-function CardGeneralAndWellbeing({ patient }: { patient: PatientForDetails }) {
+function CardGeneralAndWellbeing({ patient, onEdit, onDelete }: { patient: PatientForDetails; onEdit?: () => void; onDelete?: () => void }) {
   return (
     <Card style={{ display: "flex", flexDirection: "column", minHeight: "422px" }}>
 
@@ -258,7 +259,7 @@ function CardGeneralAndWellbeing({ patient }: { patient: PatientForDetails }) {
                 {patient.fullName}
               </span>
               <span style={{ fontSize: "12px", color: "var(--v2-text-muted)" }}>
-                MDF-P{String(patient.id).padStart(3, "0")}
+                {patient.patientCode ?? `MDF-P${String(patient.id).padStart(3, "0")}`}
               </span>
             </div>
             <div className="flex items-center gap-[8px] flex-shrink-0">
@@ -268,7 +269,18 @@ function CardGeneralAndWellbeing({ patient }: { patient: PatientForDetails }) {
               >
                 <MessageCircle style={{ width: "16px", height: "16px", color: "var(--v2-primary-dark)" }} />
               </button>
+              {onDelete && (
+                <button
+                  onClick={onDelete}
+                  className="flex items-center justify-center flex-shrink-0"
+                  style={{ width: "36px", height: "36px", borderRadius: "20px", background: "var(--v2-status-cancelled-bg)", border: "none", cursor: "pointer" }}
+                  title="Obriši pacijenta"
+                >
+                  <Trash2 style={{ width: "16px", height: "16px", color: "var(--v2-status-cancelled-fg)" }} />
+                </button>
+              )}
               <button
+                onClick={onEdit}
                 className="flex items-center gap-[6px] flex-shrink-0"
                 style={{ height: "36px", padding: "0 16px", borderRadius: "20px", background: "var(--v2-primary)", border: "none", cursor: "pointer", color: "var(--v2-primary-fg)", fontSize: "12px", fontWeight: 500 }}
               >
@@ -673,7 +685,19 @@ function CardMedicineHistory() {
 
 // ─── Main Screen ──────────────────────────────────────────
 
-export default function DesktopPatientDetails({ patient, className }: { patient: PatientForDetails; className?: string }) {
+export default function DesktopPatientDetails({
+  patient,
+  className,
+  onEdit,
+  onDelete,
+}: {
+  patient: PatientForDetails;
+  className?: string;
+  onEdit?: () => void;
+  onDelete?: () => void;
+}) {
+  const [dokumentiOpen, setDokumentiOpen] = useState(false);
+
   return (
     <div
       className={`flex h-full overflow-hidden ${className ?? ""}`}
@@ -693,9 +717,20 @@ export default function DesktopPatientDetails({ patient, className }: { patient:
           className="flex-1 overflow-y-auto p-[20px] flex flex-col gap-[20px] rounded-[24px]"
           style={{ background: "var(--v2-bg)" }}
         >
+          {/* Tab bar — future: Karton / Slike / X-ray / … */}
+          <div className="flex items-center gap-[8px] flex-shrink-0">
+            <button
+              onClick={() => setDokumentiOpen(true)}
+              className="flex items-center gap-[6px] px-[14px] py-[6px] text-[13px] font-semibold rounded-full hover:opacity-80 transition-opacity"
+              style={{ background: "var(--v2-primary)", color: "var(--v2-primary-fg)", border: "none", cursor: "pointer" }}
+            >
+              <FileText size={14} /> Dokumenti
+            </button>
+          </div>
+
           {/* ROW 1 — Card A capped at Figma 557px; right cards grow from 268px to fill extra space */}
           <div className="grid gap-[20px]" style={{ gridTemplateColumns: "minmax(0, 557px) minmax(268px, 1fr) minmax(268px, 1fr)" }}>
-            <CardGeneralAndWellbeing patient={patient} />
+            <CardGeneralAndWellbeing patient={patient} onEdit={onEdit} onDelete={onDelete} />
             <CardUpcoming patient={patient} />
             <CardTreatmentHistory patient={patient} />
           </div>
@@ -711,6 +746,12 @@ export default function DesktopPatientDetails({ patient, className }: { patient:
           </div>
         </main>
       </div>
+
+      <DokumentiDrawer
+        patient={patient}
+        open={dokumentiOpen}
+        onClose={() => setDokumentiOpen(false)}
+      />
     </div>
   );
 }

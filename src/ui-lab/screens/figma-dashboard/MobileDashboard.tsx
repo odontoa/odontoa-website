@@ -329,7 +329,7 @@ export default function MobileDashboard({ className }: { className?: string }) {
               className="font-semibold"
               style={{ fontSize: "16px", color: "var(--v2-text-heading)" }}
             >
-              Pacijenti po tipu konsultacije
+              Status termina danas
             </h3>
             <button className="transition-opacity hover:opacity-60" style={{ color: "var(--v2-text-muted)" }}>
               <MoreHorizontal className="h-4 w-4" />
@@ -338,7 +338,7 @@ export default function MobileDashboard({ className }: { className?: string }) {
           <DonutChart
             data={mockV2ConsultationTypes}
             legendBelow={true}
-            centerLabel="Ukupno pacijenata"
+            centerLabel="Ukupno termina danas"
             size={120}
           />
         </div>

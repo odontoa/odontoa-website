@@ -5,6 +5,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Bell, MessageCircle, Pencil, MoreHorizontal, Plus, Trash2, FileText } from "lucide-react";
+import { DokumentiDrawer } from "./DokumentiDrawer";
 import { FigmaTabletSidebar } from "@/ui-lab/screens/figma-dashboard/sidebars";
 import { DropdownPill } from "@/ui-lab/screens/figma-dashboard/shared";
 import type { PatientForDetails } from "./mock";
@@ -103,7 +104,7 @@ function formatDateOfBirth(iso: string): string {
 
 // ─── General Info (656×142) ───────────────────────────────
 
-function CardGeneralInfo({ patient }: { patient: PatientForDetails }) {
+function CardGeneralInfo({ patient, onEdit, onDelete }: { patient: PatientForDetails; onEdit?: () => void; onDelete?: () => void }) {
   return (
     <Card>
       <div className="flex gap-[20px]" style={{ minHeight: "110px" }}>
@@ -122,7 +123,7 @@ function CardGeneralInfo({ patient }: { patient: PatientForDetails }) {
                 {patient.fullName}
               </span>
               <span style={{ fontSize: "12px", color: "var(--v2-text-muted)" }}>
-                MDF-P{String(patient.id).padStart(3, "0")}
+                {patient.patientCode ?? `MDF-P${String(patient.id).padStart(3, "0")}`}
               </span>
             </div>
             <div className="flex items-center gap-[8px] flex-shrink-0">
@@ -132,7 +133,18 @@ function CardGeneralInfo({ patient }: { patient: PatientForDetails }) {
               >
                 <MessageCircle style={{ width: "16px", height: "16px", color: "var(--v2-primary-dark)" }} />
               </button>
+              {onDelete && (
+                <button
+                  onClick={onDelete}
+                  className="flex items-center justify-center"
+                  style={{ width: "36px", height: "36px", borderRadius: "20px", background: "var(--v2-status-cancelled-bg)", border: "none", cursor: "pointer" }}
+                  title="Obriši pacijenta"
+                >
+                  <Trash2 style={{ width: "16px", height: "16px", color: "var(--v2-status-cancelled-fg)" }} />
+                </button>
+              )}
               <button
+                onClick={onEdit}
                 className="flex items-center gap-[6px]"
                 style={{ height: "36px", padding: "0 14px", borderRadius: "20px", background: "var(--v2-primary)", border: "none", cursor: "pointer", color: "var(--v2-primary-fg)", fontSize: "12px", fontWeight: 500 }}
               >
@@ -571,7 +583,14 @@ function CardNotes() {
 
 // ─── Main Screen ──────────────────────────────────────────
 
-export default function TabletPatientDetails({ patient, className }: { patient: PatientForDetails; className?: string }) {
+export default function TabletPatientDetails({
+  patient,
+  className,
+  onEdit,
+  onDelete,
+}: { patient: PatientForDetails; className?: string; onEdit?: () => void; onDelete?: () => void }) {
+  const [dokumentiOpen, setDokumentiOpen] = useState(false);
+
   return (
     <div
       className={`flex h-full overflow-hidden ${className ?? ""}`}
@@ -591,8 +610,19 @@ export default function TabletPatientDetails({ patient, className }: { patient: 
           className="flex-1 overflow-y-auto p-[20px] flex flex-col gap-[20px] rounded-[24px]"
           style={{ background: "var(--v2-bg)" }}
         >
+          {/* Tab bar — future: Karton / Slike / X-ray / … */}
+          <div className="flex items-center gap-[8px] flex-shrink-0">
+            <button
+              onClick={() => setDokumentiOpen(true)}
+              className="flex items-center gap-[6px] px-[14px] py-[6px] text-[13px] font-semibold rounded-full hover:opacity-80 transition-opacity"
+              style={{ background: "var(--v2-primary)", color: "var(--v2-primary-fg)", border: "none", cursor: "pointer" }}
+            >
+              <FileText size={14} /> Dokumenti
+            </button>
+          </div>
+
           {/* Row 1: General Info — 656×142 */}
-          <CardGeneralInfo patient={patient} />
+          <CardGeneralInfo patient={patient} onEdit={onEdit} onDelete={onDelete} />
 
           {/* Row 2: Well-Being Progress — 656×260 */}
           <CardWellbeing />
@@ -614,6 +644,12 @@ export default function TabletPatientDetails({ patient, className }: { patient: 
           <CardNotes />
         </main>
       </div>
+
+      <DokumentiDrawer
+        patient={patient}
+        open={dokumentiOpen}
+        onClose={() => setDokumentiOpen(false)}
+      />
     </div>
   );
 }

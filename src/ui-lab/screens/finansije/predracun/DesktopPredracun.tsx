@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { FigmaDesktopSidebar } from "../../figma-dashboard/sidebars";
 import { V2PageHeader } from "@/ui-lab/components/ui/V2PageHeader";
+import { ConfirmDialog } from "@/ui-lab/components/ui/ConfirmDialog";
 import {
   useProformas, PredracunStatusBadge,
   calcMedjuzbir, calcPopustAmount, calcUkupno,
@@ -237,12 +238,13 @@ function StornoConfirm({ pred, onConfirm, onClose }: { pred: Predracun; onConfir
 
 // ─── Detail panel ─────────────────────────────────────────
 
-function DetailPanel({ pred, onClose, onEdit, onConfirmFinal, onStorno }: {
+function DetailPanel({ pred, onClose, onEdit, onConfirmFinal, onStorno, onDelete }: {
   pred: Predracun;
   onClose: () => void;
   onEdit: (p: Predracun) => void;
   onConfirmFinal: (p: Predracun) => void;
   onStorno: (p: Predracun) => void;
+  onDelete: (p: Predracun) => void;
 }) {
   const medjuzbir = calcMedjuzbir(pred.stavke);
   const popustAmount = calcPopustAmount(medjuzbir, pred.popust);
@@ -384,6 +386,15 @@ function DetailPanel({ pred, onClose, onEdit, onConfirmFinal, onStorno }: {
             Storniraj
           </button>
         )}
+        {pred.status === "draft" && (
+          <button
+            onClick={() => onDelete(pred)}
+            className="w-full flex items-center justify-center gap-[6px] text-[13px] font-medium transition-opacity hover:opacity-80"
+            style={{ padding: "9px", borderRadius: "var(--v2-radius-pill)", background: "transparent", color: "var(--v2-status-cancelled-fg)", border: "1px solid var(--v2-status-cancelled-bg)" }}
+          >
+            <Trash2 className="h-3.5 w-3.5" /> Obriši nacrt
+          </button>
+        )}
       </div>
     </div>
   );
@@ -392,12 +403,13 @@ function DetailPanel({ pred, onClose, onEdit, onConfirmFinal, onStorno }: {
 // ─── Main desktop layout ──────────────────────────────────
 
 export default function DesktopPredracun({ className }: { className?: string }) {
-  const { proformas, add, update, confirmFinal, storno } = useProformas();
+  const { proformas, add, update, confirmFinal, storno, remove } = useProformas();
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Predracun | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Predracun | null>(null);
   const [stornoTarget, setStornoTarget] = useState<Predracun | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Predracun | null>(null);
 
   const filtered = proformas.filter(p => {
     const q = search.toLowerCase();
@@ -427,6 +439,13 @@ export default function DesktopPredracun({ className }: { className?: string }) 
     storno(stornoTarget.id);
     setSelected(prev => prev?.id === stornoTarget.id ? { ...prev, status: "storniran" } : prev);
     setStornoTarget(null);
+  };
+
+  const handleDelete = () => {
+    if (!deleteTarget) return;
+    remove(deleteTarget.id);
+    if (selected?.id === deleteTarget.id) setSelected(null);
+    setDeleteTarget(null);
   };
 
   const stats = {
@@ -561,6 +580,7 @@ export default function DesktopPredracun({ className }: { className?: string }) 
               onEdit={openEdit}
               onConfirmFinal={handleConfirmFinal}
               onStorno={p => setStornoTarget(p)}
+              onDelete={p => setDeleteTarget(p)}
             />
           )}
         </div>
@@ -568,6 +588,16 @@ export default function DesktopPredracun({ className }: { className?: string }) 
 
       {formOpen && <PredForm initial={editTarget} onSave={handleSave} onClose={() => setFormOpen(false)} />}
       {stornoTarget && <StornoConfirm pred={stornoTarget} onConfirm={handleStorno} onClose={() => setStornoTarget(null)} />}
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        title="Brisanje nacrta predračuna"
+        message={`Da li ste sigurni da želite da obrišete nacrt predračuna za "${deleteTarget?.pacijent ?? ""}"?`}
+        confirmLabel="Obriši"
+        cancelLabel="Otkaži"
+        confirmVariant="danger"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

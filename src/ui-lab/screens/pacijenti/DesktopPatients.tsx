@@ -2,19 +2,16 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { Search, Plus, Users, UserPlus, TrendingUp } from "lucide-react";
+import { Search, Plus, Users, UserPlus } from "lucide-react";
 import { FigmaDesktopSidebar } from "@/ui-lab/screens/figma-dashboard/sidebars";
 import { DropdownPill } from "@/ui-lab/screens/figma-dashboard/shared";
 import { V2PageHeader } from "@/ui-lab/components/ui/V2PageHeader";
-import { mockPatients, type MockPatient } from "./patients-mock";
+import { getPatients, deletePatient as deletePatientFromStorage, type Patient } from "@/ui-lab/lib/patientsStorage";
 import { PatientTableRow } from "./PatientTableRow";
+import { PatientDrawer } from "./PatientDrawer";
+import { ConfirmDialog } from "@/ui-lab/components/ui/ConfirmDialog";
 
 // ─── KPI cards (same size as Predračun) ────────────────────
-
-const KPI_CARDS = [
-  { label: "Svi pacijenti", value: "2.350", badge: "+1.25%", icon: Users },
-  { label: "Novi pacijenti", value: "450", badge: "+4.92%", icon: UserPlus },
-] as const;
 
 const PAGE_SIZE = 10;
 const COLUMNS = [
@@ -28,7 +25,7 @@ const COLUMNS = [
   "Akcije",
 ] as const;
 
-function filterPatients(patients: MockPatient[], q: string): MockPatient[] {
+function filterPatients(patients: Patient[], q: string): Patient[] {
   const lower = q.trim().toLowerCase();
   if (!lower) return patients;
   return patients.filter(
@@ -41,25 +38,20 @@ function filterPatients(patients: MockPatient[], q: string): MockPatient[] {
   );
 }
 
-// Action handlers — no-op for now, wiring points for backend
-function handleView(id: number) {
-  console.log("view", id);
-}
-function handleDelete(id: number) {
-  console.log("delete", id);
-}
-function handleEdit(id: number) {
-  console.log("edit", id);
-}
-
 // ─── Main Screen ──────────────────────────────────────────
 
 export default function DesktopPatients({ className }: { className?: string }) {
+  const [patients, setPatients] = useState<Patient[]>([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [editPatient, setEditPatient] = useState<Patient | undefined>(undefined);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  // TODO: add debounce here when wiring to backend
-  const filtered = useMemo(() => filterPatients(mockPatients, search), [search]);
+  const reload = () => setPatients(getPatients());
+  useEffect(() => { reload(); }, []);
+
+  const filtered = useMemo(() => filterPatients(patients, search), [patients, search]);
 
   useEffect(() => {
     setPage(1);
@@ -77,7 +69,19 @@ export default function DesktopPatients({ className }: { className?: string }) {
   );
 
   const handleNewPatient = () => {
-    console.log("new patient");
+    setEditPatient(undefined);
+    setDrawerOpen(true);
+  };
+  const handleEdit = (id: string | number) => {
+    const p = patients.find((x) => String(x.id) === String(id));
+    if (p) { setEditPatient(p); setDrawerOpen(true); }
+  };
+  const handleDelete = (id: string | number) => {
+    setDeleteId(String(id));
+  };
+  const confirmDelete = () => {
+    if (deleteId) { deletePatientFromStorage(deleteId); reload(); }
+    setDeleteId(null);
   };
 
   return (
@@ -113,9 +117,12 @@ export default function DesktopPatients({ className }: { className?: string }) {
           className="flex-1 min-h-0 overflow-hidden p-[20px] flex flex-col gap-[20px] rounded-[24px]"
           style={{ background: "var(--v2-bg)" }}
         >
-          {/* KPI cards — same size as Predračun (grid-cols-2, px-14 py-16) */}
+          {/* KPI cards */}
           <div className="grid grid-cols-2 gap-[20px] w-full">
-            {KPI_CARDS.map((kpi) => {
+            {[
+              { label: "Svi pacijenti", value: String(patients.length), icon: Users },
+              { label: "Novi pacijenti", value: String(patients.filter(p => p.createdAt >= new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10)).length), icon: UserPlus },
+            ].map((kpi) => {
               const Icon = kpi.icon;
               return (
                 <div
@@ -149,16 +156,6 @@ export default function DesktopPatients({ className }: { className?: string }) {
                       {kpi.value}
                     </span>
                   </div>
-                  <span
-                    className="flex items-center gap-[4px] px-[4px] py-[2px] text-[10px] font-medium rounded-[4px] ml-auto flex-shrink-0"
-                    style={{
-                      background: "var(--v2-primary)",
-                      color: "var(--v2-primary-fg)",
-                    }}
-                  >
-                    <TrendingUp className="h-3 w-3" />
-                    {kpi.badge}
-                  </span>
                 </div>
               );
             })}
@@ -238,7 +235,6 @@ export default function DesktopPatients({ className }: { className?: string }) {
                     <PatientTableRow
                       key={p.id}
                       patient={p}
-                      onView={handleView}
                       onEdit={handleEdit}
                       onDelete={handleDelete}
                     />
@@ -289,6 +285,24 @@ export default function DesktopPatients({ className }: { className?: string }) {
           </div>
         </main>
       </div>
+
+      <PatientDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onSaved={reload}
+        patient={editPatient}
+      />
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        title="Brisanje pacijenta"
+        message="Da li ste sigurni da želite da obrišete ovog pacijenta? Ova akcija se ne može poništiti."
+        confirmLabel="Obriši"
+        cancelLabel="Otkaži"
+        confirmVariant="danger"
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteId(null)}
+      />
     </div>
   );
 }

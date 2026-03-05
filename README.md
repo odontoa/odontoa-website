@@ -11,6 +11,44 @@ Advanced Dental Practice Management Website with Internal Content Management Sys
 - **Automated Backups** - Weekly email reports
 - **LLM Integration** - Auto-generated llms.txt for AI visibility
 
+## UI Lab V2 — Design-to-Dev Sandbox
+
+Internal UI prototyping sandbox for Odontoa V2 Moodify dashboard. All data is stored in **localStorage** (browser-only, no backend yet).
+
+> For detailed dev documentation, data models, localStorage keys, and backend integration TODOs, see [`src/ui-lab/DEV_HANDOFF.md`](src/ui-lab/DEV_HANDOFF.md).
+
+### Quick Start
+
+```bash
+npm install
+npm run dev
+```
+
+Visit `http://localhost:3000` then navigate to any UI Lab route below.
+
+### Key Routes
+
+| Route | Screen | CRUD Status |
+|-------|--------|-------------|
+| `/ui-lab/figma-dashboard` | Dashboard (overview) | UI-only |
+| `/ui-lab/pacijenti` | Patient list | **Full CRUD** — create, edit, delete with persistence |
+| `/ui-lab/pacijenti/[id]` | Patient details | **Full CRUD** — edit, delete; redirects to list on delete |
+| `/ui-lab/finansije/predracun` | Invoices (Predračun) | **Full CRUD** — create, edit, status transitions, delete drafts |
+| `/ui-lab/ordinacija/sabloni` | Document templates | **Full CRUD** — create, edit, delete, duplicate |
+| `/ui-lab/figma-dashboard/calendar` | Appointments calendar | **Full CRUD** — appointments + recurrence series |
+| `/ui-lab/ordinacija/cenovnik` | Therapy price list | Read + framework (edit UI incomplete) |
+| `/ui-lab/ordinacija/tehnika` | Lab technicians | Read + framework (edit UI incomplete) |
+| `/ui-lab/finansije/uplate` | Payments | UI-only (no CRUD wired) |
+| `/ui-lab/finansije/izvestaji` | Reports | Placeholder |
+
+### Persistence
+
+All mutations are persisted immediately to `localStorage`. Refreshing the page restores the last state. Seed data is loaded on first run (15 patients, 7 invoices, 2 templates, 23 appointments).
+
+**Docs update rule:** Whenever data models, persistence layer, or backend service shape changes, update both this file and [`src/ui-lab/DEV_HANDOFF.md`](src/ui-lab/DEV_HANDOFF.md) in the same PR.
+
+---
+
 ## CMS Features
 
 ### Admin Panel (`/admin-panel`)

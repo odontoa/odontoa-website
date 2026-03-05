@@ -20,6 +20,7 @@ import {
   FlaskConical,
   BookOpen,
   Info,
+  FileStack,
   type LucideIcon,
 } from "lucide-react";
 
@@ -62,6 +63,7 @@ export const sidebarNav: NavItem[] = [
       { label: "Cenovnik",  icon: ListChecks,   href: "/ui-lab/ordinacija/cenovnik" },
       { label: "Tehnika",   icon: FlaskConical, href: "/ui-lab/ordinacija/tehnika" },
       { label: "MKB-10",    icon: BookOpen,     href: "/ui-lab/ordinacija/mkb-10" },
+      { label: "Šabloni",   icon: FileStack,    href: "/ui-lab/ordinacija/sabloni" },
     ],
   },
   { label: "E-pošta",         icon: Mail, badge: 5 },

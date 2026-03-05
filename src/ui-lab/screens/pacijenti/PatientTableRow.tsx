@@ -9,7 +9,8 @@
 
 import Link from "next/link";
 import { Eye, Trash, Pencil } from "lucide-react";
-import { getInitials, type MockPatient } from "./patients-mock";
+import { getInitials as getInitialsMock, type MockPatient } from "./patients-mock";
+import { type Patient, getInitials as getInitialsStorage } from "@/ui-lab/lib/patientsStorage";
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
@@ -28,10 +29,10 @@ const cellStyle = {
 };
 
 export interface PatientTableRowProps {
-  patient: MockPatient;
-  onView?: (id: number) => void;
-  onEdit?: (id: number) => void;
-  onDelete?: (id: number) => void;
+  patient: MockPatient | Patient;
+  onView?: (id: string | number) => void;
+  onEdit?: (id: string | number) => void;
+  onDelete?: (id: string | number) => void;
 }
 
 export function PatientTableRow({
@@ -63,7 +64,7 @@ export function PatientTableRow({
               color: "var(--v2-primary-fg)",
             }}
           >
-            {getInitials(p)}
+            {"patientCode" in p ? getInitialsStorage(p.fullName) : getInitialsMock(p)}
           </div>
           <Link
             href={`/ui-lab/pacijenti/${p.id}`}

@@ -245,13 +245,13 @@ export default function DesktopDashboard({ className }: { className?: string }) 
               }}
             >
               <ChartCardHeader
-                title="Statistika zarade"
-                dropdownLabel="Ove godine"
-                subtext="Ukupan prihod"
-                value="$129,850"
+                title="Termini"
+                dropdownLabel="Ove nedelje"
+                subtext="Ukupno ove nedelje"
+                value="42"
                 legends={[
-                  { label: "Dobit",    color: "var(--v2-primary)" },
-                  { label: "Troškovi", color: "var(--v2-primary-dark)" },
+                  { label: "Zakazani",  color: "var(--v2-primary)" },
+                  { label: "Završeni",  color: "var(--v2-primary-dark)" },
                 ]}
               />
               <LineAreaChart data={mockV2EarningStats} height={186} smooth />
@@ -335,7 +335,7 @@ export default function DesktopDashboard({ className }: { className?: string }) 
                   className="font-semibold"
                   style={{ fontSize: "14px", color: "var(--v2-text-heading)" }}
                 >
-                  Pacijenti po tipu konsultacije
+                  Status termina danas
                 </h3>
                 <button className="transition-opacity hover:opacity-60" style={{ color: "var(--v2-text-muted)" }}>
                   <MoreHorizontal className="h-4 w-4" />
@@ -344,7 +344,7 @@ export default function DesktopDashboard({ className }: { className?: string }) 
               <DonutChart
                 data={mockV2ConsultationTypes}
                 legendBelow={true}
-                centerLabel="Ukupno pacijenata"
+                centerLabel="Ukupno termina danas"
               />
             </div>
 

@@ -5,6 +5,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, MessageCircle, Pencil, MoreHorizontal, Plus, Trash2, FileText } from "lucide-react";
+import { DokumentiDrawer } from "./DokumentiDrawer";
 import { DropdownPill } from "@/ui-lab/screens/figma-dashboard/shared";
 import type { PatientForDetails } from "./mock";
 import {
@@ -68,7 +69,7 @@ function formatDateOfBirth(iso: string): string {
 
 // ─── General Info (358×250) ───────────────────────────────
 
-function CardGeneralInfo({ patient }: { patient: PatientForDetails }) {
+function CardGeneralInfo({ patient, onEdit, onDelete }: { patient: PatientForDetails; onEdit?: () => void; onDelete?: () => void }) {
   return (
     <Card>
       {/* Photo & Name */}
@@ -79,13 +80,18 @@ function CardGeneralInfo({ patient }: { patient: PatientForDetails }) {
         <div className="flex-1 min-w-0 flex flex-col gap-[8px]">
           <div className="flex flex-col gap-[2px] min-w-0">
             <span className="font-semibold truncate" style={{ fontSize: "18px", color: "var(--v2-text)", lineHeight: "1.2" }}>{patient.fullName}</span>
-            <span style={{ fontSize: "12px", color: "var(--v2-text-muted)" }}>MDF-P{String(patient.id).padStart(3, "0")}</span>
+            <span style={{ fontSize: "12px", color: "var(--v2-text-muted)" }}>{patient.patientCode ?? `MDF-P${String(patient.id).padStart(3, "0")}`}</span>
           </div>
           <div className="flex items-center gap-[8px]">
             <button className="flex items-center justify-center" style={{ width: "32px", height: "32px", borderRadius: "18px", background: "var(--v2-primary-bg)", border: "none", cursor: "pointer" }}>
               <MessageCircle style={{ width: "14px", height: "14px", color: "var(--v2-primary-dark)" }} />
             </button>
-            <button className="flex items-center gap-[5px]" style={{ height: "32px", padding: "0 12px", borderRadius: "18px", background: "var(--v2-primary)", border: "none", cursor: "pointer", color: "var(--v2-primary-fg)", fontSize: "12px", fontWeight: 500 }}>
+            {onDelete && (
+              <button onClick={onDelete} className="flex items-center justify-center" style={{ width: "32px", height: "32px", borderRadius: "18px", background: "var(--v2-status-cancelled-bg)", border: "none", cursor: "pointer" }} title="Obriši">
+                <Trash2 style={{ width: "14px", height: "14px", color: "var(--v2-status-cancelled-fg)" }} />
+              </button>
+            )}
+            <button onClick={onEdit} className="flex items-center gap-[5px]" style={{ height: "32px", padding: "0 12px", borderRadius: "18px", background: "var(--v2-primary)", border: "none", cursor: "pointer", color: "var(--v2-primary-fg)", fontSize: "12px", fontWeight: 500 }}>
               <Pencil style={{ width: "11px", height: "11px" }} />
               Izmeni
             </button>
@@ -433,13 +439,31 @@ function CardNotes() {
 
 // ─── Main Screen ──────────────────────────────────────────
 
-export default function MobilePatientDetails({ patient, className }: { patient: PatientForDetails; className?: string }) {
+export default function MobilePatientDetails({
+  patient,
+  className,
+  onEdit,
+  onDelete,
+}: { patient: PatientForDetails; className?: string; onEdit?: () => void; onDelete?: () => void }) {
+  const [dokumentiOpen, setDokumentiOpen] = useState(false);
+
   return (
     <div className={`flex flex-col h-full overflow-hidden ${className ?? ""}`} style={{ background: "var(--v2-bg)" }}>
       <MobileNavbar />
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col gap-[16px]" style={{ padding: "16px" }}>
-          <CardGeneralInfo patient={patient} />
+          {/* Tab bar — future: Karton / Slike / X-ray / … */}
+          <div className="flex items-center gap-[8px]">
+            <button
+              onClick={() => setDokumentiOpen(true)}
+              className="flex items-center gap-[6px] px-[14px] py-[6px] text-[13px] font-semibold rounded-full hover:opacity-80 transition-opacity"
+              style={{ background: "var(--v2-primary)", color: "var(--v2-primary-fg)", border: "none", cursor: "pointer" }}
+            >
+              <FileText size={14} /> Dokumenti
+            </button>
+          </div>
+
+          <CardGeneralInfo patient={patient} onEdit={onEdit} onDelete={onDelete} />
           <CardWellbeing />
           <CardUpcoming patient={patient} />
           <CardTreatmentHistory patient={patient} />
@@ -449,6 +473,12 @@ export default function MobilePatientDetails({ patient, className }: { patient: 
           <CardNotes />
         </div>
       </div>
+
+      <DokumentiDrawer
+        patient={patient}
+        open={dokumentiOpen}
+        onClose={() => setDokumentiOpen(false)}
+      />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 // Pacijenti Detalji — mock data (card rows, termini, tretmani, itd.)
-// Pacijent se učitava iz liste (mockPatients) preko getPatientById — spremno za bazu
+// Pacijent se učitava iz localStorage (patientsStorage) — spremno za bazu
 
-import { mockPatients } from "@/ui-lab/screens/pacijenti/patients-mock";
+import { getPatients } from "@/ui-lab/lib/patientsStorage";
 
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/);
@@ -10,12 +10,15 @@ function initials(name: string): string {
 }
 
 export interface PatientForDetails {
-  id: number;
+  id: string | number;
+  patientCode?: string;
   fullName: string;
   initials: string;
   dateOfBirth: string;
   email: string;
   contactPhone: string;
+  /** ISO date (YYYY-MM-DD) of last visit — used as default in Dokumenti drawer. */
+  lastVisitDate?: string;
 }
 
 // Naredni termini — varijante po pacijentu (stomatologija/ortodontija)
@@ -189,15 +192,26 @@ export function getVisitsForPeriod(period: VisitsPeriod) {
 }
 
 export function getPatientById(id: string | number): PatientForDetails | undefined {
-  // U produkciji: fetch iz baze po id
-  const p = mockPatients.find((x) => String(x.id) === String(id));
+  // TODO: replace with API call
+  const patients = getPatients();
+  const p = patients.find((x) => String(x.id) === String(id));
   if (!p) return undefined;
+
+  // Deterministic last visit: 1–29 days ago based on patient code number (mock only)
+  const codeNum = parseInt(p.patientCode?.replace(/\D/g, "") || "0", 10);
+  const daysAgo = ((codeNum % 29) + 1);
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  const lastVisitDate = d.toISOString().slice(0, 10);
+
   return {
     id: p.id,
+    patientCode: p.patientCode,
     fullName: p.fullName,
     initials: initials(p.fullName),
     dateOfBirth: p.dateOfBirth,
     email: p.email,
     contactPhone: p.phone,
+    lastVisitDate,
   };
 }

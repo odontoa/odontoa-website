@@ -11,19 +11,7 @@ import {
   formatRSD,
   type Predracun,
 } from "../shared";
-
-// ─── Dummy ordinacija data ────────────────────────────────
-
-const ORDINACIJA = {
-  naziv: "Stomatološka ordinacija \"Dental Studio\"",
-  adresa: "Bulevar Mihajla Pupina 10",
-  grad: "11000 Beograd",
-  telefon: "011/222-3344",
-  maticniBroj: "12345678",
-  sifraDelatnosti: "8623",
-  ziroRacun: "160-123456789-78",
-  pib: "987654321",
-};
+import { ORDINACIJA } from "@/ui-lab/config/clinicConfig";
 
 const DISCLAIMER =
   "Ovaj predračun važi 30 dana od datuma izdavanja. Cene su izražene u dinarima (RSD) i uključuju PDV. " +

@@ -307,10 +307,9 @@ export const mockV2GenderStats = [
 ];
 
 export const mockV2ConsultationTypes = [
-  { label: "Poremećaji raspoloženja", value: 6999, color: "#2a2c4c", percentage: "40%" },
-  { label: "Anksiozni poremećaji", value: 4900, color: "#9281ff", percentage: "28%" },
-  { label: "Poremećaj ličnosti", value: 3150, color: "#e4e8ff", percentage: "18%" },
-  { label: "Psihotični poremećaji", value: 2449, color: "#b6b6b8", percentage: "14%" },
+  { label: "Zakazani", value: 25, color: "#2a2c4c" },
+  { label: "Završeni", value: 18, color: "#9281ff" },
+  { label: "Otkazani", value: 7, color: "#e4e8ff" },
 ];
 
 export const mockV2DoctorsList = [

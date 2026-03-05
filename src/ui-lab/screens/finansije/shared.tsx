@@ -348,7 +348,12 @@ export function useProformas() {
     persist(proformas.map(p => p.id === id ? { ...p, status: "storniran" as const } : p));
   };
 
-  return { proformas, add, update, confirmFinal, storno };
+  // TODO: replace with API call (only drafts should be deletable)
+  const remove = (id: string) => {
+    persist(proformas.filter(p => p.id !== id));
+  };
+
+  return { proformas, add, update, confirmFinal, storno, remove };
 }
 
 // ─── localStorage hooks — Uplate ─────────────────────────

@@ -864,10 +864,12 @@ function AppointmentCard({
       aria-label={`${appointment.patientName} - ${appointment.procedureLabel}, ${appointment.startTime}`}
       onClick={(e) => { e.stopPropagation(); onCardClick?.(appointment); }}
       onDragStart={isDraggable ? (e) => {
-        // Suppress default browser drag ghost — show our own DragGhost in grid
-        const img = new Image();
-        img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-        e.dataTransfer.setDragImage(img, 0, 0);
+        // Suppress default browser drag ghost — element must be in DOM before setDragImage
+        const ghost = document.createElement("div");
+        ghost.style.cssText = "position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;";
+        document.body.appendChild(ghost);
+        e.dataTransfer.setDragImage(ghost, 0, 0);
+        requestAnimationFrame(() => document.body.removeChild(ghost));
         const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
         const offsetY = e.clientY - rect.top;
         e.dataTransfer.setData("apptId", appointment.id);
@@ -985,6 +987,7 @@ function CalendarGrid({
   const [dragHint, setDragHint]       = useState<{ x: number; y: number; text: string } | null>(null);
   const [draggedAppt, setDraggedAppt] = useState<Appointment | null>(null);
   const [dragPreview, setDragPreview] = useState<{ dateISO: string; timeMin: number } | null>(null);
+  const [dragOffsetY, setDragOffsetY] = useState(0);
 
   // Clear DnD state on global dragend (fires on source element)
   useEffect(() => {
@@ -996,9 +999,10 @@ function CalendarGrid({
   // ── DnD helpers ────────────────────────────────────────────────────────────
 
   /** Compute snapped time (15-min) from a Y position within the scrollable body. */
-  function yToSnappedTime(clientY: number, colRect: DOMRect): string {
-    const scrollTop = scrollRef.current?.scrollTop ?? 0;
-    const relY = clientY - colRect.top + scrollTop - 8; // -8 for paddingTop spacer
+  function yToSnappedTime(clientY: number, colRect: DOMRect, offsetY = 0): string {
+    // colRect is viewport-relative (getBoundingClientRect already accounts for scroll),
+    // so we must NOT add scrollTop — doing so would double-count the scroll offset.
+    const relY = clientY - colRect.top - offsetY;
     const minsFromStart = Math.floor(relY / pxPerMin / 15) * 15;
     const totalMin = clamp(GRID_START_MIN + minsFromStart, GRID_START_MIN, GRID_END_MIN - 15);
     return `${padTime(Math.floor(totalMin / 60))}:${padTime(totalMin % 60)}`;
@@ -1009,7 +1013,7 @@ function CalendarGrid({
     e.dataTransfer.dropEffect = "move";
     setDropTarget(day.dateISO);
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    const snappedTime = yToSnappedTime(e.clientY, rect);
+    const snappedTime = yToSnappedTime(e.clientY, rect, dragOffsetY);
     const snappedMin = toMinutes(snappedTime);
     setDragPreview({ dateISO: day.dateISO, timeMin: snappedMin });
     setDragHint({
@@ -1028,9 +1032,8 @@ function CalendarGrid({
     if (!appt) return;
 
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    const scrollTop = scrollRef.current?.scrollTop ?? 0;
     const offsetY  = parseFloat(e.dataTransfer.getData("offsetY") ?? "0");
-    const relY = e.clientY - rect.top + scrollTop - 8 - offsetY; // subtract card-top offset
+    const relY = e.clientY - rect.top - offsetY; // rect is viewport-relative, no scrollTop needed
     const minsFromStart = Math.floor(relY / pxPerMin / 15) * 15;
     const totalMin = clamp(GRID_START_MIN + minsFromStart, GRID_START_MIN, GRID_END_MIN - 15);
     const newTime = `${padTime(Math.floor(totalMin / 60))}:${padTime(totalMin % 60)}`;
@@ -1259,7 +1262,7 @@ function CalendarGrid({
                         height={h}
                         maxHeight={maxH}
                         onCardClick={onCardClick}
-                        onDragStart={onPendingReschedule ? (appt) => setDraggedAppt(appt) : undefined}
+                        onDragStart={onPendingReschedule ? (appt, offsetY) => { setDraggedAppt(appt); setDragOffsetY(offsetY); } : undefined}
                       />
                     );
                   })}
