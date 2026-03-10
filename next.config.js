@@ -5,6 +5,7 @@ const nextConfig = {
     domains: [
       'localhost',
       'images.unsplash.com',
+      'cdn.sanity.io',
     ],
     unoptimized: true,
   },

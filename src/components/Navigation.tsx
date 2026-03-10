@@ -11,7 +11,7 @@ import Image from "next/image";
 const FULL_MENU_ITEMS = [
   { name: 'Početna', href: '/' },
   ...(process.env.NODE_ENV !== 'production'
-    ? [{ name: 'Home2', href: '/home2' }]
+    ? [{ name: 'Home2', href: '/home2' }, { name: 'Home3', href: '/home3' }]
     : []),
   { name: 'O nama', href: '/o-nama' },
   { name: 'Kontakt', href: '/kontakt' },
