@@ -39,7 +39,7 @@ export default defineType({
       description: "Unos: kratak opis (80–200 karaktera). Automatski: ako je SEO opis prazan, koristi se ovaj tekst.",
       validation: (Rule: any) =>
         Rule.custom((excerpt: string) => {
-          if (!excerpt) return true; // Optional field
+          if (!excerpt) return "Kratki opis je obavezan za SEO";
           if (excerpt.length < 60) {
             return "Excerpt mora imati minimum 60 karaktera";
           }
@@ -57,6 +57,8 @@ export default defineType({
       title: "Naslovna slika",
       type: "image",
       options: { hotspot: true },
+      description: "Obavezno: naslovna slika (preporučeno 1200x630 za OG).",
+      validation: (Rule) => Rule.required().error("Naslovna slika je obavezna za SEO (OG image 1200x630)"),
     }),
     defineField({
       name: "coverImageAlt",
@@ -135,6 +137,7 @@ export default defineType({
       title: "Autor",
       type: "reference",
       to: [{ type: "author" }],
+      validation: (Rule) => Rule.required().error("Autor je obavezan za Article schema"),
     }),
     defineField({
       name: "authorUrl",
@@ -149,6 +152,13 @@ export default defineType({
       of: [{ type: "reference", to: [{ type: "tag" }] }],
     }),
     defineField({
+      name: "relatedGlossaryTerms",
+      title: "Povezani termini iz rečnika",
+      type: "array",
+      description: "Opciono: povežite članak sa relevantnim terminima iz stomatološkog rečnika za interno linkovanje.",
+      of: [{ type: "reference", to: [{ type: "glossaryTerm" }] }],
+    }),
+    defineField({
       name: "content",
       title: "Sadržaj",
       type: "array",
@@ -159,6 +169,7 @@ export default defineType({
           options: { hotspot: true },
         },
       ],
+      validation: (Rule) => Rule.required().min(1).error("Sadržaj članka je obavezan"),
     }),
     // SEO fields (for Article + WebPage in JSON-LD)
     defineField({
@@ -295,10 +306,11 @@ AUTOMATSKI GENERIŠE:
 
 MORATE DA POPUNITE:
 • Naslov (obavezno)
-• Kratki opis (preporučeno 80-200 karaktera)
-• Naslovna slika (preporučeno)
+• Kratki opis (obavezno, 80-200 karaktera)
+• Naslovna slika (obavezno, preporučeno 1200x630)
 • Alt tekst za sliku (obavezno kada postoji slika)
 • Datum objave (obavezno)
+• Autor (obavezno)
 • Sadržaj (obavezno)
 • FAQ - minimum 3 pitanja (obavezno)
 

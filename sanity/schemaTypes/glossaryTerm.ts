@@ -95,6 +95,13 @@ export default defineType({
       of: [{ type: "reference", to: [{ type: "glossaryTerm" }] }],
     }),
     defineField({
+      name: "relatedBlogPosts",
+      title: "Povezani blog članci",
+      type: "array",
+      description: "Opciono: povežite termin sa relevantnim blog člancima za interno linkovanje.",
+      of: [{ type: "reference", to: [{ type: "blogPost" }] }],
+    }),
+    defineField({
       name: "publishedAt",
       title: "Datum objave",
       type: "datetime",

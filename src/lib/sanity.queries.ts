@@ -1,6 +1,6 @@
 import { groq } from "next-sanity";
 
-export const allBlogPostsQuery = groq`*[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc){
+export const allBlogPostsQuery = groq`*[_type == "blogPost" && defined(slug.current) && coalesce(noindex, false) == false] | order(publishedAt desc){
   _id,
   title,
   "slug": slug.current,
@@ -82,6 +82,7 @@ export const blogPostBySlugQuery = groq`*[_type == "blogPost" && slug.current ==
   },
   authorUrl,
   tags[]->{ title, "slug": slug.current },
+  "relatedGlossaryTerms": relatedGlossaryTerms[]->{ term, "slug": slug.current },
   content,
   seoTitle,
   seoDescription,
@@ -117,6 +118,7 @@ export type SanityBlogPost = {
   authorUrlFromAuthor?: string;
   authorUrl?: string;
   tags?: { title: string; slug: string }[];
+  relatedGlossaryTerms?: { term: string; slug: string }[];
   content?: any[];
   seoTitle?: string;
   seoDescription?: string;
@@ -188,6 +190,7 @@ export const glossaryTermBySlugQuery = groq`*[_type == "glossaryTerm" && !(_id i
   category,
   tags[]->{ title, "slug": slug.current },
   "relatedTerms": relatedTerms[]->{ term, "slug": slug.current },
+  "relatedBlogPosts": relatedBlogPosts[]->{ title, "slug": slug.current },
   publishedAt,
   "updatedAt": coalesce(updatedAt, publishedAt),
   "authorName": author->name,
@@ -265,6 +268,7 @@ export type SanityGlossaryTerm = {
   category?: string;
   tags?: { title: string; slug: string }[];
   relatedTerms?: { term: string; slug: string }[];
+  relatedBlogPosts?: { title: string; slug: string }[];
   publishedAt: string;
   updatedAt?: string;
   authorName?: string;

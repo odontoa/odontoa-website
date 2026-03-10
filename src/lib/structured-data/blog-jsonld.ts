@@ -96,7 +96,6 @@ export function buildBlogJsonLd(post: SanityBlogPost & { coverImageUrl?: string 
 
   // 2. BreadcrumbList schema
   const breadcrumb = {
-    "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
       {
@@ -122,7 +121,6 @@ export function buildBlogJsonLd(post: SanityBlogPost & { coverImageUrl?: string 
 
   // 3. Article schema
   const article = {
-    "@context": "https://schema.org",
     "@type": "Article",
     mainEntityOfPage: {
       "@type": "WebPage",
@@ -153,7 +151,6 @@ export function buildBlogJsonLd(post: SanityBlogPost & { coverImageUrl?: string 
   // 4. FAQPage schema (only if FAQs exist)
   const faqPage = hasFaqs
     ? {
-        "@context": "https://schema.org",
         "@type": "FAQPage",
         mainEntity: faqEntities,
       }

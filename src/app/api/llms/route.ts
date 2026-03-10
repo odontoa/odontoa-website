@@ -1,12 +1,19 @@
 import { NextResponse } from 'next/server';
 import { businessConfig } from '@/lib/config/business';
+import { sanityClient } from '@/lib/sanity.client';
+import { allBlogPostsQuery, allGlossaryTermsDirectoryQuery } from '@/lib/sanity.queries';
 
 export async function GET() {
   try {
     const baseUrl = 'https://odontoa.com';
-    const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+    const currentDate = new Date().toISOString().split('T')[0];
 
-    // Generate static SaaS-oriented llms.txt content
+    // Fetch dynamic content from Sanity
+    const [blogPosts, glossaryTerms] = await Promise.all([
+      sanityClient.fetch(allBlogPostsQuery).catch(() => []),
+      sanityClient.fetch(allGlossaryTermsDirectoryQuery).catch(() => []),
+    ]);
+
     let llmsContent = `# Odontoa — CRM i platforma za upravljanje stomatološkom ordinacijom (SaaS)\n\n`;
 
     llmsContent += `## Šta je Odontoa?\n`;
@@ -33,13 +40,42 @@ export async function GET() {
     llmsContent += `- Rečnik pojmova (glossary)\n`;
     llmsContent += `- Kontakt i poziv na demo\n\n`;
 
-    // Key URLs section
     llmsContent += `## Ključni linkovi\n`;
     llmsContent += `${baseUrl}/\n`;
     llmsContent += `${baseUrl}/blogovi\n`;
     llmsContent += `${baseUrl}/recnik\n`;
     llmsContent += `${baseUrl}/kontakt\n`;
     llmsContent += `${baseUrl}/o-nama\n\n`;
+
+    // Dynamic blog posts section
+    if (blogPosts && blogPosts.length > 0) {
+      llmsContent += `## Članci na blogu (${blogPosts.length})\n`;
+      const postsToShow = blogPosts.slice(0, 20);
+      for (const post of postsToShow) {
+        llmsContent += `- ${post.title}: ${baseUrl}/blogovi/${post.slug}\n`;
+        if (post.excerpt) {
+          llmsContent += `  ${post.excerpt}\n`;
+        }
+      }
+      if (blogPosts.length > 20) {
+        llmsContent += `- ... i još ${blogPosts.length - 20} članaka na ${baseUrl}/blogovi\n`;
+      }
+      llmsContent += `\n`;
+    }
+
+    // Dynamic glossary terms section
+    if (glossaryTerms && glossaryTerms.length > 0) {
+      const indexedTerms = glossaryTerms.filter((t: any) => !t.noindex);
+      llmsContent += `## Rečnik stomatoloških pojmova (${indexedTerms.length})\n`;
+      const termsToShow = indexedTerms.slice(0, 30);
+      for (const term of termsToShow) {
+        llmsContent += `- ${term.term}: ${baseUrl}/recnik/${term.slug}\n`;
+      }
+      if (indexedTerms.length > 30) {
+        llmsContent += `- ... i još ${indexedTerms.length - 30} pojmova na ${baseUrl}/recnik\n`;
+      }
+      llmsContent += `\n`;
+    }
 
     llmsContent += `## Kontakt\n`;
     llmsContent += `Email: ${businessConfig.email}\n`;
@@ -52,7 +88,7 @@ export async function GET() {
     return new NextResponse(llmsContent, {
       headers: {
         'Content-Type': 'text/plain; charset=utf-8',
-        'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+        'Cache-Control': 'public, max-age=3600',
       },
     });
   } catch (error) {

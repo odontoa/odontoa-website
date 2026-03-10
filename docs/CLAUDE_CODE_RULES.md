@@ -106,7 +106,11 @@ Figma MCP requires OAuth (PAT header alone is not enough)
 
 MCP can read full layer/style data only when the Figma file is editable
 
-## 8) Editing principles
+## 8) Typography rules
+
+Never use em dash (—) anywhere in the codebase — use only a regular hyphen (-) instead.
+
+## 9) Editing principles
 
 Prefer minimal diffs.
 
@@ -116,7 +120,7 @@ Don't refactor unrelated code while fixing a UI mismatch.
 
 Keep existing chart behavior/styling unless the task requires changes.
 
-## 9) "When you start a task" checklist for Claude Code
+## 10) "When you start a task" checklist for Claude Code
 
 Before editing:
 
@@ -130,7 +134,7 @@ Confirm responsiveness (desktop + mobile).
 
 Summarize changes.
 
-## 10) Current status
+## 11) Current status
 
 All changes live on: ognjen/wip-hero
 

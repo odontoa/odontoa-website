@@ -1,0 +1,31 @@
+---
+description: Git commits i push moraju biti sa Odontoa naloga
+alwaysApply: true
+---
+
+# Git — Odontoa nalog
+
+Za ovaj projekat **uvek** koristi Odontoa nalog za git commit i push:
+
+- **Email:** `odontoa.com@gmail.com`
+- **Ne koristiti:** infinsu-ogie ili druge privatne naloge
+
+## Pre commit/push
+
+Proveri da je git konfigurisan ispravno:
+
+```bash
+git config user.email
+# Mora biti: odontoa.com@gmail.com
+```
+
+Ako nije, postavi:
+
+```bash
+git config --local user.email "odontoa.com@gmail.com"
+git config --local user.name "Odontoa"
+```
+
+## beta-ui remote
+
+Kada pushuješ na `beta-ui` (odontoa-beta-ui repo), takođe mora biti sa odontoa.com@gmail.com naloga.

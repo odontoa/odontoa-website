@@ -14,12 +14,16 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { BlogViewTracker } from "@/components/BlogViewTracker";
+import { CTABlock } from "@/components/CTABlock";
+import { calculateReadingTime } from "@/lib/blog-utils";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+
+export const revalidate = 3600; // ISR: revalidate every hour
 
 interface BlogPostPageProps {
   params: {
@@ -77,7 +81,7 @@ export async function generateMetadata({
           url: coverImageUrl,
           width: 1200,
           height: 630,
-          alt: post.title,
+          alt: post.coverImageAlt || post.title,
         },
       ],
     },
@@ -132,9 +136,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   );
 
   const publishedAt = formatToSerbianDate(post.publishedAt);
-  const updatedAt = post.updatedAt && post.updatedAt !== post.publishedAt 
-    ? formatToSerbianDate(post.updatedAt) 
+  const updatedAt = post.updatedAt && post.updatedAt !== post.publishedAt
+    ? formatToSerbianDate(post.updatedAt)
     : null;
+  const readingTime = calculateReadingTime(post.content);
 
   return (
     <>
@@ -186,6 +191,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   )}
                 </div>
               </div>
+              <span className="text-xs text-muted-foreground">
+                {readingTime} min čitanja
+              </span>
             </div>
           </header>
 
@@ -193,7 +201,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="mb-8 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
               <Image
                 src={coverImageUrl}
-                alt={post.title}
+                alt={post.coverImageAlt || post.title}
                 width={1200}
                 height={630}
                 className="w-full object-cover"
@@ -220,12 +228,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           {post.tags && post.tags.length > 0 && (
             <div className="mt-8 flex flex-wrap gap-2">
               {post.tags.map((tag) => (
-                <span
+                <Link
                   key={tag.slug}
-                  className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                  href={`/blogovi/tag/${tag.slug}`}
+                  className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm hover:bg-blue-200 transition-colors"
                 >
                   {tag.title}
-                </span>
+                </Link>
               ))}
             </div>
           )}
@@ -250,6 +259,33 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </Accordion>
             </section>
           )}
+          {/* Related Glossary Terms */}
+          {post.relatedGlossaryTerms && post.relatedGlossaryTerms.length > 0 && (
+            <section className="mt-12 border-t border-slate-200 pt-8">
+              <h2 className="text-xl font-semibold text-foreground mb-4 dark:text-white">
+                Povezani termini iz rečnika
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {post.relatedGlossaryTerms.map((term) => (
+                  <Link
+                    key={term.slug}
+                    href={`/recnik/${term.slug}`}
+                    className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm hover:bg-emerald-200 transition-colors"
+                  >
+                    {term.term}
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* CTA */}
+          <CTABlock
+            type="blog"
+            data={{ title: post.title, slug: post.slug }}
+            variant="gradient"
+            className="mt-12"
+          />
         </article>
       </div>
     </>

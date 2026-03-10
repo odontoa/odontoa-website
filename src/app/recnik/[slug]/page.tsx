@@ -31,6 +31,7 @@ import {
 import { ArrowLeft } from "lucide-react";
 import CopyLinkButton from "@/components/glossary/CopyLinkButton";
 import TermInitialAvatar from "@/components/glossary/TermInitialAvatar";
+import { GlossaryViewTracker } from "@/components/GlossaryViewTracker";
 
 export const revalidate = 3600; // ISR: revalidate every hour
 
@@ -79,6 +80,12 @@ export async function generateMetadata({
       modifiedTime: term.updatedAt || term.publishedAt,
       images: [{ url: coverImageUrl, width: 1200, height: 630, alt: term.term }],
     },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [coverImageUrl],
+    },
     alternates: {
       canonical: term.canonicalUrl || `${baseUrl}/recnik/${params.slug}`,
     },
@@ -125,6 +132,9 @@ export default async function GlossaryTermPage({
           __html: JSON.stringify(jsonLd),
         }}
       />
+
+      {/* Glossary view tracking */}
+      <GlossaryViewTracker slug={params.slug} term={term.term} />
 
       <article className="min-h-screen bg-background pt-20">
         <div className="mx-auto max-w-4xl px-4 py-10">
@@ -239,6 +249,29 @@ export default async function GlossaryTermPage({
                   ))}
                 </div>
             </section>
+            </>
+          )}
+
+          {/* Related Blog Posts */}
+          {term.relatedBlogPosts && term.relatedBlogPosts.length > 0 && (
+            <>
+              <Separator className="my-10" />
+              <section>
+                <h2 className="text-2xl font-semibold text-foreground mb-6">
+                  Povezani članci
+                </h2>
+                <div className="flex flex-col gap-2">
+                  {term.relatedBlogPosts.map((post) => (
+                    <Link
+                      key={post.slug}
+                      href={`/blogovi/${post.slug}`}
+                      className="text-primary hover:underline"
+                    >
+                      {post.title}
+                    </Link>
+                  ))}
+                </div>
+              </section>
             </>
           )}
 
