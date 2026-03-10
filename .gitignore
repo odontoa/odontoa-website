@@ -48,3 +48,7 @@ scripts/trace-enoent.cjs
 
 # UI Lab - read-only reference copy (do NOT commit)
 odontoa-frontend-main/
+
+# Claude Code (local)
+.claude/
+.claude/settings.json
