@@ -186,7 +186,7 @@ export default function Home3Hero() {
             }}
           >
             <Image
-              src="/images/home3/hero-phone.png"
+              src="/images/home3/hero-phone-odontoa.png"
               alt="Odontoa aplikacija"
               width={448}
               height={400}
