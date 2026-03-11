@@ -242,17 +242,64 @@
   gap: 32px;
 }
 
-.home3-key-features__item-icon {
-  width: 36px;
-  height: 36px;
-  color: var(--stellar-accent);
-  margin-bottom: 12px;
+/* Icon box: white rounded square with border */
+.home3-key-features__icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--stellar-white);
+  border: 1px solid var(--stellar-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Phone mockup right column */
+.home3-key-features__phones {
+  position: relative;
+  height: 560px;
+}
+
+/* Bottom-half rounded card panel */
+.home3-key-features__phone-panel {
+  position: absolute;
+  bottom: 0;
+  left: 13%;
+  right: 13%;
+  top: 50%;
+  border: 1px solid var(--stellar-border);
+  border-radius: 20px 20px 8px 8px;
+}
+
+/* Back phone: top-right area */
+.home3-key-features__phone-back {
+  position: absolute;
+  top: 20px;
+  left: 34%;
+  right: 13%;
+  width: auto;
+  height: auto;
+  max-width: 55%;
+  object-fit: contain;
+}
+
+/* Front phone: overlapping lower-left */
+.home3-key-features__phone-front {
+  position: absolute;
+  top: 159px;
+  left: 13%;
+  right: 28%;
+  width: auto;
+  height: auto;
+  max-width: 62%;
+  object-fit: contain;
 }
 
 /* ── Integrations ── */
 .home3-integrations {
   padding: 80px 24px;
-  background: var(--stellar-dark);
+  background: var(--stellar-white);
   position: relative;
   overflow: hidden;
 }
@@ -261,46 +308,20 @@
   max-width: 1072px;
   margin: 0 auto;
   text-align: center;
-  position: relative;
-  z-index: 1;
 }
 
-.home3-integrations__grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 24px;
-  margin: 48px 0;
-  position: relative;
+.home3-integrations__grid-img {
+  max-width: 1008px;
+  margin: 0 auto;
 }
 
-.home3-integrations__icon {
-  width: 88px;
-  height: 88px;
-  border-radius: 50%;
-  background: var(--stellar-white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-}
-
-.home3-integrations__icon--center {
-  width: 124px;
-  height: 124px;
-  box-shadow: 0 4px 24px rgba(110, 81, 224, 0.3);
-}
-
-.home3-integrations__noise {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 320px;
-  height: 320px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+@media (max-width: 640px) {
+  .home3-integrations__grid-img {
+    max-width: 100%;
+  }
+  .home3-integrations {
+    padding: 48px 16px;
+  }
 }
 
 /* ── Testimonials ── */
@@ -408,7 +429,7 @@
 /* ── CTA ── */
 .home3-cta {
   padding: 80px 24px;
-  background: var(--stellar-bg-light);
+  background: var(--stellar-white);
   position: relative;
   overflow: hidden;
 }
@@ -498,10 +519,10 @@
   color: var(--stellar-white);
 }
 
-/* ── Feature Right (Dark bg) ── */
+/* ── Feature Right ── */
 .home3-feature-right {
   padding: 80px 24px;
-  background: var(--stellar-dark);
+  background: var(--stellar-bg-light);
   position: relative;
   overflow: hidden;
 }
@@ -515,52 +536,15 @@
   align-items: center;
 }
 
-.home3-feature-right__circle {
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.04);
-  left: -100px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
 .home3-feature-right__illustrations {
   position: relative;
-  min-height: 460px;
+  min-height: 510px;
   z-index: 1;
+  overflow: visible;
 }
 
-/* ── Responsive ── */
+/* ── Responsive — general sections ── */
 @media (max-width: 1024px) {
-  .home3-hero__content {
-    padding: 100px 24px 0;
-  }
-
-  .home3-hero__floating-card--lt,
-  .home3-hero__floating-card--rt {
-    display: none;
-  }
-
-  .home3-hero__floating-card--lb,
-  .home3-hero__floating-card--rb {
-    position: relative;
-    top: auto;
-    left: auto;
-    right: auto;
-    margin-top: 24px;
-  }
-
-  .home3-hero__text-block {
-    text-align: center;
-    max-width: 100%;
-  }
-
-  .home3-hero__main {
-    align-items: center;
-  }
-
   .home3-feature__inner,
   .home3-key-features__inner,
   .home3-feature-right__inner {
@@ -592,15 +576,15 @@
   }
 }
 
-@media (max-width: 640px) {
-  .home3-hero__dashboard {
-    width: 100%;
-    max-width: 320px;
+@media (max-width: 1024px) {
+  .home3-key-features__phones {
+    height: 360px;
   }
+}
 
-  .home3-hero__dividers {
-    width: 100%;
-    max-width: 320px;
+@media (max-width: 640px) {
+  .home3-key-features__phones {
+    display: none;
   }
 
   .home3-key-features__grid {
@@ -629,13 +613,215 @@
     gap: 12px;
   }
 
-  .home3-integrations__icon {
-    width: 64px;
-    height: 64px;
-  }
+}
 
-  .home3-integrations__icon--center {
-    width: 88px;
-    height: 88px;
+/* ─────────────────────────────────────
+   RESPONSIVE — Hero
+───────────────────────────────────── */
+@media (max-width: 1024px) {
+  .home3-hero-section {
+    min-height: 0 !important;
+  }
+  /* Reduce top padding */
+  .home3-hero-section > div:not([aria-hidden]) {
+    padding-top: 140px !important;
+  }
+  /* Collapse the fixed 702px height frame into a flex column */
+  .home3-hero-section > div:not([aria-hidden]) > div {
+    height: auto !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 24px 56px;
+  }
+  /* Text block: back to flow */
+  .home3-hero-section > div:not([aria-hidden]) > div > div:first-child {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    width: 100%;
+  }
+  /* Phone mockup: flow, centered */
+  .home3-hero-section > div:not([aria-hidden]) > div > div:nth-child(2) {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    width: 100%;
+    max-width: 360px;
+    margin: 40px auto 0;
+  }
+  /* Scale h1 */
+  .home3-hero-section h1 {
+    font-size: 42px !important;
+    line-height: 56px !important;
+    max-width: 100% !important;
+  }
+  /* Scale Odontoa pill badge */
+  .home3-hero-section h1 span > span {
+    font-size: 36px !important;
+    height: 62px !important;
+    line-height: 62px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .home3-hero-section > div:not([aria-hidden]) {
+    padding-top: 100px !important;
+  }
+  .home3-hero-section > div:not([aria-hidden]) > div {
+    padding: 0 16px 40px;
+  }
+  .home3-hero-section h1 {
+    font-size: 30px !important;
+    line-height: 40px !important;
+  }
+  /* Allow the "ordinaciju bolje sa [pill]" span to wrap */
+  .home3-hero-section h1 > span {
+    white-space: normal !important;
+  }
+  .home3-hero-section h1 span > span {
+    font-size: 26px !important;
+    height: 48px !important;
+    line-height: 48px !important;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+  .home3-hero-section > div:not([aria-hidden]) > div > div:nth-child(2) {
+    max-width: 260px;
+  }
+  .home3-hero-section p {
+    max-width: 100% !important;
+  }
+}
+
+/* ─────────────────────────────────────
+   RESPONSIVE — TrustLogos
+───────────────────────────────────── */
+@media (max-width: 1024px) {
+  .home3-trust-section {
+    padding: 64px 24px !important;
+  }
+  .home3-trust-section h2 {
+    font-size: 22px !important;
+    line-height: 30px !important;
+  }
+  .home3-trust-section p {
+    font-size: 16px !important;
+    line-height: 26px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .home3-trust-section {
+    padding: 48px 16px !important;
+  }
+  .home3-trust-section h2 {
+    font-size: 18px !important;
+    line-height: 26px !important;
+  }
+  .home3-trust-section p {
+    font-size: 14px !important;
+    line-height: 22px !important;
+  }
+  /* Narrow fade masks so they don't eat the logos */
+  .home3-trust-fade {
+    width: 60px !important;
+  }
+}
+
+/* ─────────────────────────────────────
+   RESPONSIVE — FeatureLeft
+───────────────────────────────────── */
+@media (max-width: 1024px) {
+  .home3-feature-left {
+    padding: 64px 24px !important;
+  }
+  .home3-feature-left__inner {
+    flex-direction: column !important;
+    gap: 48px !important;
+    align-items: center !important;
+  }
+  .home3-feature-left__text {
+    flex: 1 1 auto !important;
+    max-width: 560px;
+    width: 100%;
+  }
+  .home3-feature-left__text h2 {
+    font-size: 32px !important;
+    line-height: 44px !important;
+  }
+  /*
+    Scale illustration 65%.
+    Natural content bounds: 552px wide x 508px tall.
+    At 0.65: visual 359px x 330px.
+    Set height = 508 * 0.65 = 330px so layout matches visual.
+  */
+  .home3-feature-left__illustrations {
+    transform: scale(0.65);
+    transform-origin: top left;
+    height: 330px !important;
+    flex: 0 0 auto !important;
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .home3-feature-left {
+    padding: 48px 16px !important;
+  }
+  .home3-feature-left__text h2 {
+    font-size: 26px !important;
+    line-height: 36px !important;
+  }
+  /* Hide illustration on small mobile - text is enough */
+  .home3-feature-left__illustrations {
+    display: none !important;
+  }
+}
+
+/* ─────────────────────────────────────
+   RESPONSIVE — FeatureRight
+───────────────────────────────────── */
+@media (max-width: 1024px) {
+  .home3-feature-right {
+    padding: 64px 24px !important;
+  }
+  .home3-feature-right__inner {
+    grid-template-columns: 1fr !important;
+    gap: 48px !important;
+  }
+  /* On tablet, illustrations come after text (reverse grid order visually) */
+  .home3-feature-right__illustrations {
+    order: 2;
+    transform: scale(0.65);
+    transform-origin: top left;
+    height: 332px !important; /* 510 * 0.65 */
+  }
+  .home3-feature-right__inner > div:last-child {
+    order: 1;
+    max-width: 560px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .home3-feature-right__inner h2 {
+    font-size: 32px !important;
+    line-height: 44px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .home3-feature-right {
+    padding: 48px 16px !important;
+  }
+  .home3-feature-right__inner h2 {
+    font-size: 26px !important;
+    line-height: 36px !important;
+  }
+  .home3-feature-right__illustrations {
+    display: none !important;
   }
 }

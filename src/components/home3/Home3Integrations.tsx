@@ -1,98 +1,105 @@
-import { Cloud, Facebook, Instagram, Twitter, Figma, Bell, Pen } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-
-interface IntegrationIcon {
-  icon: LucideIcon;
-  color: string;
-  center?: boolean;
-}
-
-const ICONS: IntegrationIcon[] = [
-  { icon: Figma, color: '#f24e1e' },
-  { icon: Pen, color: '#ffeb3b' },
-  { icon: Twitter, color: '#1da1f2' },
-  { icon: Instagram, color: '#e1306c' },
-  { icon: Pen, color: '#222' },
-  { icon: Cloud, color: '#6e51e0', center: true },
-  { icon: Facebook, color: '#1877f2' },
-  { icon: Pen, color: '#e1306c' },
-  { icon: Figma, color: '#0acf83' },
-  { icon: Pen, color: '#ff6b35' },
-  { icon: Bell, color: '#ffb800' },
-];
+import Image from 'next/image';
 
 export default function Home3Integrations() {
   return (
     <section className="home3-integrations">
       <div className="home3-integrations__inner">
+        {/* Label */}
         <p
-          className="mb-4 text-sm font-medium"
-          style={{ color: 'var(--stellar-accent)' }}
+          style={{
+            fontFamily: 'Inter, sans-serif',
+            fontSize: 14,
+            fontWeight: 500,
+            letterSpacing: '-0.18px',
+            color: '#6e51e0',
+            margin: 0,
+            marginBottom: 16,
+            textAlign: 'center',
+          }}
         >
           Our Primary Integrations
         </p>
+
+        {/* Heading */}
         <h2
-          className="text-[44px] leading-[1.15] font-medium tracking-tight"
-          style={{ color: 'var(--stellar-white)' }}
+          style={{
+            fontFamily: 'Inter, sans-serif',
+            fontSize: 44,
+            fontWeight: 500,
+            lineHeight: '57.6px',
+            letterSpacing: '-1.25px',
+            color: '#060b13',
+            margin: 0,
+            marginBottom: 48,
+            textAlign: 'center',
+          }}
         >
           Make productivity easier
           <br />
           with{' '}
-          <span style={{ color: 'var(--stellar-accent)' }}>50+ Integrations</span>
+          <span style={{ color: '#6e51e0' }}>50+ Integrations</span>
         </h2>
 
-        <div className="home3-integrations__grid">
-          <div className="home3-integrations__noise" />
-          {/* Row 1: 5 icons */}
-          <div className="flex items-center justify-center gap-8 w-full">
-            {ICONS.slice(0, 5).map((item, i) => (
-              <div
-                key={i}
-                className={`home3-integrations__icon ${item.center ? 'home3-integrations__icon--center' : ''}`}
-              >
-                <item.icon size={item.center ? 40 : 28} style={{ color: item.color }} />
-              </div>
-            ))}
-          </div>
-          {/* Row 2: center icon + 2 */}
-          <div className="flex items-center justify-center gap-8 w-full">
-            {ICONS.slice(5, 8).map((item, i) => (
-              <div
-                key={i}
-                className={`home3-integrations__icon ${item.center ? 'home3-integrations__icon--center' : ''}`}
-              >
-                <item.icon size={item.center ? 40 : 28} style={{ color: item.color }} />
-              </div>
-            ))}
-          </div>
-          {/* Row 3: 3 icons */}
-          <div className="flex items-center justify-center gap-8 w-full">
-            {ICONS.slice(8).map((item, i) => (
-              <div
-                key={i}
-                className="home3-integrations__icon"
-              >
-                <item.icon size={28} style={{ color: item.color }} />
-              </div>
-            ))}
-          </div>
+        {/* Icons grid — exported directly from Figma at 2x */}
+        <div className="home3-integrations__grid-img">
+          <Image
+            src="/images/home3/integrations-grid.png"
+            alt="Integrations: Figma, Monday, Twitter, Instagram, Mailchimp, Facebook, Pinterest, Dropbox, Slack, Snapchat"
+            width={2016}
+            height={790}
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+          />
         </div>
 
+        {/* Body text */}
         <p
-          className="text-base leading-relaxed mb-8"
-          style={{ color: 'var(--stellar-body)' }}
+          style={{
+            fontFamily: 'Inter, sans-serif',
+            fontSize: 16,
+            fontWeight: 400,
+            lineHeight: '32px',
+            letterSpacing: '-0.18px',
+            color: '#353d4f',
+            textAlign: 'center',
+            margin: '48px 0 32px',
+            maxWidth: 600,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          }}
         >
           Gain a competitive edge with our SEO optimization tools, ensuring your website
           <br />
           ranks higher, attracts more visitors, and generates leads like never before.
         </p>
 
-        <a href="#" className="home3-btn-purple">
-          See Integrations
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </a>
+        {/* CTA button */}
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <a
+            href="#"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              height: 40,
+              paddingLeft: 20,
+              paddingRight: 20,
+              borderRadius: 999,
+              background: '#6e51e0',
+              fontFamily: 'Inter, sans-serif',
+              fontSize: 14,
+              fontWeight: 500,
+              letterSpacing: '-0.18px',
+              color: '#ffffff',
+              textDecoration: 'none',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            See Integrations
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </a>
+        </div>
       </div>
     </section>
   );
