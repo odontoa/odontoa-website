@@ -17,7 +17,7 @@ export default function Home3Integrations() {
             textAlign: 'center',
           }}
         >
-          Our Primary Integrations
+          Sigurnost podataka
         </p>
 
         {/* Heading */}
@@ -34,17 +34,16 @@ export default function Home3Integrations() {
             textAlign: 'center',
           }}
         >
-          Make productivity easier
+          Vaši podaci. Vaša kontrola.
           <br />
-          with{' '}
-          <span style={{ color: '#6e51e0' }}>50+ Integrations</span>
+          Uvek dostupni.
         </h2>
 
         {/* Icons grid — exported directly from Figma at 2x */}
         <div className="home3-integrations__grid-img">
           <Image
             src="/images/home3/integrations-grid.png"
-            alt="Integrations: Figma, Monday, Twitter, Instagram, Mailchimp, Facebook, Pinterest, Dropbox, Slack, Snapchat"
+            alt="Odontoa funkcije: zakazivanje, kartoni pacijenata, zalihe, naplata, analitika"
             width={2016}
             height={790}
             style={{ width: '100%', height: 'auto', display: 'block' }}
@@ -67,15 +66,13 @@ export default function Home3Integrations() {
             marginRight: 'auto',
           }}
         >
-          Gain a competitive edge with our SEO optimization tools, ensuring your website
-          <br />
-          ranks higher, attracts more visitors, and generates leads like never before.
+          Cloud pristup, rezervne kopije i sigurno čuvanje podataka.
         </p>
 
         {/* CTA button */}
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <a
-            href="#"
+            href="#funkcionalnosti"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -94,7 +91,7 @@ export default function Home3Integrations() {
               whiteSpace: 'nowrap',
             }}
           >
-            See Integrations
+            Pogledajte sve funkcije
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>

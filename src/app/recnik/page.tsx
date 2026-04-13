@@ -9,7 +9,7 @@ export const revalidate = process.env.NODE_ENV === "development" ? 0 : 300;
 
 export default async function GlossaryPage() {
   try {
-    const terms = await sanityClient.fetch(allGlossaryTermsDirectoryQuery);
+    const terms = await sanityClient.fetch(allGlossaryTermsDirectoryQuery, {}, { next: { tags: ['sanity-glossary'] } });
 
     // Pass terms to client component for filtering/search
     return <GlossaryClient initialTerms={terms || []} />;

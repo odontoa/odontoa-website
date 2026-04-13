@@ -1,24 +1,22 @@
 import Image from 'next/image';
-import { Palette, Code, Settings } from 'lucide-react';
+import { ClipboardList, CalendarDays, BarChart2 } from 'lucide-react';
 
 const FEATURES = [
   {
-    icon: Palette,
-    title: 'Beautiful Design',
+    icon: ClipboardList,
+    title: 'Digitalni kartoni',
     description:
-      'Gain a competitive edge with our SEO optimization tools, ensuring your website ranks',
+      'Anamneza, terapije, saglasnosti, RTG snimci i fotografije na jednom mestu.',
   },
   {
-    icon: Code,
-    title: 'Clean Development',
-    description:
-      'Unlock the power of data analytics and gain actionable insights to make informed decisions.',
+    icon: CalendarDays,
+    title: 'Zakazivač termina',
+    description: 'Pregledan kalendar, brže izmene termina i podsetnici za pacijente.',
   },
   {
-    icon: Settings,
-    title: 'Easily Customised',
-    description:
-      'From content creation and deployment to performance monitoring and optimization',
+    icon: BarChart2,
+    title: 'Finansije i administracija',
+    description: 'Predračuni, uplate, cenovnik i dokumentacija bez dodatnog haosa.',
   },
 ];
 
@@ -27,58 +25,47 @@ export default function Home3BigFeatures() {
     <section className="home3-big-features">
       <div className="home3-big-features__inner">
         {/* Header */}
-        <div className="text-center mb-12">
-          <p
-            className="mb-4 text-xs font-medium"
-            style={{ color: 'var(--stellar-accent)' }}
-          >
-            Powerful Features
-          </p>
+        <div className="text-center mb-12 max-w-3xl mx-auto">
           <h2
-            className="text-[58px] leading-[1.1] font-medium tracking-tight"
+            className="text-[58px] leading-[1.1] font-medium tracking-tight mb-6"
             style={{ color: 'var(--stellar-heading)' }}
           >
-            Our product has
-            <br />
-            these big{' '}
-            <span
-              className="inline-flex items-center rounded-full px-4 py-1"
-              style={{
-                background: 'var(--stellar-accent)',
-                color: 'var(--stellar-white)',
-              }}
-            >
-              features
-            </span>
+            Ceo rad ordinacije. Jedan sistem.
           </h2>
+          <p
+            className="text-base leading-relaxed"
+            style={{ color: 'var(--stellar-body)' }}
+          >
+            Od zakazivanja do dokumentacije, sve je povezano i pregledno.
+          </p>
         </div>
 
         {/* Cards row */}
         <div className="grid grid-cols-3 gap-6 mb-12">
           <div className="bg-white rounded-xl p-5 border" style={{ borderColor: 'var(--stellar-border)' }}>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-medium" style={{ color: 'var(--stellar-heading)' }}>Dashboard</span>
+              <span className="text-sm font-medium" style={{ color: 'var(--stellar-heading)' }}>Digitalni kartoni</span>
               <div className="w-1 h-4 rounded-full" style={{ background: 'var(--stellar-border)' }} />
             </div>
             <div className="flex gap-2 mb-3">
-              {['Date', 'Mail', 'Console'].map((t) => (
+              {['Termini', 'Pacijenti', 'Tim'].map((t) => (
                 <span key={t} className="text-xs px-3 py-1 rounded-full" style={{ background: 'var(--stellar-bg-light)', color: 'var(--stellar-body)' }}>{t}</span>
               ))}
             </div>
             <div className="p-3 rounded-lg" style={{ background: 'var(--stellar-bg-light)' }}>
               <div className="flex items-center justify-between">
-                <span className="text-xs font-medium" style={{ color: 'var(--stellar-heading)' }}>Import CSV</span>
+                <span className="text-xs font-medium" style={{ color: 'var(--stellar-heading)' }}>Dnevni pregled</span>
                 <span className="text-xs" style={{ color: 'var(--stellar-muted)' }}>✕</span>
               </div>
-              <span className="text-xs" style={{ color: 'var(--stellar-muted)' }}>Lorem ipsum dolor sit amet, cursus.</span>
+              <span className="text-xs" style={{ color: 'var(--stellar-muted)' }}>Pregled dana: termini, statusi poseta i brze akcije.</span>
             </div>
           </div>
 
           <div className="bg-white rounded-xl p-5 border flex flex-col items-center justify-center" style={{ borderColor: 'var(--stellar-border)' }}>
-            <span className="text-sm font-medium mb-4" style={{ color: 'var(--stellar-heading)' }}>Stellar Filters:</span>
+            <span className="text-sm font-medium mb-4" style={{ color: 'var(--stellar-heading)' }}>Zakazivač termina</span>
             <Image
               src="/images/home3/big-feature-card.png"
-              alt="Stellar filters"
+              alt="Raspored po doktorima i stolicama"
               width={253}
               height={85}
               className="object-contain"
@@ -86,12 +73,12 @@ export default function Home3BigFeatures() {
           </div>
 
           <div className="bg-white rounded-xl p-5 border" style={{ borderColor: 'var(--stellar-border)' }}>
-            <span className="text-sm font-medium mb-4 block" style={{ color: 'var(--stellar-heading)' }}>Proje Data & Analytics</span>
+            <span className="text-sm font-medium mb-4 block" style={{ color: 'var(--stellar-heading)' }}>Finansije i administracija</span>
             <div className="flex flex-col gap-3 mt-3">
               {[
-                { label: 'Sector', value: '94%' },
-                { label: 'Industry', value: '83%' },
-                { label: 'AAPL', value: '72%' },
+                { label: 'Prihodi', value: '94%' },
+                { label: 'Popunjenost', value: '83%' },
+                { label: 'KPI', value: '72%' },
               ].map((item) => (
                 <div key={item.label} className="flex items-center gap-3">
                   <span className="text-xs w-16" style={{ color: 'var(--stellar-body)' }}>{item.label}</span>

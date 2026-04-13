@@ -48,7 +48,8 @@ export async function generateMetadata({
 }: BlogPostPageProps): Promise<Metadata> {
   const post = await sanityClient.fetch<SanityBlogPost | null>(
     blogPostBySlugQuery,
-    { slug: params.slug }
+    { slug: params.slug },
+    { next: { tags: ['sanity-blog'] } }
   );
 
   if (!post) {
@@ -117,7 +118,8 @@ function formatToSerbianDate(isoString: string): string {
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const post = await sanityClient.fetch<SanityBlogPost | null>(
     blogPostBySlugQuery,
-    { slug: params.slug }
+    { slug: params.slug },
+    { next: { tags: ['sanity-blog'] } }
   );
 
   if (!post) {

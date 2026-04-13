@@ -3,23 +3,23 @@ import Image from 'next/image';
 const FEATURES = [
   {
     icon: '/images/home3/key-features/icon-deploy.svg',
-    title: 'Deploy faster together',
-    description: 'Gain a competitive edge with our SEO optimization tools',
+    title: 'Sve povezano',
+    description: 'Kartoni, termini, dokumenti i finansije u istom sistemu.',
   },
   {
     icon: '/images/home3/key-features/icon-nocode.svg',
-    title: 'Beautiful No-Code',
-    description: "Enhance your website's visibility and drive targeted traffic",
+    title: 'Tehnika',
+    description: 'Zahtevi, istorija i saradnja sa tehnikom na jednom mestu.',
   },
   {
     icon: '/images/home3/key-features/icon-comms.svg',
-    title: 'Good Communication',
-    description: 'xperience the Stellar difference and unlock the true potential',
+    title: 'Dokumentacija i saglasnosti',
+    description: 'Šabloni, saglasnosti i digitalni potpisi pacijenta.',
   },
   {
     icon: '/images/home3/key-features/icon-custom.svg',
-    title: 'Easily Customised',
-    description: 'From content creation and deployment to performance',
+    title: 'Finansije i izveštaji',
+    description: 'Predračuni, uplate i pregled rada ordinacije.',
   },
 ];
 
@@ -33,15 +33,13 @@ export default function Home3KeyFeatures() {
             className="mb-4 text-sm font-medium"
             style={{ color: 'var(--stellar-accent)', letterSpacing: '-0.18px' }}
           >
-            Our Key Features
+            Zašto Odontoa
           </p>
           <h2
             className="text-[44px] leading-[1.3] font-medium tracking-[-1.25px] mb-10"
             style={{ color: 'var(--stellar-heading)' }}
           >
-            Build a solution that wins
-            <br />
-            you more customers.
+            Više kontrole nad radom ordinacije.
           </h2>
 
           <div className="home3-key-features__grid">

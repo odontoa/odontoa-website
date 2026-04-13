@@ -1,3 +1,12 @@
+/**
+ * Home 3 — Testimonials (iskustva korisnika)
+ *
+ * Sekcija je privremeno isključena sa `home3/page.tsx` dok nema pravih korisnika.
+ * Naslov na stranici: „Ordinacije koje su prešle na Odontoa“ (eyebrow: Iskustva korisnika).
+ *
+ * Da je ponovo prikažeš: ukloni komentar oko importa i `<Home3Testimonials />` u
+ * `src/app/(site)/home3/page.tsx` (ispod `Home3Integrations`, iznad `Home3Blog`).
+ */
 import { Twitter } from 'lucide-react';
 
 interface Testimonial {
@@ -10,45 +19,45 @@ interface Testimonial {
 
 const TESTIMONIALS: Testimonial[] = [
   {
-    title: 'Incredibly useful product',
-    text: "Stellar's user-friendly dashboards have simplified our digital strategy management.",
-    name: 'Fig Nelson',
-    handle: '@fignel_sooon',
+    title: 'Finansije pod kontrolom',
+    text: 'Prešli smo na Odontoa pre šest meseci. Recepcija više ne gubi vreme na telefonske podsetnike, a ja imam pregled finansija u realnom vremenu.',
+    name: 'Dr. Ana Nikolić',
+    handle: 'Vlasnica ordinacije, Beograd',
     social: 'twitter',
   },
   {
-    title: 'Incredibly useful product',
-    text: "Stellar has truly transformed our online presence. With its powerful analytics and seamless integration, we've gained invaluable insights.",
-    name: 'Sadie Berlin',
-    handle: '@sadiieberlin00',
+    title: 'Jedan sistem za sve',
+    text: 'Konačno jedan sistem za sve — kartone, termine i naplatu. Tim se brže snašao nego što sam očekivala.',
+    name: 'Marija Jovanović',
+    handle: 'Menadžerka ordinacije, Novi Sad',
     social: 'instagram',
   },
   {
-    title: 'Incredibly useful product',
-    text: "We've gained invaluable insights and improved our SEO ranking, resulting in significant business growth",
-    name: 'Amaya Locosta',
-    handle: '@amaylocosta',
+    title: 'Ortodoncija bez papira',
+    text: 'Ortodontski karton i praćenje terapija su odlični. Ne moram da listam papire da vidim gde je pacijent u tretmanu.',
+    name: 'Dr. Stefan Petrović',
+    handle: 'Ortodont, Niš',
     social: 'instagram',
   },
   {
-    title: 'Incredibly useful product',
-    text: "We've gained invaluable insights and improved our SEO ranking, resulting in significant business growth",
-    name: 'Sadie Berlin',
-    handle: '@sadiieberlin00',
+    title: 'Manje propuštenih termina',
+    text: 'Zakazivanje traje upola kraće. Pacijenti dobijaju podsetnike, pa imamo mnogo manje propuštenih termina.',
+    name: 'Jelena Đorđević',
+    handle: 'Recepcija, Kragujevac',
     social: 'twitter',
   },
   {
-    title: 'Incredibly useful product',
-    text: "Stellar's user-friendly dashboards have simplified our digital strategy management.",
-    name: 'Fig Nelson',
-    handle: '@fignel_sooon',
+    title: 'Dokumentacija na jednom mestu',
+    text: 'Dokumentacija, RTG snimci i beleške — sve je vezano za pacijenta. Ne gubim vreme na traženje.',
+    name: 'Dr. Miloš Stanković',
+    handle: 'Oralni hirurg, Beograd',
     social: 'twitter',
   },
   {
-    title: 'Incredibly useful product',
-    text: "Stellar's user-friendly dashboards have simplified our digital strategy management.",
-    name: 'Sadie Berlin',
-    handle: '@sadiieberlin00',
+    title: 'Pregled cele ordinacije',
+    text: 'Upravljam sa 4 stolice i 8 zaposlenih. Odontoa mi daje pregled koji pre nisam imala.',
+    name: 'Ivana Mihailović',
+    handle: 'Vlasnica poliklinike, Subotica',
     social: 'instagram',
   },
 ];
@@ -63,15 +72,15 @@ export default function Home3Testimonials() {
             className="mb-4 text-xs font-medium"
             style={{ color: 'var(--stellar-accent)' }}
           >
-            Our Customers
+            Iskustva korisnika
           </p>
           <h2
             className="text-[58px] leading-[1.1] font-medium tracking-tight"
             style={{ color: 'var(--stellar-heading)' }}
           >
-            See what our
+            Ordinacije koje su prešle
             <br />
-            customers are saying
+            na Odontoa
           </h2>
         </div>
 
@@ -130,7 +139,7 @@ export default function Home3Testimonials() {
             href="#"
             className="home3-btn-purple text-sm"
           >
-            Follow us on Social Media
+            Započnite i vi besplatno
           </a>
         </div>
       </div>

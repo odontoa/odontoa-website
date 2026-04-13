@@ -25,10 +25,20 @@ const HOME2_MENU_ITEMS = [
   { name: 'Kontakt', href: '/kontakt' },
 ];
 
+const HOME3_MENU_ITEMS = [
+  { name: 'Početna', href: '/' },
+  { name: 'Funkcije', href: '#funkcionalnosti' },
+  { name: 'O nama', href: '/o-nama' },
+  { name: 'Kontakt', href: '/kontakt' },
+  { name: 'Blogovi', href: '/blogovi' },
+  { name: 'Rečnik', href: '/recnik' },
+];
+
 const Navigation = () => {
   const pathname = usePathname();
   const isHome2 = pathname === '/home2';
-  const menuItems = isHome2 ? HOME2_MENU_ITEMS : FULL_MENU_ITEMS;
+  const isHome3 = pathname === '/home3';
+  const menuItems = isHome3 ? HOME3_MENU_ITEMS : isHome2 ? HOME2_MENU_ITEMS : FULL_MENU_ITEMS;
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -51,8 +61,12 @@ const Navigation = () => {
       <nav
         data-state={isMenuOpen && 'active'}
         data-home2={isHome2 || undefined}
+        data-home3={isHome3 || undefined}
         className="fixed z-20 w-full px-2 pt-1 group">
-        <div className={cn('mx-auto mt-2 max-w-[1240px] px-4 sm:px-6 lg:px-8 transition-all duration-300', isScrolled && 'bg-background/50 rounded-2xl border backdrop-blur-lg')}>
+        <div
+          className={cn('mx-auto mt-2 max-w-[1240px] px-4 sm:px-6 lg:px-8 transition-all duration-300', isScrolled && (isHome3 ? 'rounded-2xl border backdrop-blur-lg' : 'bg-background/50 rounded-2xl border backdrop-blur-lg'))}
+          style={isScrolled && isHome3 ? { background: 'rgba(247,248,250,0.85)', borderColor: '#e9ebf1' } : undefined}
+        >
           <div className={cn(
             'relative flex flex-wrap items-start justify-between gap-6 lg:flex-nowrap lg:gap-0',
             isHome2 ? 'py-3 lg:py-4' : 'py-3 lg:py-4'
@@ -83,7 +97,9 @@ const Navigation = () => {
                     <Link
                       href={item.href}
                       onClick={item.href === '/' ? handleHomeClick : undefined}
-                      className="text-muted-foreground hover:text-accent-foreground block duration-150">
+                      className={cn('block duration-150', isHome3 ? 'hover:opacity-100' : 'text-muted-foreground hover:text-accent-foreground')}
+                      style={isHome3 ? { color: '#363d4f' } : undefined}
+                    >
                       <span>{item.name}</span>
                     </Link>
                   </li>
@@ -109,15 +125,41 @@ const Navigation = () => {
                 </ul>
               </div>
               <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                <Button
-                  asChild
-                  variant="pillPrimary"
-                  size="pillSm"
-                >
-                  <a href="https://app.odontoa.com" target="_blank" rel="noopener noreferrer">
-                    <span>Uloguj se</span>
+                {isHome3 ? (
+                  <a
+                    href="https://app.odontoa.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: 36,
+                      paddingLeft: 20,
+                      paddingRight: 20,
+                      borderRadius: 999,
+                      background: '#6e51e0',
+                      color: '#ffffff',
+                      fontSize: 13,
+                      fontWeight: 500,
+                      letterSpacing: '-0.18px',
+                      textDecoration: 'none',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    Uloguj se
                   </a>
-                </Button>
+                ) : (
+                  <Button
+                    asChild
+                    variant="pillPrimary"
+                    size="pillSm"
+                  >
+                    <a href="https://app.odontoa.com" target="_blank" rel="noopener noreferrer">
+                      <span>Uloguj se</span>
+                    </a>
+                  </Button>
+                )}
               </div>
             </div>
           </div>

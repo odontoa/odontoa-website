@@ -141,3 +141,27 @@ All changes live on: ognjen/wip-hero
 Last known commit: 323c05b7 — chore: v2 dashboard layout re-balance (grid + chips + sidebar density)
 
 Working tree should be clean after pulling.
+
+## 12) Pre-launch checklist (before going live)
+
+The following must be verified before the site goes to production:
+
+### Sanity webhook revalidation
+- [ ] `SANITY_REVALIDATE_SECRET` env var is set on Vercel (Production)
+- [ ] Sanity webhook is configured at sanity.io/manage pointing to `https://odontoa.com/api/revalidate?secret=<secret>`
+- [ ] Test the webhook manually after deploy:
+  ```bash
+  curl -X POST "https://odontoa.com/api/revalidate?secret=<secret>" \
+    -H "Content-Type: application/json" \
+    -d '{"_type": "blogPost"}'
+  ```
+  Expected response: `{"revalidated": true, "docType": "blogPost", "tags": ["sanity-blog"], "at": "..."}`
+- [ ] Publish a test blog post in Sanity Studio and verify it appears on `/blogovi` within seconds (not hours)
+
+### General
+- [ ] All env vars are set on Vercel (check `.env.local` for the full list)
+- [ ] `VERCEL_ENV=production` is set (controls robots.txt — blocks all crawlers if not set)
+- [ ] Sanity Studio at `/studio` is accessible and connected to the correct dataset
+- [ ] `sitemap.xml` returns valid XML with blog and glossary URLs
+- [ ] `robots.txt` allows crawling (verify at `https://odontoa.com/robots.txt`)
+- [ ] `llms.txt` returns content (verify at `https://odontoa.com/llms.txt`)

@@ -8,21 +8,21 @@ export default function Home3CTA() {
         <div>
           <p
             className="mb-3 text-sm font-medium"
-            style={{ color: 'var(--stellar-accent)' }}
+            style={{ color: 'var(--stellar-accent)', letterSpacing: '-0.18px' }}
           >
-            Start building today!
+            Započnite danas
           </p>
           <h2
-            className="text-[43px] leading-[1.15] font-medium tracking-tight mb-4"
+            className="text-[36px] leading-[1.2] font-medium tracking-[-1.25px] mb-4"
             style={{ color: 'var(--stellar-heading)' }}
           >
-            Start your 7-day free trial
+            Isprobajte Odontoa bez obaveze.
           </h2>
           <p
-            className="text-base"
+            className="text-[15px] leading-[1.65]"
             style={{ color: 'var(--stellar-body)' }}
           >
-            Experience the Stellar difference and unlock the true potential
+            Pogledajte kako Odontoa izgleda u praksi.
           </p>
         </div>
 
@@ -31,25 +31,25 @@ export default function Home3CTA() {
           <div className="home3-cta__form">
             <input
               type="email"
-              placeholder="name@email.com"
+              placeholder="Vaš email"
               className="home3-cta__input"
             />
-            <button className="home3-btn-purple whitespace-nowrap">
-              Get Instant Access
+            <button className="home3-btn-cta">
+              Započni besplatno
             </button>
           </div>
           <div className="home3-cta__checks">
             <div className="home3-cta__check">
               <div className="home3-cta__check-icon">
-                <Check size={14} strokeWidth={3} />
+                <Check size={12} strokeWidth={2.5} />
               </div>
-              Free 7-day trial
+              Besplatno, bez obaveze
             </div>
             <div className="home3-cta__check">
               <div className="home3-cta__check-icon">
-                <Check size={14} strokeWidth={3} />
+                <Check size={12} strokeWidth={2.5} />
               </div>
-              No credit card required
+              Bez kreditne kartice
             </div>
           </div>
         </div>

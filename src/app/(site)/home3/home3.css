@@ -428,95 +428,100 @@
 
 /* ── CTA ── */
 .home3-cta {
-  padding: 80px 24px;
-  background: var(--stellar-white);
+  padding: 96px 24px;
+  background: var(--stellar-bg-light);
+  border-top: 1px solid var(--stellar-border);
   position: relative;
   overflow: hidden;
 }
 
-.home3-cta::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 200px;
-  background: repeating-linear-gradient(
-    90deg,
-    transparent,
-    transparent 79px,
-    rgba(206, 210, 223, 0.2) 79px,
-    rgba(206, 210, 223, 0.2) 80px
-  );
-  opacity: 0.3;
-}
-
-.home3-cta::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 200px;
-  background: linear-gradient(to top, transparent, var(--stellar-bg-light));
-  opacity: 0.5;
-}
-
 .home3-cta__inner {
-  max-width: 1216px;
+  max-width: 1072px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 64px;
-  position: relative;
-  z-index: 1;
+  gap: 80px;
 }
 
 .home3-cta__form {
   display: flex;
-  gap: 8px;
+  gap: 10px;
+  align-items: stretch;
 }
 
 .home3-cta__input {
-  padding: 14px 20px;
+  padding: 13px 20px;
   border-radius: 999px;
   border: 1px solid var(--stellar-border);
   background: var(--stellar-white);
-  font-size: 15.5px;
+  font-size: 15px;
   color: var(--stellar-heading);
-  width: 273px;
+  width: 260px;
   outline: none;
+  transition: border-color 0.15s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.home3-cta__input:focus {
+  border-color: var(--stellar-accent);
 }
 
 .home3-cta__input::placeholder {
   color: var(--stellar-muted);
 }
 
+/* CTA gradient button — matches hero primary style */
+.home3-btn-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 28px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #7f51f2 0%, #6e51e0 50%, #5a3ec8 100%);
+  color: var(--stellar-white);
+  font-size: 15px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 1px 2px rgba(6, 11, 19, 0.06),
+    0 4px 14px -2px rgba(110, 81, 224, 0.32);
+  cursor: pointer;
+  transition: opacity 0.2s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.home3-btn-cta:hover {
+  opacity: 0.9;
+}
+
 .home3-cta__checks {
   display: flex;
-  gap: 24px;
+  gap: 20px;
   margin-top: 16px;
 }
 
 .home3-cta__check {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--stellar-heading);
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--stellar-body);
 }
 
 .home3-cta__check-icon {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: var(--stellar-accent);
+  background: rgba(110, 81, 224, 0.10);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--stellar-white);
+  color: var(--stellar-accent);
+  flex-shrink: 0;
 }
 
 /* ── Feature Right ── */
@@ -568,6 +573,10 @@
   .home3-cta__inner {
     flex-direction: column;
     text-align: center;
+  }
+
+  .home3-cta__checks {
+    justify-content: center;
   }
 
   .home3-blog__header {
@@ -658,14 +667,6 @@
     line-height: 56px !important;
     max-width: 100% !important;
   }
-  /* Scale Odontoa pill badge */
-  .home3-hero-section h1 span > span {
-    font-size: 36px !important;
-    height: 62px !important;
-    line-height: 62px !important;
-    padding-left: 20px !important;
-    padding-right: 20px !important;
-  }
 }
 
 @media (max-width: 640px) {
@@ -678,17 +679,6 @@
   .home3-hero-section h1 {
     font-size: 30px !important;
     line-height: 40px !important;
-  }
-  /* Allow the "ordinaciju bolje sa [pill]" span to wrap */
-  .home3-hero-section h1 > span {
-    white-space: normal !important;
-  }
-  .home3-hero-section h1 span > span {
-    font-size: 26px !important;
-    height: 48px !important;
-    line-height: 48px !important;
-    padding-left: 14px !important;
-    padding-right: 14px !important;
   }
   .home3-hero-section > div:not([aria-hidden]) > div > div:nth-child(2) {
     max-width: 260px;

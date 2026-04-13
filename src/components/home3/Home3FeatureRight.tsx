@@ -74,38 +74,35 @@ export default function Home3FeatureRight() {
             className="mb-4 text-sm font-medium"
             style={{ color: 'var(--stellar-accent)' }}
           >
-            Pocnite danas
+            Počnite danas
           </p>
           <h2
             className="text-[44px] leading-[1.15] font-medium tracking-tight mb-6"
             style={{ color: 'var(--stellar-heading)', letterSpacing: '-1.25px' }}
           >
-            Digitalizujte svoju
-            <br />
-            ordinaciju danas.
+            Pogledajte kako Odontoa izgleda u vašoj ordinaciji.
           </h2>
           <p
             className="text-base leading-relaxed mb-8"
             style={{ color: 'var(--stellar-body)' }}
           >
-            Pratite analitiku u realnom vremenu i donosite
-            poslovne odluke na osnovu tačnih podataka.
+            Kratka prezentacija sistema, bez komplikacije.
           </p>
 
           <div className="flex flex-col gap-4">
             <div className="home3-cta__form">
               <input
                 type="email"
-                placeholder="name@email.com"
+                placeholder="Vaš email"
                 className="home3-cta__input"
               />
-              <button className="home3-btn-purple whitespace-nowrap">Zapocnite</button>
+              <button className="home3-btn-cta">Započni besplatno</button>
             </div>
             <p
               className="text-sm"
               style={{ color: 'var(--stellar-muted)' }}
             >
-              14 dana besplatno - bez kreditne kartice
+              3 meseca besplatno · Bez kreditne kartice
             </p>
           </div>
         </div>

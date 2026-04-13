@@ -38,91 +38,101 @@ export default function Home3TrustLogos() {
             margin: 0,
           }}
         >
-          Vodece kompanije sveta koriste Odontoa.
+          Manje administracije. Više vremena za pacijente.
         </h2>
 
-        {/* Logo carousel */}
-        <div style={{ position: 'relative', width: '100%', overflow: 'hidden', height: 80 }}>
-          {/* Left fade */}
-          <div
-            className="home3-trust-fade"
-            aria-hidden
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              bottom: 0,
-              width: 160,
-              background: 'linear-gradient(to right, #ffffff, transparent)',
-              zIndex: 2,
-              pointerEvents: 'none',
-            }}
-          />
-          {/* Right fade */}
-          <div
-            className="home3-trust-fade"
-            aria-hidden
-            style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              bottom: 0,
-              width: 160,
-              background: 'linear-gradient(to left, #ffffff, transparent)',
-              zIndex: 2,
-              pointerEvents: 'none',
-            }}
-          />
-
-          {/* Scrolling track */}
-          <div className="home3-trust__logos-track" style={{ gap: 0 }}>
-            {TRACK.map((logo, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-                <div
-                  style={{
-                    width: 180,
-                    height: 80,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Image
-                    src={logo.src}
-                    alt={logo.alt}
-                    width={120}
-                    height={40}
-                    style={{ objectFit: 'contain', maxHeight: 40 }}
-                  />
-                </div>
-                <div
-                  style={{
-                    width: 1,
-                    height: 32,
-                    background: '#e8eaf2',
-                    flexShrink: 0,
-                  }}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Body text */}
-        <p
+        {/* Logo carousel + mali tekst ispod */}
+        <div
           style={{
-            fontFamily: 'Inter, sans-serif',
-            fontSize: 20,
-            fontWeight: 400,
-            lineHeight: '40px',
-            letterSpacing: '-0.33px',
-            color: '#363d4f',
-            textAlign: 'center',
-            margin: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: '100%',
+            gap: 16,
           }}
         >
-          Odontoa koristi vise od 55.000+ ordinacija sirom sveta
-        </p>
+          <div style={{ position: 'relative', width: '100%', overflow: 'hidden', height: 80 }}>
+            {/* Left fade */}
+            <div
+              className="home3-trust-fade"
+              aria-hidden
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                bottom: 0,
+                width: 160,
+                background: 'linear-gradient(to right, #ffffff, transparent)',
+                zIndex: 2,
+                pointerEvents: 'none',
+              }}
+            />
+            {/* Right fade */}
+            <div
+              className="home3-trust-fade"
+              aria-hidden
+              style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                width: 160,
+                background: 'linear-gradient(to left, #ffffff, transparent)',
+                zIndex: 2,
+                pointerEvents: 'none',
+              }}
+            />
+
+            {/* Scrolling track */}
+            <div className="home3-trust__logos-track" style={{ gap: 0 }}>
+              {TRACK.map((logo, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                  <div
+                    style={{
+                      width: 180,
+                      height: 80,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Image
+                      src={logo.src}
+                      alt={logo.alt}
+                      width={120}
+                      height={40}
+                      style={{ objectFit: 'contain', maxHeight: 40 }}
+                    />
+                  </div>
+                  <div
+                    style={{
+                      width: 1,
+                      height: 32,
+                      background: '#e8eaf2',
+                      flexShrink: 0,
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+          <p
+            style={{
+              fontFamily: 'Inter, sans-serif',
+              fontSize: 15,
+              fontWeight: 400,
+              lineHeight: '24px',
+              letterSpacing: '-0.01em',
+              color: '#5c6370',
+              textAlign: 'center',
+              margin: 0,
+              maxWidth: 640,
+              padding: '0 16px',
+            }}
+          >
+            Od prvog termina do uredne evidencije, Odontoa pojednostavljuje svakodnevni rad ordinacije.
+          </p>
+        </div>
 
         {/* CTA button */}
         <a
@@ -146,7 +156,7 @@ export default function Home3TrustLogos() {
             whiteSpace: 'nowrap',
           }}
         >
-          Zapocnite besplatno
+          Isprobajte besplatno
         </a>
       </div>
     </section>

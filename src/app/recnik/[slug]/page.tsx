@@ -51,7 +51,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const term = await sanityClient.fetch<SanityGlossaryTerm | null>(
     glossaryTermBySlugQuery,
-    { slug: params.slug }
+    { slug: params.slug },
+    { next: { tags: ['sanity-glossary'] } }
   );
 
   if (!term) {
@@ -102,7 +103,8 @@ export default async function GlossaryTermPage({
 }) {
   const term = await sanityClient.fetch<SanityGlossaryTerm | null>(
     glossaryTermBySlugQuery,
-    { slug: params.slug }
+    { slug: params.slug },
+    { next: { tags: ['sanity-glossary'] } }
   );
 
   if (!term) {

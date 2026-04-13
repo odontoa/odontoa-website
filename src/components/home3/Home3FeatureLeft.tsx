@@ -1,14 +1,20 @@
 import Image from 'next/image';
 
-const BULLETS = [
-  'Pratite sve pacijente i njihove kartone na jednom mestu.',
-  'Zakazujte termine brzo i bez grešaka.',
-  'Kontrolišite finansije ordinacije u realnom vremenu.',
-];
+const FEATURE_ITEMS = [
+  'Zakazivač termina',
+  'Karton pacijenta',
+  'Dokumentacija',
+  'RTG i fotografije',
+  'Finansije i podsetnici',
+] as const;
 
 export default function Home3FeatureLeft() {
   return (
-    <section className="home3-feature-left" style={{ background: '#ffffff', padding: '96px 24px', overflow: 'hidden' }}>
+    <section
+      id="funkcionalnosti"
+      className="home3-feature-left"
+      style={{ background: '#ffffff', padding: '96px 24px', overflow: 'hidden' }}
+    >
       <div
         className="home3-feature-left__inner"
         style={{
@@ -21,22 +27,6 @@ export default function Home3FeatureLeft() {
       >
         {/* ── Left text column (488px) ── */}
         <div className="home3-feature-left__text" style={{ flex: '0 0 488px' }}>
-          {/* Label */}
-          <p
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: 14,
-              fontWeight: 500,
-              lineHeight: '23.8px',
-              letterSpacing: '-0.18px',
-              color: '#6e51e0',
-              margin: 0,
-              marginBottom: 16,
-            }}
-          >
-            Upoznajte Odontoa
-          </p>
-
           {/* Heading */}
           <h2
             style={{
@@ -50,12 +40,10 @@ export default function Home3FeatureLeft() {
               marginBottom: 24,
             }}
           >
-            Pouzdana rešenja uvek
-            <br />
-            kada su vam potrebna
+            Jedan sistem za celu ordinaciju
           </h2>
 
-          {/* Body */}
+          {/* Podnaslov */}
           <p
             style={{
               fontFamily: 'Inter, sans-serif',
@@ -68,25 +56,18 @@ export default function Home3FeatureLeft() {
               marginBottom: 32,
             }}
           >
-            Odontoa je više od softvera za ordinacije - to je kompletno
-            digitalno rešenje za modernu stomatološku praksu.
+            Termini, kartoni, dokumentacija i finansije na jednom mestu.
           </p>
 
-          {/* Bullets */}
+          {/* Lista sa ikonama (jedna ispod druge) */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 32 }}>
-            {BULLETS.map((text, i) => (
+            {FEATURE_ITEMS.map((label) => (
               <div
-                key={i}
+                key={label}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: 12,
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: 14,
-                  fontWeight: 500,
-                  lineHeight: '23.8px',
-                  letterSpacing: '-0.18px',
-                  color: '#060b13',
                 }}
               >
                 <Image
@@ -96,14 +77,26 @@ export default function Home3FeatureLeft() {
                   height={72}
                   style={{ width: 24, height: 24, flexShrink: 0 }}
                 />
-                {text}
+                <p
+                  style={{
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: 15,
+                    fontWeight: 400,
+                    lineHeight: '24px',
+                    letterSpacing: '-0.18px',
+                    color: '#060b13',
+                    margin: 0,
+                  }}
+                >
+                  {label}
+                </p>
               </div>
             ))}
           </div>
 
           {/* CTA */}
-          <a href="#" className="home3-btn-gradient">
-            Isprobajte besplatno
+          <a href="/demo" className="home3-btn-gradient">
+            Pogledaj funkcionalnosti
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
