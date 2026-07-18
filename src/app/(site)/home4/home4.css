@@ -8,6 +8,8 @@
   --stellar-muted: #979fb4;
   --stellar-white: #ffffff;
   --stellar-dark: #060b13;
+  /* Status "Završeno" (ista zelena kao --home4-hero-green; ovde na page scope-u da vazi van heroja) */
+  --home4-status-done: #1a9e6e;
 }
 
 /* ── Hero ── */
@@ -1069,6 +1071,252 @@
   flex-shrink: 0;
 }
 
+/* ── Feature Left: syscard kartice (Karton pacijenta + Kalendar termina) ── */
+.home4-syscard {
+  background: var(--stellar-white);
+  border: 1px solid var(--stellar-border);
+  border-radius: 20px;
+  box-shadow: 0 24px 64px rgba(6, 11, 19, 0.10), 0 4px 16px rgba(6, 11, 19, 0.05);
+}
+
+.home4-syscard--patient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 400px;
+  overflow: hidden;
+  z-index: 2;
+  animation: home4-hero-rise 0.7s ease both 0.1s;
+}
+
+.home4-syscard--cal {
+  position: absolute;
+  top: 300px;
+  left: 272px;
+  width: 310px;
+  padding: 16px 18px;
+  z-index: 3;
+  animation: home4-hero-rise 0.7s ease both 0.3s;
+}
+
+/* Kartica 1: Karton pacijenta */
+.home4-syscard__head {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--stellar-border);
+}
+
+.home4-syscard__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  flex: none;
+  overflow: hidden;
+  background: linear-gradient(135deg, #7f51f2, #5a3ec8);
+  color: var(--stellar-white);
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home4-syscard__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.home4-syscard__name b {
+  display: block;
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--stellar-heading);
+  letter-spacing: -0.01em;
+}
+
+.home4-syscard__name span {
+  font-size: 11.5px;
+  color: var(--stellar-muted);
+}
+
+.home4-syscard__list {
+  padding: 14px 20px 18px;
+}
+
+.home4-syscard__list h5 {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--stellar-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+}
+
+.home4-syscard__item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--stellar-border);
+  font-size: 13px;
+}
+
+.home4-syscard__item:last-child {
+  border-bottom: none;
+  padding-bottom: 2px;
+}
+
+.home4-syscard__item-date {
+  flex: none;
+  width: 42px;
+  text-align: center;
+  background: var(--stellar-bg-light);
+  border: 1px solid var(--stellar-border);
+  border-radius: 9px;
+  padding: 5px 0;
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--stellar-heading);
+  line-height: 1.25;
+}
+
+.home4-syscard__item-date small {
+  display: block;
+  font-size: 8.5px;
+  font-weight: 500;
+  color: var(--stellar-muted);
+  text-transform: uppercase;
+}
+
+.home4-syscard__item-what {
+  min-width: 0;
+}
+
+.home4-syscard__item-what b {
+  display: block;
+  font-weight: 600;
+  color: var(--stellar-heading);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home4-syscard__item-what span {
+  font-size: 11px;
+  color: var(--stellar-muted);
+}
+
+.home4-syscard__status {
+  margin-left: auto;
+  flex: none;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 3px 9px;
+}
+
+.home4-syscard__status--done {
+  color: var(--home4-status-done);
+  background: rgba(26, 158, 110, 0.09);
+}
+
+.home4-syscard__status--plan {
+  color: var(--stellar-accent);
+  background: rgba(110, 81, 224, 0.09);
+}
+
+/* Kartica 2: Kalendar termina */
+.home4-syscard__cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.home4-syscard__cal-head b {
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--stellar-heading);
+}
+
+.home4-syscard__cal-head b small {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--stellar-muted);
+  margin-top: 1px;
+}
+
+.home4-syscard__cal-chip {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--stellar-accent);
+  background: rgba(110, 81, 224, 0.08);
+  border: 1px solid rgba(110, 81, 224, 0.18);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.home4-syscard__cal-slot {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.home4-syscard__cal-slot:last-child {
+  margin-bottom: 0;
+}
+
+.home4-syscard__cal-time {
+  flex: none;
+  width: 36px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--stellar-muted);
+  padding-top: 8px;
+}
+
+.home4-syscard__cal-event {
+  flex: 1;
+  min-width: 0;
+  border-radius: 10px;
+  padding: 8px 11px;
+  border: 1px solid var(--stellar-border);
+  border-left: 3px solid var(--stellar-accent);
+  background: rgba(110, 81, 224, 0.05);
+  font-size: 11.5px;
+}
+
+.home4-syscard__cal-event b {
+  display: block;
+  font-weight: 600;
+  color: var(--stellar-heading);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home4-syscard__cal-event span {
+  font-size: 10.5px;
+  color: var(--stellar-muted);
+}
+
+.home4-syscard__cal-event--done {
+  border-left-color: var(--home4-status-done);
+  background: rgba(26, 158, 110, 0.05);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home4-syscard--patient,
+  .home4-syscard--cal {
+    animation: none;
+  }
+}
+
 /* ── Feature Right ── */
 .home4-feature-right {
   padding: 80px 24px;
@@ -1251,9 +1499,24 @@
     font-size: 26px !important;
     line-height: 36px !important;
   }
-  /* Hide illustration on small mobile - text is enough */
+  /* Syscard kartice se stack-uju jedna ispod druge; dekor (krug + ikonica) se sakriva */
   .home4-feature-left__illustrations {
-    display: none !important;
+    transform: none;
+    height: auto !important;
+  }
+
+  .home4-feature-left__decor {
+    display: none;
+  }
+
+  .home4-syscard--patient,
+  .home4-syscard--cal {
+    position: static;
+    width: 100%;
+  }
+
+  .home4-syscard--cal {
+    margin-top: 16px;
   }
 }
 

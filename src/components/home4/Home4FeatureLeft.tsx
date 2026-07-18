@@ -8,6 +8,18 @@ const FEATURE_ROWS = [
   { num: '/05', title: 'Finansije i podsetnici', desc: 'Predračuni, uplate, automatski SMS podsetnici.' },
 ] as const;
 
+const TREATMENTS = [
+  { day: '17', month: 'jul', title: 'Definitivno punjenje kanala', meta: 'Dr Marko Marković · Stolica 1', status: 'done', statusLabel: 'Završeno' },
+  { day: '16', month: 'jul', title: 'Hirurško vađenje zuba', meta: 'Dr Marko Marković · Stolica 1', status: 'done', statusLabel: 'Završeno' },
+  { day: '21', month: 'jul', title: 'Kontrolni pregled', meta: 'Dr Marko Marković · Stolica 1', status: 'plan', statusLabel: 'Zakazano' },
+] as const;
+
+const CALENDAR_SLOTS = [
+  { time: '09:00', name: 'Vladimir Perić', meta: 'Intervencija · Završeno', done: true },
+  { time: '10:00', name: 'Aleksandra Božić', meta: 'Punjenje 2 kanala · Završeno', done: true },
+  { time: '11:00', name: 'Vladimir Perić', meta: 'Pregled · Zakazano', done: false },
+] as const;
+
 export default function Home4FeatureLeft() {
   return (
     <section
@@ -144,14 +156,14 @@ export default function Home4FeatureLeft() {
         {/* ── Right illustration column ── */}
         {/*
           Relative positions within 552×508 container (circle at top=32, left=32):
-          - Big top card:    top=0,   left=0,   384×256
-          - Circle:          top=32,  left=32,  448×448
-          - Small icon:      top=348, left=40,  88×88
-          - Bottom card:     top=300, left=272, 280×208
+          - Patient card (Karton pacijenta): top=0,   left=0,   width 400
+          - Circle:                          top=32,  left=32,  448×448
+          - Small icon:                      top=348, left=40,  88×88
+          - Calendar card (Kalendar):        top=300, left=272, width 310
         */}
         <div className="home4-feature-left__illustrations" style={{ flex: 1, position: 'relative', height: 508, minWidth: 0 }}>
           {/* Circle illustration */}
-          <div style={{ position: 'absolute', top: 32, left: 32, width: 448, height: 448 }}>
+          <div className="home4-feature-left__decor" style={{ position: 'absolute', top: 32, left: 32, width: 448, height: 448 }}>
             <Image
               src="/images/home4/feature-left-circle.png"
               alt="Odontoa ilustracija"
@@ -161,121 +173,41 @@ export default function Home4FeatureLeft() {
             />
           </div>
 
-          {/* Big top card (384×256) - Pregled rada */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: 384,
-              height: 256,
-              borderRadius: 12,
-              overflow: 'hidden',
-              boxShadow: '0 12px 96px 0 rgba(6,11,19,0.1), 0 0 0 4px #ffffff',
-            }}
-          >
-            <div
-              style={{
-                background: '#ffffff',
-                border: '1px solid rgba(0,0,0,0.04)',
-                borderRadius: 12,
-                width: '100%',
-                height: '100%',
-                padding: '28px 24px 22px',
-                display: 'flex',
-                flexDirection: 'column',
-                boxSizing: 'border-box',
-                fontFamily: 'Inter, sans-serif',
-              }}
-            >
-              {/* Header */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-                <div>
-                  <span style={{ fontSize: 11, fontWeight: 600, color: '#979fb4', letterSpacing: '0.07em', textTransform: 'uppercase', display: 'block' }}>
-                    Pregled rada
-                  </span>
-                  <span style={{ fontSize: 22, fontWeight: 600, color: '#060b13', letterSpacing: '-0.4px', lineHeight: 1.1 }}>
-                    Danas
-                  </span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                  {(['30D', '7D', '1D'] as const).map((tab) => (
-                    <span
-                      key={tab}
-                      style={{
-                        fontSize: 12,
-                        fontWeight: tab === '1D' ? 500 : 400,
-                        color: tab === '1D' ? '#363d4f' : '#b0b7c9',
-                        padding: '2px 8px',
-                        borderRadius: 6,
-                        border: tab === '1D' ? '1px solid #e4e6ec' : '1px solid transparent',
-                        lineHeight: '18px',
-                        letterSpacing: '-0.1px',
-                      }}
-                    >
-                      {tab}
-                    </span>
-                  ))}
-                </div>
+          {/* Kartica 1 - Karton pacijenta */}
+          <div className="home4-syscard home4-syscard--patient">
+            <div className="home4-syscard__head">
+              <div className="home4-syscard__avatar">
+                {/* Stock fotografija se ubacuje naknadno: <img src="/images/home4/pacijent.jpg" alt="" /> */}
+                VP
               </div>
-
-              {/* Metric row 1 - purple chart */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flex: 1 }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span style={{ fontSize: 13, fontWeight: 500, color: '#52576b' }}>Zakazano</span>
-                    <span style={{ fontSize: 10, fontWeight: 600, color: '#3a8b6a', background: '#edfaf2', padding: '2px 6px', borderRadius: 999 }}>
-                      +12%
-                    </span>
+              <div className="home4-syscard__name">
+                <b>Vladimir Perić</b>
+                <span>Karton pacijenta · ID P022</span>
+              </div>
+            </div>
+            <div className="home4-syscard__list">
+              <h5>Istorija tretmana</h5>
+              {TREATMENTS.map((t) => (
+                <div key={`${t.day}-${t.title}`} className="home4-syscard__item">
+                  <div className="home4-syscard__item-date">
+                    {t.day}
+                    <small>{t.month}</small>
                   </div>
-                  <span style={{ fontSize: 22, fontWeight: 600, color: '#060b13', letterSpacing: '-0.5px', lineHeight: '26px' }}>
-                    24{' '}<span style={{ fontSize: 16, fontWeight: 500, color: '#8b909e' }}>termina</span>
-                  </span>
-                </div>
-                <svg width="140" height="48" viewBox="0 0 140 48" fill="none" style={{ flexShrink: 0 }}>
-                  <defs>
-                    <linearGradient id="pregled-g1" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#6e51e0" stopOpacity="0.18" />
-                      <stop offset="100%" stopColor="#6e51e0" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  <path d="M0,42 C10,42 18,16 44,18 C70,20 76,40 98,34 C116,28 124,8 140,6 L140,48 L0,48 Z" fill="url(#pregled-g1)" />
-                  <path d="M0,42 C10,42 18,16 44,18 C70,20 76,40 98,34 C116,28 124,8 140,6" stroke="#6e51e0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-
-              {/* Divider between rows */}
-              <div style={{ height: 1, background: '#eceef3', flexShrink: 0 }} />
-
-              {/* Metric row 2 - grey chart */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flex: 1 }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span style={{ fontSize: 13, fontWeight: 500, color: '#52576b' }}>Završeno</span>
-                    <span style={{ fontSize: 10, fontWeight: 600, color: '#3a8b6a', background: '#edfaf2', padding: '2px 6px', borderRadius: 999 }}>
-                      +8%
-                    </span>
+                  <div className="home4-syscard__item-what">
+                    <b>{t.title}</b>
+                    <span>{t.meta}</span>
                   </div>
-                  <span style={{ fontSize: 22, fontWeight: 600, color: '#060b13', letterSpacing: '-0.5px', lineHeight: '26px' }}>
-                    18{' '}<span style={{ fontSize: 16, fontWeight: 500, color: '#8b909e' }}>termina</span>
+                  <span className={`home4-syscard__status home4-syscard__status--${t.status}`}>
+                    {t.statusLabel}
                   </span>
                 </div>
-                <svg width="140" height="48" viewBox="0 0 140 48" fill="none" style={{ flexShrink: 0 }}>
-                  <defs>
-                    <linearGradient id="pregled-g2" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#979fb4" stopOpacity="0.12" />
-                      <stop offset="100%" stopColor="#979fb4" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  <path d="M0,44 C12,44 20,22 46,26 C72,30 78,44 100,40 C118,36 126,14 140,12 L140,48 L0,48 Z" fill="url(#pregled-g2)" />
-                  <path d="M0,44 C12,44 20,22 46,26 C72,30 78,44 100,40 C118,36 126,14 140,12" stroke="#979fb4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
+              ))}
             </div>
           </div>
 
           {/* Small icon circle (88×88) */}
           <div
+            className="home4-feature-left__decor"
             style={{
               position: 'absolute',
               top: 348,
@@ -296,76 +228,30 @@ export default function Home4FeatureLeft() {
             />
           </div>
 
-          {/* Bottom card (280×208) - Promet ove nedelje */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 300,
-              left: 272,
-              width: 280,
-              height: 208,
-              borderRadius: 12,
-              overflow: 'hidden',
-              boxShadow: '0 12px 96px 0 rgba(6,11,19,0.1), 0 0 0 4px #ffffff',
-            }}
-          >
-            <div
-              style={{
-                background: '#ffffff',
-                border: '1px solid rgba(0,0,0,0.04)',
-                borderRadius: 12,
-                width: '100%',
-                height: '100%',
-                padding: '24px 22px 20px',
-                display: 'flex',
-                flexDirection: 'column',
-                boxSizing: 'border-box',
-                fontFamily: 'Inter, sans-serif',
-              }}
-            >
-              {/* Label + kebab */}
-              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#979fb4', letterSpacing: '0.07em', textTransform: 'uppercase' }}>
-                  Promet ove nedelje
-                </span>
-                <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#f4f1fd', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6e51e0" strokeWidth="1.8" aria-hidden>
-                    <path d="M7 17L17 7M17 7H8M17 7v9" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Main value */}
-              <span style={{ fontSize: 26, fontWeight: 700, color: '#060b13', letterSpacing: '-0.5px', lineHeight: '32px', marginTop: 6 }}>
-                312.000{' '}
-                <span style={{ fontSize: 14, fontWeight: 500, color: '#979fb4' }}>RSD</span>
-              </span>
-
-              {/* Spacer */}
-              <div style={{ flex: 1, minHeight: 14 }} />
-
-              {/* Progress row 1 - Naplata */}
-              <div style={{ marginBottom: 14 }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 7 }}>
-                  <span style={{ fontSize: 12, fontWeight: 400, color: '#52576b' }}>Naplata</span>
-                  <span style={{ fontSize: 12, fontWeight: 500, color: '#363d4f' }}>78%</span>
-                </div>
-                <div style={{ height: 6, borderRadius: 3, background: '#eceef3', overflow: 'hidden' }}>
-                  <div style={{ width: '78%', height: '100%', borderRadius: 3, background: '#c4b5fd' }} />
-                </div>
-              </div>
-
-              {/* Progress row 2 - Dolasci */}
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 7 }}>
-                  <span style={{ fontSize: 12, fontWeight: 400, color: '#52576b' }}>Dolasci</span>
-                  <span style={{ fontSize: 12, fontWeight: 500, color: '#363d4f' }}>96%</span>
-                </div>
-                <div style={{ height: 6, borderRadius: 3, background: '#eceef3', overflow: 'hidden' }}>
-                  <div style={{ width: '96%', height: '100%', borderRadius: 3, background: '#6e51e0' }} />
-                </div>
-              </div>
+          {/* Kartica 2 - Kalendar termina */}
+          <div className="home4-syscard home4-syscard--cal">
+            <div className="home4-syscard__cal-head">
+              <b>
+                Kalendar termina
+                <small>četvrtak, 16. jul</small>
+              </b>
+              <span className="home4-syscard__cal-chip">Stolica 1</span>
             </div>
+            {CALENDAR_SLOTS.map((slot) => (
+              <div key={slot.time} className="home4-syscard__cal-slot">
+                <div className="home4-syscard__cal-time">{slot.time}</div>
+                <div
+                  className={
+                    slot.done
+                      ? 'home4-syscard__cal-event home4-syscard__cal-event--done'
+                      : 'home4-syscard__cal-event'
+                  }
+                >
+                  <b>{slot.name}</b>
+                  <span>{slot.meta}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
