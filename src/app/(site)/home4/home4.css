@@ -8,8 +8,22 @@
   --stellar-muted: #979fb4;
   --stellar-white: #ffffff;
   --stellar-dark: #060b13;
-  /* Status "Završeno" (ista zelena kao --home4-hero-green; ovde na page scope-u da vazi van heroja) */
+  /* Status boje (iste kao --home4-hero-green/red; ovde na page scope-u da vaze van heroja) */
   --home4-status-done: #1a9e6e;
+  --home4-status-owe: #d64545;
+  /* Jedinstven vertikalni ritam svih sekcija */
+  --section-pad: clamp(72px, 9vw, 112px);
+}
+
+/* Zajednicki display H2 svih sekcija (Instrument Sans preko --font-display sa page.tsx) */
+.home4-h2 {
+  font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
+  font-size: clamp(30px, 4vw, 44px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.14;
+  color: var(--stellar-heading);
+  margin: 0;
 }
 
 /* ── Hero ── */
@@ -44,15 +58,16 @@
 
 .home4-hero__inner {
   position: relative;
-  max-width: 1072px;
+  max-width: 1120px;
   margin: 0 auto;
   text-align: center;
 }
 
 .home4-hero__title {
-  font-size: clamp(30px, 4.6vw, 52px);
+  font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
+  font-size: clamp(38px, 5.6vw, 62px);
   line-height: 1.12;
-  font-weight: 650;
+  font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--stellar-heading);
   max-width: 820px;
@@ -64,7 +79,7 @@
 }
 
 .home4-hero__sub {
-  font-size: clamp(15px, 2vw, 18px);
+  font-size: clamp(17px, 2.2vw, 19px);
   line-height: 1.6;
   max-width: 560px;
   margin: 0 auto 28px;
@@ -459,11 +474,9 @@
   white-space: nowrap;
 }
 
-/* ── Hero: proof traka (zamena za TrustLogos) ── */
+/* ── Hero: proof traka (zamena za TrustLogos) - transparentna, samo tekst ── */
 .home4-hero-proof {
-  background: var(--stellar-bg-light);
-  border-top: 1px solid var(--stellar-border);
-  padding: 22px 24px;
+  padding: 28px 24px;
   text-align: center;
 }
 
@@ -679,8 +692,8 @@
 
 /* ── Big Features ── */
 .home4-big-features {
-  padding: 80px 24px;
-  background: var(--stellar-bg-light);
+  padding: var(--section-pad) 24px;
+  background: var(--stellar-white);
   position: relative;
   overflow: hidden;
 }
@@ -703,93 +716,243 @@
 }
 
 .home4-big-features__inner {
-  max-width: 1072px;
+  max-width: 1120px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
 }
 
-/* ── Key Features ── */
-.home4-key-features {
-  padding: 80px 24px 40px;
-  background: var(--stellar-white);
+/* ── Finansije (Kontrola nad novcem) ── */
+.home4-fin {
+  background: var(--stellar-bg-light);
+  border-top: 1px solid var(--stellar-border);
+  border-bottom: 1px solid var(--stellar-border);
+  padding: var(--section-pad) 24px;
 }
 
-.home4-key-features__inner {
-  max-width: 1072px;
+.home4-fin__inner {
+  max-width: 1120px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
-  align-items: start;
 }
 
-.home4-key-features__grid {
+.home4-fin__split {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 48px;
+  align-items: center;
 }
 
-/* Icon box: white rounded square with border */
-.home4-key-features__icon-box {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: var(--stellar-white);
-  border: 1px solid var(--stellar-border);
+.home4-fin__eyebrow {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--stellar-accent);
+  margin: 0 0 14px;
+}
+
+.home4-fin__lead {
+  font-size: 16px;
+  line-height: 1.62;
+  color: var(--stellar-muted);
+  max-width: 600px;
+  margin: 16px 0 26px;
+}
+
+.home4-fin__pillars {
+  display: grid;
+  gap: 20px;
+}
+
+.home4-fin__pillar {
+  display: flex;
+  gap: 14px;
+}
+
+.home4-fin__pillar-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-}
-
-/* Phone mockup right column — poravnato na dno reda da donji deo „legne“ na tamnu sekciju */
-.home4-key-features__phones {
-  position: relative;
-  height: 560px;
-  align-self: end;
-}
-
-/* Bottom-half rounded card panel */
-.home4-key-features__phone-panel {
-  position: absolute;
-  bottom: 0;
-  left: 13%;
-  right: 13%;
-  top: 50%;
+  background: var(--stellar-white);
   border: 1px solid var(--stellar-border);
-  border-radius: 20px 20px 8px 8px;
+  color: var(--stellar-accent);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
 }
 
-/* Back phone: top-right area */
-.home4-key-features__phone-back {
-  position: absolute;
-  top: 20px;
-  left: 34%;
-  right: 13%;
-  width: auto;
-  height: auto;
-  max-width: 55%;
-  object-fit: contain;
-  transform: translateY(28px);
+.home4-fin__pillar h5 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--stellar-heading);
+  margin: 0 0 3px;
 }
 
-/* Front phone: overlapping lower-left */
-.home4-key-features__phone-front {
-  position: absolute;
-  top: 159px;
-  left: 13%;
-  right: 28%;
-  width: auto;
-  height: auto;
-  max-width: 62%;
-  object-fit: contain;
-  transform: translateY(36px);
+.home4-fin__pillar p {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--stellar-muted);
+  margin: 0;
+}
+
+/* Kartica: familija hero panela (radius 20, ista senka, bg-light header) */
+.home4-fin__card {
+  background: var(--stellar-white);
+  border: 1px solid var(--stellar-border);
+  border-radius: 20px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 32px 80px rgba(6, 11, 19, 0.12),
+    0 4px 16px rgba(6, 11, 19, 0.05);
+  overflow: hidden;
+  animation: home4-hero-rise 0.7s ease both 0.15s;
+}
+
+.home4-fin__card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--stellar-border);
+  background: var(--stellar-bg-light);
+}
+
+.home4-fin__card-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(110, 81, 224, 0.10);
+  color: var(--stellar-accent);
+}
+
+.home4-fin__card-head h4 {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--stellar-heading);
+  margin: 0;
+}
+
+.home4-fin__card-sub {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--stellar-muted);
+}
+
+.home4-fin__card-body {
+  padding: 16px 18px;
+}
+
+.home4-fin__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.home4-fin__table th {
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--stellar-muted);
+  padding: 0 0 10px;
+  border-bottom: 1px solid var(--stellar-border);
+}
+
+.home4-fin__table th.is-right,
+.home4-fin__table td.is-right {
+  text-align: right;
+  padding-left: 10px;
+}
+
+.home4-fin__table td {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--stellar-border);
+  color: var(--stellar-body);
+}
+
+.home4-fin__table tr:last-child td {
+  border-bottom: none;
+}
+
+.home4-fin__table .home4-fin__table-name {
+  font-weight: 600;
+  color: var(--stellar-heading);
+}
+
+.home4-fin__num {
+  font-variant-numeric: tabular-nums;
+}
+
+.home4-fin__table .home4-fin__paid {
+  color: var(--home4-status-done);
+}
+
+.home4-fin__table .home4-fin__owe {
+  color: var(--home4-status-owe);
+  font-weight: 600;
+}
+
+.home4-fin__table .home4-fin__ok {
+  color: var(--stellar-muted);
+}
+
+.home4-fin__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--stellar-border);
+}
+
+.home4-fin__foot-label {
+  font-size: 12.5px;
+  color: var(--stellar-muted);
+}
+
+.home4-fin__foot-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--home4-status-owe);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home4-fin__card {
+    animation: none;
+  }
+}
+
+@media (max-width: 820px) {
+  .home4-fin__split {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  /* Vizual iznad teksta na mobilnom */
+  .home4-fin__visual {
+    order: -1;
+  }
+
+  .home4-fin__table {
+    font-size: 12.5px;
+  }
+
+  .home4-fin__table td {
+    padding: 10px 0;
+  }
 }
 
 /* ── Digital Readiness (free tool) ── */
 .home4-readiness {
-  padding: 80px 24px;
+  padding: var(--section-pad) 24px;
   background:
     radial-gradient(
       ellipse 90% 70% at 85% 15%,
@@ -801,7 +964,7 @@
 }
 
 .home4-readiness__inner {
-  max-width: 1072px;
+  max-width: 1120px;
   margin: 0 auto;
 }
 
@@ -833,42 +996,67 @@
   gap: 6px;
 }
 
-@media (max-width: 640px) {
-  .home4-readiness {
-    padding: 56px 16px;
-  }
-  .home4-readiness__inner h2 {
-    font-size: 28px !important;
-    line-height: 1.25 !important;
-  }
-}
-
-/* ── Integrations ── */
-.home4-integrations {
-  padding: 80px 24px;
+/* ── Asistent (Ugradjeni asistent) ── */
+.home4-assistant {
+  padding: var(--section-pad) 24px;
   background: var(--stellar-white);
-  position: relative;
-  overflow: hidden;
 }
 
-.home4-integrations__inner {
-  max-width: 1072px;
+.home4-assistant__inner {
+  max-width: 1120px;
   margin: 0 auto;
   text-align: center;
 }
 
-.home4-integrations__grid-img {
-  max-width: 1008px;
-  margin: 0 auto;
+.home4-assistant__eyebrow {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--stellar-accent);
+  margin: 0 0 14px;
 }
 
-@media (max-width: 640px) {
-  .home4-integrations__grid-img {
-    max-width: 100%;
-  }
-  .home4-integrations {
-    padding: 48px 16px;
-  }
+.home4-assistant__lead {
+  font-size: 16px;
+  line-height: 1.62;
+  color: var(--stellar-muted);
+  max-width: 560px;
+  margin: 16px auto 40px;
+}
+
+/* Placeholder chat vizual */
+.home4-assistant__chat {
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.home4-assistant__bubble {
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 11px 16px;
+  border-radius: 14px;
+  max-width: 78%;
+}
+
+.home4-assistant__bubble--q {
+  align-self: flex-start;
+  background: var(--stellar-bg-light);
+  border: 1px solid var(--stellar-border);
+  color: var(--stellar-body);
+  border-bottom-left-radius: 4px;
+}
+
+.home4-assistant__bubble--a {
+  align-self: flex-end;
+  background: rgba(110, 81, 224, 0.08);
+  border: 1px solid rgba(110, 81, 224, 0.14);
+  color: var(--stellar-heading);
+  border-bottom-right-radius: 4px;
 }
 
 /* ── Testimonials ── */
@@ -927,12 +1115,12 @@
 
 /* ── Blog ── */
 .home4-blog {
-  padding: 80px 24px;
-  background: var(--stellar-white);
+  padding: var(--section-pad) 24px;
+  background: var(--stellar-bg-light);
 }
 
 .home4-blog__inner {
-  max-width: 1072px;
+  max-width: 1120px;
   margin: 0 auto;
 }
 
@@ -975,15 +1163,15 @@
 
 /* ── CTA ── */
 .home4-cta {
-  padding: 96px 24px;
-  background: var(--stellar-bg-light);
+  padding: var(--section-pad) 24px;
+  background: var(--stellar-white);
   border-top: 1px solid var(--stellar-border);
   position: relative;
   overflow: hidden;
 }
 
 .home4-cta__inner {
-  max-width: 1072px;
+  max-width: 1120px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -1018,7 +1206,7 @@
   color: var(--stellar-muted);
 }
 
-/* CTA gradient button — matches hero primary style */
+/* CTA gradient button - matches hero primary style */
 .home4-btn-cta {
   display: inline-flex;
   align-items: center;
@@ -1319,14 +1507,14 @@
 
 /* ── Feature Right ── */
 .home4-feature-right {
-  padding: 80px 24px;
-  background: var(--stellar-bg-light);
+  padding: var(--section-pad) 24px;
+  background: var(--stellar-white);
   position: relative;
   overflow: hidden;
 }
 
 .home4-feature-right__inner {
-  max-width: 1216px;
+  max-width: 1120px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1344,19 +1532,9 @@
 /* ── Responsive — general sections ── */
 @media (max-width: 1024px) {
   .home4-feature__inner,
-  .home4-key-features__inner,
   .home4-feature-right__inner {
     grid-template-columns: 1fr;
     gap: 40px;
-  }
-
-  .home4-key-features__phones {
-    height: 360px;
-  }
-
-  .home4-key-features__phone-back,
-  .home4-key-features__phone-front {
-    transform: none;
   }
 
   .home4-feature__illustrations,
@@ -1388,14 +1566,6 @@
 }
 
 @media (max-width: 640px) {
-  .home4-key-features__phones {
-    display: none;
-  }
-
-  .home4-key-features__grid {
-    grid-template-columns: 1fr;
-  }
-
   .home4-testimonials__grid {
     grid-template-columns: 1fr;
   }
@@ -1421,7 +1591,7 @@
 }
 
 /* ─────────────────────────────────────
-   RESPONSIVE — TrustLogos
+   RESPONSIVE - TrustLogos
 ───────────────────────────────────── */
 @media (max-width: 1024px) {
   .home4-trust-section {
@@ -1456,12 +1626,9 @@
 }
 
 /* ─────────────────────────────────────
-   RESPONSIVE — FeatureLeft
+   RESPONSIVE - FeatureLeft
 ───────────────────────────────────── */
 @media (max-width: 1024px) {
-  .home4-feature-left {
-    padding: 64px 24px !important;
-  }
   .home4-feature-left__inner {
     flex-direction: column !important;
     gap: 48px !important;
@@ -1471,10 +1638,6 @@
     flex: 1 1 auto !important;
     max-width: 560px;
     width: 100%;
-  }
-  .home4-feature-left__text h2 {
-    font-size: 32px !important;
-    line-height: 44px !important;
   }
   /*
     Scale illustration 65%.
@@ -1492,13 +1655,6 @@
 }
 
 @media (max-width: 640px) {
-  .home4-feature-left {
-    padding: 48px 16px !important;
-  }
-  .home4-feature-left__text h2 {
-    font-size: 26px !important;
-    line-height: 36px !important;
-  }
   /* Syscard kartice se stack-uju jedna ispod druge; dekor (krug + ikonica) se sakriva */
   .home4-feature-left__illustrations {
     transform: none;
@@ -1521,17 +1677,17 @@
 }
 
 /* ─────────────────────────────────────
-   RESPONSIVE — FeatureRight
+   RESPONSIVE - FeatureRight
 ───────────────────────────────────── */
 @media (max-width: 1024px) {
-  .home4-feature-right {
-    padding: 64px 24px !important;
-  }
   .home4-feature-right__inner {
     grid-template-columns: 1fr !important;
     gap: 48px !important;
   }
   /* On tablet, illustrations come after text (reverse grid order visually) */
+  .home4-feature-right__visual-wrap {
+    order: 2;
+  }
   .home4-feature-right__illustrations {
     order: 2;
     transform: scale(0.65);
@@ -1544,20 +1700,10 @@
     width: 100%;
     margin: 0 auto;
   }
-  .home4-feature-right__inner h2 {
-    font-size: 32px !important;
-    line-height: 44px !important;
-  }
 }
 
 @media (max-width: 640px) {
-  .home4-feature-right {
-    padding: 48px 16px !important;
-  }
-  .home4-feature-right__inner h2 {
-    font-size: 26px !important;
-    line-height: 36px !important;
-  }
+  .home4-feature-right__visual-wrap,
   .home4-feature-right__illustrations {
     display: none !important;
   }

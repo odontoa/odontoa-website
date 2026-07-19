@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Reveal from './Reveal';
 
 const FEATURE_ROWS = [
   { num: '/01', title: 'Zakazivač termina', desc: 'Kalendar po doktorima i stolicama, drag-and-drop izmene.' },
@@ -9,8 +10,8 @@ const FEATURE_ROWS = [
 ] as const;
 
 const TREATMENTS = [
-  { day: '17', month: 'jul', title: 'Definitivno punjenje kanala', meta: 'Dr Marko Marković · Stolica 1', status: 'done', statusLabel: 'Završeno' },
   { day: '16', month: 'jul', title: 'Hirurško vađenje zuba', meta: 'Dr Marko Marković · Stolica 1', status: 'done', statusLabel: 'Završeno' },
+  { day: '17', month: 'jul', title: 'Definitivno punjenje kanala', meta: 'Dr Marko Marković · Stolica 1', status: 'done', statusLabel: 'Završeno' },
   { day: '21', month: 'jul', title: 'Kontrolni pregled', meta: 'Dr Marko Marković · Stolica 1', status: 'plan', statusLabel: 'Zakazano' },
 ] as const;
 
@@ -25,33 +26,23 @@ export default function Home4FeatureLeft() {
     <section
       id="funkcionalnosti"
       className="home4-feature-left"
-      style={{ background: '#ffffff', padding: '96px 24px', overflow: 'hidden' }}
+      style={{ background: 'var(--stellar-bg-light)', padding: 'var(--section-pad) 24px', overflow: 'hidden' }}
     >
       <div
         className="home4-feature-left__inner"
         style={{
-          maxWidth: 1216,
+          maxWidth: 1120,
           margin: '0 auto',
           display: 'flex',
           alignItems: 'center',
-          gap: 104,
+          gap: 48,
         }}
       >
         {/* ── Left text column (488px) ── */}
         <div className="home4-feature-left__text" style={{ flex: '0 0 488px' }}>
+          <Reveal>
           {/* Heading */}
-          <h2
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: 43.125,
-              fontWeight: 700,
-              lineHeight: '57.6px',
-              letterSpacing: '-1.25px',
-              color: '#060b13',
-              margin: 0,
-              marginBottom: 24,
-            }}
-          >
+          <h2 className="home4-h2" style={{ marginBottom: 24 }}>
             Jedan sistem za{' '}
             <span style={{ color: 'var(--stellar-accent)' }}>celu</span>{' '}
             ordinaciju
@@ -151,6 +142,7 @@ export default function Home4FeatureLeft() {
               <path d="M3 8h10m0 0l-4-4m4 4l-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </a>
+          </Reveal>
         </div>
 
         {/* ── Right illustration column ── */}
@@ -161,7 +153,8 @@ export default function Home4FeatureLeft() {
           - Small icon:                      top=348, left=40,  88×88
           - Calendar card (Kalendar):        top=300, left=272, width 310
         */}
-        <div className="home4-feature-left__illustrations" style={{ flex: 1, position: 'relative', height: 508, minWidth: 0 }}>
+        <Reveal delay={0.12} style={{ flex: 1, minWidth: 0, width: '100%' }}>
+        <div className="home4-feature-left__illustrations" style={{ position: 'relative', height: 508 }}>
           {/* Circle illustration */}
           <div className="home4-feature-left__decor" style={{ position: 'absolute', top: 32, left: 32, width: 448, height: 448 }}>
             <Image
@@ -177,8 +170,13 @@ export default function Home4FeatureLeft() {
           <div className="home4-syscard home4-syscard--patient">
             <div className="home4-syscard__head">
               <div className="home4-syscard__avatar">
-                {/* Stock fotografija se ubacuje naknadno: <img src="/images/home4/pacijent.jpg" alt="" /> */}
-                VP
+                <Image
+                  src="/images/home4/pacijent.jpg"
+                  alt=""
+                  width={88}
+                  height={88}
+                  sizes="44px"
+                />
               </div>
               <div className="home4-syscard__name">
                 <b>Vladimir Perić</b>
@@ -254,6 +252,7 @@ export default function Home4FeatureLeft() {
             ))}
           </div>
         </div>
+        </Reveal>
       </div>
     </section>
   );
