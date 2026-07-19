@@ -722,6 +722,21 @@
   z-index: 1;
 }
 
+.home4-big-features__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* Kartice se stack-uju na uzim ekranima (3 kolone su prezbijene) */
+@media (max-width: 900px) {
+  .home4-big-features__cards {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+}
+
 /* ── Finansije (Kontrola nad novcem) ── */
 .home4-fin {
   background: var(--stellar-bg-light);

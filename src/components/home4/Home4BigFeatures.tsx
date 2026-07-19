@@ -35,7 +35,7 @@ export default function Home4BigFeatures() {
 
         {/* ── Three cards ── */}
         <Reveal delay={0.12}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+        <div className="home4-big-features__cards">
 
           {/* Card 1 - Zakazivač termina (light) */}
           <div style={{
