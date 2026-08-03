@@ -545,7 +545,6 @@ function TreatmentForm({ therapies, technicians, initial, onSave, onCancel }: Tr
                 onClick={() => {
                   setScope(s);
                   setSelectedTeeth([]);
-                  setIsPriceManual(false);
                 }}
                 className="flex-1 py-2 rounded-xl text-[13px] font-medium border transition-all"
                 style={{
