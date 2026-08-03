@@ -6,9 +6,9 @@ const CHART_HI_INDEX = 16;
 const CHART_X_LABELS = ['01.07', '05.07', '09.07', '13.07', '18.07'];
 
 const DEBTS = [
-  { initials: 'AB', name: 'Aleksandra B.', amount: '98.800 RSD' },
-  { initials: 'VP', name: 'Vladimir P.', amount: '30.100 RSD' },
-  { initials: 'IR', name: 'Ivana R.', amount: '14.500 RSD' },
+  { initials: 'AB', name: 'A. B.', amount: '98.800 RSD' },
+  { initials: 'VP', name: 'V. P.', amount: '30.100 RSD' },
+  { initials: 'IR', name: 'I. R.', amount: '14.500 RSD' },
 ];
 
 export default function Home4Hero() {
@@ -17,26 +17,27 @@ export default function Home4Hero() {
       <section className="home4-hero">
         <div className="home4-hero__inner">
           <h1 className="home4-hero__title">
-            Cela ordinacija digitalno.
+            Tvoja digitalna ordinacija.
             <br />
-            <span className="home4-hero__title-accent">Finansije pod kontrolom.</span>
+            <span className="home4-hero__title-accent">Finansije vodi sistem.</span>
           </h1>
 
           <p className="home4-hero__sub">
-            Odontoa povezuje pacijente, kartone, termine i rad tima sa naplatama, troškovima
-            i dugovanjima, tako da u svakom trenutku znate šta se dešava u ordinaciji i kako
-            ona posluje.
+            Zaboravi papire i propuštene termine. Cela ordinacija ti je na jednom mestu,
+            pregledna i pod kontrolom.
           </p>
 
           <div className="home4-hero__ctas">
-            <Link href="/demo" className="home4-hero__btn home4-hero__btn--primary">
+            <Link href="/register" className="home4-hero__btn home4-hero__btn--primary">
+              Započni besplatno
+            </Link>
+            <Link href="/demo" className="home4-hero__btn home4-hero__btn--secondary">
               Zakaži demo
             </Link>
-            <Link href="/home4#funkcionalnosti" className="home4-hero__btn home4-hero__btn--secondary">
-              Probaj besplatno
-            </Link>
           </div>
-          <div className="home4-hero__micro">3 meseca besplatno · Bez kreditne kartice</div>
+          <div className="home4-hero__micro">
+            Mesec dana besplatno · Bez kreditne kartice · Uvoz pacijenata na nama
+          </div>
 
           {/* ── Panel: browser frame sa rekreiranim Izveštaji dashboardom ── */}
           <div className="home4-hero__panel-wrap">
@@ -133,7 +134,7 @@ export default function Home4Hero() {
 
                     <div className="home4-hero__card">
                       <h4>
-                        Dugovanja pacijenata <em>ukupno 146.300 RSD</em>
+                        Dugovanja pacijenata <em>ukupno 143.400 RSD</em>
                       </h4>
                       <div className="home4-hero__debt">
                         {DEBTS.map((debt) => (
