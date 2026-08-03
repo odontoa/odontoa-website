@@ -12,14 +12,13 @@ const FEATURE_ROWS = [
 
 const TREATMENTS = [
   { day: '16', month: 'jul', title: 'Hirurško vađenje zuba', meta: 'Dr Marko Marković · Stolica 1', status: 'done', statusLabel: 'Završeno' },
-  { day: '17', month: 'jul', title: 'Definitivno punjenje kanala', meta: 'Dr Marko Marković · Stolica 1', status: 'done', statusLabel: 'Završeno' },
-  { day: '21', month: 'jul', title: 'Kontrolni pregled', meta: 'Dr Marko Marković · Stolica 1', status: 'plan', statusLabel: 'Zakazano' },
+  { day: '17', month: 'jul', title: 'Definitivno punjenje kanala', meta: 'Dr Marko Marković · Stolica 1', status: 'plan', statusLabel: 'Zakazano' },
 ] as const;
 
 const CALENDAR_SLOTS = [
-  { time: '09:00', name: 'Vladimir Perić', meta: 'Intervencija · Završeno', done: true },
+  { time: '09:00', name: 'Jelena Nikolić', meta: 'Intervencija · Završeno', done: true },
   { time: '10:00', name: 'Aleksandra Božić', meta: 'Punjenje 2 kanala · Završeno', done: true },
-  { time: '11:00', name: 'Vladimir Perić', meta: 'Pregled · Zakazano', done: false },
+  { time: '11:00', name: 'Stefan Ilić', meta: 'Pregled · Zakazano', done: false },
 ] as const;
 
 export default function Home4FeatureLeft() {
@@ -172,15 +171,15 @@ export default function Home4FeatureLeft() {
             <div className="home4-syscard__head">
               <div className="home4-syscard__avatar">
                 <Image
-                  src="/images/home4/pacijent.jpg"
+                  src="/images/image-card-patient-cutout.png"
                   alt=""
-                  width={88}
-                  height={88}
+                  width={553}
+                  height={470}
                   sizes="44px"
                 />
               </div>
               <div className="home4-syscard__name">
-                <b>Vladimir Perić</b>
+                <b>Marko Petrović</b>
                 <span>Karton pacijenta · ID P022</span>
               </div>
             </div>

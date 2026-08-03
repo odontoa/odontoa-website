@@ -1294,7 +1294,10 @@
 
 .home4-syscard--cal {
   position: absolute;
-  top: 300px;
+  /* 229px: treci red kartona uranja pod karticu, a gornja ivica pada 1px ispod
+     dna bedza drugog reda (y 207..228), pa taj bedz ostaje ceo. Vise od ovoga
+     (manji top) pocinje da seche bedz drugog reda. */
+  top: 229px;
   left: 272px;
   width: 310px;
   padding: 16px 18px;
@@ -1317,7 +1320,15 @@
   border-radius: 50%;
   flex: none;
   overflow: hidden;
-  background: linear-gradient(135deg, #7f51f2, #5a3ec8);
+  /* Prsten "aktivan": 3px beli razmak u boji kartice, pa 2px zeleni obrub.
+     box-shadow se crta izvan kutije, pa avatar ostaje 44px i nista u kartici
+     se ne pomera. Border ili padding bi ga sirili na 54px i gurali redove. */
+  box-shadow:
+    0 0 0 3px var(--stellar-white),
+    0 0 0 5px var(--home4-status-done);
+  /* Slika pacijenta je izrezana sa providnom pozadinom, pa boju pozadine
+     avatara daje brend token. Menja se ovde, bez nove slike. */
+  background: var(--stellar-accent);
   color: var(--stellar-white);
   font-weight: 700;
   font-size: 14px;
