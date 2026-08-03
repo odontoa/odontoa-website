@@ -1,0 +1,496 @@
+/* Onboarding wizard, /register.
+   Tokeni su kopija home4 vrednosti, po istom sablonu kao home3.css i home4.css
+   (tokeni su tamo scope-ovani na .home3-page / .home4-page). */
+.register-page {
+  --stellar-heading: #060b13;
+  --stellar-body: #363d4f;
+  --stellar-accent: #6e51e0;
+  --stellar-accent-dark: #5a3ec7;
+  --stellar-bg-light: #f7f8fa;
+  --stellar-border: #e9ebf1;
+  --stellar-muted: #979fb4;
+  --stellar-white: #ffffff;
+  /* 92px zona fiksne navigacije + 40px razmaka, isto kao home4 hero */
+  padding: 132px 24px 96px;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% -5%, rgba(110, 81, 224, 0.04), transparent 70%),
+    linear-gradient(var(--stellar-white), var(--stellar-white));
+  color: var(--stellar-body);
+}
+
+/* ── Kartica wizarda ── */
+.register-card {
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--stellar-white);
+  border: 1px solid var(--stellar-border);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 24px 60px rgba(6, 11, 19, 0.08),
+    0 4px 16px rgba(6, 11, 19, 0.04);
+}
+
+.register-card--center {
+  text-align: center;
+  padding: 48px 32px;
+}
+
+/* ── Welcome i Success ── */
+.register-welcome__title {
+  font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
+  font-size: clamp(28px, 4vw, 38px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  color: var(--stellar-heading);
+  margin: 0 0 12px;
+}
+
+.register-welcome__sub {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--stellar-muted);
+  margin: 0 0 28px;
+}
+
+.register-welcome__micro {
+  font-size: 13px;
+  color: var(--stellar-muted);
+  margin: 16px 0 0;
+}
+
+/* ── Indikator koraka ── */
+.register-progress {
+  margin-bottom: 28px;
+}
+
+.register-progress__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--stellar-muted);
+  margin-bottom: 8px;
+}
+
+.register-progress__track {
+  width: 100%;
+  height: 6px;
+  background: var(--stellar-bg-light);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.register-progress__fill {
+  height: 100%;
+  background: var(--stellar-accent);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+/* ── Korak ── */
+.register-step__title {
+  font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.3;
+  color: var(--stellar-heading);
+  margin: 0 0 6px;
+}
+
+.register-step__lead {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--stellar-muted);
+  margin: 0 0 24px;
+}
+
+.register-step__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ── Polja ── */
+.register-field {
+  margin-bottom: 18px;
+}
+
+.register-field__label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--stellar-heading);
+  margin-bottom: 6px;
+}
+
+.register-field__req {
+  color: var(--stellar-accent);
+  margin-left: 3px;
+}
+
+.register-field__input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--stellar-border);
+  background: var(--stellar-white);
+  font-size: 15px;
+  color: var(--stellar-heading);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.register-field__input:focus {
+  border-color: var(--stellar-accent);
+  box-shadow: 0 0 0 3px rgba(110, 81, 224, 0.12);
+}
+
+.register-field__input[aria-invalid='true'] {
+  border-color: #d64545;
+}
+
+.register-field__select {
+  appearance: none;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--stellar-muted) 50%),
+    linear-gradient(135deg, var(--stellar-muted) 50%, transparent 50%);
+  background-position: calc(100% - 19px) 50%, calc(100% - 14px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 38px;
+}
+
+.register-field__hint {
+  font-size: 12px;
+  color: var(--stellar-muted);
+  margin: 6px 0 0;
+}
+
+.register-field__hint--above {
+  margin: 0 0 8px;
+}
+
+/* ── Multiselect kartice ── */
+.register-choices {
+  display: grid;
+  gap: 8px;
+}
+
+.register-choice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--stellar-border);
+  border-radius: 12px;
+  background: var(--stellar-white);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.register-choice:hover {
+  border-color: var(--stellar-accent);
+  background: var(--stellar-bg-light);
+}
+
+.register-choice--on {
+  border-color: var(--stellar-accent);
+  background: rgba(110, 81, 224, 0.06);
+}
+
+.register-choice:focus-within {
+  box-shadow: 0 0 0 3px rgba(110, 81, 224, 0.12);
+}
+
+.register-choice__check {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--stellar-accent);
+  cursor: pointer;
+  flex: none;
+}
+
+.register-choice__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--stellar-heading);
+}
+
+.register-field__error {
+  font-size: 12px;
+  font-weight: 500;
+  color: #d64545;
+  margin: 6px 0 0;
+}
+
+/* ── Radno vreme ── */
+.register-hours {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.register-hours__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  border: 1px solid var(--stellar-border);
+  border-radius: 12px;
+  background: var(--stellar-white);
+}
+
+.register-hours__day {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--stellar-heading);
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.register-hours__check {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--stellar-accent);
+  cursor: pointer;
+  flex: none;
+}
+
+.register-hours__times {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.register-hours__time-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--stellar-muted);
+}
+
+.register-hours__time {
+  width: auto;
+  padding: 7px 10px;
+  font-size: 14px;
+}
+
+.register-hours__closed {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--stellar-muted);
+}
+
+.register-hours__error {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+/* ── Provera ── */
+.register-review__group {
+  border: 1px solid var(--stellar-border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+  background: var(--stellar-white);
+}
+
+.register-review__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+/* Sazeto radno vreme u jednoj liniji, umesto reda po dan. */
+.register-review__summary {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--stellar-heading);
+  font-weight: 500;
+  margin: 0;
+}
+
+.register-review__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--stellar-heading);
+  margin: 0;
+}
+
+.register-review__list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.register-review__list > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 13.5px;
+}
+
+.register-review__list dt {
+  color: var(--stellar-muted);
+}
+
+.register-review__list dd {
+  margin: 0;
+  color: var(--stellar-heading);
+  font-weight: 500;
+  text-align: right;
+}
+
+/* ── Dugmad, vrednosti prepisane iz home4 hero dugmadi ── */
+.register-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 13px 28px;
+  border-radius: 999px;
+  border: none;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.register-btn--primary {
+  background: linear-gradient(135deg, #7f51f2 0%, #6e51e0 50%, #5a3ec8 100%);
+  color: var(--stellar-white);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 4px 16px rgba(110, 81, 224, 0.3);
+}
+
+.register-btn--primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 6px 20px rgba(110, 81, 224, 0.38);
+}
+
+.register-btn--secondary {
+  background: var(--stellar-white);
+  color: var(--stellar-heading);
+  border: 1px solid var(--stellar-border);
+}
+
+.register-btn--secondary:hover:not(:disabled) {
+  border-color: var(--stellar-muted);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+}
+
+.register-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.register-linkbtn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--stellar-accent);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.register-linkbtn:hover {
+  color: var(--stellar-accent-dark);
+}
+
+/* ── Navigacija i pravna linija ── */
+.register-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.register-legal {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--stellar-muted);
+  margin: 18px 0 0;
+}
+
+/* Greska slanja stoji nad navigacijom, da dugme "Posalji" ostane u vidu. */
+.register-submit-error {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #d64545;
+  background: rgba(214, 69, 69, 0.08);
+  border: 1px solid rgba(214, 69, 69, 0.22);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin: 16px 0 0;
+}
+
+.register-legal a {
+  color: var(--stellar-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── Mobilno ── */
+@media (max-width: 640px) {
+  .register-page {
+    padding: 116px 16px 72px;
+  }
+
+  .register-card {
+    padding: 24px 20px;
+  }
+
+  .register-card--center {
+    padding: 36px 20px;
+  }
+
+  .register-step__row {
+    grid-template-columns: 1fr;
+  }
+
+  .register-hours__row {
+    align-items: flex-start;
+  }
+
+  .register-hours__times,
+  .register-hours__closed {
+    margin-left: 0;
+  }
+
+  .register-nav {
+    flex-direction: column-reverse;
+  }
+
+  .register-btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .register-btn,
+  .register-progress__fill {
+    transition: none;
+  }
+
+  .register-btn--primary:hover:not(:disabled) {
+    transform: none;
+  }
+}

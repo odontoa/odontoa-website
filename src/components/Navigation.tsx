@@ -11,12 +11,17 @@ import Image from "next/image";
 const FULL_MENU_ITEMS = [
   { name: 'Početna', href: '/' },
   ...(process.env.NODE_ENV !== 'production'
-    ? [{ name: 'Home2', href: '/home2' }, { name: 'Home3', href: '/home3' }]
+    ? [
+        { name: 'Home2', href: '/home2' },
+        { name: 'Home3', href: '/home3' },
+        { name: 'Home4', href: '/home4' },
+      ]
     : []),
   { name: 'O nama', href: '/o-nama' },
-  { name: 'Kontakt', href: '/kontakt' },
   { name: 'Blogovi', href: '/blogovi' },
   { name: 'Rečnik', href: '/recnik' },
+  { name: 'Alati', href: '/alati' },
+  { name: 'Kontakt', href: '/kontakt' },
 ];
 
 const HOME2_MENU_ITEMS = [
@@ -25,20 +30,32 @@ const HOME2_MENU_ITEMS = [
   { name: 'Kontakt', href: '/kontakt' },
 ];
 
-const HOME3_MENU_ITEMS = [
-  { name: 'Početna', href: '/' },
-  { name: 'Funkcije', href: '#funkcionalnosti' },
-  { name: 'O nama', href: '/o-nama' },
-  { name: 'Kontakt', href: '/kontakt' },
-  { name: 'Blogovi', href: '/blogovi' },
-  { name: 'Rečnik', href: '/recnik' },
-];
+function getStellarHomeMenuItems(pathname: string) {
+  return [
+    { name: 'Početna', href: '/' },
+    ...(pathname !== '/home3' ? [{ name: 'Home3', href: '/home3' }] : []),
+    ...(pathname !== '/home4' ? [{ name: 'Home4', href: '/home4' }] : []),
+    { name: 'Funkcije', href: '#funkcionalnosti' },
+    { name: 'O nama', href: '/o-nama' },
+    { name: 'Blogovi', href: '/blogovi' },
+    { name: 'Rečnik', href: '/recnik' },
+    { name: 'Alati', href: '/alati' },
+    { name: 'Kontakt', href: '/kontakt' },
+  ];
+}
 
 const Navigation = () => {
   const pathname = usePathname();
   const isHome2 = pathname === '/home2';
-  const isHome3 = pathname === '/home3';
-  const menuItems = isHome3 ? HOME3_MENU_ITEMS : isHome2 ? HOME2_MENU_ITEMS : FULL_MENU_ITEMS;
+  const isStellarHome = pathname === '/home3' || pathname === '/home4';
+  /* Stellar izgled vazi i na /register; stavke menija tamo ostaju pune,
+     bez Home3/Home4 linkova i bez #funkcionalnosti anchora. */
+  const isStellarChrome = isStellarHome || pathname === '/register';
+  const menuItems = isStellarHome
+    ? getStellarHomeMenuItems(pathname)
+    : isHome2
+      ? HOME2_MENU_ITEMS
+      : FULL_MENU_ITEMS;
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -61,11 +78,11 @@ const Navigation = () => {
       <nav
         data-state={isMenuOpen && 'active'}
         data-home2={isHome2 || undefined}
-        data-home3={isHome3 || undefined}
+        data-home3={isStellarChrome || undefined}
         className="fixed z-20 w-full px-2 pt-1 group">
         <div
-          className={cn('mx-auto mt-2 max-w-[1240px] px-4 sm:px-6 lg:px-8 transition-all duration-300', isScrolled && (isHome3 ? 'rounded-2xl border backdrop-blur-lg' : 'bg-background/50 rounded-2xl border backdrop-blur-lg'))}
-          style={isScrolled && isHome3 ? { background: 'rgba(247,248,250,0.85)', borderColor: '#e9ebf1' } : undefined}
+          className={cn('mx-auto mt-2 max-w-[1240px] px-4 sm:px-6 lg:px-8 transition-all duration-300', isScrolled && (isStellarChrome ? 'rounded-2xl border backdrop-blur-lg' : 'bg-background/50 rounded-2xl border backdrop-blur-lg'))}
+          style={isScrolled && isStellarChrome ? { background: 'rgba(247,248,250,0.85)', borderColor: '#e9ebf1' } : undefined}
         >
           <div className={cn(
             'relative flex flex-wrap items-start justify-between gap-6 lg:flex-nowrap lg:gap-0',
@@ -97,8 +114,8 @@ const Navigation = () => {
                     <Link
                       href={item.href}
                       onClick={item.href === '/' ? handleHomeClick : undefined}
-                      className={cn('block duration-150', isHome3 ? 'hover:opacity-100' : 'text-muted-foreground hover:text-accent-foreground')}
-                      style={isHome3 ? { color: '#363d4f' } : undefined}
+                      className={cn('block duration-150', isStellarChrome ? 'hover:opacity-100' : 'text-muted-foreground hover:text-accent-foreground')}
+                      style={isStellarChrome ? { color: '#363d4f' } : undefined}
                     >
                       <span>{item.name}</span>
                     </Link>
@@ -125,7 +142,7 @@ const Navigation = () => {
                 </ul>
               </div>
               <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                {isHome3 ? (
+                {isStellarChrome ? (
                   <a
                     href="https://app.odontoa.com"
                     target="_blank"
