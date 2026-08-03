@@ -3,10 +3,11 @@ import Reveal from './Reveal';
 
 const FEATURE_ROWS = [
   { num: '/01', title: 'Zakazivač termina', desc: 'Kalendar po doktorima i stolicama, drag-and-drop izmene.' },
-  { num: '/02', title: 'Karton pacijenta', desc: 'Anamneza, terapije i istorija poseta - uvek dostupne.' },
-  { num: '/03', title: 'Dokumentacija i saglasnosti', desc: 'Šabloni, digitalni potpis, e-arhiva.' },
-  { num: '/04', title: 'RTG i fotografije', desc: 'Slike u kartonu, bez traženja po folderima.' },
-  { num: '/05', title: 'Finansije i podsetnici', desc: 'Predračuni, uplate, automatski SMS podsetnici.' },
+  { num: '/02', title: 'Karton i odontogram', desc: 'Anamneza, terapije, dijagnoze (MKB-10) i istorija poseta, uvek pri ruci.' },
+  { num: '/03', title: 'RTG i fotografije', desc: 'Slike u kartonu, bez traženja po folderima.' },
+  { num: '/04', title: 'Zubna tehnika', desc: 'Radni nalozi za laboratoriju, status i trošak po svakom nalogu.' },
+  { num: '/05', title: 'Dokumentacija i saglasnosti', desc: 'Šabloni, digitalni potpis, e-arhiva.' },
+  { num: '/06', title: 'Finansije i podsetnici', desc: 'Predračuni, uplate, automatski SMS podsetnici.' },
 ] as const;
 
 const TREATMENTS = [
