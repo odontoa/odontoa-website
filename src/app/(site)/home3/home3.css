@@ -223,7 +223,7 @@
 
 /* ── Key Features ── */
 .home3-key-features {
-  padding: 80px 24px;
+  padding: 80px 24px 40px;
   background: var(--stellar-white);
 }
 
@@ -233,7 +233,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 64px;
-  align-items: center;
+  align-items: start;
 }
 
 .home3-key-features__grid {
@@ -255,10 +255,11 @@
   flex-shrink: 0;
 }
 
-/* Phone mockup right column */
+/* Phone mockup right column — poravnato na dno reda da donji deo „legne“ na tamnu sekciju */
 .home3-key-features__phones {
   position: relative;
   height: 560px;
+  align-self: end;
 }
 
 /* Bottom-half rounded card panel */
@@ -282,6 +283,7 @@
   height: auto;
   max-width: 55%;
   object-fit: contain;
+  transform: translateY(28px);
 }
 
 /* Front phone: overlapping lower-left */
@@ -294,6 +296,7 @@
   height: auto;
   max-width: 62%;
   object-fit: contain;
+  transform: translateY(36px);
 }
 
 /* ── Digital Readiness (free tool) ── */
@@ -613,6 +616,15 @@
     gap: 40px;
   }
 
+  .home3-key-features__phones {
+    height: 360px;
+  }
+
+  .home3-key-features__phone-back,
+  .home3-key-features__phone-front {
+    transform: none;
+  }
+
   .home3-feature__illustrations,
   .home3-feature-right__illustrations {
     min-height: 300px;
@@ -638,12 +650,6 @@
   .home3-blog__header {
     flex-direction: column;
     gap: 16px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .home3-key-features__phones {
-    height: 360px;
   }
 }
 

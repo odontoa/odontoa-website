@@ -1,5 +1,3 @@
-import { Check } from 'lucide-react';
-
 export default function Home3CTA() {
   return (
     <section className="home3-cta">
@@ -10,19 +8,19 @@ export default function Home3CTA() {
             className="mb-3 text-sm font-medium"
             style={{ color: 'var(--stellar-accent)', letterSpacing: '-0.18px' }}
           >
-            Započnite danas
+            Počnite danas
           </p>
           <h2
             className="text-[36px] leading-[1.2] font-medium tracking-[-1.25px] mb-4"
             style={{ color: 'var(--stellar-heading)' }}
           >
-            Isprobajte Odontoa bez obaveze.
+            Pogledajte kako Odontoa izgleda u vašoj ordinaciji.
           </h2>
           <p
             className="text-[15px] leading-[1.65]"
             style={{ color: 'var(--stellar-body)' }}
           >
-            Pogledajte kako Odontoa izgleda u praksi.
+            Kratka prezentacija sistema, bez komplikacije.
           </p>
         </div>
 
@@ -38,20 +36,9 @@ export default function Home3CTA() {
               Započni besplatno
             </button>
           </div>
-          <div className="home3-cta__checks">
-            <div className="home3-cta__check">
-              <div className="home3-cta__check-icon">
-                <Check size={12} strokeWidth={2.5} />
-              </div>
-              Besplatno, bez obaveze
-            </div>
-            <div className="home3-cta__check">
-              <div className="home3-cta__check-icon">
-                <Check size={12} strokeWidth={2.5} />
-              </div>
-              Bez kreditne kartice
-            </div>
-          </div>
+          <p className="text-sm mt-4" style={{ color: 'var(--stellar-muted)' }}>
+            3 meseca besplatno · Bez kreditne kartice
+          </p>
         </div>
       </div>
     </section>
