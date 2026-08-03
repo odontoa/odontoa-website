@@ -4,6 +4,7 @@ import Home3FeatureLeft from '@/components/home3/Home3FeatureLeft';
 import Home3FeatureRight from '@/components/home3/Home3FeatureRight';
 import Home3BigFeatures from '@/components/home3/Home3BigFeatures';
 import Home3KeyFeatures from '@/components/home3/Home3KeyFeatures';
+import Home3DigitalReadiness from '@/components/home3/Home3DigitalReadiness';
 import Home3Integrations from '@/components/home3/Home3Integrations';
 // Testimonials: `Home3Testimonials` — vratiti kada budu pravi korisnici (vidi komentar u Home3Testimonials.tsx).
 // import Home3Testimonials from '@/components/home3/Home3Testimonials';
@@ -20,6 +21,7 @@ export default function Home3Page() {
       <Home3FeatureRight />
       <Home3BigFeatures />
       <Home3KeyFeatures />
+      <Home3DigitalReadiness />
       <Home3Integrations />
       {/* <Home3Testimonials /> */}
       <Home3Blog />

@@ -44,8 +44,17 @@ export async function GET() {
     llmsContent += `${baseUrl}/\n`;
     llmsContent += `${baseUrl}/blogovi\n`;
     llmsContent += `${baseUrl}/recnik\n`;
+    llmsContent += `${baseUrl}/alati\n`;
     llmsContent += `${baseUrl}/kontakt\n`;
     llmsContent += `${baseUrl}/o-nama\n\n`;
+
+    llmsContent += `## Besplatni alati\n`;
+    llmsContent += `- Test digitalne spremnosti ordinacije: ${baseUrl}/alati/digitalna-spremnost-ordinacije\n`;
+    llmsContent += `  Besplatan test od 12 pitanja koji pokazuje koliko je stomatološka ordinacija digitalno organizovana, sa rezultatom po oblastima (kartoni, zakazivanje, zalihe, tim, analitika). Bez registracije, rezultat odmah.\n`;
+    llmsContent += `- Kalkulator uštede vremena u ordinaciji: ${baseUrl}/alati/kalkulator-ustede-vremena\n`;
+    llmsContent += `  Besplatan kalkulator koji procenjuje koliko sati nedeljno ordinacija troši na ručne kartone, zakazivanje, podsetnike, zalihe i izveštaje. Bez registracije, rezultat odmah.\n`;
+    llmsContent += `- Checklist za prelazak sa papira na digitalni karton: ${baseUrl}/alati/checklist-prelazak-na-digitalni-karton\n`;
+    llmsContent += `  Besplatna interaktivna checklista sa 6 sekcija i 23 koraka za postepen prelazak sa papirnih kartona na digitalni sistem. Bez registracije.\n\n`;
 
     // Dynamic blog posts section
     if (blogPosts && blogPosts.length > 0) {

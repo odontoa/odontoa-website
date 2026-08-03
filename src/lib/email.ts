@@ -20,6 +20,12 @@ export interface DemoFormData {
   phone: string;
 }
 
+export interface QuizResultCategory {
+  id: string;
+  label: string;
+  percent: number;
+}
+
 export interface OnboardingHoursRow {
   label: string;
   value: string;
@@ -44,6 +50,17 @@ export interface OnboardingFormData {
   email: string;
   phone: string;
   source: string;
+}
+
+export interface QuizResultEmailData {
+  email: string;
+  totalScore: number;
+  band: string;
+  bandLabel: string;
+  profile: string;
+  profileLabel: string;
+  categories: QuizResultCategory[];
+  weakestCategories: string[];
 }
 
 /* Korisnicki unos ide u HTML telo mejla, pa se escapuje. */
@@ -175,6 +192,98 @@ export class EmailService {
         console.error('SendGrid response:', error.response.body);
       }
       throw new Error(`Failed to send demo form email: ${error.message}`);
+    }
+  }
+
+  /**
+   * Send a copy of the digital readiness quiz result to the user's email.
+   */
+  static async sendQuizResultEmail(data: QuizResultEmailData): Promise<void> {
+    if (!process.env.SENDGRID_API_KEY) {
+      console.error('SENDGRID_API_KEY is not set');
+      throw new Error('SendGrid API key not configured');
+    }
+
+    const categoryRows = data.categories
+      .map(
+        (c) => `
+          <tr>
+            <td style="padding: 8px 12px; border-bottom: 1px solid #e9ebf1; color: #363d4f;">${c.label}</td>
+            <td style="padding: 8px 12px; border-bottom: 1px solid #e9ebf1; color: #060b13; font-weight: 600; text-align: right;">${c.percent}%</td>
+          </tr>
+        `
+      )
+      .join('');
+
+    const emailContent = {
+      to: data.email,
+      bcc: ['info@odontoa.info'],
+      from: 'odontoa.com@gmail.com',
+      subject: 'Vaš rezultat: Test digitalne spremnosti ordinacije',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #060b13;">
+          <h2 style="color: #6e51e0; border-bottom: 2px solid #6e51e0; padding-bottom: 10px;">
+            Vaš rezultat: Test digitalne spremnosti ordinacije
+          </h2>
+
+          <div style="background-color: #f7f8fa; padding: 24px; border-radius: 16px; margin: 20px 0; text-align: center;">
+            <div style="font-size: 48px; font-weight: 700; color: #060b13; letter-spacing: -1.5px;">
+              ${data.totalScore}<span style="font-size: 20px; color: #6b7388; font-weight: 500;"> / 100</span>
+            </div>
+            <div style="font-size: 18px; font-weight: 600; color: #060b13; margin-top: 8px;">
+              ${data.bandLabel}
+            </div>
+            <div style="font-size: 14px; color: #6b7388; margin-top: 4px;">
+              Profil: ${data.profileLabel}
+            </div>
+          </div>
+
+          <h3 style="color: #060b13; margin: 24px 0 12px;">Pregled po oblastima</h3>
+          <table style="width: 100%; border-collapse: collapse;">
+            <tbody>
+              ${categoryRows}
+            </tbody>
+          </table>
+
+          <div style="background-color: #f1f5f9; padding: 16px; border-radius: 12px; margin-top: 24px;">
+            <p style="margin: 0; color: #363d4f; font-size: 14px; line-height: 1.6;">
+              Detaljne preporuke i sledeće korake možete videti na sajtu:
+              <a href="https://odontoa.com/alati/digitalna-spremnost-ordinacije" style="color: #6e51e0;">
+                odontoa.com/alati/digitalna-spremnost-ordinacije
+              </a>
+            </p>
+          </div>
+
+          <div style="margin-top: 24px; padding: 16px; border-radius: 12px; background: #ffffff; border: 1px solid #e9ebf1;">
+            <p style="margin: 0 0 8px; font-weight: 600; color: #060b13;">
+              Želite da vidite kako bi ovi procesi izgledali u jednom sistemu?
+            </p>
+            <p style="margin: 0; color: #363d4f; font-size: 14px;">
+              Razumljiv demo, bez pritiska:
+              <a href="https://odontoa.com/demo?source=digital-readiness-tool&amp;profile=${encodeURIComponent(
+                data.profile
+              )}" style="color: #6e51e0;">
+                Zakažite Odontoa demo
+              </a>
+            </p>
+          </div>
+
+          <p style="margin-top: 24px; color: #979fb4; font-size: 12px;">
+            Ova poruka je automatski generisana na osnovu vaših odgovora na sajtu Odontoa.
+          </p>
+        </div>
+      `,
+    };
+
+    try {
+      await sgMail.send(emailContent);
+      console.log('Quiz result email sent successfully');
+    } catch (error) {
+      console.error('Error sending quiz result email:', error);
+      if (error.response) {
+        console.error('SendGrid response:', error.response.body);
+      }
+      throw new Error(`Failed to send quiz result email: ${error.message}`);
     }
   }
 

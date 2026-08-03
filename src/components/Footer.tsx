@@ -58,6 +58,7 @@ const Footer = () => {
             <ul className="space-y-3">
               <li><Link href="/blogovi" className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>Blog</Link></li>
               <li><Link href="/recnik" className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>Rečnik</Link></li>
+              <li><Link href="/alati" className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>Besplatni alati</Link></li>
             </ul>
           </div>
 

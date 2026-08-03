@@ -61,4 +61,56 @@ export const analytics = {
       page_path: `/recnik/${slug}`,
     });
   },
+  quizStart: () => {
+    trackEvent('quiz_start', {
+      source: 'digital_readiness_tool',
+      page_path:
+        typeof window !== 'undefined' ? window.location.pathname : undefined,
+    });
+  },
+  quizQuestionAnswered: (questionNumber: number, questionId: string) => {
+    trackEvent('quiz_question_answered', {
+      source: 'digital_readiness_tool',
+      question_number: questionNumber,
+      question_id: questionId,
+    });
+  },
+  quizComplete: (params: {
+    totalScore: number;
+    band: string;
+    profile: string;
+    weakestCategory?: string;
+  }) => {
+    trackEvent('quiz_complete', {
+      source: 'digital_readiness_tool',
+      score: params.totalScore,
+      score_band: params.band,
+      profile: params.profile,
+      weakest_category: params.weakestCategory,
+    });
+  },
+  quizCtaClick: (ctaId: string, href: string, score?: number) => {
+    trackEvent('quiz_cta_click', {
+      source: 'digital_readiness_tool',
+      cta_id: ctaId,
+      href,
+      score,
+    });
+  },
+  quizEmailCapture: (score: number, profile: string) => {
+    trackEvent('quiz_email_capture', {
+      source: 'digital_readiness_tool',
+      score,
+      profile,
+    });
+  },
+  toolStart: (tool: string) => {
+    trackEvent('tool_start', { tool });
+  },
+  toolComplete: (tool: string, extra?: Record<string, unknown>) => {
+    trackEvent('tool_complete', { tool, ...extra });
+  },
+  toolCtaClick: (tool: string, href: string) => {
+    trackEvent('tool_cta_click', { tool, href });
+  },
 };
