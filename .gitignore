@@ -49,6 +49,9 @@ scripts/trace-enoent.cjs
 # UI Lab - read-only reference copy (do NOT commit)
 odontoa-frontend-main/
 
+# Kod druge aplikacije, potreban lokalno za dizajn, ne ide u git ni u build
+odontoa-application-frontend-main-for-components/
+
 # Claude Code (local)
 .claude/
 .claude/settings.json

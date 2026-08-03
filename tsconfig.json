@@ -41,6 +41,7 @@
   ],
   "exclude": [
     "node_modules",
-    "odontoa-frontend-main"
+    "odontoa-frontend-main",
+    "odontoa-application-frontend-main-for-components"
   ]
 }
