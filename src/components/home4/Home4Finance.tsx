@@ -6,35 +6,33 @@ const ICON_LAB = (
   </svg>
 );
 
-const ICON_PATIENTS = (
+const ICON_FLASK = (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-    <circle cx="9" cy="7" r="4" />
+    <path d="M10 2v7.31M14 9.3V1.99M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0M5.58 16.5h12.85" />
   </svg>
 );
 
 const ICON_NET = (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <line x1="12" y1="1" x2="12" y2="23" />
-    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+    <path d="M4 10h12M4 14h9M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2" />
   </svg>
 );
 
 const PILLARS = [
   {
     icon: ICON_LAB,
-    title: 'Trošak tehnike i dugovanja tehničarima',
-    desc: 'Koliko košta svaki rad i kolika su dugovanja prema laboratoriji, vidljivo po nalogu.',
+    title: 'Trošak po svakom nalogu',
+    desc: 'Koliko košta svaki rad poslat laboratoriji, vezano za pacijenta i termin.',
   },
   {
-    icon: ICON_PATIENTS,
-    title: 'Dugovanja pacijenata',
-    desc: 'Ko duguje, koliko i od kada, po osobi, uvek na jednom mestu.',
+    icon: ICON_FLASK,
+    title: 'Dugovanja po laboratoriji',
+    desc: 'Ko od tehničara je plaćen, a kome i koliko još duguješ, uvek sabrano.',
   },
   {
     icon: ICON_NET,
-    title: 'Neto prihod i način plaćanja',
-    desc: 'Bruto minus trošak tehnike, plus pregled gotovine i kartica.',
+    title: 'Ulazi u tvoj neto',
+    desc: 'Trošak tehnike se automatski oduzima od prihoda, pa vidiš pravu zaradu.',
   },
 ];
 
@@ -52,10 +50,10 @@ export default function Home4Finance() {
           <div className="home4-fin__text">
             <Reveal>
             <p className="home4-fin__eyebrow">Kontrola nad novcem</p>
-            <h2 className="home4-h2">Znaj tačno kako ordinacija posluje.</h2>
+            <h2 className="home4-h2">Znaš li koliko te tehnika košta svakog meseca?</h2>
             <p className="home4-fin__lead">
-              Svaki završen termin, svaka uplata i svaki rad poslat tehnici automatski se slivaju
-              u jedan pregled, bez Excela i nagađanja na kraju meseca.
+              Odontoa ti pokazuje tačno: šta je urađeno, šta plaćeno i šta još duguješ svakoj
+              laboratoriji. Bez Excela i nagađanja na kraju meseca.
             </p>
 
             <div className="home4-fin__pillars">
