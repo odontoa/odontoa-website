@@ -1554,6 +1554,30 @@
   overflow: visible;
 }
 
+/* Telefon u CTA sekciji. Desktop: zarotiran, apsolutno preko glow kruga.
+   Visina 510px se poklapa sa min-height kontejnera, pa skaliranje 0.65 na
+   tabletu (height 332px) i dalje odgovara. */
+.home4-feature-right__phone {
+  position: absolute;
+  top: 0;
+  left: 40%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+/* Klase su po ulozi (breakpoint), ne po obliku telefona, jer se koja je slika
+   u kom slotu menja jednim komentarom u Home4FeatureRight.tsx. */
+.home4-feature-right__phone-desktop {
+  display: block;
+  width: 306px;
+  height: 510px;
+  object-fit: contain;
+}
+
+.home4-feature-right__phone-mobile {
+  display: none;
+}
+
 /* ── Responsive — general sections ── */
 @media (max-width: 1024px) {
   .home4-feature__inner,
@@ -1728,8 +1752,40 @@
 }
 
 @media (max-width: 640px) {
+  /* Telefon se VIDI na mobilnom, ali ispod teksta. Redosled (tekst order 1,
+     ilustracija order 2) dolazi iz pravila za <=1024px. */
   .home4-feature-right__visual-wrap,
   .home4-feature-right__illustrations {
-    display: none !important;
+    display: block !important;
+  }
+
+  /* Gasi desktop skaliranje i fiksnu visinu, telefon ulazi u normalan tok */
+  .home4-feature-right__illustrations {
+    transform: none;
+    height: auto !important;
+    min-height: 0;
+  }
+
+  /* relative, a ne static: z-index deluje samo na pozicionirane elemente, pa bi
+     sa static telefon izgubio z-index 2 iz osnovnog pravila i glow krug
+     (absolute, z-index 0) bi se slikao preko njega. top/left se moraju vratiti
+     na auto, jer bi left: 40% iz osnovnog pravila pomerilo telefon udesno. */
+  .home4-feature-right__phone {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    margin: 0 auto;
+    width: 280px;
+  }
+
+  .home4-feature-right__phone-desktop {
+    display: none;
+  }
+
+  .home4-feature-right__phone-mobile {
+    display: block;
+    width: 280px;
+    height: auto;
   }
 }

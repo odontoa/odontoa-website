@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import Reveal from './Reveal';
 
 export default function Home4FeatureRight() {
@@ -25,47 +26,27 @@ export default function Home4FeatureRight() {
             }}
           />
 
-          {/* Top card - left */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: 340,
-              height: 240,
-              borderRadius: 16,
-              overflow: 'hidden',
-              zIndex: 2,
-            }}
-          >
+          {/* Telefon sa Odontoa aplikacijom, preko glow kruga. Pozicioniranje je
+              u CSS klasi, ne inline, da bi mobilni breakpoint mogao da ga pregazi. */}
+          <div className="home4-feature-right__phone">
+            {/* Ista slika na oba slota, razlikuje se samo velicina po
+                breakpointu. Isti URL, pa browser skida sliku jednom. */}
             <Image
-              src="/images/home4/feature-right-stock.png"
-              alt="Stock details"
-              width={680}
-              height={480}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              className="home4-feature-right__phone-desktop"
+              src="/images/black-phone-odontoa-mockup-1000.png"
+              alt="Odontoa aplikacija na mobilnom telefonu"
+              width={1000}
+              height={1667}
+              sizes="306px"
             />
-          </div>
 
-          {/* Bottom card - shifted right, overlaps top card */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 190,
-              left: 64,
-              width: 440,
-              height: 300,
-              borderRadius: 16,
-              overflow: 'hidden',
-              zIndex: 1,
-            }}
-          >
             <Image
-              src="/images/home4/feature-right-chart.png"
-              alt="Fleet tonnage"
-              width={880}
-              height={600}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              className="home4-feature-right__phone-mobile"
+              src="/images/black-phone-odontoa-mockup-1000.png"
+              alt="Odontoa aplikacija na mobilnom telefonu"
+              width={1000}
+              height={1667}
+              sizes="280px"
             />
           </div>
         </div>
@@ -87,23 +68,22 @@ export default function Home4FeatureRight() {
             className="text-base leading-relaxed mb-8"
             style={{ color: 'var(--stellar-body)' }}
           >
-            Kratka prezentacija sistema, bez komplikacije.
+            Par minuta do naloga, pacijente uvozimo mi.
           </p>
 
           <div className="flex flex-col gap-4">
+            {/* Omotac ostaje i sa jednim detetom: na <=640px nosi
+                flex-direction: column i width: 100%, pa dugme tamo ide punom sirinom. */}
             <div className="home4-cta__form">
-              <input
-                type="email"
-                placeholder="Vaš email"
-                className="home4-cta__input"
-              />
-              <button className="home4-btn-cta">Započni besplatno</button>
+              <Link href="/register" className="home4-btn-cta">
+                Započni besplatno
+              </Link>
             </div>
             <p
               className="text-sm"
               style={{ color: 'var(--stellar-muted)' }}
             >
-              3 meseca besplatno · Bez kreditne kartice
+              Mesec dana besplatno · Bez kreditne kartice
             </p>
           </div>
           </Reveal>
