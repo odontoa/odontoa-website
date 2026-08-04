@@ -951,9 +951,14 @@
     gap: 28px;
   }
 
-  /* Vizual iznad teksta na mobilnom */
+  /* Tekst prvi, tabela ispod njega. Isti obrazac kao u CTA sekciji
+     (Home4FeatureRight), gde tekst nosi order 1 a ilustracija order 2. */
+  .home4-fin__text {
+    order: 1;
+  }
+
   .home4-fin__visual {
-    order: -1;
+    order: 2;
   }
 
   .home4-fin__table {
