@@ -1294,10 +1294,9 @@
 
 .home4-syscard--cal {
   position: absolute;
-  /* 229px: treci red kartona uranja pod karticu, a gornja ivica pada 1px ispod
-     dna bedza drugog reda (y 207..228), pa taj bedz ostaje ceo. Vise od ovoga
-     (manji top) pocinje da seche bedz drugog reda. */
-  top: 229px;
+  /* 237px: gornja ivica pada 9px ispod dna bedza "Zakazano" (y 207..228), pa
+     bedz ima vazduha i ostaje ceo. Ispod 229px bi ga kartica pocela da seche. */
+  top: 237px;
   left: 272px;
   width: 310px;
   padding: 16px 18px;
