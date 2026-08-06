@@ -1398,6 +1398,10 @@
 
 /* ── Digital Readiness (free tool) ── */
 .home4-readiness {
+  /* Sistem nema amber (--stellar-* nema zutu, --home4-status-* samo zelenu i crvenu).
+     Pilula rezultata mora da se razlikuje od ljubicastog merača, pa token stoji ovde,
+     lokalno za sekciju, umesto u globalnom bloku. */
+  --home4-readiness-amber: #e8a935;
   padding: var(--section-pad) 24px;
   background:
     radial-gradient(
@@ -1409,9 +1413,14 @@
   color: var(--stellar-white);
 }
 
+/* Isti split kao Finansije i Asistent: tekst levo, vizual desno. */
 .home4-readiness__inner {
   max-width: 1120px;
   margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 0.9fr;
+  gap: 48px;
+  align-items: center;
 }
 
 .home4-readiness__text {
@@ -1440,6 +1449,264 @@
   padding: 10px 18px;
   font-size: 14px;
   gap: 6px;
+}
+
+/* Mockup rezultata testa. Geometrija je ista kao home4-fin__card (radius 20),
+   ali povrsina je staklo na tamnoj podlozi, ne bela kartica. */
+.home4-readiness__panel {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.075),
+    rgba(255, 255, 255, 0.03)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 24px 56px -24px rgba(3, 6, 12, 0.7);
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+}
+
+.home4-readiness__panel-head {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.home4-readiness__panel-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.home4-readiness__panel-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(247, 248, 250, 0.45);
+}
+
+/* Zlatni ton, da se ocena ne stopi sa ljubicastim meračem ispod. */
+.home4-readiness__panel-band {
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--home4-readiness-amber) 62%, var(--stellar-white) 38%);
+  background: color-mix(in srgb, var(--home4-readiness-amber) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--home4-readiness-amber) 28%, transparent);
+}
+
+/* ── Gauge ── */
+.home4-readiness__gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 8px;
+}
+
+/* Sirina se menja po breakpointu; viewBox skalira luk, a broj je centriran u procentima. */
+.home4-readiness__gauge-wrap {
+  position: relative;
+  width: 170px;
+  max-width: 100%;
+  aspect-ratio: 200 / 112;
+}
+
+.home4-readiness__gauge-wrap svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.home4-readiness__gauge-track {
+  stroke: rgba(255, 255, 255, 0.09);
+}
+
+/* Boja luka: svetlija na pocetku, tamnija na kraju, pa merač "produbljuje" boju
+   kako raste. Hex u stopColor atributima ostaje kao fallback bez color-mix. */
+.home4-readiness__gauge-stop-a {
+  stop-color: color-mix(in srgb, var(--stellar-accent) 70%, var(--stellar-white) 30%);
+}
+
+.home4-readiness__gauge-stop-b {
+  stop-color: var(--stellar-accent);
+}
+
+.home4-readiness__gauge-stop-c {
+  stop-color: color-mix(in srgb, var(--stellar-accent) 78%, var(--stellar-dark) 22%);
+}
+
+.home4-readiness__gauge-num {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 42%;
+  text-align: center;
+}
+
+.home4-readiness__gauge-num b {
+  display: block;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--stellar-white);
+  font-variant-numeric: tabular-nums;
+}
+
+.home4-readiness__gauge-num span {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(247, 248, 250, 0.42);
+}
+
+.home4-readiness__gauge-cap {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: rgba(247, 248, 250, 0.55);
+}
+
+/* ── Trake po oblastima ── */
+.home4-readiness__bars {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin: 0;
+  padding: 12px 20px 10px;
+  list-style: none;
+}
+
+.home4-readiness__bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.home4-readiness__bar-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(247, 248, 250, 0.82);
+}
+
+.home4-readiness__bar-tag {
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--home4-status-owe) 42%, var(--stellar-white) 58%);
+  background: color-mix(in srgb, var(--home4-status-owe) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--home4-status-owe) 32%, transparent);
+}
+
+/* Podrazumevano je srednji nivo: bleda vrednost prati bledu traku, a mesanje sa
+   poluprovidnim belim je i priguši. */
+.home4-readiness__bar-value {
+  margin-left: auto;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--stellar-accent) 30%, rgba(247, 248, 250, 0.62));
+  font-variant-numeric: tabular-nums;
+}
+
+.home4-readiness__bar-track {
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+/* Skala je jedna boja: bleda ljubicasta (srednje) ka punoj (sredjeno). Crvena je
+   rezervisana za ispod 40%, da oko odmah nadje gde se gubi.
+   Bez keyframe animacije: panel je unutar Reveal-a (whileInView), pa bi se
+   animacija odigrala pre nego sto panel udje u vidokrug. */
+.home4-readiness__bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--stellar-accent) 42%, var(--stellar-white) 58%),
+    color-mix(in srgb, var(--stellar-accent) 55%, var(--stellar-white) 45%)
+  );
+}
+
+.home4-readiness__bar.is-hi .home4-readiness__bar-fill {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--stellar-accent) 85%, var(--stellar-dark) 15%),
+    var(--stellar-accent)
+  );
+}
+
+.home4-readiness__bar.is-hi .home4-readiness__bar-value {
+  color: color-mix(in srgb, var(--stellar-accent) 45%, var(--stellar-white) 55%);
+}
+
+/* Status boje su podesene za svetle sekcije; na tamnoj podlozi se mesaju sa belim. */
+.home4-readiness__bar.is-low .home4-readiness__bar-fill {
+  background: linear-gradient(
+    90deg,
+    var(--home4-status-owe),
+    color-mix(in srgb, var(--home4-status-owe) 68%, var(--stellar-white) 32%)
+  );
+}
+
+.home4-readiness__bar.is-low .home4-readiness__bar-value {
+  color: color-mix(in srgb, var(--home4-status-owe) 68%, var(--stellar-white) 32%);
+}
+
+.home4-readiness__panel-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 12px 20px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: rgba(247, 248, 250, 0.6);
+}
+
+/* Sirovi akcent je pretaman na staklu; posvetljen je isto kao pocetak luka. */
+.home4-readiness__panel-foot-icon {
+  display: flex;
+  flex: none;
+  color: color-mix(in srgb, var(--stellar-accent) 65%, var(--stellar-white) 35%);
+}
+
+.home4-readiness__panel-foot b {
+  font-weight: 600;
+  color: rgba(247, 248, 250, 0.85);
+}
+
+@media (max-width: 820px) {
+  .home4-readiness__inner {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  /* Tekst prvi, mockup ispod njega, isti obrazac kao Finansije sekcija. */
+  .home4-readiness__text {
+    order: 1;
+  }
+
+  .home4-readiness__visual {
+    order: 2;
+    max-width: 420px;
+  }
+
+  .home4-readiness__gauge-wrap {
+    width: 160px;
+  }
 }
 
 /* ── Asistent (Ugradjeni asistent) ── */
