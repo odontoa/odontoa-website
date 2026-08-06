@@ -1794,3 +1794,321 @@
     height: auto;
   }
 }
+
+/* ── Cenovnik (jedan paket, uvodna cena) ── */
+.home4-pricing {
+  padding: var(--section-pad) 24px;
+  background: var(--stellar-white);
+  border-top: 1px solid var(--stellar-border);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Vertikalne linije gore, isti dekor kao na .home4-big-features */
+.home4-pricing::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 79px,
+    rgba(206, 210, 223, 0.2) 79px,
+    rgba(206, 210, 223, 0.2) 80px
+  );
+  opacity: 0.4;
+}
+
+/* Blagi ljubicasti sjaj iza kartice sa cenom */
+.home4-pricing::after {
+  content: '';
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 420px;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(110, 81, 224, 0.08), transparent 70%);
+  pointer-events: none;
+}
+
+.home4-pricing__inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.home4-pricing__head {
+  max-width: 620px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.home4-pricing__eyebrow {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--stellar-accent);
+  margin: 0 0 14px;
+}
+
+.home4-pricing__lede {
+  font-size: 16px;
+  line-height: 1.62;
+  color: var(--stellar-muted);
+  margin: 16px 0 0;
+}
+
+/* ── Jedna centrirana kartica ── */
+.home4-pricing__card {
+  max-width: 620px;
+  margin: 0 auto;
+  background: var(--stellar-white);
+  border: 1px solid var(--stellar-border);
+  border-radius: 20px;
+  padding: 44px 44px 40px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 32px 80px rgba(6, 11, 19, 0.12),
+    0 4px 16px rgba(6, 11, 19, 0.05);
+  text-align: center;
+}
+
+.home4-pricing__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(110, 81, 224, 0.09);
+  border: 1px solid rgba(110, 81, 224, 0.16);
+  color: var(--stellar-accent);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 22px;
+}
+
+.home4-pricing__plan {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--stellar-heading);
+  letter-spacing: -0.01em;
+  margin: 0 0 14px;
+}
+
+.home4-pricing__price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+}
+
+/* Jedina velika cifra na sekciji */
+.home4-pricing__amount {
+  font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
+  font-size: clamp(52px, 7vw, 64px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--stellar-heading);
+}
+
+.home4-pricing__per {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--stellar-muted);
+}
+
+/* Godisnji total stoji u zagradi ovde, jednom, sitno: naplata je 144 EUR odjednom
+   i to mora da pise, ali na 13px ne konkurise cifri od 64px. */
+.home4-pricing__billing {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--stellar-muted);
+  margin: 12px 0 0;
+}
+
+/* Founding hook: puna body boja, ne muted, da se ne cita kao sitan tekst */
+.home4-pricing__lock {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8px;
+  max-width: 400px;
+  margin: 20px auto 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--stellar-body);
+  text-align: left;
+}
+
+.home4-pricing__lock-icon {
+  flex: none;
+  margin-top: 2px;
+  color: var(--stellar-accent);
+  display: flex;
+}
+
+.home4-pricing__divider {
+  height: 1px;
+  background: var(--stellar-border);
+  margin: 32px 0;
+}
+
+/* ── Feature lista: bez kutija, samo cek i tekst ──
+   Puni se po kolonama (niz levu pa niz desnu) da tri "neograniceno" stavke
+   ostanu grupisane na vrhu leve kolone. grid-template-rows mora da prati
+   broj stavki u FEATURES: 15 stavki -> 8 redova. */
+.home4-pricing__features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(8, auto);
+  grid-auto-flow: column;
+  gap: 16px 36px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.home4-pricing__feature {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--stellar-body);
+}
+
+.home4-pricing__feature-icon {
+  flex: none;
+  display: flex;
+  color: var(--stellar-accent);
+}
+
+.home4-pricing__cta {
+  width: 100%;
+  justify-content: center;
+}
+
+.home4-pricing__micro {
+  font-size: 13px;
+  color: var(--stellar-muted);
+  margin: 14px 0 0;
+}
+
+/* Mesecna varijanta: simetricna formulacija sa "placa se godisnje" iznad,
+   pa se cita kao izbor nacina placanja, a ne kao nesto cega te lisavaju. */
+.home4-pricing__note {
+  font-size: 12.5px;
+  color: var(--stellar-muted);
+  margin: 10px 0 0;
+}
+
+/* Trust linija: poslednji red kartice, veci gornji razmak da se odvoji
+   od cenovnih redova. Ikona je muted, ne akcent, da ostane diskretna. */
+.home4-pricing__compliance {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--stellar-muted);
+  margin: 18px 0 0;
+}
+
+.home4-pricing__compliance-icon {
+  flex: none;
+  display: flex;
+  color: var(--stellar-muted);
+}
+
+/* Ispod 400px linija se ne uklapa u jedan red, pa se lomi na razdelniku umesto
+   da "(Azure)" ostane samo. Flex se gasi da stit ne visi po sredini dva reda. */
+@media (max-width: 400px) {
+  .home4-pricing__compliance {
+    display: block;
+    text-align: center;
+  }
+
+  .home4-pricing__compliance-icon {
+    display: inline-flex;
+    vertical-align: -2px;
+    margin-right: 6px;
+  }
+
+  .home4-pricing__compliance-sep {
+    display: none;
+  }
+
+  .home4-pricing__compliance-hipaa {
+    display: block;
+  }
+}
+
+/* ── Custom ponuda ── */
+.home4-pricing__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  max-width: 620px;
+  margin: 32px auto 0;
+  font-size: 14px;
+  color: var(--stellar-muted);
+}
+
+.home4-pricing__footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--stellar-accent);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.home4-pricing__footer-link:hover {
+  color: var(--stellar-accent-dark);
+}
+
+@media (max-width: 560px) {
+  .home4-pricing__card {
+    padding: 26px 22px 24px;
+  }
+
+  .home4-pricing__amount {
+    font-size: 44px;
+  }
+
+  /* Jedna kolona: popunjavanje po kolonama nema smisla, redosled je ionako 1..15 */
+  .home4-pricing__features {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    grid-auto-flow: row;
+    gap: 14px;
+  }
+
+  .home4-pricing__divider {
+    margin: 26px 0;
+  }
+
+  .home4-pricing__lock {
+    max-width: none;
+  }
+
+  .home4-pricing__footer {
+    flex-direction: column;
+    text-align: center;
+  }
+}
