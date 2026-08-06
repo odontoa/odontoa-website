@@ -83,7 +83,7 @@ export default function Home4FeatureRight() {
               className="text-sm"
               style={{ color: 'var(--stellar-muted)' }}
             >
-              Mesec dana besplatno · Bez kreditne kartice
+              30 dana besplatno
             </p>
           </div>
           </Reveal>

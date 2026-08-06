@@ -37,7 +37,7 @@ export default function Home4CTA() {
             </button>
           </div>
           <p className="text-sm mt-4" style={{ color: 'var(--stellar-muted)' }}>
-            3 meseca besplatno · Bez kreditne kartice
+            30 dana besplatno
           </p>
         </div>
       </div>

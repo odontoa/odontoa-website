@@ -203,7 +203,7 @@ export default function OnboardingWizard() {
           <ArrowRight size={16} aria-hidden />
         </button>
         <p className="register-welcome__micro">
-          Mesec dana besplatno · Bez kreditne kartice · Uvoz pacijenata na nama
+          30 dana besplatno · Bez kreditne kartice · Uvoz pacijenata na nama
         </p>
       </div>
     );
