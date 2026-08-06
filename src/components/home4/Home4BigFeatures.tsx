@@ -65,7 +65,7 @@ export default function Home4BigFeatures() {
                 Zakazivanje i dolasci
               </h3>
               <p style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--stellar-body)', margin: '0 0 28px' }}>
-                Brzo zakazivanje, automatski SMS podsetnici i pregledan raspored po doktoru i stolici. Jasan status svakog termina u realnom vremenu.
+                Brzo zakazivanje, automatski SMS i e-mail podsetnici i pregledan raspored po doktoru i stolici. Jasan status svakog termina u realnom vremenu.
               </p>
             </div>
             {/* Calendar grid */}
@@ -126,7 +126,7 @@ export default function Home4BigFeatures() {
                 Karton i terapija
               </h3>
               <p style={{ fontSize: 14, lineHeight: 1.6, color: '#b8bcc8', margin: '0 0 28px' }}>
-                Anamneza, plan terapije, RTG i fotografije, saglasnosti i beleške tima - sve u kartonu pacijenta, dostupno u sekundi.
+                Anamneza, plan terapije, RTG i fotografije, saglasnosti i beleške - sve u kartonu pacijenta, dostupno u sekundi.
               </p>
             </div>
             {/* Document strips */}
