@@ -86,9 +86,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             <div className="flex items-center gap-3">
               <div className="p-2">
                 <Image
-                  src="/images/ui-lab/odontoa-logo.png"
+                  src="/images/Odontoa-New-logo-pack-2026/horiyotal_color.png"
                   alt="Odontoa Logo"
-                  width={180}
+                  width={123}
                   height={40}
                   priority
                 />
