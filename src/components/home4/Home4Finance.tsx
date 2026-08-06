@@ -36,10 +36,12 @@ const PILLARS = [
   },
 ];
 
+/* Inicijali su u podacima, ne izvedeni iz naziva - "CAD/CAM studio" ne daje "CC" splitom.
+   DentalTeh je isti dobavljač koji se pominje u AI asistent sekciji. */
 const LAB_ROWS = [
-  { name: 'Zubna tehnika Petrović', done: '42.300', paid: '39.800', owed: '2.500' },
-  { name: 'Lab Dentalux', done: '28.100', paid: '28.100', owed: null },
-  { name: 'CAD/CAM studio', done: '15.800', paid: '12.000', owed: '3.800' },
+  { name: 'DentalTeh', initials: 'DT', orders: '8 naloga', done: '42.300', paid: '39.800', owed: '2.500' },
+  { name: 'Lab Dentalux', initials: 'LD', orders: '5 naloga', done: '28.100', paid: '28.100', owed: null },
+  { name: 'CAD/CAM studio', initials: 'CC', orders: '3 naloga', done: '15.800', paid: '12.000', owed: '3.800' },
 ];
 
 export default function Home4Finance() {
@@ -75,13 +77,13 @@ export default function Home4Finance() {
             <div className="home4-fin__card">
               <div className="home4-fin__card-head">
                 <span className="home4-fin__card-icon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
                   </svg>
                 </span>
                 <div>
                   <h4>Trošak tehnike</h4>
-                  <div className="home4-fin__card-sub">jul 2026 - po laboratoriji</div>
+                  <div className="home4-fin__card-sub">jul 2026 · po laboratoriji</div>
                 </div>
               </div>
               <div className="home4-fin__card-body">
@@ -97,7 +99,15 @@ export default function Home4Finance() {
                   <tbody>
                     {LAB_ROWS.map((row) => (
                       <tr key={row.name}>
-                        <td className="home4-fin__table-name">{row.name}</td>
+                        <td>
+                          <div className="home4-fin__lab">
+                            <span className="home4-fin__avatar">{row.initials}</span>
+                            <div>
+                              <div className="home4-fin__table-name">{row.name}</div>
+                              <div className="home4-fin__table-sub">{row.orders}</div>
+                            </div>
+                          </div>
+                        </td>
                         <td className="is-right home4-fin__num">{row.done}</td>
                         <td className="is-right home4-fin__num home4-fin__paid">{row.paid}</td>
                         {row.owed ? (
@@ -109,10 +119,11 @@ export default function Home4Finance() {
                     ))}
                   </tbody>
                 </table>
-                <div className="home4-fin__foot">
-                  <span className="home4-fin__foot-label">Ukupno dugovanje tehnici</span>
-                  <span className="home4-fin__foot-value">6.300 RSD</span>
-                </div>
+              </div>
+              {/* Traka na sivoj podlozi, van tela kartice - isti obrazac kao asistent prompt. */}
+              <div className="home4-fin__foot">
+                <span className="home4-fin__foot-label">Ukupno dugovanje tehnici</span>
+                <span className="home4-fin__foot-value">6.300 RSD</span>
               </div>
             </div>
             </Reveal>
