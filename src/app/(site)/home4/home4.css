@@ -48,8 +48,15 @@
   /* 92px fixed nav zona + 40px razmaka */
   padding: 132px 24px 0;
   overflow: hidden;
+  /* Brend glow iza H1: centar u zoni naslova, a ne iznad ivice sekcije, gde se od
+     njega vidi samo rep koji vec bledi. Alfa 8%, dovoljno da beli hero dobije topao
+     ton, premalo da bude obojen background. Uza elipsa da rep ne dodje do mockupa. */
   background:
-    radial-gradient(ellipse 60% 40% at 50% -5%, rgba(110, 81, 224, 0.04), transparent 70%),
+    radial-gradient(
+      ellipse 52% 34% at 50% 14%,
+      color-mix(in srgb, var(--stellar-accent) 8%, transparent),
+      transparent 70%
+    ),
     linear-gradient(var(--stellar-white), var(--stellar-white));
 }
 
@@ -188,16 +195,28 @@
   margin: 0 auto calc(-1 * var(--home4-hero-cut));
 }
 
-/* Slojevita senka daje dubinu: tanka kontaktna, srednja i siroka ljubicasta aura. */
+/* Slojevita senka: kontaktna linija, dve neutralne za formu, dve brend aure za dubinu.
+   Offseti ostaju mali jer overflow: hidden i rez od --home4-hero-cut seku sve nisko;
+   dubina dolazi iz blura i bocnog rasipanja, ne iz spustanja senke nadole.
+   Dupla deklaracija je fallback kao na ::after: bez color-mix senka bi nestala. */
 .home4-hero__browser {
   background: var(--stellar-white);
   border: 1px solid var(--stellar-border);
   border-radius: 20px 20px 0 0;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 1px 2px rgba(6, 11, 19, 0.04),
-    0 12px 28px -8px rgba(6, 11, 19, 0.10),
-    0 48px 80px -32px rgba(80, 60, 180, 0.18);
+    0 1px 2px rgba(6, 11, 19, 0.05),
+    0 6px 14px -4px rgba(6, 11, 19, 0.07),
+    0 18px 40px -12px rgba(6, 11, 19, 0.13),
+    0 40px 80px -24px rgba(110, 81, 224, 0.22),
+    0 8px 110px -20px rgba(110, 81, 224, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 2px color-mix(in srgb, var(--stellar-dark) 5%, transparent),
+    0 6px 14px -4px color-mix(in srgb, var(--stellar-dark) 7%, transparent),
+    0 18px 40px -12px color-mix(in srgb, var(--stellar-dark) 13%, transparent),
+    0 40px 80px -24px color-mix(in srgb, var(--stellar-accent) 22%, transparent),
+    0 8px 110px -20px color-mix(in srgb, var(--stellar-accent) 12%, transparent);
   overflow: hidden;
   animation: home4-hero-rise 0.7s ease both 0.15s;
 }
@@ -779,8 +798,10 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  /* row-gap manji od column-gap: na uskim ekranima se prelomi u 2x2, ne u 4 reda */
-  column-gap: clamp(20px, 4vw, 64px);
+  /* Umeren razmak, bez space-between: 4 kratke stavke citaju se kao povezan set,
+     a ne kao razvucen niz logotipa. row-gap manji od column-gap: na uskim ekranima
+     se prelomi u 2x2, ne u 4 reda. */
+  column-gap: clamp(24px, 3vw, 48px);
   row-gap: 14px;
   /* Isti container kao .home4-feature__inner: traka je sira od mockupa (980px) */
   max-width: 1216px;
@@ -808,15 +829,6 @@
   color: var(--stellar-accent);
   /* 8%, tise od .home4-hero__debt-av (10%), da traka ne nadglasa mockup */
   background: color-mix(in srgb, var(--stellar-accent) 8%, transparent);
-}
-
-/* Ravnomeran raspored tek kad sve 4 stavke sigurno stanu u jedan red (~725px
-   sadrzaja, na 900px viewportu je dostupno 852px). Ispod ostaje centrirano, da se
-   prelomljen drugi red ne razvuce na ivice. */
-@media (min-width: 900px) {
-  .home4-hero-proof__list {
-    justify-content: space-between;
-  }
 }
 
 /* ── Hero: responsive ── */

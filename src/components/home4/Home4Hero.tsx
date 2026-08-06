@@ -41,7 +41,7 @@ const TRUST = [
   { Icon: Import, label: 'Uvoz pacijenata' },
   { Icon: ShieldCheck, label: 'GDPR usklađeno' },
   /* LockKeyhole, ne Lock: Lock je vec u URL baru mockupa. */
-  { Icon: LockKeyhole, label: 'Sigurno na Microsoft Azure' },
+  { Icon: LockKeyhole, label: 'Microsoft Azure zaštita' },
 ];
 
 export default function Home4Hero() {
@@ -52,12 +52,12 @@ export default function Home4Hero() {
           <h1 className="home4-hero__title">
             Tvoja digitalna ordinacija.
             <br />
-            <span className="home4-hero__title-accent">Finansije vodi sistem.</span>
+            <span className="home4-hero__title-accent">Finansije pod kontrolom.</span>
           </h1>
 
           <p className="home4-hero__sub">
-            Zaboravi papire i propuštene termine. Cela ordinacija ti je na jednom mestu,
-            pregledna i pod kontrolom.
+            Zaboravi papire i rokovnike. Termini, kartoni i finansije su ti na jednom
+            mestu, uvek pri ruci.
           </p>
 
           {/* Jedna glavna akcija; demo je namerno slabiji tekstualni link, ne drugo dugme.
