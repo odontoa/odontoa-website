@@ -41,6 +41,9 @@
   --home4-hero-track: #f0f2f7;
   --home4-hero-aura: rgba(110, 81, 224, 0.14);
   --home4-hero-aura-net: rgba(18, 166, 122, 0.14);
+  /* Koliko donjeg dela mockupa ulazi ispod ivice sekcije (rez "nastavlja se") */
+  --home4-hero-cut: 72px;
+  --home4-hero-fade-h: 80px;
   position: relative;
   /* 92px fixed nav zona + 40px razmaka */
   padding: 132px 24px 0;
@@ -63,6 +66,25 @@
   opacity: 0.25;
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%);
           mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%);
+}
+
+/* Blag fade na rezu: donja ivica mockupa se stapa sa pozadinom sekcije. Overlay, ne
+   mask - mask bi propustio grid pozadinu i senku panela kroz providno dno. */
+.home4-hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--home4-hero-fade-h);
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--stellar-white));
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    color-mix(in srgb, var(--stellar-white) 38%, transparent) 62%,
+    var(--stellar-white) 100%
+  );
 }
 
 .home4-hero__inner {
@@ -158,10 +180,12 @@
 }
 
 /* ── Hero: panel (browser frame) ── */
+/* Negativan margin skracuje sekciju, pa postojeci overflow: hidden odsece dno
+   panela. translateY bi ostavio rupu u layoutu ispod. */
 .home4-hero__panel-wrap {
   position: relative;
   max-width: 980px;
-  margin: 0 auto;
+  margin: 0 auto calc(-1 * var(--home4-hero-cut));
 }
 
 /* Slojevita senka daje dubinu: tanka kontaktna, srednja i siroka ljubicasta aura. */
@@ -734,8 +758,21 @@
 }
 
 /* ── Hero: trust traka (zamena za TrustLogos) - transparentna, bez pilula ── */
+/* Mali gornji razmak: traka je nastavak mockupa, ne zaseban blok.
+   Pozadina nosi prelaz iz bele hero sekcije u svetlosivu sledecu sekciju: gore
+   cisto belo (gde fade dashboarda zavrsava), dole tacno boja Home4FeatureLeft-a,
+   pa nijedan od dva sava nije vidljiv. */
 .home4-hero-proof {
-  padding: 28px 24px;
+  /* Vazduh iznad trake ide kroz margin, ne padding: padding bi razvukao gradijent
+     ispod (tacke su u procentima) i gurnuo bedzeve u sredinu rampe. */
+  margin-top: clamp(28px, 4vw, 52px);
+  padding: 14px 24px 44px;
+  background: linear-gradient(
+    to bottom,
+    var(--stellar-white) 0%,
+    var(--stellar-white) 34%,
+    var(--stellar-bg-light) 100%
+  );
 }
 
 .home4-hero-proof__list {
@@ -743,9 +780,10 @@
   flex-wrap: wrap;
   justify-content: center;
   /* row-gap manji od column-gap: na uskim ekranima se prelomi u 2x2, ne u 4 reda */
-  column-gap: 26px;
-  row-gap: 12px;
-  max-width: 1072px;
+  column-gap: clamp(20px, 4vw, 64px);
+  row-gap: 14px;
+  /* Isti container kao .home4-feature__inner: traka je sira od mockupa (980px) */
+  max-width: 1216px;
   margin: 0 auto;
   padding: 0;
   list-style: none;
@@ -754,9 +792,31 @@
 .home4-hero-proof__list li {
   display: flex;
   align-items: center;
-  gap: 7px;
-  font-size: 12.5px;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--stellar-muted);
+}
+
+/* Okvir ikonice: 18px glif + 2x10px padding = 38px kvadrat. Inline svg prima padding
+   i pozadinu, pa wrapper element nije potreban. Lucide crta sa currentColor. */
+.home4-hero-proof__list li svg {
+  flex: none;
+  box-sizing: content-box;
+  padding: 10px;
+  border-radius: 10px;
+  color: var(--stellar-accent);
+  /* 8%, tise od .home4-hero__debt-av (10%), da traka ne nadglasa mockup */
+  background: color-mix(in srgb, var(--stellar-accent) 8%, transparent);
+}
+
+/* Ravnomeran raspored tek kad sve 4 stavke sigurno stanu u jedan red (~725px
+   sadrzaja, na 900px viewportu je dostupno 852px). Ispod ostaje centrirano, da se
+   prelomljen drugi red ne razvuce na ivice. */
+@media (min-width: 900px) {
+  .home4-hero-proof__list {
+    justify-content: space-between;
+  }
 }
 
 /* ── Hero: responsive ── */
@@ -764,6 +824,9 @@
   .home4-hero {
     /* 80px fixed nav zona + 28px razmaka */
     padding-top: 108px;
+    /* Panel je uzi i visi: plici rez, da ne udje u plot grafikona */
+    --home4-hero-cut: 48px;
+    --home4-hero-fade-h: 56px;
   }
 
   .home4-hero__kpis {
@@ -813,11 +876,14 @@
   }
 
   /* Traka: jedna kolona. 2x2 ne staje - "Microsoft Azure infrastruktura"
-     se prelomi u dva reda vec na 390px, a na 360px nema sanse. */
+     se prelomi u dva reda vec na 390px, a na 360px nema sanse.
+     Stavke se poravnavaju levo (okviri ikonica u liniji), a grupa ostaje
+     centrirana preko fit-content + margin: 0 auto. */
   .home4-hero-proof__list {
     flex-direction: column;
-    align-items: center;
-    row-gap: 10px;
+    align-items: flex-start;
+    width: fit-content;
+    row-gap: 12px;
   }
 }
 

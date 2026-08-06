@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, CalendarCheck, Cloud, Lock, ShieldCheck, Upload } from 'lucide-react';
+import { ArrowRight, CalendarCheck, Import, Lock, LockKeyhole, ShieldCheck } from 'lucide-react';
 
 /* Grafikon "Promet po periodu" - putanje prepisane 1:1 iz odobrenog dizajna, viewBox 600x170.
    SVG se razvlaci samo po X osi (preserveAspectRatio="none") da grafikon drzi istu visinu na
@@ -37,9 +37,11 @@ const DEBTS = [
 /* Trust traka: samo proverive tvrdnje, bez brojeva korisnika. */
 const TRUST = [
   { Icon: CalendarCheck, label: '30 dana besplatno' },
-  { Icon: Upload, label: 'Uvoz pacijenata na nama' },
+  /* Import, ne Upload: poruka je da mi prebacujemo bazu, a ne da korisnik salje fajl. */
+  { Icon: Import, label: 'Uvoz pacijenata' },
   { Icon: ShieldCheck, label: 'GDPR usklađeno' },
-  { Icon: Cloud, label: 'Microsoft Azure infrastruktura' },
+  /* LockKeyhole, ne Lock: Lock je vec u URL baru mockupa. */
+  { Icon: LockKeyhole, label: 'Sigurno na Microsoft Azure' },
 ];
 
 export default function Home4Hero() {
@@ -297,7 +299,7 @@ export default function Home4Hero() {
         <ul className="home4-hero-proof__list">
           {TRUST.map(({ Icon, label }) => (
             <li key={label}>
-              <Icon size={14} strokeWidth={1.75} aria-hidden />
+              <Icon size={18} strokeWidth={1.75} aria-hidden />
               {label}
             </li>
           ))}
