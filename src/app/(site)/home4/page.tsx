@@ -8,6 +8,7 @@ import Home4Finance from '@/components/home4/Home4Finance';
 import Home4FeatureRight from '@/components/home4/Home4FeatureRight';
 import Home4DigitalReadiness from '@/components/home4/Home4DigitalReadiness';
 import Home4Assistant from '@/components/home4/Home4Assistant';
+import Home4Quote from '@/components/home4/Home4Quote';
 import Home4Pricing from '@/components/home4/Home4Pricing';
 // Testimonials: `Home4Testimonials` - vratiti kada budu pravi korisnici (vidi komentar u Home4Testimonials.tsx).
 // import Home4Testimonials from '@/components/home4/Home4Testimonials';
@@ -34,6 +35,7 @@ export default function Home4Page() {
       <Home4FeatureRight />
       <Home4DigitalReadiness />
       <Home4Assistant />
+      <Home4Quote />
       <Home4Pricing />
       {/* <Home4Testimonials /> */}
       <Home4Blog />
