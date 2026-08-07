@@ -10,13 +10,6 @@ import Image from "next/image";
 
 const FULL_MENU_ITEMS = [
   { name: 'Početna', href: '/' },
-  ...(process.env.NODE_ENV !== 'production'
-    ? [
-        { name: 'Home2', href: '/home2' },
-        { name: 'Home3', href: '/home3' },
-        { name: 'Home4', href: '/home4' },
-      ]
-    : []),
   { name: 'O nama', href: '/o-nama' },
   { name: 'Blogovi', href: '/blogovi' },
   { name: 'Rečnik', href: '/recnik' },
@@ -30,11 +23,9 @@ const HOME2_MENU_ITEMS = [
   { name: 'Kontakt', href: '/kontakt' },
 ];
 
-function getStellarHomeMenuItems(pathname: string) {
+function getStellarHomeMenuItems() {
   return [
     { name: 'Početna', href: '/' },
-    ...(pathname !== '/home3' ? [{ name: 'Home3', href: '/home3' }] : []),
-    ...(pathname !== '/home4' ? [{ name: 'Home4', href: '/home4' }] : []),
     { name: 'Funkcije', href: '#funkcionalnosti' },
     { name: 'O nama', href: '/o-nama' },
     { name: 'Blogovi', href: '/blogovi' },
@@ -47,12 +38,13 @@ function getStellarHomeMenuItems(pathname: string) {
 const Navigation = () => {
   const pathname = usePathname();
   const isHome2 = pathname === '/home2';
-  const isStellarHome = pathname === '/home3' || pathname === '/home4';
+  /* Pocetna je od sada home4 dizajn, pa nosi stellar chrome kao i /home3. */
+  const isStellarHome = pathname === '/' || pathname === '/home3';
   /* Stellar izgled vazi i na /register; stavke menija tamo ostaju pune,
-     bez Home3/Home4 linkova i bez #funkcionalnosti anchora. */
+     bez #funkcionalnosti anchora. */
   const isStellarChrome = isStellarHome || pathname === '/register';
   const menuItems = isStellarHome
-    ? getStellarHomeMenuItems(pathname)
+    ? getStellarHomeMenuItems()
     : isHome2
       ? HOME2_MENU_ITEMS
       : FULL_MENU_ITEMS;

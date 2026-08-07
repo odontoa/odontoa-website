@@ -10,7 +10,7 @@ const CALENDAR_CELLS = [
 
 export default function Home4BigFeatures() {
   return (
-    <section className="home4-big-features">
+    <section id="funkcionalnosti" className="home4-big-features">
       <div className="home4-big-features__inner">
 
         {/* ── Header ── */}

@@ -43,6 +43,12 @@ const nextConfig = {
         destination: '/blogovi/:slug',
         permanent: true,
       },
+      /* home4 je postao pocetna; stari URL je deljen tokom dizajn revizija. */
+      {
+        source: '/home4',
+        destination: '/',
+        permanent: true,
+      },
     ];
   },
 };

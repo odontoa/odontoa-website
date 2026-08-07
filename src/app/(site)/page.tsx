@@ -1,33 +1,49 @@
-import NewHeroDesigne2026 from '@/components/hero/NewHeroDesigne2026';
-import { Features } from '@/components/ui/features-4';
-import { AccordionFeatureSection } from '@/components/ui/accordion-feature-section';
-import { VideoDemoPlaceholder } from '@/components/ui/video-demo-placeholder';
-// import FeatureWalkthroughV3 from '@/components/home/FeatureWalkthroughV3'; // sakriveno – horizontalni skrol
-import PatientRemindersSection from '@/components/marketing/PatientRemindersSection';
-import Home2CTA from '@/components/home2/Home2CTA';
-import FeaturedBlogsSection from '@/components/FeaturedBlogsSection';
-import Home2CustomizedPlan from '@/components/home2/Home2CustomizedPlan';
-import Home2FAQ from '@/components/home2/Home2FAQ';
+import { Instrument_Sans } from 'next/font/google';
+import Home4Hero from '@/components/home4/Home4Hero';
+// TrustLogos: placeholder logoi iz template-a; proof traka u heroju je zamena.
+// import Home4TrustLogos from '@/components/home4/Home4TrustLogos';
+import Home4FeatureLeft from '@/components/home4/Home4FeatureLeft';
+import Home4BigFeatures from '@/components/home4/Home4BigFeatures';
+import Home4Finance from '@/components/home4/Home4Finance';
+import Home4FeatureRight from '@/components/home4/Home4FeatureRight';
+import Home4Assistant from '@/components/home4/Home4Assistant';
+import Home4DigitalReadiness from '@/components/home4/Home4DigitalReadiness';
+import Home4Quote from '@/components/home4/Home4Quote';
+import Home4Pricing from '@/components/home4/Home4Pricing';
+// Testimonials: `Home4Testimonials` - vratiti kada budu pravi korisnici (vidi komentar u Home4Testimonials.tsx).
+// import Home4Testimonials from '@/components/home4/Home4Testimonials';
+import Home4Blog from '@/components/home4/Home4Blog';
+import Home4CTA from '@/components/home4/Home4CTA';
 import ComingSoonPage from '@/components/coming-soon/ComingSoonPage';
+import './home4.css';
 
-export default async function HomePage() {
+/* Display font za naslove - scoped na pocetnu (root layout se ne dira zbog home3) */
+const displayFont = Instrument_Sans({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-display',
+  display: 'swap',
+});
+
+export default function HomePage() {
   if (process.env.SITE_MODE === 'coming_soon') {
     return <ComingSoonPage />;
   }
   return (
-    <div className="min-h-screen bg-background w-full">
-      <NewHeroDesigne2026 />
-      <Features />
-      <AccordionFeatureSection />
-      <VideoDemoPlaceholder />
-      {/* Sekcija "Jedno mesto..." sa horizontalnim skrolom – privremeno sakrivena */}
-      {/* <FeatureWalkthroughV3 /> */}
-      <PatientRemindersSection />
-      <Home2CTA />
-      <FeaturedBlogsSection />
-      <Home2CustomizedPlan />
-      <Home2FAQ />
+    <div className={`home4-page min-h-screen bg-white w-full ${displayFont.variable}`}>
+      <Home4Hero />
+      {/* <Home4TrustLogos /> */}
+      <Home4FeatureLeft />
+      <Home4BigFeatures />
+      <Home4Finance />
+      <Home4FeatureRight />
+      <Home4Assistant />
+      <Home4DigitalReadiness />
+      <Home4Quote />
+      <Home4Pricing />
+      {/* <Home4Testimonials /> */}
+      <Home4Blog />
+      <Home4CTA />
     </div>
   );
 }
-
