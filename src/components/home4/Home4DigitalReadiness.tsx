@@ -28,7 +28,9 @@ export default function Home4DigitalReadiness() {
   return (
     <section className="home4-readiness">
       <div className="home4-readiness__inner">
-        <Reveal>
+        {/* Klasa stoji na Reveal-u, ne na __text divu: Reveal je taj koji je stvarna
+            grid stavka, pa se order hvata za njega. */}
+        <Reveal className="home4-readiness__col-text">
         <div className="home4-readiness__text">
           <p className="home4-readiness__eyebrow mb-3 text-sm font-medium">
             Besplatan alat
