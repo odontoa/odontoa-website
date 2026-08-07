@@ -141,10 +141,10 @@ export default function TestEmailPage() {
           <div className="bg-card border border-border rounded-lg p-6">
             <h3 className="text-lg font-semibold mb-4">Setup Instructions</h3>
             <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-              <li>Create a SendGrid account at sendgrid.com</li>
-              <li>Get your API key from Settings → API Keys</li>
-              <li>Verify your domain in SendGrid</li>
-              <li>Create a .env.local file with SENDGRID_API_KEY</li>
+              <li>Create a Resend account at resend.com</li>
+              <li>Verify the odontoa.info domain under Domains</li>
+              <li>Create an API key with Sending access</li>
+              <li>Set RESEND_API_KEY and RESEND_FROM_EMAIL in .env.local (see RESEND_SETUP.md)</li>
               <li>Test the email functionality using the buttons above</li>
             </ol>
           </div>

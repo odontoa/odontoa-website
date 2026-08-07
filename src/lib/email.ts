@@ -1,8 +1,44 @@
-import sgMail from '@sendgrid/mail';
+import { Resend } from 'resend';
 
-// Initialize SendGrid with API key
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+/* Klijent se pravi lenjo: modul se importuje i u rutama koje se build-uju bez
+   env-a, pa konstrukcija na nivou modula ruši build kad ključ nije postavljen. */
+let client: Resend | null = null;
+
+function getClient(): Resend {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) {
+    throw new Error('Resend API key not configured');
+  }
+  if (!client) {
+    client = new Resend(key);
+  }
+  return client;
+}
+
+/* Pošiljalac mora biti na domenu verifikovanom u Resend-u (odontoa.info). */
+function getFrom(): string {
+  const from = process.env.RESEND_FROM_EMAIL;
+  if (!from) {
+    throw new Error('Resend sender address not configured');
+  }
+  return from;
+}
+
+/* Interni primaoci obaveštenja o formama. Env je lista razdvojena zarezom;
+   fallback je stanje pre migracije, da forme rade i ako varijabla izostane. */
+const DEFAULT_INTERNAL_RECIPIENTS = [
+  'info@odontoa.info',
+  'ognjen.drinic31@gmail.com',
+];
+
+function getInternalRecipients(): string[] {
+  const raw = process.env.CONTACT_TO_EMAIL;
+  if (!raw) return DEFAULT_INTERNAL_RECIPIENTS;
+  const list = raw
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
+  return list.length > 0 ? list : DEFAULT_INTERNAL_RECIPIENTS;
 }
 
 export interface ContactFormData {
@@ -78,149 +114,140 @@ function sanitizeSubject(value: string): string {
   return value.replace(/[\r\n]+/g, ' ').trim();
 }
 
+/* Isti razlog za replyTo: adresa dolazi iz forme i završava u zaglavlju. */
+function sanitizeAddress(value: string): string | undefined {
+  const clean = value.replace(/[\r\n]+/g, '').trim();
+  return clean.length > 0 ? clean : undefined;
+}
+
+interface SendArgs {
+  to: string | string[];
+  subject: string;
+  html: string;
+  bcc?: string | string[];
+  replyTo?: string;
+}
+
+/* Resend ne baca na odbijenu poruku nego vraca { data, error }, pa se greska
+   ovde pretvara u izuzetak sa prefiksom koji rute vec prepoznaju. */
+async function send(args: SendArgs, failureLabel: string): Promise<void> {
+  const { error } = await getClient().emails.send({
+    from: getFrom(),
+    to: args.to,
+    subject: args.subject,
+    html: args.html,
+    ...(args.bcc ? { bcc: args.bcc } : {}),
+    ...(args.replyTo ? { replyTo: args.replyTo } : {}),
+  });
+
+  if (error) {
+    /* Bez tela poruke u logu: sadrzi licne podatke iz forme. */
+    console.error(`${failureLabel}:`, error.name, error.message);
+    throw new Error(`${failureLabel}: ${error.message}`);
+  }
+}
+
 export class EmailService {
   /**
    * Send email for contact form submissions
    */
   static async sendContactFormEmail(data: ContactFormData): Promise<void> {
-    // Check if API key is set
-    if (!process.env.SENDGRID_API_KEY) {
-      console.error('SENDGRID_API_KEY is not set');
-      throw new Error('SendGrid API key not configured');
-    }
-
-    const emailContent = {
-      to: ['info@odontoa.info', 'ognjen.drinic31@gmail.com'],
-      from: 'odontoa.com@gmail.com',
-      subject: `Nova kontakt forma - ${data.subject}`,
-      html: `
+    const html = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">
             Nova kontakt forma - Odontoa
           </h2>
-          
+
           <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #1e293b; margin-top: 0;">Detalji forme:</h3>
             <p><strong>Tip forme:</strong> Kontakt forma</p>
-            <p><strong>Ime i prezime:</strong> ${data.name}</p>
-            <p><strong>Email:</strong> ${data.email}</p>
-            <p><strong>Telefon:</strong> ${data.phone}</p>
-            <p><strong>Naziv ordinacije:</strong> ${data.clinic}</p>
-            <p><strong>Predmet:</strong> ${data.subject}</p>
+            <p><strong>Ime i prezime:</strong> ${escapeHtml(data.name)}</p>
+            <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
+            <p><strong>Telefon:</strong> ${escapeHtml(data.phone)}</p>
+            <p><strong>Naziv ordinacije:</strong> ${escapeHtml(data.clinic)}</p>
+            <p><strong>Predmet:</strong> ${escapeHtml(data.subject)}</p>
             <p><strong>Poruka:</strong></p>
             <div style="background-color: white; padding: 15px; border-radius: 4px; border-left: 4px solid #2563eb;">
-              ${data.message.replace(/\n/g, '<br>')}
+              ${escapeHtml(data.message).replace(/\n/g, '<br>')}
             </div>
           </div>
-          
+
           <div style="background-color: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 20px;">
             <p style="margin: 0; color: #64748b; font-size: 14px;">
               Ova poruka je automatski generisana sa Odontoa web sajta.
             </p>
           </div>
         </div>
-      `
-    };
+      `;
 
-    try {
-      console.log('Attempting to send contact form email...');
-      console.log('API Key exists:', !!process.env.SENDGRID_API_KEY);
-      console.log('Email content:', JSON.stringify(emailContent, null, 2));
-      
-      await sgMail.send(emailContent);
-      console.log('Contact form email sent successfully');
-    } catch (error) {
-      console.error('Error sending contact form email:', error);
-      if (error.response) {
-        console.error('SendGrid response:', error.response.body);
-      }
-      throw new Error(`Failed to send contact form email: ${error.message}`);
-    }
+    await send(
+      {
+        to: getInternalRecipients(),
+        subject: sanitizeSubject(`Nova kontakt forma - ${data.subject}`),
+        html,
+        replyTo: sanitizeAddress(data.email),
+      },
+      'Failed to send contact form email'
+    );
   }
 
   /**
    * Send email for demo form submissions
    */
   static async sendDemoFormEmail(data: DemoFormData): Promise<void> {
-    // Check if API key is set
-    if (!process.env.SENDGRID_API_KEY) {
-      console.error('SENDGRID_API_KEY is not set');
-      throw new Error('SendGrid API key not configured');
-    }
-
-    const emailContent = {
-      to: ['info@odontoa.info', 'ognjen.drinic31@gmail.com'],
-      from: 'odontoa.com@gmail.com',
-      subject: 'Novi zahtev za demo - Odontoa',
-      html: `
+    const html = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">
             Novi zahtev za demo - Odontoa
           </h2>
-          
+
           <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #1e293b; margin-top: 0;">Detalji forme:</h3>
             <p><strong>Tip forme:</strong> Demo forma</p>
-            <p><strong>Ime i prezime:</strong> ${data.name}</p>
-            <p><strong>Email:</strong> ${data.email}</p>
-            <p><strong>Telefon:</strong> ${data.phone}</p>
+            <p><strong>Ime i prezime:</strong> ${escapeHtml(data.name)}</p>
+            <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
+            <p><strong>Telefon:</strong> ${escapeHtml(data.phone)}</p>
           </div>
-          
+
           <div style="background-color: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 20px;">
             <p style="margin: 0; color: #64748b; font-size: 14px;">
               Ova poruka je automatski generisana sa Odontoa web sajta.
             </p>
           </div>
         </div>
-      `
-    };
+      `;
 
-    try {
-      console.log('Attempting to send demo form email...');
-      console.log('API Key exists:', !!process.env.SENDGRID_API_KEY);
-      console.log('API Key first 10 chars:', process.env.SENDGRID_API_KEY?.substring(0, 10));
-      console.log('Email content:', JSON.stringify(emailContent, null, 2));
-      
-      const result = await sgMail.send(emailContent);
-      console.log('Demo form email sent successfully');
-      console.log('SendGrid response:', result);
-      console.log('SendGrid response type:', typeof result);
-      console.log('SendGrid response keys:', Object.keys(result || {}));
-    } catch (error) {
-      console.error('Error sending demo form email:', error);
-      if (error.response) {
-        console.error('SendGrid response:', error.response.body);
-      }
-      throw new Error(`Failed to send demo form email: ${error.message}`);
-    }
+    await send(
+      {
+        to: getInternalRecipients(),
+        subject: 'Novi zahtev za demo - Odontoa',
+        html,
+        replyTo: sanitizeAddress(data.email),
+      },
+      'Failed to send demo form email'
+    );
   }
 
   /**
    * Send a copy of the digital readiness quiz result to the user's email.
    */
   static async sendQuizResultEmail(data: QuizResultEmailData): Promise<void> {
-    if (!process.env.SENDGRID_API_KEY) {
-      console.error('SENDGRID_API_KEY is not set');
-      throw new Error('SendGrid API key not configured');
-    }
-
     const categoryRows = data.categories
       .map(
         (c) => `
           <tr>
-            <td style="padding: 8px 12px; border-bottom: 1px solid #e9ebf1; color: #363d4f;">${c.label}</td>
-            <td style="padding: 8px 12px; border-bottom: 1px solid #e9ebf1; color: #060b13; font-weight: 600; text-align: right;">${c.percent}%</td>
+            <td style="padding: 8px 12px; border-bottom: 1px solid #e9ebf1; color: #363d4f;">${escapeHtml(
+              c.label
+            )}</td>
+            <td style="padding: 8px 12px; border-bottom: 1px solid #e9ebf1; color: #060b13; font-weight: 600; text-align: right;">${
+              c.percent
+            }%</td>
           </tr>
         `
       )
       .join('');
 
-    const emailContent = {
-      to: data.email,
-      bcc: ['info@odontoa.info'],
-      from: 'odontoa.com@gmail.com',
-      subject: 'Vaš rezultat: Test digitalne spremnosti ordinacije',
-      html: `
+    const html = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #060b13;">
           <h2 style="color: #6e51e0; border-bottom: 2px solid #6e51e0; padding-bottom: 10px;">
             Vaš rezultat: Test digitalne spremnosti ordinacije
@@ -231,10 +258,10 @@ export class EmailService {
               ${data.totalScore}<span style="font-size: 20px; color: #6b7388; font-weight: 500;"> / 100</span>
             </div>
             <div style="font-size: 18px; font-weight: 600; color: #060b13; margin-top: 8px;">
-              ${data.bandLabel}
+              ${escapeHtml(data.bandLabel)}
             </div>
             <div style="font-size: 14px; color: #6b7388; margin-top: 4px;">
-              Profil: ${data.profileLabel}
+              Profil: ${escapeHtml(data.profileLabel)}
             </div>
           </div>
 
@@ -272,30 +299,26 @@ export class EmailService {
             Ova poruka je automatski generisana na osnovu vaših odgovora na sajtu Odontoa.
           </p>
         </div>
-      `,
-    };
+      `;
 
-    try {
-      await sgMail.send(emailContent);
-      console.log('Quiz result email sent successfully');
-    } catch (error) {
-      console.error('Error sending quiz result email:', error);
-      if (error.response) {
-        console.error('SendGrid response:', error.response.body);
-      }
-      throw new Error(`Failed to send quiz result email: ${error.message}`);
-    }
+    /* Jedini mejl koji ide spoljnom korisniku: replyTo na pravo sanduce,
+       jer je posiljalac noreply adresa. */
+    await send(
+      {
+        to: data.email,
+        bcc: ['info@odontoa.info'],
+        subject: 'Vaš rezultat: Test digitalne spremnosti ordinacije',
+        html,
+        replyTo: 'info@odontoa.info',
+      },
+      'Failed to send quiz result email'
+    );
   }
 
   /**
    * Send email for onboarding wizard submissions (/register)
    */
   static async sendOnboardingEmail(data: OnboardingFormData): Promise<void> {
-    if (!process.env.SENDGRID_API_KEY) {
-      console.error('SENDGRID_API_KEY is not set');
-      throw new Error('SendGrid API key not configured');
-    }
-
     const row = (label: string, value: string) => `
       <tr>
         <td style="padding: 8px 12px; border-bottom: 1px solid #e9ebf1; color: #6b7388; width: 45%;">${escapeHtml(
@@ -316,11 +339,7 @@ export class EmailService {
       </table>
     `;
 
-    const emailContent = {
-      to: ['info@odontoa.info', 'ognjen.drinic31@gmail.com'],
-      from: 'odontoa.com@gmail.com',
-      subject: sanitizeSubject(`Nova prijava ordinacije: ${data.clinicName}`),
-      html: `
+    const html = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #060b13;">
           <h2 style="color: #6e51e0; border-bottom: 2px solid #6e51e0; padding-bottom: 10px;">
             Nova prijava ordinacije
@@ -362,18 +381,16 @@ export class EmailService {
             </p>
           </div>
         </div>
-      `,
-    };
+      `;
 
-    try {
-      await sgMail.send(emailContent);
-      console.log('Onboarding email sent successfully');
-    } catch (error) {
-      console.error('Error sending onboarding email:', error);
-      if (error.response) {
-        console.error('SendGrid response:', error.response.body);
-      }
-      throw new Error(`Failed to send onboarding email: ${error.message}`);
-    }
+    await send(
+      {
+        to: getInternalRecipients(),
+        subject: sanitizeSubject(`Nova prijava ordinacije: ${data.clinicName}`),
+        html,
+        replyTo: sanitizeAddress(data.email),
+      },
+      'Failed to send onboarding email'
+    );
   }
 }
