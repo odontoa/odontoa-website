@@ -8,7 +8,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "send:reset": "node scripts/send-reset-email.mjs ognjen.drinic31@gmail.com",
     "seed:glossary": "tsx scripts/seedGlossaryTerms.ts",
     "import:glossary": "tsx scripts/importGlossaryTerms.ts",
     "composite:mockup": "node scripts/composite-phone-mockup.mjs",
@@ -117,7 +116,7 @@
   "author": "Odontoa Team",
   "license": "UNLICENSED",
   "engines": {
-    "node": "20.x"
+    "node": "24.x"
   },
   "bugs": {
     "url": "https://github.com/your-username/odontoa/issues"
@@ -127,7 +126,7 @@
     "@eslint/js": "^9.9.0",
     "@sanity/vision": "^3.99.0",
     "@tailwindcss/typography": "^0.5.16",
-    "@types/node": "^22.5.5",
+    "@types/node": "^24.13.3",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.20",
