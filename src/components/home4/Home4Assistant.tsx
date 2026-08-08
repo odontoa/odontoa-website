@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Home4AssistantChat from './Home4AssistantChat';
 import Reveal from './Reveal';
 
@@ -14,6 +15,19 @@ export default function Home4Assistant() {
                 Pitaj bilo šta o pacijentima, terminima i finansijama. Asistent zna tvoju bazu
                 i odgovara odmah, bez traženja po menijima.
               </p>
+              {/* Stoji u tekstualnoj koloni, pa ne dira chat animaciju u koloni pored. */}
+              <Link href="/funkcionalnosti/ai-asistent" className="home4-assistant__more">
+                Saznaj više o AI asistentu
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path
+                    d="M3 8h10m0 0l-4-4m4 4l-4 4"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </Link>
             </Reveal>
           </div>
 

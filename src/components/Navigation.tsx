@@ -40,9 +40,14 @@ const Navigation = () => {
   const isHome2 = pathname === '/home2';
   /* Pocetna je od sada home4 dizajn, pa nosi stellar chrome kao i /home3. */
   const isStellarHome = pathname === '/' || pathname === '/home3';
-  /* Stellar izgled vazi i na /register; stavke menija tamo ostaju pune,
-     bez #funkcionalnosti anchora. */
-  const isStellarChrome = isStellarHome || pathname === '/register';
+  /* Stellar izgled vazi i na /register i na stranicama funkcionalnosti; stavke
+     menija tamo ostaju pune, bez #funkcionalnosti anchora, jer te stranice nemaju
+     tu sekciju na koju bi anchor vodio. */
+  const isStellarChrome =
+    isStellarHome ||
+    pathname === '/register' ||
+    pathname === '/funkcionalnosti' ||
+    pathname.startsWith('/funkcionalnosti/');
   const menuItems = isStellarHome
     ? getStellarHomeMenuItems()
     : isHome2

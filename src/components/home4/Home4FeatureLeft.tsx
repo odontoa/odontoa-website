@@ -1,14 +1,11 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import Reveal from './Reveal';
+import { SYSTEM_GRID_PAGES } from '@/lib/content/funkcionalnosti';
 
-const FEATURE_ROWS = [
-  { num: '/01', title: 'Zakazivač termina', desc: 'Kalendar po doktorima i stolicama, drag-and-drop izmene.' },
-  { num: '/02', title: 'Karton i odontogram', desc: 'Anamneza, terapije, dijagnoze (MKB-10) i istorija poseta, uvek pri ruci.' },
-  { num: '/03', title: 'RTG i fotografije', desc: 'Slike u kartonu, bez traženja po folderima.' },
-  { num: '/04', title: 'Zubna tehnika', desc: 'Radni nalozi za laboratoriju, status i trošak po svakom nalogu.' },
-  { num: '/05', title: 'Dokumentacija i saglasnosti', desc: 'Šabloni, digitalni potpis, e-arhiva.' },
-  { num: '/06', title: 'Finansije i podsetnici', desc: 'Predračuni, uplate, automatski SMS podsetnici.' },
-] as const;
+/* Redovi se izvode iz istog izvora kao stranice funkcionalnosti, pa naslov kartice
+   i H1 stranice ne mogu da se raziju. SYSTEM_GRID_PAGES je vec bez AI asistenta:
+   on ima svoju stranicu, ali se ne pojavljuje u ovom gridu. */
 
 const TREATMENTS = [
   { day: '16', month: 'jul', title: 'Hirurško vađenje zuba', meta: 'Dr Marko Marković · Stolica 1', status: 'done', statusLabel: 'Završeno' },
@@ -66,9 +63,11 @@ export default function Home4FeatureLeft() {
 
           {/* Divider lista */}
           <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 36 }}>
-            {FEATURE_ROWS.map((row) => (
-              <div
-                key={row.num}
+            {SYSTEM_GRID_PAGES.map((row) => (
+              <Link
+                key={row.slug}
+                href={`/funkcionalnosti/${row.slug}`}
+                className="home4-feature-left__row"
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '44px 1fr 20px',
@@ -87,7 +86,7 @@ export default function Home4FeatureLeft() {
                     letterSpacing: '0.02em',
                   }}
                 >
-                  {row.num}
+                  {row.gridNum}
                 </span>
                 <div>
                   <div
@@ -99,7 +98,7 @@ export default function Home4FeatureLeft() {
                       lineHeight: '1.3',
                     }}
                   >
-                    {row.title}
+                    {row.navTitle}
                   </div>
                   <div
                     style={{
@@ -109,19 +108,27 @@ export default function Home4FeatureLeft() {
                       lineHeight: '1.5',
                     }}
                   >
-                    {row.desc}
+                    {row.shortDesc}
                   </div>
                 </div>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#060b13" strokeWidth="1.6" style={{ opacity: 0.35, flexShrink: 0 }}>
+                <svg
+                  className="home4-feature-left__row-arrow"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#060b13"
+                  strokeWidth="1.6"
+                >
                   <path d="M5 12h14M13 5l7 7-7 7" />
                 </svg>
-              </div>
+              </Link>
             ))}
           </div>
 
           {/* CTA */}
-          <a
-            href="/demo"
+          <Link
+            href="/funkcionalnosti"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -141,7 +148,7 @@ export default function Home4FeatureLeft() {
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
               <path d="M3 8h10m0 0l-4-4m4 4l-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          </a>
+          </Link>
           </Reveal>
         </div>
 

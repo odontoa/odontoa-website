@@ -1,4 +1,3 @@
-import { Instrument_Sans } from 'next/font/google';
 import Home4Hero from '@/components/home4/Home4Hero';
 // TrustLogos: placeholder logoi iz template-a; proof traka u heroju je zamena.
 // import Home4TrustLogos from '@/components/home4/Home4TrustLogos';
@@ -15,15 +14,8 @@ import Home4Pricing from '@/components/home4/Home4Pricing';
 import Home4Blog from '@/components/home4/Home4Blog';
 import Home4CTA from '@/components/home4/Home4CTA';
 import ComingSoonPage from '@/components/coming-soon/ComingSoonPage';
+import { displayFont } from './display-font';
 import './home4.css';
-
-/* Display font za naslove - scoped na pocetnu (root layout se ne dira zbog home3) */
-const displayFont = Instrument_Sans({
-  subsets: ['latin', 'latin-ext'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-display',
-  display: 'swap',
-});
 
 export default function HomePage() {
   if (process.env.SITE_MODE === 'coming_soon') {

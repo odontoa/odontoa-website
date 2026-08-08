@@ -1787,6 +1787,38 @@
   margin: 16px 0 0;
 }
 
+/* Tekstualni link ka stranici AI asistenta. Namerno nije puno dugme: sekcija nema
+   drugi CTA, a dugme bi odvuklo paznju sa chat panela koji je poenta sekcije. */
+.home4-assistant__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--stellar-accent);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.home4-assistant__more:hover {
+  opacity: 0.75;
+}
+
+.home4-assistant__more:focus-visible {
+  outline: 2px solid var(--stellar-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.home4-assistant__more svg {
+  transition: transform 0.2s;
+}
+
+.home4-assistant__more:hover svg {
+  transform: translateX(3px);
+}
+
 /* ── Asistent: chat panel (familija hero panela / fin kartice) ── */
 .home4-assistant__panel {
   background: var(--stellar-white);
@@ -2200,6 +2232,52 @@
 }
 
 /* ── Feature Left: syscard kartice (Karton pacijenta + Kalendar termina) ── */
+/* Redovi liste "Jedan sistem" su linkovi ka stranicama funkcionalnosti.
+   Sam raspored reda ostaje inline u komponenti; ovde su samo stanja koja
+   inline stil ne moze da izrazi (hover, focus). */
+.home4-feature-left__row {
+  color: inherit;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.home4-feature-left__row:hover {
+  background: color-mix(in srgb, var(--stellar-accent) 4%, transparent);
+}
+
+.home4-feature-left__row:focus-visible {
+  outline: 2px solid var(--stellar-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Strelica stoji na 0.35 u mirnom stanju, na hover se pojacava i pomeri. */
+.home4-feature-left__row-arrow {
+  opacity: 0.35;
+  flex-shrink: 0;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.home4-feature-left__row:hover .home4-feature-left__row-arrow,
+.home4-feature-left__row:focus-visible .home4-feature-left__row-arrow {
+  opacity: 1;
+  transform: translateX(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home4-feature-left__row,
+  .home4-feature-left__row-arrow,
+  .home4-assistant__more,
+  .home4-assistant__more svg {
+    transition: none;
+  }
+
+  .home4-feature-left__row:hover .home4-feature-left__row-arrow,
+  .home4-assistant__more:hover svg {
+    transform: none;
+  }
+}
+
 .home4-syscard {
   background: var(--stellar-white);
   border: 1px solid var(--stellar-border);

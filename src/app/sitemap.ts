@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { sanityClient } from '@/lib/sanity.client';
 import { allBlogPostsQuery, glossarySitemapQuery } from '@/lib/sanity.queries';
+import { FEATURE_PAGES } from '@/lib/content/funkcionalnosti';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://odontoa.com';
@@ -61,6 +62,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       priority: 0.8,
     },
+    {
+      url: `${baseUrl}/funkcionalnosti`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    // Mapirano iz FEATURE_PAGES, da se sitemap ne moze razici od sadrzaja
+    // kada se doda nova stranica funkcionalnosti.
+    ...FEATURE_PAGES.map((page) => ({
+      url: `${baseUrl}/funkcionalnosti/${page.slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    })),
     {
       url: `${baseUrl}/politika-privatnosti`,
       lastModified: new Date(),
