@@ -3031,7 +3031,7 @@
   max-width: 920px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 200px;
+  grid-template-columns: 1fr 240px;
   align-items: center;
   gap: 64px;
 }
@@ -3110,8 +3110,8 @@
 }
 
 .home4-quote__avatar--large {
-  width: 160px;
-  height: 160px;
+  width: 240px;
+  height: 240px;
   margin: 0 auto;
 }
 
@@ -3130,7 +3130,7 @@
 }
 
 .home4-quote__avatar--large .home4-quote__initials {
-  font-size: 44px;
+  font-size: 60px;
 }
 
 .home4-quote__avatar--inline .home4-quote__initials {
@@ -3142,7 +3142,7 @@
   justify-content: center;
 }
 
-/* Fotografija (kada je dobijemo): isti prostor kao krug sa inicijalima */
+/* Fotografija: isti prostor i isti krug kao fallback sa inicijalima */
 .home4-quote__photo {
   border-radius: 999px;
   object-fit: cover;
@@ -3152,9 +3152,9 @@
 }
 
 .home4-quote__photo--large {
-  width: 200px;
-  height: 260px;
-  border-radius: 20px;
+  width: 240px;
+  height: 240px;
+  border-radius: 999px;
 }
 
 /* Mobilni: jedna kolona, levo poravnato, avatar u redu sa imenom ispod citata */

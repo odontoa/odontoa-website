@@ -10,15 +10,13 @@ interface Quote {
   initials: string;
 }
 
-/* PLACEHOLDER - zameniti pravim citatom Dr Željka pre launcha */
 const QUOTES: Quote[] = [
   {
-    text: 'Prvi put tačno znam koliko me tehnika košta i koliko mi pacijenti duguju, sve na jednom mestu. Prelazak sa papira su odradili oni, bazu su uneli za nas.',
-    name: 'Dr Željko [prezime]',
-    practice: '[naziv ordinacije], [grad]',
-    photo: null,
-    /* Jedno slovo dok ne znamo prezime */
-    initials: 'Ž',
+    text: 'Najviše mi znači to što su termini sada konzistentni. Pacijenti dobiju podsetnik, dođu na vreme, a ja ne provodim dan krpeći raspored. Mala stvar, ali meni je promenila kako izgleda radni dan.',
+    name: 'Dr Željko Sladoje',
+    practice: 'Specijalistička stomatološka ordinacija Orto-osmeh',
+    photo: '/images/testimonials/dr-zeljko-sladoje.png',
+    initials: 'ŽS',
   },
 ];
 
@@ -75,8 +73,8 @@ export default function Home4Quote() {
             <Image
               src={quote.photo}
               alt={quote.name}
-              width={200}
-              height={260}
+              width={240}
+              height={240}
               className="home4-quote__photo home4-quote__photo--large"
             />
           ) : (
