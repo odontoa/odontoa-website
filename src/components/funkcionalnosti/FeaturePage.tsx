@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import Reveal from '@/components/home4/Reveal';
-import FeatureBlocks from './blocks';
+import FeatureBlocks, { toneAfterBlocks } from './blocks';
 import {
   getRelatedFeaturePages,
   type FeaturePageData,
@@ -111,6 +111,9 @@ function FeatureVisual({ visual }: { visual?: FeaturePageData['visual'] }) {
 
 export default function FeaturePage({ page }: { page: FeaturePageData }) {
   const related = getRelatedFeaturePages(page.slug);
+  /* Podloga se cita iz tipa poslednjeg bloka, ne iz njihovog broja, da se dve
+     iste podloge ne dodirnu bez obzira na to koje blokove stranica ima. */
+  const relatedTone = toneAfterBlocks(page.body);
 
   return (
     <>
@@ -146,10 +149,16 @@ export default function FeaturePage({ page }: { page: FeaturePageData }) {
 
       {/* ── Srodne funkcionalnosti ── */}
       <section
-        className={`home4-fp-section${page.body.length % 2 === 1 ? ' home4-fp-section--alt' : ''}`}
+        className={`home4-fp-section home4-fp-section--related${
+          relatedTone === 'alt' ? ' home4-fp-section--alt' : ''
+        }`}
       >
         <div className="home4-fp-section__inner">
           <Reveal>
+            <p className="home4-fp-section__eyebrow">
+              <span className="home4-fp-section__dash" aria-hidden="true" />
+              Dalje
+            </p>
             <h2 className="home4-fp-section__title">Ostale funkcionalnosti</h2>
           </Reveal>
           <div className="home4-fp-related__grid">
@@ -181,8 +190,9 @@ export default function FeaturePage({ page }: { page: FeaturePageData }) {
               <Link href="/register" className="home4-hero__btn home4-hero__btn--primary">
                 Započni besplatno
               </Link>
-              <Link href="/kontakt" className="home4-fp-cta__ghost">
-                Zakaži razgovor
+              {/* Isti par akcija kao hero stranice: primarno /register, sekundarno /demo. */}
+              <Link href="/demo" className="home4-fp-cta__ghost">
+                Zakaži demo
               </Link>
             </div>
           </Reveal>

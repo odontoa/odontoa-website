@@ -177,22 +177,58 @@
 
 /* ── Sekcije tela ──────────────────────────────────────────────────────── */
 
+/* Gornja hairline stoji na baznoj klasi, ne samo na --alt varijanti.
+   Podloga sekcije je vezana za tip bloka (vidi blocks.tsx), pa se na nekim
+   kombinacijama blokova dve bele sekcije nadju jedna do druge; linija je tada
+   jedino razdvajanje. Zato --alt vise ne nosi svoje ivice: dve ivice na dva
+   susedna elementa dale bi liniju od 2px. */
 .home4-fp-section {
   padding: var(--section-pad) 24px;
   background: var(--stellar-white);
   color: var(--stellar-body);
+  border-top: 1px solid var(--stellar-border);
 }
 
 /* Naizmenicna siva podloga, isti ritam kao home4 sekcije */
 .home4-fp-section--alt {
   background: var(--stellar-bg-light);
-  border-top: 1px solid var(--stellar-border);
-  border-bottom: 1px solid var(--stellar-border);
+}
+
+/* Sekcija odmah ispod heroja sa vizualom: granicu nosi sam okvir mockupa, koji
+   'uranja' u nju preko translateY(1px). Linija bi presekla dno mockupa.
+   Index katalog (--plain hero, bez vizuala) je namerno izuzet, tamo linija
+   ostaje. */
+.home4-fp-hero:not(.home4-fp-hero--plain) + .home4-fp-section {
+  border-top: none;
 }
 
 .home4-fp-section__inner {
   max-width: 1120px;
   margin: 0 auto;
+}
+
+/* Eyebrow tela stranice, isti recept kao .home4-fin__eyebrow na pocetnoj.
+   Nosi accent u sekciju, koja je ispod heroja bila potpuno siva, i oslobadja
+   H2 da bude tvrdnja umesto etikete. */
+.home4-fp-section__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--stellar-accent);
+  margin: 0 0 14px;
+}
+
+/* Crtica iz .home4-quote__eyebrow. Ide samo na sekcije poravnate levo, pa
+   levi i centrirani blokovi imaju vidljivo razlicit tretman zaglavlja. */
+.home4-fp-section__dash {
+  width: 24px;
+  height: 1px;
+  flex-shrink: 0;
+  background: var(--stellar-accent);
 }
 
 .home4-fp-section__title {
@@ -203,6 +239,23 @@
   line-height: 1.16;
   color: var(--stellar-heading);
   margin: 0 0 36px;
+}
+
+/* ── Centrirano zaglavlje ──────────────────────────────────────────────────
+   Isti obrazac kao Home4BigFeatures i Home4Pricing na pocetnoj: centrirano
+   zaglavlje nad sadrzajem. Razbija niz sekcija poravnatih levo, i skida
+   "levi naslov nad 3-kolonskim gridom", najgenericniju kombinaciju koja
+   postoji. Modifikator, ne izmena bazne klase, jer bazne klase deli index. */
+
+.home4-fp-section--center .home4-fp-section__eyebrow {
+  justify-content: center;
+}
+
+.home4-fp-section--center .home4-fp-section__title {
+  text-align: center;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ── Blok: benefits ────────────────────────────────────────────────────── */
@@ -221,13 +274,26 @@
   color: var(--stellar-body);
   /* Kartice u redu su iste visine i kad tekst nije iste duzine */
   height: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 
+/* Isti recept kao .home4-fp-related__card i .home4-fp-index__card. Kartica je
+   bila jedina povrsina na stranici koja na hover nije reagovala nicim. */
+.home4-fp-benefit:hover {
+  border-color: color-mix(in srgb, var(--stellar-accent) 40%, var(--stellar-border));
+  box-shadow: 0 10px 28px rgba(6, 11, 19, 0.07);
+  transform: translateY(-2px);
+}
+
+/* Zaobljeni kvadrat, ne krug: home4 konvencija za ikonicu u pločici je
+   36-38px / radius 10 (.home4-fin__card-icon, .home4-fin__pillar-icon,
+   .home4-hero-proof). Krug od 34px na 12% tinte je bio najbledji ikon-tretman
+   u sistemu, i jedini krug te familije. */
 .home4-fp-benefit__icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--stellar-accent) 12%, var(--stellar-white));
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--stellar-accent) 10%, var(--stellar-white));
   color: var(--stellar-accent);
   display: flex;
   align-items: center;
@@ -236,9 +302,9 @@
 }
 
 .home4-fp-benefit__title {
-  font-size: 16.5px;
+  font-size: 17.5px;
   font-weight: 600;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.018em;
   line-height: 1.3;
   color: var(--stellar-heading);
   margin: 0 0 8px;
@@ -263,34 +329,101 @@
   counter-reset: home4-fp-step;
 }
 
-/* Isti obrazac reda kao "Jedan sistem" lista: broj, tekst, tanka linija */
+/* Koraci su tok, ne tri odvojena reda: broj u pločici + vertikalna kicma koja
+   ih povezuje.
+
+   Kicma se crta PO REDU (::after), ne preko cele liste, pa ne trazi apsolutno
+   pozicioniranje prema ukupnoj visini i red sme da bude bilo koje visine.
+
+   Hairline linije redova su uklonjene namerno: kicma preuzima ulogu konektora,
+   a kicma + pune horizontalne linije bile bi buka. Svesno odstupanje od
+   home4 hairline-red obrasca (.home4-feature-left__row) na ovom jednom mestu. */
 .home4-fp-step {
+  position: relative;
   display: grid;
-  grid-template-columns: 52px 1fr;
-  align-items: baseline;
+  grid-template-columns: 32px 1fr;
+  align-items: start;
   gap: 0 18px;
-  padding: 22px 0;
-  border-bottom: 1px solid var(--stellar-border);
+  padding-bottom: 30px;
   counter-increment: home4-fp-step;
 }
 
-.home4-fp-step:first-child {
-  border-top: 1px solid var(--stellar-border);
+.home4-fp-step:last-child {
+  padding-bottom: 0;
 }
 
+/* Broj u pločici. Prefiks '/' iz .home4-fp-index__num ovde ne treba: on postoji
+   da bi goli mono broj u hairline listi citao kao indeks, a okvir tu ulogu nosi
+   sam. decimal-leading-zero daje 01, 02, 03.
+
+   Ovo je NEAKTIVNO stanje: pločica je na mestu od prvog frejma, samo u sivom.
+   Marker se ne pojavljuje iz nicega, jer bi kolona bila prazna pola sekunde i
+   izgledala polomljeno ako korisnik doskroluje u sredinu sekcije.
+   Aktivno stanje je .home4-fp-step.is-in::before, klasu dodaje StepsFlow.tsx. */
 .home4-fp-step::before {
-  content: '/0' counter(home4-fp-step);
+  content: counter(home4-fp-step, decimal-leading-zero);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--stellar-white);
+  border: 1px solid var(--stellar-border);
   font-family: ui-monospace, SFMono-Regular, monospace;
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 600;
   letter-spacing: 0.02em;
+  color: var(--stellar-muted);
+  /* scale ne dira layout, pa kolona ostaje 32px i tekst ne poskakuje */
+  transform: scale(0.9);
+  transition:
+    background 0.26s ease,
+    border-color 0.26s ease,
+    color 0.26s ease,
+    transform 0.26s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Aktivan korak: accent fill + blagi pop (overshoot u cubic-bezier). */
+.home4-fp-step.is-in::before {
+  background: color-mix(in srgb, var(--stellar-accent) 10%, var(--stellar-white));
+  border-color: color-mix(in srgb, var(--stellar-accent) 45%, var(--stellar-border));
   color: var(--stellar-accent);
+  transform: scale(1);
+}
+
+/* Kicma: od dna pločice do dna reda, u osi pločice (32px / 2 = 16px, pa 15.5px
+   za liniju od 1px). Bez zazora: sledeci red pocinje svojom pločicom tacno na
+   granici, pa linija dodiruje oba markera i tok je neprekidan. Poslednji korak
+   je nema, tu se tok zavrsava.
+
+   Iscrtava se odozgo nadole (scaleY + transform-origin: top). transition-delay
+   drzi pomak UNUTAR koraka: kicma krece 90ms posle svog markera. Kadenciju
+   IZMEDJU koraka drzi StepsFlow.tsx, pa ovde ne treba niz zakasnjenja. */
+.home4-fp-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 32px;
+  bottom: 0;
+  left: 15.5px;
+  width: 1px;
+  background: color-mix(in srgb, var(--stellar-accent) 30%, var(--stellar-border));
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.22s ease 0.09s;
+}
+
+.home4-fp-step.is-in:not(:last-child)::after {
+  transform: scaleY(1);
 }
 
 .home4-fp-step__text {
   font-size: 15.5px;
   line-height: 1.6;
   color: var(--stellar-body);
+  /* Opticko poravnanje prve linije teksta sa centrom pločice od 32px: tekst je
+     15.5px/1.6, pa je centar prve linije na 12.4px, a centar pločice na 16px. */
+  padding-top: 4px;
 }
 
 /* ── Blok: prose ───────────────────────────────────────────────────────── */
@@ -308,6 +441,24 @@
 
 .home4-fp-prose p:last-child {
   margin-bottom: 0;
+}
+
+/* Centrirana kolona umesto teksta prislonjenog uz levu ivicu kontejnera od
+   1120px. Sam tekst ostaje poravnat levo: dva pasusa centriranog teksta su
+   raskidana sa obe strane i teze se citaju. */
+.home4-fp-section--prose .home4-fp-prose {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Prva recenica nosi blok: veca i tamnija, pa sekcija ima ulaz umesto dva
+   ravnopravna pasusa. Bez novog elementa, samo :first-child. */
+.home4-fp-section--prose .home4-fp-prose p:first-child {
+  font-size: 18.5px;
+  line-height: 1.6;
+  letter-spacing: -0.011em;
+  color: var(--stellar-heading);
+  margin-bottom: 20px;
 }
 
 /* ── Blok: faq ─────────────────────────────────────────────────────────── */
@@ -632,10 +783,16 @@
     padding: 24px 20px;
   }
 
+  /* Pločica ostaje 28px, samo se razmak do teksta skuplja. Kicma se drzi ose
+     pločice, pa left ostaje 13.5px. */
   .home4-fp-step {
-    grid-template-columns: 40px 1fr;
-    gap: 0 12px;
-    padding: 18px 0;
+    gap: 0 14px;
+    padding-bottom: 26px;
+  }
+
+  .home4-fp-prose p:first-child,
+  .home4-fp-section--prose .home4-fp-prose p:first-child {
+    font-size: 17.5px;
   }
 
   .home4-fp-faq__q {
@@ -648,12 +805,31 @@
   .home4-fp-related__card svg,
   .home4-fp-index__card,
   .home4-fp-index__more svg,
-  .home4-fp-faq__icon {
+  .home4-fp-benefit,
+  .home4-fp-faq__icon,
+  .home4-fp-step::before,
+  .home4-fp-step::after {
     transition: none;
   }
 
   .home4-fp-related__card:hover,
-  .home4-fp-index__card:hover {
+  .home4-fp-index__card:hover,
+  .home4-fp-benefit:hover {
+    transform: none;
+  }
+
+  /* Koraci su odmah u finalnom stanju, bez pokreta i bez cekanja na `is-in`.
+     StepsFlow.tsx isto preskace kaskadu preko matchMedia, ali ovaj sloj mora da
+     postoji za slucaj da klasa iz bilo kog razloga ne stigne: bez njega bi
+     scale(0.9) i scaleY(0) ostali zakljucani i koraci bi izgledali polomljeno. */
+  .home4-fp-step::before {
+    background: color-mix(in srgb, var(--stellar-accent) 10%, var(--stellar-white));
+    border-color: color-mix(in srgb, var(--stellar-accent) 45%, var(--stellar-border));
+    color: var(--stellar-accent);
+    transform: none;
+  }
+
+  .home4-fp-step:not(:last-child)::after {
     transform: none;
   }
 }

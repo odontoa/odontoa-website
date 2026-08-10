@@ -13,7 +13,16 @@
  */
 
 export type FeatureBlock =
-  | { type: 'benefits'; title: string; items: { title: string; desc: string }[] }
+  /**
+   * benefits.items[].icon je kljuc iz BENEFIT_ICONS mape u components/funkcionalnosti/blocks.tsx.
+   * Ovaj fajl je .ts i ne moze da drzi komponente, pa nosi samo naziv ikonice.
+   * Izostavljen ili nepoznat kljuc pada na kvacicu.
+   */
+  | {
+      type: 'benefits';
+      title: string;
+      items: { title: string; desc: string; icon?: string }[];
+    }
   | { type: 'steps'; title: string; items: string[] }
   | { type: 'prose'; title: string; paragraphs: string[] }
   | { type: 'faq'; title: string; items: { q: string; a: string }[] };
@@ -87,14 +96,17 @@ export const FEATURE_PAGES: FeaturePageData[] = [
         items: [
           {
             title: 'Manje praznih termina',
+            icon: 'bell-ring',
             desc: 'Automatski podsetnik dan ranije smanjuje broj pacijenata koji se ne pojave, bez dodatnog posla za sestru.',
           },
           {
             title: 'Pregled cele ordinacije',
+            icon: 'calendar-days',
             desc: 'Svi doktori i sve stolice na jednom ekranu. Odmah vidiš gde ima mesta, a gde je gusto.',
           },
           {
             title: 'Izmene bez prekucavanja',
+            icon: 'mouse-pointer-click',
             desc: 'Termin pomeriš prevlačenjem, a pacijent automatski dobije obaveštenje o novom vremenu.',
           },
         ],
@@ -153,8 +165,8 @@ export const FEATURE_PAGES: FeaturePageData[] = [
     visual: {
       src: '/images/funkcionalnosti/digitalni-karton.png',
       alt: 'Karton pacijenta u Odontoi, sa planiranim intervencijama i istorijom tretmana',
-      width: 1491,
-      height: 1055,
+      width: 1448,
+      height: 1086,
     },
     body: [
       {
@@ -163,14 +175,17 @@ export const FEATURE_PAGES: FeaturePageData[] = [
         items: [
           {
             title: 'Istorija koja se ne gubi',
+            icon: 'history',
             desc: 'Svaka intervencija ostaje zapisana uz datum, doktora i zub na kom je rađena.',
           },
           {
             title: 'Odontogram koji se čita',
+            icon: 'tooth',
             desc: 'Stanje zuba vidiš na prvi pogled, bez listanja papirnog kartona unazad.',
           },
           {
             title: 'Dijagnoze po standardu',
+            icon: 'clipboard-check',
             desc: 'MKB-10 šifre su ugrađene, pa izveštaji i dokumentacija izlaze u očekivanom obliku.',
           },
         ],
@@ -241,14 +256,17 @@ export const FEATURE_PAGES: FeaturePageData[] = [
         items: [
           {
             title: 'Sve uz pacijenta',
+            icon: 'images',
             desc: 'Snimak se otvara iz kartona, na istom mestu gde je i terapija zbog koje je snimljen.',
           },
           {
             title: 'Poređenje kroz vreme',
+            icon: 'columns-2',
             desc: 'Stariji i noviji snimak jedan pored drugog, da se napredak terapije vidi odmah.',
           },
           {
             title: 'Pacijent koji razume',
+            icon: 'zoom-in',
             desc: 'Snimak na ekranu okrenut ka pacijentu objasni plan terapije bolje od svakog opisa.',
           },
         ],
@@ -311,14 +329,17 @@ export const FEATURE_PAGES: FeaturePageData[] = [
         items: [
           {
             title: 'Ništa se ne zaboravlja',
+            icon: 'list-checks',
             desc: 'Nalog ima rok i status, pa odmah vidiš šta kasni i šta treba da stigne do sledećeg termina.',
           },
           {
             title: 'Trošak po radu',
+            icon: 'receipt',
             desc: 'Cena laboratorije stoji uz nalog, pa je trošak tehnike po intervenciji jasan, ne procenjen.',
           },
           {
             title: 'Jasna komunikacija',
+            icon: 'messages-square',
             desc: 'Specifikacija rada, boja i rok stoje na jednom mestu, isto za tebe i za laboratoriju.',
           },
         ],
@@ -392,14 +413,17 @@ export const FEATURE_PAGES: FeaturePageData[] = [
         items: [
           {
             title: 'Manje papira',
+            icon: 'file-stack',
             desc: 'Saglasnosti i obrasci stoje digitalno, na jednom mestu, umesto po fasciklama i fiokama.',
           },
           {
             title: 'Potpis na ekranu',
+            icon: 'file-signature',
             desc: 'Pacijent potpisuje na tabletu, a dokument ostaje uz njegov karton.',
           },
           {
             title: 'Arhiva koja se pretražuje',
+            icon: 'file-search',
             desc: 'Svaki potpisan dokument nađeš kasnije za nekoliko sekundi, po imenu i datumu.',
           },
         ],
@@ -452,14 +476,17 @@ export const FEATURE_PAGES: FeaturePageData[] = [
         items: [
           {
             title: 'Dugovanja na jednom ekranu',
+            icon: 'wallet',
             desc: 'Ko duguje, koliko i od kada, bez sabiranja po sveskama.',
           },
           {
             title: 'Pregled poslovanja',
+            icon: 'trending-up',
             desc: 'Naplate i troškovi na jednom mestu, pa znaš gde stojiš pre nego što mesec prođe.',
           },
           {
             title: 'Podsetnici koji rade sami',
+            icon: 'bell-ring',
             desc: 'Podsetnik za termin i za neplaćen račun odlazi automatski, u vreme koje ti odrediš.',
           },
         ],
@@ -511,14 +538,17 @@ export const FEATURE_PAGES: FeaturePageData[] = [
         items: [
           {
             title: 'Odgovor umesto pretrage',
+            icon: 'message-square',
             desc: 'Pitanje postavljeno običnim rečima daje odgovor iz tvojih podataka, odmah.',
           },
           {
             title: 'Zna kontekst ordinacije',
+            icon: 'brain-circuit',
             desc: 'Asistent radi nad tvojom bazom pacijenata, termina i naplate, ne nad opštim znanjem.',
           },
           {
             title: 'Bez učenja novog alata',
+            icon: 'sparkles',
             desc: 'Nema novih ekrana ni menija koje treba zapamtiti. Pitaš isto kao što bi pitao kolegu.',
           },
         ],
@@ -574,7 +604,13 @@ export function getFeaturePage(slug: string): FeaturePageData | undefined {
   return FEATURE_PAGES.find((p) => p.slug === slug);
 }
 
-/** Ostale funkcionalnosti, za "srodne funkcionalnosti" blok na dnu stranice. */
+/**
+ * Ostale funkcionalnosti, za "srodne funkcionalnosti" blok na dnu stranice.
+ *
+ * Ograniceno na 3, koliko grid ima kolona: svih 6 je bilo dva reda link-kartica
+ * neposredno pre CTA, sto je tezina bez vrednosti na tom mestu. Ceo katalog je
+ * jedan klik dalje, na /funkcionalnosti.
+ */
 export function getRelatedFeaturePages(slug: string): FeaturePageData[] {
-  return FEATURE_PAGES.filter((p) => p.slug !== slug);
+  return FEATURE_PAGES.filter((p) => p.slug !== slug).slice(0, 3);
 }

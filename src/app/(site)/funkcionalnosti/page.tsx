@@ -122,8 +122,9 @@ export default function FunkcionalnostiIndexPage() {
               <Link href="/register" className="home4-hero__btn home4-hero__btn--primary">
                 Započni besplatno
               </Link>
-              <Link href="/kontakt" className="home4-fp-cta__ghost">
-                Zakaži razgovor
+              {/* Isti par akcija kao hero stranice: primarno /register, sekundarno /demo. */}
+              <Link href="/demo" className="home4-fp-cta__ghost">
+                Zakaži demo
               </Link>
             </div>
           </Reveal>
