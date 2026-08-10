@@ -281,6 +281,14 @@ export const FEATURE_PAGES: FeaturePageData[] = [
         ],
       },
       {
+        type: 'prose',
+        title: 'Snimak vredi onoliko koliko brzo dođeš do njega',
+        paragraphs: [
+          'Rendgen snimak nije problem da se napravi. Problem je da se nađe kada zatreba, mesecima kasnije, kada pacijent sedi u stolici a ti tražiš po folderima i uređajima na kojima je sniman.',
+          'Kada snimak stoji uz karton, vezan za pacijenta i terapiju zbog koje je nastao, prošlost je uvek pri ruci. Vidiš kako je stanje izgledalo pre, pratiš kako se menja, i donosiš odluku o terapiji na osnovu cele slike, ne samo onoga što je danas na ekranu.',
+        ],
+      },
+      {
         type: 'faq',
         title: 'Česta pitanja',
         items: [
