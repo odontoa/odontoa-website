@@ -1,135 +1,154 @@
-import type { RecnikTerm } from "../content/recnik";
+import { absoluteUrl } from '@/lib/config/site-url';
+import {
+  getCategoryPath,
+  getExactMesh,
+  getTermPath,
+  getVerifiedAlternateNames,
+  type RecnikCategory,
+  type RecnikReviewer,
+  type RecnikSource,
+  type RecnikTerm,
+} from '@/lib/content/recnik';
+import { buildPageGraph, type BreadcrumbItem, type JsonLdGraph } from './page-graph';
+import { organizationRef } from './site-entities';
 
-/**
- * Builds JSON-LD structured data for glossary terms following Odontoa SEO/LLM rules.
- * Returns array: [WebPage, BreadcrumbList, Article, FAQPage?]
- * 
- * Rules:
- * - Combined JSON-LD in single array
- * - @context only on FIRST object (not repeated)
- * - datePublished and dateModified in ISO 8601
- * - Article.image (fallback to default OG if not provided)
- * - author.url is REQUIRED (fallback to /o-nama)
- * - inLanguage: "sr"
- * - FAQPage only if FAQs exist and are 1:1 in visible content
- *
- * Izvor je lokalni recnik (src/lib/content/recnik.ts), ne Sanity.
- */
-export function buildGlossaryJsonLd(term: RecnikTerm, baseUrl: string) {
-  const url = `${baseUrl}/recnik/${term.slug}`;
-  const title = term.seoTitle || term.term;
-  const description = term.metaDescription || term.definition || "";
-  
-  // ISO 8601 dates
-  const datePublished = new Date(term.publishedAt).toISOString();
-  const dateModified = new Date(term.updatedAt || term.publishedAt).toISOString();
-  
-  // Image fallback to default OG if not provided
-  const imageUrl = term.coverImage ? `${baseUrl}${term.coverImage.src}` : `${baseUrl}/og/odontoa-default.png`;
-  
-  // Author URL is REQUIRED (fallback to /o-nama)
-  const authorUrl = `${baseUrl}/o-nama`;
-  const authorName = term.author || "Odontoa Tim";
+/* JSON-LD recnika, u istom @graph obrascu kao ostatak sajta (jedan @context).
 
-  // FAQ entiteti iz istog niza koji se prikazuje na stranici (1:1)
-  const faqEntities = (term.faqs ?? []).map((faq) => ({
-    "@type": "Question",
-    name: faq.question,
-    acceptedAnswer: {
-      "@type": "Answer",
-      text: faq.answer,
-    },
-  }));
+   Pravila:
+   - DefinedTerm.name je medicalCanonicalTerm, description je shortDefinition.
+   - alternateName samo za medicinski verifikovane sinonime/skracenice (nikad SEO/lay aliasi).
+   - termCode i sameAs (MeSH) samo kad je meshMatch "exact" i pojam verifikovan.
+   - citation, reviewedBy i lastReviewed ogledaju samo ono sto je vidljivo na stranici.
+   - Autor i izdavac je Organization (dok ne postoje javni profili autora). */
 
-  // Combined schema array: [WebPage, BreadcrumbList, Article, FAQPage?]
-  // @context only on FIRST object
-  return [
-    {
-      "@context": "https://schema.org", // ONLY HERE
-      "@type": "WebPage",
-      "@id": url,
-      url,
-      name: title,
-      description,
-      inLanguage: "sr",
-      datePublished,
-      dateModified,
-      author: {
-        "@type": "Person",
-        name: authorName,
-        url: authorUrl, // REQUIRED
-      },
-      publisher: {
-        "@type": "Organization",
-        name: "Odontoa",
-        url: baseUrl,
-        logo: {
-          "@type": "ImageObject",
-          url: `${baseUrl}/images/Odontoa-New-logo-pack-2026/horiyotal_color.png`,
-        },
-      },
+export const DEFINED_TERM_SET_ID = absoluteUrl('/recnik#defined-term-set');
+
+const GLOSSARY_NAME = 'Stomatološki rečnik';
+
+function definedTermSetNode() {
+  return {
+    '@type': 'DefinedTermSet',
+    '@id': DEFINED_TERM_SET_ID,
+    name: GLOSSARY_NAME,
+    url: absoluteUrl('/recnik'),
+    inLanguage: 'sr',
+    publisher: organizationRef,
+  };
+}
+
+function citationNode(source: RecnikSource) {
+  return {
+    '@type': 'CreativeWork',
+    name: source.title,
+    publisher: { '@type': 'Organization', name: source.publisher },
+    ...(source.url ? { url: source.url } : {}),
+  };
+}
+
+function reviewerNode(reviewer: RecnikReviewer) {
+  return {
+    '@type': 'Person',
+    name: reviewer.name,
+    jobTitle: reviewer.title,
+    ...(reviewer.profileUrl ? { url: reviewer.profileUrl } : {}),
+    ...(reviewer.sameAs?.length ? { sameAs: reviewer.sameAs } : {}),
+  };
+}
+
+type TermGraphInput = {
+  term: RecnikTerm;
+  category?: RecnikCategory;
+  sources: RecnikSource[];
+  reviewer?: RecnikReviewer;
+  breadcrumbs: BreadcrumbItem[];
+  /** Ista FAQ lista koja je vidljiva na stranici. */
+  faqs: { question: string; answer: string }[];
+  imageUrl: string;
+};
+
+export function buildGlossaryTermJsonLd({
+  term,
+  category,
+  sources,
+  reviewer,
+  breadcrumbs,
+  faqs,
+  imageUrl,
+}: TermGraphInput): JsonLdGraph {
+  const path = getTermPath(term);
+  const url = absoluteUrl(path);
+  const termId = `${url}#term`;
+  const mesh = getExactMesh(term);
+  const alternateNames = getVerifiedAlternateNames(term);
+
+  const definedTerm = {
+    '@type': 'DefinedTerm',
+    '@id': termId,
+    name: term.medicalCanonicalTerm,
+    description: term.shortDefinition,
+    url,
+    inLanguage: 'sr',
+    inDefinedTermSet: { '@id': DEFINED_TERM_SET_ID },
+    ...(alternateNames.length ? { alternateName: alternateNames } : {}),
+    ...(mesh ? { termCode: mesh.id } : {}),
+    ...(mesh?.url ? { sameAs: mesh.url } : {}),
+  };
+
+  const reviewedAt = term.clinicalReview.reviewedAt;
+
+  return buildPageGraph({
+    path,
+    name: term.publicTitle,
+    description: term.seo.metaDescription || term.shortDefinition,
+    pageType: 'MedicalWebPage',
+    breadcrumbs,
+    faqs,
+    datePublished: term.publishedAt,
+    dateModified: term.updatedAt || term.publishedAt,
+    pageFields: {
+      mainEntity: { '@id': termId },
+      about: { '@id': termId },
+      author: organizationRef,
+      primaryImageOfPage: { '@type': 'ImageObject', url: imageUrl },
+      ...(category ? { keywords: category.title } : {}),
+      ...(sources.length ? { citation: sources.map(citationNode) } : {}),
+      ...(reviewer ? { reviewedBy: reviewerNode(reviewer) } : {}),
+      ...(reviewer && reviewedAt ? { lastReviewed: reviewedAt } : {}),
     },
-    {
-      // No @context here
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Početna",
-          item: baseUrl,
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Rečnik",
-          item: `${baseUrl}/recnik`,
-        },
-        {
-          "@type": "ListItem",
-          position: 3,
-          name: term.term,
-          item: url,
-        },
-      ],
-    },
-    {
-      // No @context here
-      "@type": "Article",
-      mainEntityOfPage: {
-        "@type": "WebPage",
-        "@id": url,
-      },
-      headline: title,
-      description,
-      image: imageUrl, // Fallback to default OG if not provided
-      datePublished, // ISO 8601
-      dateModified, // ISO 8601
-      author: {
-        "@type": "Person",
-        name: authorName,
-        url: authorUrl, // REQUIRED
-      },
-      publisher: {
-        "@type": "Organization",
-        name: "Odontoa",
-        url: baseUrl,
-        logo: {
-          "@type": "ImageObject",
-          url: `${baseUrl}/images/Odontoa-New-logo-pack-2026/horiyotal_color.png`,
-        },
-      },
-      inLanguage: "sr",
-    },
-    // FAQPage only if FAQs exist
-    ...(faqEntities.length > 0
-      ? [
-          {
-            // No @context here
-            "@type": "FAQPage",
-            mainEntity: faqEntities,
-          },
-        ]
-      : []),
-  ];
+    extraNodes: [definedTerm, definedTermSetNode()],
+  });
+}
+
+/** /recnik: CollectionPage + DefinedTermSet (bez nabrajanja svih pojmova). */
+export function buildGlossaryIndexJsonLd(description: string): JsonLdGraph {
+  return buildPageGraph({
+    path: '/recnik',
+    name: GLOSSARY_NAME,
+    description,
+    pageType: 'CollectionPage',
+    breadcrumbs: [
+      { name: 'Početna', path: '/' },
+      { name: 'Rečnik', path: '/recnik' },
+    ],
+    pageFields: { mainEntity: { '@id': DEFINED_TERM_SET_ID } },
+    extraNodes: [definedTermSetNode()],
+  });
+}
+
+/** /recnik/kategorija/[slug]: CollectionPage u okviru istog DefinedTermSet-a. */
+export function buildGlossaryCategoryJsonLd(category: RecnikCategory, description: string): JsonLdGraph {
+  const path = getCategoryPath(category);
+  return buildPageGraph({
+    path,
+    name: category.title,
+    description,
+    pageType: 'CollectionPage',
+    breadcrumbs: [
+      { name: 'Početna', path: '/' },
+      { name: 'Rečnik', path: '/recnik' },
+      { name: category.title, path },
+    ],
+    pageFields: { about: { '@id': DEFINED_TERM_SET_ID } },
+    extraNodes: [definedTermSetNode()],
+  });
 }

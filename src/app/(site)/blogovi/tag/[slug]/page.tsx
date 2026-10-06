@@ -8,6 +8,7 @@ import {
   type SanityBlogPost,
 } from "@/lib/sanity.queries";
 import { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo/metadata";
 import { urlFor } from "@/lib/sanity.image";
 import { RecentArticlesGrid } from "@/components/sections/blog/RecentArticlesGrid";
 import { CategoryPills } from "@/components/sections/blog/CategoryPills";
@@ -52,27 +53,11 @@ export async function generateMetadata({
       };
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://odontoa.com";
-    const canonicalUrl = `${baseUrl}/blogovi/tag/${tag.slug}`;
-
-    return {
+    return pageMetadata({
       title: `${tag.title} | Odontoa blog`,
       description: `Svi članci na temu: ${tag.title}`,
-      alternates: {
-        canonical: canonicalUrl,
-      },
-      openGraph: {
-        title: `${tag.title} | Odontoa blog`,
-        description: `Svi članci na temu: ${tag.title}`,
-        url: canonicalUrl,
-        type: "website",
-      },
-      twitter: {
-        card: "summary",
-        title: `${tag.title} | Odontoa blog`,
-        description: `Svi članci na temu: ${tag.title}`,
-      },
-    };
+      path: `/blogovi/tag/${tag.slug}`,
+    });
   } catch (error) {
     console.error("Error generating metadata for tag page:", error);
     return {

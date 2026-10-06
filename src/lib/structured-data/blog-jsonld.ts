@@ -1,4 +1,5 @@
 import type { SanityBlogPost } from "../sanity.queries";
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/metadata';
 
 /**
  * Builds JSON-LD structured data for Sanity blog posts following Odontoa standard.
@@ -34,7 +35,7 @@ export function buildBlogJsonLd(post: SanityBlogPost & { coverImageUrl?: string 
   const dateModified = new Date(post.updatedAt || post.publishedAt).toISOString();
 
   // Use provided cover image URL or fallback to default
-  const imageUrl = post.coverImageUrl || `${baseUrl}/og/odontoa-default.png`;
+  const imageUrl = post.coverImageUrl || `${baseUrl}${DEFAULT_OG_IMAGE.url}`;
 
   // Build FAQ entities from Sanity FAQ data
   const faqEntities =

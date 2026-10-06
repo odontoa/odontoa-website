@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, type ReactNode } from 'react';
 import { Search, BookOpen, Hash, ChevronDown, ChevronUp } from 'lucide-react';
 import Link from 'next/link';
-import type { RecnikTerm } from '@/lib/content/recnik';
+import type { RecnikTermSummary } from '@/lib/content/recnik/types';
 import { displayFont } from '@/app/(site)/display-font';
 /* site.css nosi --stellar-* tokene na .site-page wrapperu, feature-page.css
    hero/sekcije/CTA. Rečnik koristi isti sistem kao stranice funkcionalnosti. */
@@ -11,137 +11,97 @@ import '@/app/(site)/site.css';
 import '@/app/(site)/funkcionalnosti/feature-page.css';
 import './recnik.css';
 
+type CategoryOption = { id: string; title: string; path: string; termCount: number };
+
 interface GlossaryClientProps {
-  initialTerms: RecnikTerm[];
+  /** Lagani sazeci javnih pojmova (bez clanka, FAQ-a i izvora). */
+  terms: RecnikTermSummary[];
+  /** Kategorije sa bar jednim javnim pojmom, iz RECNIK_CATEGORIES. */
+  categories: CategoryOption[];
+  /** Server-renderovan breadcrumb. */
+  breadcrumbs: ReactNode;
 }
 
-const categories = [
-  'Sve',
-  'Opšta stomatologija',
-  'Preventivna i dečja stomatologija',
-  'Bolesti zuba i endodoncija',
-  'Stomatološka protetika',
-  'Parodontologija i oralna medicina',
-  'Ortopedija vilica (Ortodoncija)',
-  'Oralna hirurgija',
-  'Maksilofacijalna hirurgija',
-];
+const ALL = 'sve';
 
 const alphabet = ['#', 'A', 'B', 'C', 'Č', 'Ć', 'D', 'Dž', 'Đ', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'Lj', 'M', 'N', 'Nj', 'O', 'P', 'R', 'S', 'Š', 'T', 'U', 'V', 'Z', 'Ž'];
 
+/* Vizuelno se po slovu prikazuje do 6 pojmova; ostali su u HTML-u (crawlable <a>),
+   samo sakriveni CSS-om dok se slovo ne rasiri. */
 const PER_LETTER_LIMIT = 6;
 
-export default function GlossaryClient({ initialTerms }: GlossaryClientProps) {
+/* Pretraga bez obzira na velika slova i dijakritiku ("cesalj" nalazi "češalj"). */
+function normalize(value: string): string {
+  return value
+    .toLocaleLowerCase('sr')
+    .replace(/đ/g, 'dj')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '');
+}
+
+const letterOrder = (letter: string) => {
+  const i = alphabet.indexOf(letter);
+  return i === -1 ? alphabet.length : i;
+};
+
+export default function GlossaryClient({ terms, categories, breadcrumbs }: GlossaryClientProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState('Sve');
+  const [selectedCategory, setSelectedCategory] = useState(ALL);
   const [expandedLetters, setExpandedLetters] = useState<Set<string>>(new Set());
 
-  // Filter logic
+  const searchIndex = useMemo(
+    () =>
+      new Map(
+        terms.map((t) => [
+          t.id,
+          normalize([t.publicTitle, t.medicalCanonicalTerm, t.shortDefinition, ...t.searchAliases].join(' ')),
+        ]),
+      ),
+    [terms],
+  );
+
   const filteredTerms = useMemo(() => {
-    let filtered = initialTerms;
+    const query = normalize(searchQuery.trim());
+    return terms.filter(
+      (t) =>
+        (selectedCategory === ALL || t.categoryId === selectedCategory) &&
+        (!query || searchIndex.get(t.id)!.includes(query)),
+    );
+  }, [terms, searchIndex, searchQuery, selectedCategory]);
 
-    if (searchQuery) {
-      filtered = filtered.filter(term =>
-        term.term.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        term.definition.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    if (selectedLetter) {
-      if (selectedLetter === '#') {
-        filtered = filtered.filter(term => /^\d/.test(term.term));
-      } else {
-        filtered = filtered.filter(term =>
-          term.term.toUpperCase().startsWith(selectedLetter)
-        );
-      }
-    }
-
-    if (selectedCategory !== 'Sve') {
-      filtered = filtered.filter(term => term.category === selectedCategory);
-    }
-
-    return filtered;
-  }, [initialTerms, searchQuery, selectedLetter, selectedCategory]);
-
-  // Group by letter
+  // Grupisanje po slovu srpske abecede (firstLetter dolazi sa servera)
   const termsByLetter = useMemo(() => {
-    const grouped: { [key: string]: RecnikTerm[] } = {};
-    filteredTerms.forEach(term => {
-      let firstLetter = term.term.charAt(0).toUpperCase();
-      // Handle numbers
-      if (/^\d/.test(term.term)) {
-        firstLetter = '#';
-      }
-      // Normalize special characters to their base letter for grouping
-      // This ensures Č, Ć, Š, Ž are grouped separately
-      if (!grouped[firstLetter]) {
-        grouped[firstLetter] = [];
-      }
-      grouped[firstLetter].push(term);
-    });
-    
-    Object.keys(grouped).forEach(letter => {
-      grouped[letter].sort((a, b) => a.term.localeCompare(b.term, 'sr'));
-    });
-    
+    const grouped: Record<string, RecnikTermSummary[]> = {};
+    for (const term of filteredTerms) {
+      (grouped[term.firstLetter] ??= []).push(term);
+    }
+    for (const letter of Object.keys(grouped)) {
+      grouped[letter].sort((a, b) => a.publicTitle.localeCompare(b.publicTitle, 'sr'));
+    }
     return grouped;
   }, [filteredTerms]);
 
-  const availableLetters = Object.keys(termsByLetter).sort();
+  const availableLetters = Object.keys(termsByLetter).sort((a, b) => letterOrder(a) - letterOrder(b));
+  const lettersWithTerms = useMemo(() => new Set(terms.map((t) => t.firstLetter)), [terms]);
 
-  const getTermsByLetter = (letter: string) => {
-    if (letter === '#') {
-      return initialTerms.filter(term => /^\d/.test(term.term));
-    }
-    return initialTerms.filter(term => 
-      term.term.toUpperCase().startsWith(letter)
-    );
-  };
-
-  const getLetterId = (letter: string): string => {
-    if (letter === '#') {
-      return 'slovo-num';
-    }
-    // Create URL-safe ID from letter
-    // Keep special characters but encode spaces and make lowercase
-    return `slovo-${letter.toLowerCase().replace(/\s+/g, '-')}`;
-  };
+  const getLetterId = (letter: string): string =>
+    letter === '#' ? 'slovo-num' : `slovo-${letter.toLowerCase().replace(/\s+/g, '-')}`;
 
   const handleLetterClick = (letter: string) => {
-    // Primary behavior: scroll to section
-    const letterId = getLetterId(letter);
-    const element = document.getElementById(letterId);
+    const element = document.getElementById(getLetterId(letter));
     if (element) {
-      // Add offset for fixed header
+      // Offset za fiksni header
       const offset = 100;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
-      
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+      const offsetPosition = element.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
     }
   };
 
   const toggleLetterExpansion = (letter: string) => {
-    const newExpanded = new Set(expandedLetters);
-    if (newExpanded.has(letter)) {
-      newExpanded.delete(letter);
-    } else {
-      newExpanded.add(letter);
-    }
-    setExpandedLetters(newExpanded);
-  };
-
-  const getDisplayedTerms = (letter: string, terms: RecnikTerm[]) => {
-    const isExpanded = expandedLetters.has(letter);
-    if (isExpanded) {
-      return terms;
-    }
-    return terms.slice(0, PER_LETTER_LIMIT);
+    const next = new Set(expandedLetters);
+    if (next.has(letter)) next.delete(letter);
+    else next.add(letter);
+    setExpandedLetters(next);
   };
 
   return (
@@ -149,7 +109,7 @@ export default function GlossaryClient({ initialTerms }: GlossaryClientProps) {
       {/* ── Hero: naslov, pretraga, abeceda ── */}
       <section className="page-hero recnik-hero">
         <div className="page-hero__inner">
-          <p className="page-hero__eyebrow">Rečnik</p>
+          {breadcrumbs}
           <h1 className="page-hero__title">Stomatološki rečnik</h1>
           <p className="page-hero__lead">
             Kompletan stomatološki rečnik sa objašnjenjima i definicijama
@@ -176,9 +136,10 @@ export default function GlossaryClient({ initialTerms }: GlossaryClientProps) {
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
             >
+              <option value={ALL}>Sve kategorije</option>
               {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
+                <option key={category.id} value={category.id}>
+                  {category.title}
                 </option>
               ))}
             </select>
@@ -189,7 +150,7 @@ export default function GlossaryClient({ initialTerms }: GlossaryClientProps) {
         {/* Abeceda */}
         <nav className="recnik-alpha" aria-label="Abeceda">
           {alphabet.map((letter) => {
-            const hasTerms = getTermsByLetter(letter).length > 0;
+            const hasTerms = lettersWithTerms.has(letter);
             // Slovo ima termine i u trenutnom filteru
             const isActive = hasTerms && availableLetters.includes(letter);
 
@@ -229,19 +190,23 @@ export default function GlossaryClient({ initialTerms }: GlossaryClientProps) {
           ) : (
             <div className="recnik-columns">
               {availableLetters.map((letter) => {
-                const terms = termsByLetter[letter];
+                const letterTerms = termsByLetter[letter];
                 const isExpanded = expandedLetters.has(letter);
-                const hasMore = terms.length > PER_LETTER_LIMIT;
-                const visibleTerms = isExpanded ? terms : terms.slice(0, PER_LETTER_LIMIT);
+                const hasMore = letterTerms.length > PER_LETTER_LIMIT;
 
                 return (
                   <section key={letter} id={getLetterId(letter)} className="recnik-group">
                     <h2 className="recnik-group__letter">{letter}</h2>
                     <ul className="recnik-group__list">
-                      {visibleTerms.map((term) => (
-                        <li key={term.slug}>
+                      {letterTerms.map((term, i) => (
+                        <li
+                          key={term.id}
+                          className={
+                            !isExpanded && i >= PER_LETTER_LIMIT ? 'recnik-group__item--extra' : undefined
+                          }
+                        >
                           <Link href={`/recnik/${term.slug}`} className="recnik-group__link">
-                            {term.term}
+                            {term.publicTitle}
                           </Link>
                         </li>
                       ))}
@@ -252,6 +217,7 @@ export default function GlossaryClient({ initialTerms }: GlossaryClientProps) {
                         type="button"
                         onClick={() => toggleLetterExpansion(letter)}
                         className="recnik-group__more"
+                        aria-expanded={isExpanded}
                       >
                         {isExpanded ? 'Prikaži manje' : 'Vidi još'}
                         {isExpanded ? (

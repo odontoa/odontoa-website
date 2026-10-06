@@ -3,6 +3,8 @@ import PaperChecklist from "@/components/alati/PaperChecklist";
 import RelatedTools from "@/components/alati/RelatedTools";
 import FaqSection from "@/components/alati/FaqSection";
 import { buildToolJsonLd } from "@/lib/structured-data/tool-jsonld";
+import JsonLd from "@/components/seo/JsonLd";
+import { pageMetadata } from "@/lib/seo/metadata";
 import "../alati.css";
 
 const TITLE =
@@ -44,43 +46,22 @@ const CHECKLIST_FAQ = [
 ];
 
 export async function generateMetadata(): Promise<Metadata> {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://odontoa.com";
-  const url = `${baseUrl}/alati/checklist-prelazak-na-digitalni-karton`;
-  return {
-    title: TITLE,
-    description: DESCRIPTION,
-    alternates: { canonical: url },
-    openGraph: {
-      type: "website",
-      url,
-      title: TITLE,
-      description: DESCRIPTION,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: TITLE,
-      description: DESCRIPTION,
-    },
-  };
+  return pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/alati/checklist-prelazak-na-digitalni-karton" });
 }
 
 export default function ChecklistPrelazakPage() {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://odontoa.com";
-  const url = `${baseUrl}/alati/checklist-prelazak-na-digitalni-karton`;
+  const path = "/alati/checklist-prelazak-na-digitalni-karton";
 
   const jsonLd = buildToolJsonLd({
     name: "Checklist za prelazak sa papira na digitalni karton",
     description: DESCRIPTION,
-    url,
-    baseUrl,
+    path,
     breadcrumbs: [
-      { name: "Početna", url: baseUrl },
-      { name: "Alati", url: `${baseUrl}/alati` },
+      { name: "Početna", path: "/" },
+      { name: "Alati", path: "/alati" },
       {
         name: "Checklist za prelazak sa papira na digitalni karton",
-        url,
+        path,
       },
     ],
     faqs: CHECKLIST_FAQ,
@@ -88,10 +69,7 @@ export default function ChecklistPrelazakPage() {
 
   return (
     <div className="alati-page alati-tool-page">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
       <PaperChecklist />
       <div className="alati-tool">
         <RelatedTools

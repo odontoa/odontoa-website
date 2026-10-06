@@ -4,6 +4,8 @@ import FaqSection from "@/components/alati/FaqSection";
 import RelatedTools from "@/components/alati/RelatedTools";
 import { FAQ_ITEMS } from "@/components/alati/quiz-data";
 import { buildToolJsonLd } from "@/lib/structured-data/tool-jsonld";
+import JsonLd from "@/components/seo/JsonLd";
+import { pageMetadata } from "@/lib/seo/metadata";
 import "../alati.css";
 
 const TITLE =
@@ -12,43 +14,22 @@ const DESCRIPTION =
   "Besplatan test od 12 pitanja koji ti pokazuje koliko je tvoja ordinacija digitalno organizovana. Bez registracije, rezultat odmah.";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://odontoa.com";
-  const url = `${baseUrl}/alati/digitalna-spremnost-ordinacije`;
-  return {
-    title: TITLE,
-    description: DESCRIPTION,
-    alternates: { canonical: url },
-    openGraph: {
-      type: "website",
-      url,
-      title: TITLE,
-      description: DESCRIPTION,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: TITLE,
-      description: DESCRIPTION,
-    },
-  };
+  return pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/alati/digitalna-spremnost-ordinacije" });
 }
 
 export default function DigitalReadinessPage() {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://odontoa.com";
-  const url = `${baseUrl}/alati/digitalna-spremnost-ordinacije`;
+  const path = "/alati/digitalna-spremnost-ordinacije";
 
   const jsonLd = buildToolJsonLd({
     name: "Test digitalne spremnosti stomatološke ordinacije",
     description: DESCRIPTION,
-    url,
-    baseUrl,
+    path,
     breadcrumbs: [
-      { name: "Početna", url: baseUrl },
-      { name: "Alati", url: `${baseUrl}/alati` },
+      { name: "Početna", path: "/" },
+      { name: "Alati", path: "/alati" },
       {
         name: "Test digitalne spremnosti ordinacije",
-        url,
+        path,
       },
     ],
     faqs: FAQ_ITEMS,
@@ -56,10 +37,7 @@ export default function DigitalReadinessPage() {
 
   return (
     <div className="alati-page alati-tool-page">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
 
       <DigitalReadinessTool />
 

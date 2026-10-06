@@ -5,14 +5,21 @@
   "description": "Advanced Dental Practice Management System",
   "scripts": {
     "dev": "next dev",
+    "prebuild": "npm run check:site-url && npm run recnik:validate",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit",
     "seed:glossary": "tsx scripts/seedGlossaryTerms.ts",
     "import:glossary": "tsx scripts/importGlossaryTerms.ts",
     "composite:mockup": "node scripts/composite-phone-mockup.mjs",
     "composite:laptop": "node scripts/composite-laptop-dashboard.mjs",
-    "composite:full": "node scripts/composite-full-mockup.mjs"
+    "composite:full": "node scripts/composite-full-mockup.mjs",
+    "recnik:validate": "tsx scripts/recnik-validate.ts",
+    "recnik:import": "tsx scripts/import-recnik-json.ts",
+    "recnik:test": "tsx scripts/recnik-selftest.ts",
+    "check:site-url": "tsx scripts/check-site-url.ts",
+    "og:generate": "node scripts/generate-og-default.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

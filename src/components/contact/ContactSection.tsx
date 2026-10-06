@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Send } from 'lucide-react';
 import { analytics } from '@/lib/analytics/events';
+import { SITE_URL } from '@/lib/config/site-url';
 
 export interface ContactSectionProps {
   title?: string;
@@ -17,7 +18,7 @@ export const ContactSection = ({
   description = 'Dostupni smo za pitanja, povratne informacije ili saradnju. Javi nam se, rado ćemo pomoći.',
   phone,
   email = 'info@odontoa.com',
-  web = { label: 'odontoa.com', url: 'https://odontoa.com' },
+  web = { label: 'odontoa.com', url: SITE_URL },
 }: ContactSectionProps) => {
   const [form, setForm] = useState({
     firstname: '',

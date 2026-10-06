@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import FeaturePage from '@/components/funkcionalnosti/FeaturePage';
 import { buildToolJsonLd } from '@/lib/structured-data/tool-jsonld';
+import JsonLd from '@/components/seo/JsonLd';
+import { pageMetadata } from '@/lib/seo/metadata';
 import { FEATURE_PAGES, getFeaturePage } from '@/lib/content/funkcionalnosti';
 import { displayFont } from '../../display-font';
 /* site.css nosi definiciju --stellar-* tokena na .site-page wrapperu.
@@ -25,27 +27,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     return { title: 'Stranica nije pronađena | Odontoa' };
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://odontoa.com';
-  const url = `${baseUrl}/funkcionalnosti/${page.slug}`;
-
-  return {
+  return pageMetadata({
     title: page.seo.title,
     description: page.seo.description,
-    alternates: { canonical: url },
-    openGraph: {
-      type: 'website',
-      url,
-      title: page.seo.title,
-      description: page.seo.description,
-      siteName: 'Odontoa',
-      locale: 'sr_RS',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: page.seo.title,
-      description: page.seo.description,
-    },
-  };
+    path: `/funkcionalnosti/${page.slug}`,
+  });
 }
 
 export default function FunkcionalnostPage({ params }: Params) {
@@ -54,8 +40,7 @@ export default function FunkcionalnostPage({ params }: Params) {
     notFound();
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://odontoa.com';
-  const url = `${baseUrl}/funkcionalnosti/${page.slug}`;
+  const path = `/funkcionalnosti/${page.slug}`;
 
   /* FAQ blokovi iz tela postaju FAQPage schema, da se pitanja mogu prikazati
      u rezultatima pretrage. Stranice bez FAQ bloka je jednostavno nemaju. */
@@ -66,22 +51,19 @@ export default function FunkcionalnostPage({ params }: Params) {
   const jsonLd = buildToolJsonLd({
     name: page.title,
     description: page.seo.description,
-    url,
-    baseUrl,
+    path,
     breadcrumbs: [
-      { name: 'Početna', url: baseUrl },
-      { name: 'Funkcionalnosti', url: `${baseUrl}/funkcionalnosti` },
-      { name: page.navTitle, url },
+      { name: 'Početna', path: '/' },
+      { name: 'Funkcionalnosti', path: '/funkcionalnosti' },
+      { name: page.navTitle, path },
     ],
     faqs: faqs.length > 0 ? faqs : undefined,
+    includeSoftware: true,
   });
 
   return (
     <div className={`site-page min-h-screen bg-white w-full ${displayFont.variable}`}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
       <FeaturePage page={page} />
     </div>
   );

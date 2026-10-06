@@ -1,21 +1,21 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { HIDDEN_SECTIONS } from '@/lib/config/hidden-sections'
+import { isInternalRoute, isSectionHidden } from '@/lib/config/hidden-sections'
+import { isPathAllowedInComingSoon } from '@/lib/config/site-mode'
 
 /**
  * Middleware for optional coming_soon mode and http → https redirect.
  *
- * Coming_soon (SITE_MODE=coming_soon): all routes redirect 302 to "/" except allowlist.
+ * Coming_soon (SITE_MODE=coming_soon): all routes redirect 302 to "/" except allowlist
+ * (src/lib/config/site-mode.ts, jedina lista).
  * Default: http → https (301) in production. Canonical domain (www vs apex) is handled by Vercel Domain settings.
  */
-/* Rute koje u produkciji nisu javne: interni alati (ui-lab, capture stranice, Sanity Studio)
-   i sekcije sakrivene do content launcha (blog, recnik, o nama: src/lib/config/hidden-sections.ts).
+/* Rute koje u produkciji nisu javne: interne/test rute (INTERNAL_ROUTES) i sekcije sakrivene
+   do content launcha (HIDDEN_SECTIONS), obe u src/lib/config/hidden-sections.ts.
    U developmentu ostaju dostupne. Na preview deploy-u mogu da se ukljuce sa
    ENABLE_INTERNAL_ROUTES=true. Kod i sadrzaj se ne brisu. */
-const HIDDEN_IN_PRODUCTION = [...HIDDEN_SECTIONS, '/ui-lab', '/dashboard-capture', '/demo-hero', '/studio']
-
 function isHiddenInProduction(pathname: string) {
-  return HIDDEN_IN_PRODUCTION.some((p) => pathname === p || pathname.startsWith(`${p}/`))
+  return isSectionHidden(pathname) || isInternalRoute(pathname)
 }
 
 export function middleware(request: NextRequest) {
@@ -32,20 +32,8 @@ export function middleware(request: NextRequest) {
     return response
   }
 
-  if (process.env.SITE_MODE === 'coming_soon') {
-    const allowed =
-      pathname === '/' ||
-      pathname.startsWith('/api') ||
-      pathname.startsWith('/_next') ||
-      pathname === '/robots.txt' ||
-      pathname === '/sitemap.xml' ||
-      pathname === '/favicon.ico' ||
-      pathname.startsWith('/images') ||
-      pathname.startsWith('/assets') ||
-      ['/privacy', '/contact', '/politika-privatnosti', '/kontakt'].includes(pathname)
-    if (!allowed) {
-      return NextResponse.redirect(new URL('/', request.url), 302)
-    }
+  if (process.env.SITE_MODE === 'coming_soon' && !isPathAllowedInComingSoon(pathname)) {
+    return NextResponse.redirect(new URL('/', request.url), 302)
   }
 
   const hostname = request.headers.get('host') || ''
@@ -62,7 +50,7 @@ export function middleware(request: NextRequest) {
     url.protocol = 'https:'
     return NextResponse.redirect(url, 301)
   }
-  
+
   return NextResponse.next()
 }
 
@@ -74,8 +62,8 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - robots.txt, sitemap.xml, llms.txt (SEO files)
+     * - robots.txt, sitemap.xml, llms.txt, llms-full.txt (SEO files)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|llms.txt).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|llms.txt|llms-full.txt).*)',
   ],
 }

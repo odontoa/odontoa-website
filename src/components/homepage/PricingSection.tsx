@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import Reveal from '@/components/shared/Reveal';
+import { pricing } from '@/lib/config/pricing';
 
 /* Ikone su inline SVG kao u ostalim sekcijama pocetne (boju nasledjuju iz parenta) */
 const ICON_CHECK = (
@@ -58,11 +59,11 @@ export default function PricingSection() {
               </span>
 
               <p className="pricing__price">
-                <span className="pricing__amount">12 €</span>
+                <span className="pricing__amount">{pricing.monthly} {pricing.currencySymbol}</span>
                 <span className="pricing__per">/ mesečno</span>
               </p>
               <p className="pricing__billing">
-                <span>144 € godišnje ·</span> <span>naplata jednom godišnje</span>
+                <span>{pricing.yearly} {pricing.currencySymbol} godišnje ·</span> <span>naplata jednom godišnje</span>
               </p>
 
               <Link href="/register" className="btn-cta pricing__cta">

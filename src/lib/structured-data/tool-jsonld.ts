@@ -1,87 +1,42 @@
-interface FaqItem {
-  question: string;
-  answer: string;
-}
+import { buildPageGraph, type BreadcrumbItem, type FaqItem } from './page-graph';
+import { SOFTWARE_ID } from './site-entities';
 
-interface BreadcrumbItem {
-  name: string;
-  url: string;
-}
+/* JSON-LD za stranice funkcionalnosti i alata: WebPage + BreadcrumbList (+ FAQPage),
+   u zajednickom @graph-u sa Organization/WebSite (src/lib/structured-data/page-graph.ts). */
 
 interface BuildToolJsonLdParams {
   name: string;
   description: string;
-  url: string;
-  baseUrl: string;
+  /** Putanja stranice, npr. "/funkcionalnosti/zakazivac-termina". */
+  path: string;
   breadcrumbs: BreadcrumbItem[];
   faqs?: FaqItem[];
   datePublished?: string;
   dateModified?: string;
+  /** Stranice o proizvodu nose i SoftwareApplication cvor. */
+  includeSoftware?: boolean;
 }
 
 export function buildToolJsonLd({
   name,
   description,
-  url,
-  baseUrl,
+  path,
   breadcrumbs,
   faqs,
   datePublished,
   dateModified,
+  includeSoftware,
 }: BuildToolJsonLdParams) {
-  const webpage = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "@id": url,
-    url,
+  return buildPageGraph({
+    path,
     name,
     description,
-    inLanguage: "sr",
-    isPartOf: {
-      "@type": "WebSite",
-      url: baseUrl,
-      name: "Odontoa",
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "Odontoa",
-      url: baseUrl,
-      logo: {
-        "@type": "ImageObject",
-        url: `${baseUrl}/images/Odontoa-New-logo-pack-2026/horiyotal_color.png`,
-      },
-    },
-    ...(datePublished ? { datePublished } : {}),
-    ...(dateModified ? { dateModified } : {}),
-  };
-
-  const breadcrumbList = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: breadcrumbs.map((b, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      name: b.name,
-      item: b.url,
-    })),
-  };
-
-  const jsonLdArray: Record<string, unknown>[] = [webpage, breadcrumbList];
-
-  if (faqs && faqs.length > 0) {
-    jsonLdArray.push({
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: faqs.map((f) => ({
-        "@type": "Question",
-        name: f.question,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: f.answer,
-        },
-      })),
-    });
-  }
-
-  return jsonLdArray;
+    breadcrumbs,
+    faqs,
+    datePublished,
+    dateModified,
+    includeSoftware,
+    /* Stranica o proizvodu: WebPage je "o" SoftwareApplication entitetu. */
+    ...(includeSoftware ? { pageFields: { about: { '@id': SOFTWARE_ID } } } : {}),
+  });
 }

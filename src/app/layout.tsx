@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Inter, Manrope } from 'next/font/google'
 import { Providers } from '@/components/Providers'
 import { GoogleAnalytics } from '@/components/GoogleAnalytics'
+import { SITE_URL } from '@/lib/config/site-url'
+import { DEFAULT_OG_IMAGE, SITE_LOCALE, SITE_NAME } from '@/lib/seo/metadata'
 
 import './globals.css'
 
@@ -18,7 +20,10 @@ const manrope = Manrope({
   variable: '--font-manrope',
 })
 
-const defaultMetadata: Metadata = {
+/* Podrazumevani metadata za ceo sajt. Namerno BEZ canonical-a i og:url: stranica bez
+   svog canonical-a ne sme da nasledi canonical pocetne. Javne stranice grade svoj
+   metadata kroz pageMetadata() (src/lib/seo/metadata.ts); pocetna je u (site)/page.tsx. */
+export const metadata: Metadata = {
   title: 'Odontoa - Napredni sistem za upravljanje stomatološkom ordinacijom',
   description: 'Softver za stomatološke ordinacije: zakazivanje, karton, RTG, zubna tehnika, dokumentacija i finansije u jednom sistemu.',
   keywords: 'stomatologija, ordinacija, pacijenti, termini, finansije, analitika',
@@ -30,7 +35,7 @@ const defaultMetadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://odontoa.com'),
+  metadataBase: new URL(SITE_URL),
   icons: {
     icon: [
       { url: '/images/Odontoa-New-logo-pack-2026/favicons/favicon.ico', sizes: 'any' },
@@ -40,30 +45,15 @@ const defaultMetadata: Metadata = {
     shortcut: '/images/Odontoa-New-logo-pack-2026/favicons/favicon.ico',
     apple: '/images/Odontoa-New-logo-pack-2026/favicons/apple-touch-icon.png',
   },
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
-    title: 'Odontoa - Napredni sistem za upravljanje stomatološkom ordinacijom',
-    description: 'Softver za stomatološke ordinacije: zakazivanje, karton, RTG, zubna tehnika, dokumentacija i finansije u jednom sistemu.',
-    url: 'https://odontoa.com',
-    siteName: 'Odontoa',
-    images: [
-      {
-        url: '/images/Odontoa-New-logo-pack-2026/horiyotal_color.png',
-        width: 1200,
-        height: 630,
-        alt: 'Odontoa - Stomatološka ordinacija',
-      },
-    ],
-    locale: 'sr_RS',
+    siteName: SITE_NAME,
+    locale: SITE_LOCALE,
     type: 'website',
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Odontoa - Napredni sistem za upravljanje stomatološkom ordinacijom',
-    description: 'Softver za stomatološke ordinacije: zakazivanje, karton, RTG, zubna tehnika, dokumentacija i finansije u jednom sistemu.',
-    images: ['/images/Odontoa-New-logo-pack-2026/horiyotal_color.png'],
+    images: [DEFAULT_OG_IMAGE.url],
   },
   robots: {
     index: true,
@@ -76,46 +66,10 @@ const defaultMetadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  /* Vazi i u coming-soon rezimu, da Search Console verifikacija radi pre punog launcha. */
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
   },
-}
-
-const comingSoonMetadata: Metadata = {
-  title: 'Odontoa je online',
-  description: 'Softver za stomatološke ordinacije: zakazivanje, karton, RTG, zubna tehnika, dokumentacija i finansije u jednom sistemu.',
-  metadataBase: new URL('https://odontoa.com'),
-  alternates: { canonical: '/' },
-  openGraph: {
-    title: 'Odontoa je online',
-    description: 'Softver za stomatološke ordinacije: zakazivanje, karton, RTG, zubna tehnika, dokumentacija i finansije u jednom sistemu.',
-    url: 'https://odontoa.com',
-    siteName: 'Odontoa',
-    images: [
-      {
-        url: '/images/Odontoa-New-logo-pack-2026/horiyotal_color.png',
-        width: 1200,
-        height: 630,
-        alt: 'Odontoa - Platforma za upravljanje ordinacijom',
-      },
-    ],
-    locale: 'sr_RS',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Odontoa je online',
-    description: 'Softver za stomatološke ordinacije: zakazivanje, karton, RTG, zubna tehnika, dokumentacija i finansije u jednom sistemu.',
-    images: ['/images/Odontoa-New-logo-pack-2026/horiyotal_color.png'],
-  },
-  robots: { index: true, follow: true },
-}
-
-export async function generateMetadata(): Promise<Metadata> {
-  if (process.env.SITE_MODE === 'coming_soon') {
-    return comingSoonMetadata;
-  }
-  return defaultMetadata;
 }
 
 export default function RootLayout({

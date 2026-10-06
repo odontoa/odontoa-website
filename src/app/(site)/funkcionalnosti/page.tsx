@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Reveal from '@/components/shared/Reveal';
 import { buildToolJsonLd } from '@/lib/structured-data/tool-jsonld';
+import JsonLd from '@/components/seo/JsonLd';
+import { pageMetadata } from '@/lib/seo/metadata';
 import { FEATURE_PAGES } from '@/lib/content/funkcionalnosti';
 import ClosingCta from '@/components/funkcionalnosti/ClosingCta';
 import ProductIndex, { type IndexItem } from '@/components/funkcionalnosti/ProductIndex';
@@ -15,42 +17,19 @@ const DESCRIPTION =
   'Zakazivanje, digitalni karton, RTG snimci, zubna tehnika, dokumentacija, finansije i AI asistent. Sve što ordinacija koristi svakodnevno, u jednom sistemu.';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://odontoa.com';
-  const url = `${baseUrl}/funkcionalnosti`;
-
-  return {
-    title: TITLE,
-    description: DESCRIPTION,
-    alternates: { canonical: url },
-    openGraph: {
-      type: 'website',
-      url,
-      title: TITLE,
-      description: DESCRIPTION,
-      siteName: 'Odontoa',
-      locale: 'sr_RS',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: TITLE,
-      description: DESCRIPTION,
-    },
-  };
+  return pageMetadata({ title: TITLE, description: DESCRIPTION, path: '/funkcionalnosti' });
 }
 
 export default function FunkcionalnostiIndexPage() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://odontoa.com';
-  const url = `${baseUrl}/funkcionalnosti`;
-
   const jsonLd = buildToolJsonLd({
     name: 'Funkcionalnosti',
     description: DESCRIPTION,
-    url,
-    baseUrl,
+    path: '/funkcionalnosti',
     breadcrumbs: [
-      { name: 'Početna', url: baseUrl },
-      { name: 'Funkcionalnosti', url },
+      { name: 'Početna', path: '/' },
+      { name: 'Funkcionalnosti', path: '/funkcionalnosti' },
     ],
+    includeSoftware: true,
   });
 
   /* Nazivi i opisi su isti kao na stranicama; detalji proizvoda se renderuju ovde
@@ -69,10 +48,7 @@ export default function FunkcionalnostiIndexPage() {
 
   return (
     <div className={`site-page min-h-screen bg-white w-full ${displayFont.variable}`}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
 
       {/* ── Hero kataloga ── */}
       <section className="page-hero page-hero--plain page-hero--index">

@@ -9,6 +9,8 @@ import { motion } from "framer-motion";
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
 import { businessConfig } from "@/lib/config/business";
+import { pricing } from "@/lib/config/pricing";
+import { SITE_URL } from "@/lib/config/site-url";
 import { displayFont } from "@/app/(site)/display-font";
 /* site.css nosi --stellar-* tokene na .site-page wrapperu; kontakt.css stilizuje formu. */
 import "@/app/(site)/site.css";
@@ -49,7 +51,7 @@ export default function ContactPage() {
     {
       id: 'item-6',
       question: 'Koliko košta Odontoa sistem?',
-      answer: 'Cena za rani pristup je 12 € mesečno, uz godišnju naplatu od 144 € (naplata jednom godišnje). U cenu su uključene sve trenutno dostupne funkcionalnosti, bez naplate po stolici i bez doplate za pojedinačne module. Prvih 30 dana koristiš besplatno.',
+      answer: `Cena za rani pristup je ${pricing.monthly} ${pricing.currencySymbol} mesečno, uz godišnju naplatu od ${pricing.yearly} ${pricing.currencySymbol} (naplata jednom godišnje). U cenu su uključene sve trenutno dostupne funkcionalnosti, bez naplate po stolici i bez doplate za pojedinačne module. Prvih ${pricing.trialDays} dana koristiš besplatno.`,
       icon: DollarSign
     },
     {
@@ -79,7 +81,7 @@ export default function ContactPage() {
         description="Kontaktiraj nas već danas i saznaj kako Odontoa može da unapredi rad tvoje ordinacije. Dostupni smo za pitanja, demo i saradnju."
         phone={businessConfig.phone}
         email={businessConfig.email}
-        web={{ label: 'odontoa.com', url: 'https://odontoa.com' }}
+        web={{ label: 'odontoa.com', url: SITE_URL }}
       />
 
       {/* FAQ Section */}

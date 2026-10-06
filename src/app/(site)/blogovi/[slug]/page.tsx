@@ -8,6 +8,8 @@ import { urlFor } from "@/lib/sanity.image";
 import { buildBlogJsonLd } from "@/lib/structured-data/blog-jsonld";
 import PortableTextRenderer from "@/components/PortableTextRenderer";
 import { Metadata } from "next";
+import { SITE_URL, absoluteUrl } from "@/lib/config/site-url";
+import { DEFAULT_OG_IMAGE, SITE_LOCALE, SITE_NAME } from "@/lib/seo/metadata";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -59,10 +61,10 @@ export async function generateMetadata({
     };
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://odontoa.com";
+  const baseUrl = SITE_URL;
   const coverImageUrl = post.coverImage
     ? urlFor(post.coverImage).width(1200).height(630).url()
-    : `${baseUrl}/og/odontoa-default.png`;
+    : absoluteUrl(DEFAULT_OG_IMAGE.url);
 
   const title = post.seoTitle || post.title;
   const description = post.seoDescription || post.excerpt || "";
@@ -74,6 +76,9 @@ export async function generateMetadata({
       title,
       description,
       type: "article",
+      url: absoluteUrl(`/blogovi/${params.slug}`),
+      siteName: SITE_NAME,
+      locale: SITE_LOCALE,
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt || post.publishedAt,
       authors: [post.author?.name || "Odontoa tim"],
@@ -93,7 +98,7 @@ export async function generateMetadata({
       images: [coverImageUrl],
     },
     alternates: {
-      canonical: post.canonicalUrl || `${baseUrl}/blogovi/${params.slug}`,
+      canonical: post.canonicalUrl || absoluteUrl(`/blogovi/${params.slug}`),
     },
     robots: post.noindex 
       ? { index: false, follow: false }
@@ -126,10 +131,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://odontoa.com";
+  const baseUrl = SITE_URL;
   const coverImageUrl = post.coverImage
     ? urlFor(post.coverImage).width(1200).height(630).url()
-    : `${baseUrl}/og/odontoa-default.png`;
+    : absoluteUrl(DEFAULT_OG_IMAGE.url);
 
   // Build JSON-LD with cover image URL
   const jsonLd = buildBlogJsonLd(

@@ -1,17 +1,14 @@
 'use client';
 
 import { useEffect } from 'react';
-import { analytics } from '@/lib/analytics/events';
+import { analytics, type GlossaryEventContext } from '@/lib/analytics/events';
 
-interface GlossaryViewTrackerProps {
-  slug: string;
-  term: string;
-}
-
-export function GlossaryViewTracker({ slug, term }: GlossaryViewTrackerProps) {
+/* glossary_view sa parametrima pojma; bez GA-a (nema gtag) je no-op. */
+export function GlossaryViewTracker(props: GlossaryEventContext) {
+  const { contentId, glossaryTerm, seoEntryTerm, glossaryCluster, categoryId, pagePath } = props;
   useEffect(() => {
-    analytics.glossaryView(slug, term);
-  }, [slug, term]);
+    analytics.glossaryView({ contentId, glossaryTerm, seoEntryTerm, glossaryCluster, categoryId, pagePath });
+  }, [contentId, glossaryTerm, seoEntryTerm, glossaryCluster, categoryId, pagePath]);
 
   return null;
 }

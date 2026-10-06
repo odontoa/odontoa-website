@@ -3,28 +3,15 @@ import type { ReactNode } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { isComingSoon } from "@/lib/config/site-mode";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Kontakt | Odontoa - Digitalna stomatologija',
   description: 'Kontaktirajte Odontoa tim za sve informacije o digitalizaciji vaše stomatološke ordinacije. Dostupni smo da odgovorimo na sva vaša pitanja.',
+  socialDescription: 'Kontaktirajte Odontoa tim za sve informacije o digitalizaciji vaše stomatološke ordinacije.',
   keywords: 'kontakt, Odontoa, stomatologija, digitalizacija, ordinacija, podrška',
-  openGraph: {
-    title: 'Kontakt | Odontoa - Digitalna stomatologija',
-    description: 'Kontaktirajte Odontoa tim za sve informacije o digitalizaciji vaše stomatološke ordinacije.',
-    url: 'https://odontoa.com/kontakt',
-    siteName: 'Odontoa',
-    locale: 'sr_RS',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary',
-    title: 'Kontakt | Odontoa - Digitalna stomatologija',
-    description: 'Kontaktirajte Odontoa tim za sve informacije o digitalizaciji vaše stomatološke ordinacije.',
-  },
-  alternates: {
-    canonical: '/kontakt',
-  },
-}
+  path: '/kontakt',
+})
 
 export default function ContactLayout({
   children,

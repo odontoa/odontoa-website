@@ -3,6 +3,8 @@ import TimeCalculator from "@/components/alati/TimeCalculator";
 import RelatedTools from "@/components/alati/RelatedTools";
 import FaqSection from "@/components/alati/FaqSection";
 import { buildToolJsonLd } from "@/lib/structured-data/tool-jsonld";
+import JsonLd from "@/components/seo/JsonLd";
+import { pageMetadata } from "@/lib/seo/metadata";
 import "../alati.css";
 
 const TITLE = "Kalkulator uštede vremena u stomatološkoj ordinaciji | Odontoa";
@@ -43,51 +45,27 @@ const CALCULATOR_FAQ = [
 ];
 
 export async function generateMetadata(): Promise<Metadata> {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://odontoa.com";
-  const url = `${baseUrl}/alati/kalkulator-ustede-vremena`;
-  return {
-    title: TITLE,
-    description: DESCRIPTION,
-    alternates: { canonical: url },
-    openGraph: {
-      type: "website",
-      url,
-      title: TITLE,
-      description: DESCRIPTION,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: TITLE,
-      description: DESCRIPTION,
-    },
-  };
+  return pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/alati/kalkulator-ustede-vremena" });
 }
 
 export default function KalkulatorUstedeVremenaPage() {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://odontoa.com";
-  const url = `${baseUrl}/alati/kalkulator-ustede-vremena`;
+  const path = "/alati/kalkulator-ustede-vremena";
 
   const jsonLd = buildToolJsonLd({
     name: "Kalkulator uštede vremena u stomatološkoj ordinaciji",
     description: DESCRIPTION,
-    url,
-    baseUrl,
+    path,
     breadcrumbs: [
-      { name: "Početna", url: baseUrl },
-      { name: "Alati", url: `${baseUrl}/alati` },
-      { name: "Kalkulator uštede vremena u ordinaciji", url },
+      { name: "Početna", path: "/" },
+      { name: "Alati", path: "/alati" },
+      { name: "Kalkulator uštede vremena u ordinaciji", path },
     ],
     faqs: CALCULATOR_FAQ,
   });
 
   return (
     <div className="alati-page alati-tool-page">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
       <TimeCalculator />
       <div className="alati-tool">
         <RelatedTools

@@ -5,18 +5,17 @@ import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import { displayFont } from '@/app/(site)/display-font';
 import DemoRequestForm from './DemoRequestForm';
+import { pageMetadata } from '@/lib/seo/metadata';
 /* site.css nosi --stellar-* tokene i .btn-cta; kontakt.css daje istu karticu i polja kao forma na kontaktu. */
 import '@/app/(site)/site.css';
 import '../kontakt/kontakt.css';
 import './demo.css';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Zakaži demo | Odontoa',
   description: 'Prođi kroz Odontou sa nama za 15 minuta: zakazivanje, karton i finansije na primeru tvoje ordinacije.',
-  alternates: {
-    canonical: '/demo',
-  },
-};
+  path: '/demo',
+});
 
 /* /demo je ranije preusmeravao na sekciju #demo na pocetnoj, koja vise ne postoji.
    Forma iz te sekcije (ime, email, telefon -> /api/demo) sada zivi ovde. */

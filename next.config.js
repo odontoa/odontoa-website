@@ -10,24 +10,27 @@ const nextConfig = {
     unoptimized: true,
   },
   trailingSlash: false,
+  /* charset je obavezan: bez njega se dijakritika u llms fajlovima prikazuje pogresno. */
   async headers() {
-    return [
-      {
-        source: '/llms.txt',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'text/plain',
-          },
-        ],
-      },
-    ];
+    return ['/llms.txt', '/llms-full.txt'].map((source) => ({
+      source,
+      headers: [
+        {
+          key: 'Content-Type',
+          value: 'text/plain; charset=utf-8',
+        },
+      ],
+    }));
   },
   async rewrites() {
     return [
       {
         source: '/llms.txt',
         destination: '/api/llms',
+      },
+      {
+        source: '/llms-full.txt',
+        destination: '/api/llms-full',
       },
     ];
   },

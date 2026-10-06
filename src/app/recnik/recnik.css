@@ -451,6 +451,150 @@
   margin-bottom: 0;
 }
 
+/* ── Breadcrumb (zamenjuje eyebrow link u heroju) ──────────────────────── */
+
+.recnik-crumbs {
+  margin-bottom: 18px;
+}
+
+.recnik-crumbs__list {
+  justify-content: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--stellar-muted);
+}
+
+.recnik-crumbs__link {
+  color: var(--stellar-accent);
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.recnik-crumbs__link:hover {
+  opacity: 0.72;
+}
+
+.recnik-crumbs__current {
+  color: var(--stellar-body);
+}
+
+.recnik-crumbs__sep {
+  color: var(--stellar-muted);
+}
+
+/* ── Stranica pojma: terminologija i strucni pregled ──────────────────── */
+
+.recnik-terminology {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 18px;
+  margin: 14px 0 0;
+  font-size: 14px;
+  color: var(--stellar-body);
+}
+
+.recnik-terminology strong {
+  font-weight: 600;
+  color: var(--stellar-heading);
+}
+
+a.recnik-chip {
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+a.recnik-chip:hover {
+  opacity: 0.8;
+}
+
+.recnik-reviewer {
+  margin: 14px 0 0;
+  font-size: 13.5px;
+  color: var(--stellar-muted);
+}
+
+.recnik-reviewer strong,
+.recnik-reviewer a {
+  font-weight: 600;
+  color: var(--stellar-body);
+}
+
+.recnik-reviewer a:hover {
+  color: var(--stellar-accent);
+}
+
+/* ── Izvori i literatura ──────────────────────────────────────────────── */
+
+.recnik-sources__title {
+  font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--stellar-heading);
+  margin: 0 0 16px;
+}
+
+.recnik-sources {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--stellar-body);
+}
+
+.recnik-sources a {
+  color: var(--stellar-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.recnik-sources__meta {
+  display: block;
+  font-size: 13px;
+  color: var(--stellar-muted);
+}
+
+/* ── Index: pojmovi preko limita su u HTML-u, vizuelno skriveni do "Vidi još" ── */
+
+.recnik-group__item--extra {
+  display: none;
+}
+
+/* ── Stranica kategorije ──────────────────────────────────────────────── */
+
+.recnik-category-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.recnik-category-list__link {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--stellar-heading);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.recnik-category-list__link:hover {
+  color: var(--stellar-accent);
+}
+
+.recnik-category-list__def {
+  margin: 4px 0 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--stellar-body);
+}
+
 /* ══ Responsive ═══════════════════════════════════════════════════════════ */
 
 @media (max-width: 1024px) {

@@ -26,6 +26,19 @@ export function trackEvent(
   }
 }
 
+export type GlossaryEventContext = {
+  /** Stabilan id pojma (RecnikTerm.id). */
+  contentId: string;
+  /** medicalCanonicalTerm. */
+  glossaryTerm: string;
+  seoEntryTerm?: string;
+  glossaryCluster?: string;
+  categoryId: string;
+  pagePath: string;
+};
+
+export type GlossaryLinkType = 'glossary_term' | 'blog_post' | 'feature_page' | 'landing_page';
+
 /**
  * Specific event helpers for common actions
  */
@@ -37,15 +50,16 @@ export const analytics = {
       page_path: pagePath || window.location.pathname,
     });
   },
+  /* Uz postojeci custom event salje se i GA4 recommended generate_lead (konverzija). */
   contactFormSubmit: (pagePath?: string) => {
-    trackEvent('contact_form_submit', {
-      page_path: pagePath || window.location.pathname,
-    });
+    const page_path = pagePath || window.location.pathname;
+    trackEvent('contact_form_submit', { page_path });
+    trackEvent('generate_lead', { lead_source: 'contact_form', page_path });
   },
   demoRequest: (pagePath?: string) => {
-    trackEvent('demo_request', {
-      page_path: pagePath || window.location.pathname,
-    });
+    const page_path = pagePath || window.location.pathname;
+    trackEvent('demo_request', { page_path });
+    trackEvent('generate_lead', { lead_source: 'demo_request', page_path });
   },
   blogView: (slug: string, title: string) => {
     trackEvent('blog_view', {
@@ -54,11 +68,48 @@ export const analytics = {
       page_path: `/blogovi/${slug}`,
     });
   },
-  glossaryView: (slug: string, term: string) => {
+  /* Recnik. Parametri su opisani u docs/ANALYTICS_GLOSSARY_SETUP.md:
+     glossary_term je stabilan pojam (medicalCanonicalTerm), seo_entry_term javni izraz. */
+  glossaryView: (params: GlossaryEventContext) => {
     trackEvent('glossary_view', {
-      glossary_slug: slug,
-      term,
-      page_path: `/recnik/${slug}`,
+      page_type: 'glossary',
+      content_id: params.contentId,
+      glossary_term: params.glossaryTerm,
+      seo_entry_term: params.seoEntryTerm,
+      glossary_cluster: params.glossaryCluster,
+      category_id: params.categoryId,
+      page_path: params.pagePath,
+    });
+  },
+  /* Klik sa stranice pojma na drugi sadrzaj (GA4 recommended select_content). */
+  glossarySelectContent: (params: {
+    contentType: GlossaryLinkType;
+    contentId: string;
+    linkUrl: string;
+    sourceGlossaryTerm: string;
+    sourceContentId: string;
+  }) => {
+    trackEvent('select_content', {
+      page_type: 'glossary',
+      content_type: params.contentType,
+      content_id: params.contentId,
+      link_url: params.linkUrl,
+      source_glossary_term: params.sourceGlossaryTerm,
+      source_content_id: params.sourceContentId,
+    });
+  },
+  glossaryCtaClick: (params: {
+    ctaName: string;
+    linkUrl: string;
+    sourceGlossaryTerm: string;
+    sourceContentId: string;
+  }) => {
+    trackEvent('cta_click', {
+      page_type: 'glossary',
+      cta_name: params.ctaName,
+      link_url: params.linkUrl,
+      source_glossary_term: params.sourceGlossaryTerm,
+      source_content_id: params.sourceContentId,
     });
   },
   quizStart: () => {

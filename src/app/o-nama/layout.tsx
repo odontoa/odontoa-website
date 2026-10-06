@@ -2,37 +2,17 @@ import type { Metadata } from 'next'
 import type { ReactNode } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+/* OG slika je podrazumevana: /images/2dentists-smiling.jpg ima 6261x4174 px i 11 MB,
+   sto mreze odbijaju kao preview sliku. */
+export const metadata: Metadata = pageMetadata({
   title: 'O nama | Odontoa - Digitalna stomatologija',
   description: 'Upoznajte Odontoa tim i našu misiju da digitalizujemo stomatološke ordinacije u Srbiji. Fokus na pacijente, sigurnost i inovacije.',
+  socialDescription: 'Upoznajte Odontoa tim i našu misiju da digitalizujemo stomatološke ordinacije u Srbiji.',
   keywords: 'Odontoa, o nama, tim, misija, vrednosti, stomatologija, digitalizacija',
-  openGraph: {
-    title: 'O nama | Odontoa - Digitalna stomatologija',
-    description: 'Upoznajte Odontoa tim i našu misiju da digitalizujemo stomatološke ordinacije u Srbiji.',
-    url: 'https://odontoa.com/o-nama',
-    siteName: 'Odontoa',
-    images: [
-      {
-        url: '/images/2dentists-smiling.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Odontoa tim - Stomatolozi',
-      },
-    ],
-    locale: 'sr_RS',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'O nama | Odontoa - Digitalna stomatologija',
-    description: 'Upoznajte Odontoa tim i našu misiju da digitalizujemo stomatološke ordinacije u Srbiji.',
-    images: ['/images/2dentists-smiling.jpg'],
-  },
-  alternates: {
-    canonical: '/o-nama',
-  },
-}
+  path: '/o-nama',
+})
 
 export default function AboutLayout({
   children,

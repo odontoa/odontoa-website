@@ -1,11 +1,13 @@
 import { Metadata } from 'next';
 import LegalPage from '@/components/legal/LegalPage';
+import { pageMetadata } from '@/lib/seo/metadata';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Podrška i uslovi - Odontoa',
   description: 'Pomoć, politika privatnosti, uslovi korišćenja i GDPR informacije za Odontoa aplikaciju.',
   keywords: 'pomoć, podrška, politika privatnosti, uslovi korišćenja, GDPR, odontoa',
-};
+  path: '/pomoc-i-pravno',
+});
 
 export default function PomocIPravnoPage() {
   return (

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { buildToolJsonLd } from "@/lib/structured-data/tool-jsonld";
+import JsonLd from "@/components/seo/JsonLd";
+import { pageMetadata } from "@/lib/seo/metadata";
 import ToolCard from "@/components/alati/ToolCard";
 import "./alati.css";
 
@@ -8,49 +10,25 @@ const DESCRIPTION =
   "Praktični alati, testovi i kalkulatori za stomatologe i menadžere ordinacija u Srbiji. Bez registracije, rezultat odmah.";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://odontoa.com";
-  const url = `${baseUrl}/alati`;
-  return {
-    title: TITLE,
-    description: DESCRIPTION,
-    alternates: { canonical: url },
-    openGraph: {
-      type: "website",
-      url,
-      title: TITLE,
-      description: DESCRIPTION,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: TITLE,
-      description: DESCRIPTION,
-    },
-  };
+  return pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/alati" });
 }
 
 export default function AlatiHubPage() {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://odontoa.com";
-  const url = `${baseUrl}/alati`;
+  const path = "/alati";
 
   const jsonLd = buildToolJsonLd({
     name: "Besplatni alati za stomatološke ordinacije",
     description: DESCRIPTION,
-    url,
-    baseUrl,
+    path,
     breadcrumbs: [
-      { name: "Početna", url: baseUrl },
-      { name: "Alati", url },
+      { name: "Početna", path: "/" },
+      { name: "Alati", path },
     ],
   });
 
   return (
     <div className="alati-page">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
 
       <section className="alati-hub">
         <div className="alati-hub__inner">

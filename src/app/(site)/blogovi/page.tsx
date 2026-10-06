@@ -8,6 +8,7 @@ import {
   type SanityTag
 } from "@/lib/sanity.queries";
 import { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo/metadata";
 import { urlFor } from "@/lib/sanity.image";
 import { FeaturedBlogHero } from "@/components/sections/blog/FeaturedBlogHero";
 import { FeaturedHeroReplica } from "@/components/sections/blog/FeaturedHeroReplica";
@@ -22,16 +23,13 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function generateMetadata(): Promise<Metadata> {
-  return {
+  return pageMetadata({
     title: "Blogovi – Odontoa",
     description:
       "Digitalizacija stomatološke ordinacije: saveti o organizaciji pacijenata, zalihama i zakazivanju termina.",
-    openGraph: {
-      title: "Blogovi – Odontoa",
-      description:
-        "Saveti i praksa iz ordinacije: pacijenti, zalihe, zakazivanje, analitika.",
-    },
-  };
+    socialDescription: "Saveti i praksa iz ordinacije: pacijenti, zalihe, zakazivanje, analitika.",
+    path: "/blogovi",
+  });
 }
 
 function formatToSerbianDate(isoString: string): string {

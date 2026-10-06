@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { SITE_URL } from '@/lib/config/site-url';
 
 /* Klijent se pravi lenjo: modul se importuje i u rutama koje se build-uju bez
    env-a, pa konstrukcija na nivou modula ruši build kad ključ nije postavljen. */
@@ -275,7 +276,7 @@ export class EmailService {
           <div style="background-color: #f1f5f9; padding: 16px; border-radius: 12px; margin-top: 24px;">
             <p style="margin: 0; color: #363d4f; font-size: 14px; line-height: 1.6;">
               Detaljne preporuke i sledeće korake možete videti na sajtu:
-              <a href="https://odontoa.com/alati/digitalna-spremnost-ordinacije" style="color: #6e51e0;">
+              <a href="${SITE_URL}/alati/digitalna-spremnost-ordinacije" style="color: #6e51e0;">
                 odontoa.com/alati/digitalna-spremnost-ordinacije
               </a>
             </p>
@@ -287,7 +288,7 @@ export class EmailService {
             </p>
             <p style="margin: 0; color: #363d4f; font-size: 14px;">
               Razumljiv demo, bez pritiska:
-              <a href="https://odontoa.com/demo?source=digital-readiness-tool&amp;profile=${encodeURIComponent(
+              <a href="${SITE_URL}/demo?source=digital-readiness-tool&amp;profile=${encodeURIComponent(
                 data.profile
               )}" style="color: #6e51e0;">
                 Zakažite Odontoa demo
