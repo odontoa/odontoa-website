@@ -6,8 +6,10 @@ import type { RecnikCategory } from './types';
    shortDescription, seoTitle i metaDescription su namerno prazni: dodaju se tek uz odobren
    tekst. Do tada je stranica kategorije noindex (indexable nije true). */
 export const RECNIK_CATEGORIES: RecnikCategory[] = [
-  { id: 'dijagnoze', slug: 'dijagnoze', title: 'Dijagnoze', order: 10 },
-  { id: 'anatomija', slug: 'anatomija', title: 'Anatomija', order: 20 },
+  { id: 'opsta-stomatologija', slug: 'opsta-stomatologija', title: 'Opšta stomatologija', order: 5 },
+  { id: 'dijagnoze', slug: 'dijagnoze', title: 'Dijagnoze, oralna medicina i patologija', order: 10 },
+  { id: 'anatomija', slug: 'anatomija', title: 'Anatomija i funkcija', order: 20 },
+  { id: 'preventivna-stomatologija', slug: 'preventivna-stomatologija', title: 'Preventivna stomatologija', order: 25 },
   { id: 'konzervativna-stomatologija', slug: 'konzervativna-stomatologija', title: 'Konzervativna stomatologija', order: 30 },
   { id: 'endodoncija', slug: 'endodoncija', title: 'Endodoncija', order: 40 },
   { id: 'parodontologija', slug: 'parodontologija', title: 'Parodontologija', order: 50 },

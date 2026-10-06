@@ -277,8 +277,10 @@ Pojam je javan (stranica, `/recnik`, sitemap, llms.txt) samo ako ima `publicatio
 
 | `categoryId` | Naziv |
 |---|---|
-| `dijagnoze` | Dijagnoze |
-| `anatomija` | Anatomija |
+| `opsta-stomatologija` | Opšta stomatologija |
+| `dijagnoze` | Dijagnoze, oralna medicina i patologija |
+| `anatomija` | Anatomija i funkcija |
+| `preventivna-stomatologija` | Preventivna stomatologija |
 | `konzervativna-stomatologija` | Konzervativna stomatologija |
 | `endodoncija` | Endodoncija |
 | `parodontologija` | Parodontologija |
