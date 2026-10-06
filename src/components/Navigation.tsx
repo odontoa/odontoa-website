@@ -1,59 +1,33 @@
 'use client';
 
-import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { isSectionHidden } from "@/lib/config/hidden-sections";
+import { isOpenInComingSoon } from "@/lib/config/site-mode";
 
-const FULL_MENU_ITEMS = [
+/* Stavke privremeno sakrivenih sekcija (blog, recnik, o nama) se filtriraju, ne brisu:
+   ukljucuju se iz src/lib/config/hidden-sections.ts. */
+const visible = <T extends { href: string }>(items: T[]) => items.filter((item) => !isSectionHidden(item.href));
+
+/* Jedan meni za sve stranice. "Funkcionalnosti" vodi na indeks /funkcionalnosti,
+   odakle se bira pojedinacna funkcionalnost; ne skroluje na sekciju pocetne. */
+const MENU_ITEMS = visible([
   { name: 'Početna', href: '/' },
+  { name: 'Funkcionalnosti', href: '/funkcionalnosti' },
   { name: 'O nama', href: '/o-nama' },
   { name: 'Blogovi', href: '/blogovi' },
   { name: 'Rečnik', href: '/recnik' },
   { name: 'Alati', href: '/alati' },
   { name: 'Kontakt', href: '/kontakt' },
-];
+]);
 
-const HOME2_MENU_ITEMS = [
-  { name: 'Početna', href: '/' },
-  { name: 'Blogovi', href: '/blogovi' },
-  { name: 'Kontakt', href: '/kontakt' },
-];
-
-function getStellarHomeMenuItems() {
-  return [
-    { name: 'Početna', href: '/' },
-    { name: 'Funkcije', href: '#funkcionalnosti' },
-    { name: 'O nama', href: '/o-nama' },
-    { name: 'Blogovi', href: '/blogovi' },
-    { name: 'Rečnik', href: '/recnik' },
-    { name: 'Alati', href: '/alati' },
-    { name: 'Kontakt', href: '/kontakt' },
-  ];
-}
-
-const Navigation = () => {
-  const pathname = usePathname();
-  const isHome2 = pathname === '/home2';
-  /* Pocetna je od sada home4 dizajn, pa nosi stellar chrome kao i /home3. */
-  const isStellarHome = pathname === '/' || pathname === '/home3';
-  /* Stellar izgled vazi i na /register i na stranicama funkcionalnosti; stavke
-     menija tamo ostaju pune, bez #funkcionalnosti anchora, jer te stranice nemaju
-     tu sekciju na koju bi anchor vodio. */
-  const isStellarChrome =
-    isStellarHome ||
-    pathname === '/register' ||
-    pathname === '/funkcionalnosti' ||
-    pathname.startsWith('/funkcionalnosti/');
-  const menuItems = isStellarHome
-    ? getStellarHomeMenuItems()
-    : isHome2
-      ? HOME2_MENU_ITEMS
-      : FULL_MENU_ITEMS;
-
+/* comingSoon dolazi od serverskog roditelja (isComingSoon()); tada meni sadrzi samo
+   stranice koje su u coming-soon rezimu otvorene, bez linkova ka zatvorenim rutama. */
+const Navigation = ({ comingSoon = false }: { comingSoon?: boolean }) => {
+  const menuItems = comingSoon ? MENU_ITEMS.filter((item) => isOpenInComingSoon(item.href)) : MENU_ITEMS;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -74,16 +48,14 @@ const Navigation = () => {
     <header>
       <nav
         data-state={isMenuOpen && 'active'}
-        data-home2={isHome2 || undefined}
-        data-home3={isStellarChrome || undefined}
         className="fixed z-20 w-full px-2 pt-1 group">
         <div
-          className={cn('mx-auto mt-2 max-w-[1240px] px-4 sm:px-6 lg:px-8 transition-all duration-300', isScrolled && (isStellarChrome ? 'rounded-2xl border backdrop-blur-lg' : 'bg-background/50 rounded-2xl border backdrop-blur-lg'))}
-          style={isScrolled && isStellarChrome ? { background: 'rgba(247,248,250,0.85)', borderColor: '#e9ebf1' } : undefined}
+          className={cn('mx-auto mt-2 max-w-[1240px] px-4 sm:px-6 lg:px-8 transition-all duration-300', isScrolled && 'rounded-2xl border backdrop-blur-lg')}
+          style={isScrolled ? { background: 'rgba(247,248,250,0.85)', borderColor: '#e9ebf1' } : undefined}
         >
           <div className={cn(
             'relative flex flex-wrap items-start justify-between gap-6 lg:flex-nowrap lg:gap-0',
-            isHome2 ? 'py-3 lg:py-4' : 'py-3 lg:py-4'
+            'py-3 lg:py-4'
           )}>
             <div className="flex w-full items-center justify-between lg:w-auto lg:items-start">
               <Link
@@ -105,21 +77,21 @@ const Navigation = () => {
 
             <div className="bg-background group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:flex-row lg:h-8 lg:items-center lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
               {/* Desktop nav links: right-aligned row, only on lg+ */}
-              <ul className={cn('hidden lg:flex lg:items-center text-sm', isHome2 ? 'lg:gap-5' : 'lg:gap-7')}>
+              <ul className={cn('hidden lg:flex lg:items-center text-sm', 'lg:gap-7')}>
                 {menuItems.map((item, index) => (
                   <li key={index}>
                     <Link
                       href={item.href}
                       onClick={item.href === '/' ? handleHomeClick : undefined}
-                      className={cn('block duration-150', isStellarChrome ? 'hover:opacity-100' : 'text-muted-foreground hover:text-accent-foreground')}
-                      style={isStellarChrome ? { color: '#363d4f' } : undefined}
+                      className="block duration-150 hover:opacity-100"
+                      style={{ color: '#363d4f' }}
                     >
                       <span>{item.name}</span>
                     </Link>
                   </li>
                 ))}
               </ul>
-              <div className="lg:hidden">
+              <div className="!mt-0 lg:hidden">
                 <ul className="space-y-6 text-base">
                   {menuItems.map((item, index) => (
                     <li key={index}>
@@ -139,41 +111,29 @@ const Navigation = () => {
                 </ul>
               </div>
               <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                {isStellarChrome ? (
-                  <a
-                    href="https://app.odontoa.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      height: 36,
-                      paddingLeft: 20,
-                      paddingRight: 20,
-                      borderRadius: 999,
-                      background: '#6e51e0',
-                      color: '#ffffff',
-                      fontSize: 13,
-                      fontWeight: 500,
-                      letterSpacing: '-0.18px',
-                      textDecoration: 'none',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    Uloguj se
-                  </a>
-                ) : (
-                  <Button
-                    asChild
-                    variant="pillPrimary"
-                    size="pillSm"
-                  >
-                    <a href="https://app.odontoa.com" target="_blank" rel="noopener noreferrer">
-                      <span>Uloguj se</span>
-                    </a>
-                  </Button>
-                )}
+                <a
+                  href="https://app.odontoa.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: 36,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                    borderRadius: 999,
+                    background: '#6e51e0',
+                    color: '#ffffff',
+                    fontSize: 13,
+                    fontWeight: 500,
+                    letterSpacing: '-0.18px',
+                    textDecoration: 'none',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  Prijavi se
+                </a>
               </div>
             </div>
           </div>

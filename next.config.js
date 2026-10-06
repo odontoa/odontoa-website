@@ -43,12 +43,13 @@ const nextConfig = {
         destination: '/blogovi/:slug',
         permanent: true,
       },
-      /* home4 je postao pocetna; stari URL je deljen tokom dizajn revizija. */
-      {
-        source: '/home4',
+      /* Stare varijante pocetne vise nisu javne: jedina pocetna je /.
+         Kod starih varijanti je u src/legacy/routes, van app rutera. */
+      ...['/home2', '/home3', '/home4', '/dizajn-varijante'].map((source) => ({
+        source,
         destination: '/',
-        permanent: true,
-      },
+        statusCode: 301,
+      })),
     ];
   },
 };

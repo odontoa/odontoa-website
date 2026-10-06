@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from 'react';
   u viewport.
 
   Zasto zaseban klijentski fajl: marker i kicma su pseudo-elementi
-  (.home4-fp-step::before / ::after), pa ih framer-motion ne moze dohvatiti i
+  (.page-step::before / ::after), pa ih framer-motion ne moze dohvatiti i
   animacija mora da ide preko klase koju dodaje JS. Da je ovo bilo u blocks.tsx,
   'use client' bi povukao i benefits, prose i faq na klijent i pokvario namerno
   "bez klijentskog JS-a" FAQ na nativnom <details>.
@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from 'react';
   UNUTAR koraka (kicma krece 90ms posle svog markera, preko transition-delay).
   Zato ovde ne treba poseban tajmer za kicmu.
 
-  Isti obrazac kao Home4Assistant -> Home4AssistantChat na pocetnoj:
+  Isti obrazac kao AssistantSection -> AssistantChat na pocetnoj:
   IntersectionObserver, disconnect na prvom preseku (once), klasa `is-in`.
 */
 
@@ -63,10 +63,10 @@ export default function StepsFlow({ items }: { items: string[] }) {
   }, [items.length]);
 
   return (
-    <ol className="home4-fp-steps" ref={listRef}>
+    <ol className="page-steps" ref={listRef}>
       {items.map((step, i) => (
-        <li key={step} className={`home4-fp-step${i < shown ? ' is-in' : ''}`}>
-          <span className="home4-fp-step__text">{step}</span>
+        <li key={step} className={`page-step${i < shown ? ' is-in' : ''}`}>
+          <span className="page-step__text">{step}</span>
         </li>
       ))}
     </ol>

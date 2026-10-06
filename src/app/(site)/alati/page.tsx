@@ -60,7 +60,7 @@ export default function AlatiHubPage() {
               Alati za bolju organizaciju ordinacije
             </h1>
             <p className="alati-lead">
-              Kratki testovi i vodiči koji pomažu da lakše vidite gde ordinacija
+              Kratki testovi i vodiči koji pomažu da lakše vidiš gde ordinacija
               gubi vreme i šta prvo treba unaprediti.
             </p>
           </header>
@@ -71,7 +71,7 @@ export default function AlatiHubPage() {
               href="/alati/digitalna-spremnost-ordinacije"
               badge="Novo"
               title="Test digitalne spremnosti ordinacije"
-              description="Saznajte gde najviše gubite vreme u kartonima, terminima, zalihama, timu i analitici."
+              description="Saznaj gde najviše gubiš vreme u kartonima, terminima, zubnoj tehnici, timu i analitici."
               meta="2 minuta · Bez registracije · Rezultat odmah"
               ctaLabel="Pokreni test"
               featured
@@ -83,13 +83,13 @@ export default function AlatiHubPage() {
             <ToolCard
               href="/alati/kalkulator-ustede-vremena"
               title="Kalkulator uštede vremena u ordinaciji"
-              description="Izračunajte koliko sati nedeljno odlazi na ručne kartone, zakazivanje, podsetnike, zalihe i izveštaje."
+              description="Izračunaj koliko sati nedeljno odlazi na ručne kartone, zakazivanje, podsetnike, zubnu tehniku i izveštaje."
               ctaLabel="Izračunaj uštedu"
             />
             <ToolCard
               href="/alati/checklist-prelazak-na-digitalni-karton"
               title="Checklist za prelazak sa papira na digitalni karton"
-              description="Prođite kroz praktične korake za postepen prelazak sa papirnih kartona na digitalni sistem."
+              description="Prođi kroz praktične korake za postepen prelazak sa papirnih kartona na digitalni sistem."
               ctaLabel="Otvori checklistu"
             />
           </div>

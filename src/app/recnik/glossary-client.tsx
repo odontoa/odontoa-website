@@ -1,21 +1,18 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Search, BookOpen, Hash, ChevronDown, ChevronUp, Plus } from 'lucide-react';
+import { Search, BookOpen, Hash, ChevronDown, ChevronUp } from 'lucide-react';
 import Link from 'next/link';
-import type { SanityGlossaryTerm } from '@/lib/sanity.queries';
+import type { RecnikTerm } from '@/lib/content/recnik';
+import { displayFont } from '@/app/(site)/display-font';
+/* site.css nosi --stellar-* tokene na .site-page wrapperu, feature-page.css
+   hero/sekcije/CTA. Rečnik koristi isti sistem kao stranice funkcionalnosti. */
+import '@/app/(site)/site.css';
+import '@/app/(site)/funkcionalnosti/feature-page.css';
+import './recnik.css';
 
 interface GlossaryClientProps {
-  initialTerms: SanityGlossaryTerm[];
+  initialTerms: RecnikTerm[];
 }
 
 const categories = [
@@ -70,7 +67,7 @@ export default function GlossaryClient({ initialTerms }: GlossaryClientProps) {
 
   // Group by letter
   const termsByLetter = useMemo(() => {
-    const grouped: { [key: string]: SanityGlossaryTerm[] } = {};
+    const grouped: { [key: string]: RecnikTerm[] } = {};
     filteredTerms.forEach(term => {
       let firstLetter = term.term.charAt(0).toUpperCase();
       // Handle numbers
@@ -139,7 +136,7 @@ export default function GlossaryClient({ initialTerms }: GlossaryClientProps) {
     setExpandedLetters(newExpanded);
   };
 
-  const getDisplayedTerms = (letter: string, terms: SanityGlossaryTerm[]) => {
+  const getDisplayedTerms = (letter: string, terms: RecnikTerm[]) => {
     const isExpanded = expandedLetters.has(letter);
     if (isExpanded) {
       return terms;
@@ -148,175 +145,147 @@ export default function GlossaryClient({ initialTerms }: GlossaryClientProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-20">
-      {/* Hero Section */}
-      <section className="w-full border-b border-border bg-background">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-          <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-4">
-              Rečnik
-            </h1>
-            <p className="text-lg text-muted-foreground mb-8">
-              Kompletan stomatološki rečnik sa objašnjenjima i definicijama
-            </p>
+    <div className={`site-page min-h-screen bg-white w-full ${displayFont.variable}`}>
+      {/* ── Hero: naslov, pretraga, abeceda ── */}
+      <section className="page-hero recnik-hero">
+        <div className="page-hero__inner">
+          <p className="page-hero__eyebrow">Rečnik</p>
+          <h1 className="page-hero__title">Stomatološki rečnik</h1>
+          <p className="page-hero__lead">
+            Kompletan stomatološki rečnik sa objašnjenjima i definicijama
+          </p>
+        </div>
 
-            {/* Search Bar + Category Filter Toolbar */}
-            <div className="max-w-2xl mx-auto mb-6">
-              <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-                <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                <Input
-                  type="text"
-                  placeholder="Šta tražite?"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-12 h-12 text-base bg-card border-border focus:ring-ring focus:ring-2 rounded-2xl w-full"
-                />
-              </div>
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="w-full sm:w-[180px] h-12 border-border bg-card rounded-2xl focus:ring-ring focus:ring-2">
-                    <SelectValue placeholder="Kategorija" />
-                  </SelectTrigger>
-                  <SelectContent>
+        {/* Pretraga + kategorija */}
+        <div className="recnik-toolbar">
+          <label className="recnik-search">
+            <span className="sr-only">Pretraga termina</span>
+            <Search className="recnik-search__icon" size={18} aria-hidden />
+            <input
+              type="search"
+              className="recnik-field"
+              placeholder="Šta tražite?"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </label>
+          <label className="recnik-select">
+            <span className="sr-only">Kategorija</span>
+            <select
+              className="recnik-field"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
               {categories.map((category) => (
-                      <SelectItem key={category} value={category}>
+                <option key={category} value={category}>
                   {category}
-                      </SelectItem>
+                </option>
               ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            </select>
+            <ChevronDown className="recnik-select__chevron" size={16} aria-hidden />
+          </label>
+        </div>
+
+        {/* Abeceda */}
+        <nav className="recnik-alpha" aria-label="Abeceda">
+          {alphabet.map((letter) => {
+            const hasTerms = getTermsByLetter(letter).length > 0;
+            // Slovo ima termine i u trenutnom filteru
+            const isActive = hasTerms && availableLetters.includes(letter);
+
+            return (
+              <button
+                key={letter}
+                type="button"
+                onClick={() => hasTerms && handleLetterClick(letter)}
+                disabled={!hasTerms}
+                className={`recnik-alpha__btn${isActive ? ' recnik-alpha__btn--active' : ''}`}
+                aria-label={letter === '#' ? 'Brojevi' : letter}
+              >
+                {letter === '#' ? <Hash size={14} aria-hidden /> : letter}
+              </button>
+            );
+          })}
+        </nav>
+
+        <p className="recnik-count">
+          Ukupno {filteredTerms.length} {filteredTerms.length === 1 ? 'termin' : 'termina'}
+        </p>
+      </section>
+
+      {/* ── Termini po slovima ── */}
+      <section className="page-section page-section--alt">
+        <div className="page-section__inner">
+          {filteredTerms.length === 0 ? (
+            <div className="recnik-empty">
+              <BookOpen size={44} strokeWidth={1.5} aria-hidden />
+              <h2 className="recnik-empty__title">Nema pronađenih termina</h2>
+              <p className="recnik-empty__text">
+                {searchQuery
+                  ? `Nema termina koji odgovaraju pretraživanju "${searchQuery}". Probaj drugo slovo ili pojam.`
+                  : 'Pokušajte da prilagodite filtere'}
+              </p>
             </div>
+          ) : (
+            <div className="recnik-columns">
+              {availableLetters.map((letter) => {
+                const terms = termsByLetter[letter];
+                const isExpanded = expandedLetters.has(letter);
+                const hasMore = terms.length > PER_LETTER_LIMIT;
+                const visibleTerms = isExpanded ? terms : terms.slice(0, PER_LETTER_LIMIT);
 
-        {/* Alphabet Navigation */}
-            <div className="mb-6">
-              <div className="flex flex-wrap gap-2 justify-center overflow-x-auto pb-2 scrollbar-hide">
-            {alphabet.map((letter) => {
-                  const termCount = getTermsByLetter(letter).length;
-                  const hasTerms = termCount > 0;
-                  // Check if this letter has terms in filtered results
-                  const isActive = availableLetters.includes(letter);
+                return (
+                  <section key={letter} id={getLetterId(letter)} className="recnik-group">
+                    <h2 className="recnik-group__letter">{letter}</h2>
+                    <ul className="recnik-group__list">
+                      {visibleTerms.map((term) => (
+                        <li key={term.slug}>
+                          <Link href={`/recnik/${term.slug}`} className="recnik-group__link">
+                            {term.term}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
 
-              return (
-                <Button
-                  key={letter}
-                  variant="outline"
-                  size="sm"
-                      onClick={() => hasTerms && handleLetterClick(letter)}
-                  disabled={!hasTerms}
-                  className={`
-                        ${isActive && hasTerms
-                      ? 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/15' 
-                      : 'border-border text-foreground hover:bg-accent'
-                    }
-                    ${!hasTerms ? 'opacity-50 cursor-not-allowed' : ''}
-                    rounded-full px-4 py-2 shrink-0
-                  `}
-                >
-                  {letter === '#' ? <Hash className="h-4 w-4" /> : letter}
-                </Button>
-                  );
-                })}
-              </div>
+                    {hasMore && (
+                      <button
+                        type="button"
+                        onClick={() => toggleLetterExpansion(letter)}
+                        className="recnik-group__more"
+                      >
+                        {isExpanded ? 'Prikaži manje' : 'Vidi još'}
+                        {isExpanded ? (
+                          <ChevronUp size={15} aria-hidden />
+                        ) : (
+                          <ChevronDown size={15} aria-hidden />
+                        )}
+                      </button>
+                    )}
+                  </section>
+                );
+              })}
             </div>
-
-            {/* Meta Info */}
-            <p className="text-sm text-muted-foreground">
-              Ukupno {filteredTerms.length} {filteredTerms.length === 1 ? 'termin' : 'termina'}
-            </p>
-          </div>
+          )}
         </div>
       </section>
 
-      {/* Directory View */}
-      <div className="max-w-6xl mx-auto mt-12 px-4 sm:px-6 lg:px-8 pb-12">
-          {filteredTerms.length === 0 ? (
-          <div className="text-center py-16">
-              <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-foreground mb-2">
-                Nema pronađenih termina
-              </h3>
-              <p className="text-muted-foreground">
-                {searchQuery 
-                ? `Nema termina koji odgovaraju pretraživanju "${searchQuery}". Probaj drugo slovo ili pojam.`
-                  : 'Pokušajte da prilagodite filtere'
-                }
-              </p>
-          </div>
-        ) : (
-          <div className="columns-1 md:columns-2 lg:columns-3" style={{ columnGap: '3rem' }}>
-            {availableLetters.map((letter) => {
-              const terms = termsByLetter[letter];
-              const isExpanded = expandedLetters.has(letter);
-              const hasMore = terms.length > PER_LETTER_LIMIT;
-              const visibleTerms = isExpanded ? terms : terms.slice(0, PER_LETTER_LIMIT);
-              const letterId = getLetterId(letter);
-
-              return (
-                <section 
-                  key={letter}
-                  id={letterId} 
-                  className="scroll-mt-20 mb-12 break-inside-avoid"
-                  style={{ breakInside: 'avoid' }}
-                >
-                  {/* Letter Heading */}
-                  <h2 className="text-4xl font-semibold tracking-tight text-foreground">
-                    {letter}
-                  </h2>
-                  <div className="mt-3 h-px w-full bg-border" />
-
-                  {/* Terms List */}
-                  <div className="mt-5 space-y-3">
-                    {visibleTerms.map((term) => (
-                      <div key={term._id}>
-                        <Link
-                          href={`/recnik/${term.slug}`}
-                          className="text-foreground hover:text-primary hover:underline underline-offset-4 transition-colors"
-                        >
-                          {term.term}
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Show More/Less Toggle - Only if hasMore */}
-                  {hasMore && (
-                    <button
-                      onClick={() => toggleLetterExpansion(letter)}
-                      className="mt-4 inline-flex items-center text-sm text-muted-foreground hover:text-primary hover:underline underline-offset-4 transition-colors"
-                    >
-                      {isExpanded ? (
-                        <>
-                          Prikaži manje
-                          <ChevronUp className="ml-1 h-4 w-4" />
-                        </>
-                      ) : (
-                        <>
-                          Vidi još
-                          <ChevronDown className="ml-1 h-4 w-4" />
-                        </>
-                      )}
-                    </button>
-                  )}
-                </section>
-              );
-            })}
-                  </div>
-        )}
-
-        {/* Minimal Editorial CTA */}
-        <div className="mt-20 pt-12 border-t border-border text-center">
-          <p className="text-muted-foreground mb-4">
-                Ne možete da pronađete ono što tražite?
-              </p>
-          <Button variant="ghost" asChild>
-            <Link href="/kontakt" className="text-primary hover:text-primary/90">
-                  <Plus className="mr-2 h-4 w-4" />
+      {/* ── Zavrsni CTA ── */}
+      <section className="page-cta">
+        <div className="page-cta__inner">
+          <h2 className="page-cta__title">Ne možete da pronađete ono što tražite?</h2>
+          <p className="page-cta__lead">
+            Predložite termin i dodaćemo ga u rečnik.
+          </p>
+          <div className="page-cta__actions">
+            <Link href="/kontakt" className="hero__btn hero__btn--primary">
               Predloži termin
             </Link>
-                </Button>
-              </div>
-      </div>
+            <Link href="/register" className="page-cta__ghost">
+              Započni besplatno
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

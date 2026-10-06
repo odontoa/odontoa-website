@@ -132,7 +132,7 @@ export type SanityBlogPost = {
   schemaOverrideJson?: string;
 };
 
-// Glossary Term Queries
+// Glossary Term Queries (LEGACY: sajt vise ne cita recnik iz Sanity-ja, izvor je src/lib/content/recnik.ts)
 // Explicitly exclude drafts and require publishedAt for production safety
 
 // Lightweight query for directory view (list page) - only fields needed for display

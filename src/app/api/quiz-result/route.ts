@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         message:
-          "Rezultat je uspešno poslat na vaš email. Proverite i spam folder ako ne stigne odmah.",
+          "Rezultat je uspešno poslat na tvoj email. Proveri i spam folder ako ne stigne odmah.",
       },
       { status: 200 }
     );
@@ -105,14 +105,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error:
-            "Greška pri slanju email-a. Pokušajte ponovo kasnije.",
+            "Greška pri slanju email-a. Pokušaj ponovo kasnije.",
         },
         { status: 500 }
       );
     }
 
     return NextResponse.json(
-      { error: "Greška na serveru. Pokušajte ponovo kasnije." },
+      { error: "Greška na serveru. Pokušaj ponovo kasnije." },
       { status: 500 }
     );
   }

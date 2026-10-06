@@ -9,7 +9,7 @@ import "../alati.css";
 const TITLE =
   "Test digitalne spremnosti stomatološke ordinacije | Odontoa";
 const DESCRIPTION =
-  "Besplatan test od 12 pitanja koji vam pokazuje koliko je vaša ordinacija digitalno organizovana. Bez registracije, rezultat odmah.";
+  "Besplatan test od 12 pitanja koji ti pokazuje koliko je tvoja ordinacija digitalno organizovana. Bez registracije, rezultat odmah.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseUrl =

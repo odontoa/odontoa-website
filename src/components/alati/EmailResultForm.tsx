@@ -57,20 +57,20 @@ export default function EmailResultForm({
       if (response.ok) {
         setMessage({
           type: "success",
-          text: data.message ?? "Rezultat je poslat na vaš email.",
+          text: data.message ?? "Rezultat je poslat na tvoj email.",
         });
         analytics.quizEmailCapture(score.totalScore, profile);
         setEmail("");
       } else {
         setMessage({
           type: "error",
-          text: data.error ?? "Greška pri slanju. Pokušajte ponovo.",
+          text: data.error ?? "Greška pri slanju. Pokušaj ponovo.",
         });
       }
     } catch {
       setMessage({
         type: "error",
-        text: "Greška pri slanju. Pokušajte ponovo kasnije.",
+        text: "Greška pri slanju. Pokušaj ponovo kasnije.",
       });
     } finally {
       setIsSubmitting(false);
@@ -79,10 +79,10 @@ export default function EmailResultForm({
 
   return (
     <div className="alati-email-form">
-      <h3 className="alati-email-form__title">Sačuvajte rezultat</h3>
+      <h3 className="alati-email-form__title">Sačuvaj rezultat</h3>
       <p className="alati-email-form__body">
-        Pošaljite rezultat sebi na email i podelite ga sa timom kada budete
-        planirali sledeće korake.
+        Pošalji rezultat sebi na email i podeli ga sa timom pre planiranja
+        sledećih koraka.
       </p>
       <form onSubmit={handleSubmit} className="alati-email-form__form">
         <input
@@ -90,7 +90,7 @@ export default function EmailResultForm({
           name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Vaš email"
+          placeholder="Tvoj email"
           aria-label="Email adresa"
           className="alati-email-form__input"
           required
@@ -122,7 +122,7 @@ export default function EmailResultForm({
         </div>
       )}
       <p className="alati-email-form__legal">
-        Vaši podaci su zaštićeni u skladu sa GDPR regulativom.{" "}
+        Tvoji podaci su zaštićeni u skladu sa GDPR regulativom.{" "}
         <a href="/politika-privatnosti">Politika privatnosti</a>.
       </p>
     </div>

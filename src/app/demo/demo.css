@@ -1,0 +1,35 @@
+/* Demo stranica: koristi .contact__* iz kontakt.css; ovde su samo dodaci. */
+
+.demo__alt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin-top: 28px;
+  font-size: 14.5px;
+  color: var(--stellar-body);
+}
+
+.demo__alt .hero__link {
+  padding: 0;
+  height: auto;
+}
+
+.demo__privacy {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--stellar-muted);
+  text-align: center;
+}
+
+.demo__privacy a {
+  color: var(--stellar-accent);
+  text-decoration: none;
+}
+
+.demo__privacy a:hover {
+  color: var(--stellar-accent-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

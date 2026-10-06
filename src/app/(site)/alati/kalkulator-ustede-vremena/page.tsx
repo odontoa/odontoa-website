@@ -7,7 +7,7 @@ import "../alati.css";
 
 const TITLE = "Kalkulator uštede vremena u stomatološkoj ordinaciji | Odontoa";
 const DESCRIPTION =
-  "Besplatan kalkulator koji vam pokazuje koliko vremena ordinacija okvirno troši na ručne kartone, zakazivanje, podsetnike, zalihe i izveštaje.";
+  "Besplatan kalkulator koji ti pokazuje koliko vremena ordinacija okvirno troši na ručne kartone, zakazivanje, podsetnike, zubnu tehniku i izveštaje.";
 
 const CALCULATOR_FAQ = [
   {
@@ -18,17 +18,17 @@ const CALCULATOR_FAQ = [
   {
     question: "Da li moram da ostavim email?",
     answer:
-      "Ne. Rezultat dobijate odmah, bez ostavljanja email adrese.",
+      "Ne. Rezultat dobijaš odmah, bez ostavljanja email adrese.",
   },
   {
     question: "Da li je rezultat tačan?",
     answer:
-      "Kalkulator daje okvirnu procenu na osnovu vaših ulaznih podataka. To nije garantovana ušteda, vec ilustracija koliko vremena trenutno odlazi na ručne procese.",
+      "Kalkulator daje okvirnu procenu na osnovu tvojih ulaznih podataka. To nije garantovana ušteda, vec ilustracija koliko vremena trenutno odlazi na ručne procese.",
   },
   {
     question: "Šta znači ručni administrativni posao?",
     answer:
-      "Podrazumeva sve što se radi ručno, kao što su traženje papirnih kartona, ručno upisivanje termina u rokovnik, slanje poruka pacijentima pre termina, ručna provera zaliha i sabiranje finansijskih podataka na kraju meseca.",
+      "Podrazumeva sve što se radi ručno, kao što su traženje papirnih kartona, ručno upisivanje termina u rokovnik, slanje poruka pacijentima pre termina, ručno praćenje naloga za zubnu tehniku i sabiranje finansijskih podataka na kraju meseca.",
   },
   {
     question: "Kako mogu smanjiti vreme koje odlazi na administraciju?",

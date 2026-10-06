@@ -11,7 +11,7 @@ interface FormState {
   kartoniMinutes: string;
   zakazivanjeMinutes: string;
   podsetniciMinutes: string;
-  zaliheMinutes: string;
+  tehnikaMinutes: string;
   izvestajiMinutes: string;
 }
 
@@ -20,7 +20,7 @@ const DEFAULT_FORM: FormState = {
   kartoniMinutes: "30",
   zakazivanjeMinutes: "20",
   podsetniciMinutes: "10",
-  zaliheMinutes: "15",
+  tehnikaMinutes: "15",
   izvestajiMinutes: "30",
 };
 
@@ -38,15 +38,15 @@ function round1(n: number): number {
 
 const RECOMMENDATIONS: Record<string, string> = {
   kartoni:
-    "Počnite od digitalnog kartona pacijenta. Od njega zavise istorija lečenja, terapije i budući termini.",
+    "Počni od digitalnog kartona pacijenta. Od njega zavise istorija lečenja, terapije i budući termini.",
   zakazivanje:
     "Digitalni kalendar i jasni statusi termina smanjuju svakodnevnu koordinaciju i ručno pomeranje.",
   podsetnici:
     "Automatski podsetnici zamenjuju ručne pozive i poruke bez dodatnog rada tima.",
-  zalihe:
-    "Uvedite minimalnu listu najvažnijih materijala i prag za naručivanje, da ne naručujete po sećanju.",
+  tehnika:
+    "Uz svaki radni nalog vodi laboratoriju, status i cenu, da na kraju meseca ne sabiraš račune ručno.",
   izvestaji:
-    "Definišite 3 do 5 brojki koje pratite svake nedelje, umesto ručnog sabiranja na kraju meseca.",
+    "Definiši 3 do 5 brojki koje pratiš svake nedelje, umesto ručnog sabiranja na kraju meseca.",
 };
 
 export default function TimeCalculator() {
@@ -87,13 +87,13 @@ export default function TimeCalculator() {
     const kartoniWeekly = parseOrZero(form.kartoniMinutes) * workDays;
     const zakazivanjeWeekly = parseOrZero(form.zakazivanjeMinutes) * workDays;
     const podsetniciWeekly = parseOrZero(form.podsetniciMinutes) * workDays;
-    const zaliheWeekly = parseOrZero(form.zaliheMinutes);
+    const tehnikaWeekly = parseOrZero(form.tehnikaMinutes);
     const izvestajiWeekly = parseOrZero(form.izvestajiMinutes);
     const totalWeeklyMinutes =
       kartoniWeekly +
       zakazivanjeWeekly +
       podsetniciWeekly +
-      zaliheWeekly +
+      tehnikaWeekly +
       izvestajiWeekly;
     const weeklyHours = round1(totalWeeklyMinutes / 60);
     const monthlyHours = round1(weeklyHours * 4.3);
@@ -103,7 +103,7 @@ export default function TimeCalculator() {
       { id: "kartoni", label: "Kartoni pacijenata", weeklyMinutes: kartoniWeekly },
       { id: "zakazivanje", label: "Zakazivanje termina", weeklyMinutes: zakazivanjeWeekly },
       { id: "podsetnici", label: "Podsetnici pacijentima", weeklyMinutes: podsetniciWeekly },
-      { id: "zalihe", label: "Provera zaliha", weeklyMinutes: zaliheWeekly },
+      { id: "tehnika", label: "Zubna tehnika", weeklyMinutes: tehnikaWeekly },
       { id: "izvestaji", label: "Izveštaji i sabiranje podataka", weeklyMinutes: izvestajiWeekly },
     ].sort((a, b) => b.weeklyMinutes - a.weeklyMinutes);
 
@@ -118,11 +118,11 @@ export default function TimeCalculator() {
       <section className="alati-tool__intro">
         <p className="alati-tool__intro-pill">Besplatan alat</p>
         <h1 className="alati-tool__intro-title">
-          Koliko vremena vaša ordinacija gubi na ručne poslove?
+          Koliko vremena tvoja ordinacija gubi na ručne poslove?
         </h1>
         <p className="alati-tool__intro-subtitle">
-          Unesite okvirne podatke i dobijte procenu koliko sati nedeljno odlazi
-          na kartone, zakazivanje, podsetnike, zalihe i izveštaje.
+          Unesi okvirne podatke i dobij procenu koliko sati nedeljno odlazi
+          na kartone, zakazivanje, podsetnike, zubnu tehniku i izveštaje.
         </p>
         <div className="alati-tool__intro-cta">
           <button
@@ -146,11 +146,11 @@ export default function TimeCalculator() {
             <form className="alati-calc__form" onSubmit={handleSubmit}>
               <div>
                 <p className="alati-calc__form-lead">
-                  Ne morate znati tačne brojke. Unesite okvirnu procenu za
+                  Ne moraš da znaš tačne brojke. Unesi okvirnu procenu za
                   prosečan radni dan ili prosečnu nedelju.
                 </p>
                 <p className="alati-calc__form-hint">
-                  Primer vrednosti, slobodno izmenite.
+                  Primer vrednosti, slobodno izmeni.
                 </p>
               </div>
 
@@ -245,21 +245,21 @@ export default function TimeCalculator() {
               <fieldset className="alati-calc__fieldset">
                 <legend className="alati-calc__legend">Nedeljno</legend>
                 <div className="alati-calc__group">
-                  <label className="alati-calc__label" htmlFor="zaliheMin">
-                    Zalihe i materijal
+                  <label className="alati-calc__label" htmlFor="tehnikaMin">
+                    Zubna tehnika
                   </label>
                   <p className="alati-calc__field-helper">
-                    Koliko minuta nedeljno potrošite na proveru stanja,
-                    naručivanje i praćenje materijala?
+                    Koliko minuta nedeljno potrošiš na praćenje radnih naloga,
+                    laboratorija i troškova tehnike?
                   </p>
                   <div className="alati-calc__input-row">
                     <input
-                      id="zaliheMin"
+                      id="tehnikaMin"
                       type="number"
                       className="alati-calc__input"
                       min={0}
-                      value={form.zaliheMinutes}
-                      onChange={(e) => handleChange("zaliheMinutes", e.target.value)}
+                      value={form.tehnikaMinutes}
+                      onChange={(e) => handleChange("tehnikaMinutes", e.target.value)}
                     />
                     <span className="alati-calc__unit">min/ned.</span>
                   </div>
@@ -270,7 +270,7 @@ export default function TimeCalculator() {
                   </label>
                   <p className="alati-calc__field-helper">
                     Koliko minuta nedeljno ode na ručno sabiranje termina,
-                    prihoda, zaliha ili drugih podataka?
+                    prihoda, troškova ili drugih podataka?
                   </p>
                   <div className="alati-calc__input-row">
                     <input
@@ -315,7 +315,7 @@ export default function TimeCalculator() {
                   <p className="alati-calc__top-area" style={{ marginTop: "16px" }}>
                     Najviše vremena trenutno odlazi na:{" "}
                     <strong>{result.topArea.label.toLowerCase()}</strong>.
-                    Prvi korak nije da digitalizujete sve odjednom, već da počnete
+                    Prvi korak nije da digitalizuješ sve odjednom, već da počneš
                     od oblasti koja najviše opterećuje tim.
                   </p>
                 )}
@@ -355,7 +355,7 @@ export default function TimeCalculator() {
 
               <div className="alati-result__cta-card">
                 <p className="alati-result__cta-title">
-                  Želite da vidite kako bi ovi procesi izgledali u jednom sistemu?
+                  Želiš da vidiš kako bi ovi procesi izgledali u jednom sistemu?
                 </p>
                 <p className="alati-result__cta-body">Razumljiv demo, bez pritiska.</p>
                 <a
@@ -368,7 +368,7 @@ export default function TimeCalculator() {
                     )
                   }
                 >
-                  <span>Zakažite Odontoa demo</span>
+                  <span>Zakaži Odontoa demo</span>
                   <ArrowRight size={14} aria-hidden="true" />
                 </a>
               </div>

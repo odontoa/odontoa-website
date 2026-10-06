@@ -160,7 +160,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
     shortDesc: 'Anamneza, terapije, dijagnoze (MKB-10) i istorija poseta, uvek pri ruci.',
     gridNum: '/02',
     inSystemGrid: true,
-    title: 'Digitalni karton i odontogram na jednom mestu',
+    title: 'Digitalni karton sa odontogramom',
     lead: 'Anamneza, terapije, dijagnoze po MKB-10 i cela istorija poseta. Sve što ti treba o pacijentu otvara se sa jednog ekrana, dok pacijent sedi u stolici.',
     visual: {
       src: '/images/funkcionalnosti/digitalni-karton.png',
@@ -218,7 +218,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
             a: 'Da. Podatke pacijenata prebacujemo iz starog softvera, a pomažemo i kod prelaska sa papirne kartoteke, da ne kreneš od nule.',
           },
           {
-            q: 'Mogu li da vidim celu istoriju pacijenta na jednom mestu?',
+            q: 'Mogu li da vidim celu istoriju pacijenta u kartonu?',
             a: 'Da. Sve posete, terapije i dijagnoze stoje hronološki u kartonu, pa kod svakog pacijenta odmah vidiš šta je rađeno i kada.',
           },
           {
@@ -348,7 +348,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
           {
             title: 'Jasna komunikacija',
             icon: 'messages-square',
-            desc: 'Specifikacija rada, boja i rok stoje na jednom mestu, isto za tebe i za laboratoriju.',
+            desc: 'Specifikacija rada, boja i rok stoje uz nalog, isto za tebe i za laboratoriju.',
           },
         ],
       },
@@ -422,7 +422,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
           {
             title: 'Manje papira',
             icon: 'file-stack',
-            desc: 'Saglasnosti i obrasci stoje digitalno, na jednom mestu, umesto po fasciklama i fiokama.',
+            desc: 'Saglasnosti i obrasci stoje digitalno u e-arhivi, umesto po fasciklama i fiokama.',
           },
           {
             title: 'Potpis na ekranu',
@@ -470,7 +470,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
     gridNum: '/06',
     inSystemGrid: true,
     title: 'Finansije ordinacije, jasne u svakom trenutku',
-    lead: 'Naplate, dugovanja pacijenata i troškovi na jednom mestu, uz automatske podsetnike. U svakom trenutku znaš kako ordinacija posluje, bez čekanja knjigovođe i bez ručnih tabela.',
+    lead: 'Naplate, dugovanja pacijenata i troškovi u istom pregledu, uz automatske podsetnike. U svakom trenutku znaš kako ordinacija posluje, bez čekanja knjigovođe i bez ručnih tabela.',
     visual: {
       src: '/images/funkcionalnosti/finansije.png',
       alt: 'Finansijski izveštaji u Odontoi, promet, uplate i način plaćanja po mesecu',
@@ -490,7 +490,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
           {
             title: 'Pregled poslovanja',
             icon: 'trending-up',
-            desc: 'Naplate i troškovi na jednom mestu, pa znaš gde stojiš pre nego što mesec prođe.',
+            desc: 'Naplate i troškovi se vide zajedno, pa znaš gde stojiš pre nego što mesec prođe.',
           },
           {
             title: 'Podsetnici koji rade sami',
@@ -504,7 +504,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
         title: 'Kako radi',
         items: [
           'Terapija i cena vode se uz karton pacijenta.',
-          'Naplate i dugovanja pratiš na jednom mestu.',
+          'Naplate i dugovanja pratiš u istom pregledu.',
           'Podsetnik za dug odlazi sam, bez ručnog pozivanja.',
         ],
       },

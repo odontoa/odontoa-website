@@ -1,5 +1,7 @@
 # Blog Post Enhancement - Modern Layout & Features
 
+> **Zastarelo:** istorijski dokument. Supabase i Strapi koji se ovde pominju nisu deo trenutne arhitekture (vidi README, „Trenutni stack”).
+
 ## 🎯 Overview
 
 Uspešno je implementiran moderan blog post layout sa naprednim funkcionalnostima za bolje korisničko iskustvo, SEO optimizaciju i deljenje sadržaja.

@@ -1,11 +1,11 @@
 import { Instrument_Sans } from 'next/font/google';
 
 /**
- * Display font za naslove u home4 estetici.
+ * Display font za naslove u dizajnu sajta.
  *
- * Scoped je na stranice koje ga koriste, root layout se ne dira (zbog home3).
- * Varijabla --font-display dodaje se na .home4-page wrapper, odakle je cita
- * .home4-h2 i naslovi stranica funkcionalnosti.
+ * Scoped je na stranice koje ga koriste, root layout se ne dira (zbog legacy stranica).
+ * Varijabla --font-display dodaje se na .site-page wrapper, odakle je cita
+ * .section-title i naslovi stranica funkcionalnosti.
  *
  * Deljen izmedju pocetne i stranica funkcionalnosti da ne bi postojale dve
  * nezavisne deklaracije istog fonta.

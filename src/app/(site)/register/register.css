@@ -1,6 +1,6 @@
 /* Onboarding wizard, /register.
-   Tokeni su kopija home4 vrednosti, po istom sablonu kao home3.css i home4.css
-   (tokeni su tamo scope-ovani na .home3-page / .home4-page). */
+   Tokeni su kopija vrednosti iz site.css
+   (tamo su scope-ovani na .site-page). */
 .register-page {
   --stellar-heading: #060b13;
   --stellar-body: #363d4f;
@@ -10,7 +10,7 @@
   --stellar-border: #e9ebf1;
   --stellar-muted: #979fb4;
   --stellar-white: #ffffff;
-  /* 92px zona fiksne navigacije + 40px razmaka, isto kao home4 hero */
+  /* 92px zona fiksne navigacije + 40px razmaka, isto kao hero na pocetnoj */
   padding: 132px 24px 96px;
   background:
     radial-gradient(ellipse 60% 40% at 50% -5%, rgba(110, 81, 224, 0.04), transparent 70%),
@@ -355,7 +355,7 @@
   text-align: right;
 }
 
-/* ── Dugmad, vrednosti prepisane iz home4 hero dugmadi ── */
+/* ── Dugmad, vrednosti prepisane iz hero dugmadi na pocetnoj ── */
 .register-btn {
   display: inline-flex;
   align-items: center;

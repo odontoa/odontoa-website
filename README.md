@@ -2,12 +2,23 @@
 
 Advanced Dental Practice Management Website with Internal Content Management System for blogs and glossary entries.
 
+## Trenutni stack
+
+- **Next.js 14 (App Router)**, hostovan na **Vercelu**
+- **Sanity** za blog i rečnik (obe sekcije su trenutno sakrivene do content launcha, `src/lib/config/hidden-sections.ts`)
+- **Resend** za transakcione emailove (kontakt, demo, registracija)
+- `SITE_MODE=coming_soon` drži javni sajt na Welcome stranici (`src/middleware.ts`)
+- Env varijable: vidi „Environment Setup” ispod
+
+> **Zastarelo:** Supabase, Strapi i stari `/admin-panel` / `/admin2` nisu deo trenutne arhitekture.
+> Sekcije ispod koje ih opisuju (CMS Features, Strapi, Setup koraci za bazu, Admin Panel Usage) su istorijske.
+> Stari Supabase kod je u `src/legacy/supabase/`.
+
 ## Features
 
 - **Advanced patient management** - Complete dental practice platform
 - **Internal Admin CMS** - Content management for blogs and glossary
 - **SEO Optimized** - FAQ schema, meta tags, and structured data
-- **Role-based Authentication** - Admin-only access with Supabase
 - **Automated Backups** - Weekly email reports
 - **LLM Integration** - Auto-generated llms.txt for AI visibility
 
@@ -50,6 +61,8 @@ All mutations are persisted immediately to `localStorage`. Refreshing the page r
 ---
 
 ## CMS Features
+
+> **Zastarelo:** opisuje stari interni CMS (Supabase / Strapi). Sadržaj danas ide preko Sanity-ja.
 
 ### Admin Panel (`/admin-panel`)
 - ✅ Blog creation and management with Rich Text Editor
@@ -187,8 +200,8 @@ git checkout -b NextJS-migrated-version-X
 ## Prerequisites
 
 - Node.js (version 18 or higher)
-- Supabase account and project
-- Email service (for backup notifications)
+- Sanity projekat (blog i rečnik)
+- Resend nalog (transakcioni emailovi)
 
 ## Setup Instructions
 
@@ -202,35 +215,16 @@ npm install
 
 ### 2. Environment Setup
 
-Create `.env.local` file:
+Kopiraj `.env.local.example` u `.env.local` i popuni vrednosti. Tajne nikad ne idu u git.
 
-```env
-# Supabase Configuration
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
+Varijable koje aktivni kod čita:
+- `NEXT_PUBLIC_SITE_URL`
+- `SITE_MODE` (`coming_soon` = Welcome stranica), `ENABLE_INTERNAL_ROUTES` (interni alati na preview-u)
+- `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`, `SANITY_REVALIDATE_SECRET`
+- `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `CONTACT_TO_EMAIL`
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`
 
-### 3. Database Setup
-
-Run the SQL schema in your Supabase project:
-
-```bash
-# Copy the contents of supabase/schema.sql to your Supabase SQL editor
-# This creates tables: blogs, glossary, admin_users, backups
-# With proper RLS policies and indexes
-```
-
-### 4. Create Admin User
-
-In Supabase Auth, create a user and then add them to admin_users table:
-
-```sql
--- After creating user in Supabase Auth dashboard
-INSERT INTO public.admin_users (id, email, role)
-VALUES ('user-uuid-from-auth', 'admin@example.com', 'admin');
-```
-
-### 5. Development
+### 3. Development
 
 ```bash
 npm run dev
@@ -238,9 +232,10 @@ npm run dev
 
 Visit:
 - Main site: `http://localhost:3000`
-- Admin panel: `http://localhost:3000/admin-panel`
 
 ## Admin Panel Usage
+
+> **Zastarelo:** `/admin-panel` ne postoji u trenutnoj verziji sajta. Sekcija je sačuvana kao istorijska referenca.
 
 ### Accessing Admin Panel
 
@@ -325,6 +320,8 @@ Visit:
 
 ## Backup System
 
+> **Zastarelo:** opisuje stari Supabase setup, nije deo trenutne arhitekture.
+
 ### Automated Backups
 - Runs every Sunday at 11:00 PM
 - Generates HTML email report
@@ -375,6 +372,8 @@ npm run lint         # Run ESLint
 
 ## Project Structure
 
+> **Zastarelo:** opisuje stari Supabase setup, nije deo trenutne arhitekture.
+
 ```
 src/
 ├── components/
@@ -401,6 +400,8 @@ src/
 
 ## Database Schema
 
+> **Zastarelo:** opisuje stari Supabase setup, nije deo trenutne arhitekture.
+
 ### Tables
 - `blogs` - Blog posts with SEO data
 - `glossary` - Dictionary entries
@@ -415,21 +416,16 @@ src/
 ## Deployment
 
 ### Environment Variables
-Set in production:
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_ANON_KEY`
+Postavljaju se u Vercel projektu (Production / Preview), spisak je u „Environment Setup”.
+`SITE_MODE=coming_soon` drži javni sajt na Welcome stranici.
 
 ### Build
 ```bash
 npm run build
 ```
 
-### Static Hosting
-Deploy `dist/` folder to:
-- Netlify
-- Vercel
-- GitHub Pages
-- Any static host
+### Hosting
+Vercel (Next.js build, ne statički `dist/` export).
 
 ## Email Setup (Production)
 

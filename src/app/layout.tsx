@@ -20,7 +20,7 @@ const manrope = Manrope({
 
 const defaultMetadata: Metadata = {
   title: 'Odontoa - Napredni sistem za upravljanje stomatološkom ordinacijom',
-  description: 'Kompletno rešenje za upravljanje stomatološkom ordinacijom. Upravljajte pacijentima, terminima, finansijama i analitikom na jednom mestu.',
+  description: 'Softver za stomatološke ordinacije: zakazivanje, karton, RTG, zubna tehnika, dokumentacija i finansije u jednom sistemu.',
   keywords: 'stomatologija, ordinacija, pacijenti, termini, finansije, analitika',
   authors: [{ name: 'Odontoa Team' }],
   creator: 'Odontoa Team',
@@ -45,7 +45,7 @@ const defaultMetadata: Metadata = {
   },
   openGraph: {
     title: 'Odontoa - Napredni sistem za upravljanje stomatološkom ordinacijom',
-    description: 'Kompletno rešenje za upravljanje stomatološkom ordinacijom. Upravljajte pacijentima, terminima, finansijama i analitikom na jednom mestu.',
+    description: 'Softver za stomatološke ordinacije: zakazivanje, karton, RTG, zubna tehnika, dokumentacija i finansije u jednom sistemu.',
     url: 'https://odontoa.com',
     siteName: 'Odontoa',
     images: [
@@ -62,7 +62,7 @@ const defaultMetadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Odontoa - Napredni sistem za upravljanje stomatološkom ordinacijom',
-    description: 'Kompletno rešenje za upravljanje stomatološkom ordinacijom.',
+    description: 'Softver za stomatološke ordinacije: zakazivanje, karton, RTG, zubna tehnika, dokumentacija i finansije u jednom sistemu.',
     images: ['/images/Odontoa-New-logo-pack-2026/horiyotal_color.png'],
   },
   robots: {
@@ -83,12 +83,12 @@ const defaultMetadata: Metadata = {
 
 const comingSoonMetadata: Metadata = {
   title: 'Odontoa je online',
-  description: 'Platforma za upravljanje stomatološkom ordinacijom. Termini, kartoni i tim na jednom mestu.',
+  description: 'Softver za stomatološke ordinacije: zakazivanje, karton, RTG, zubna tehnika, dokumentacija i finansije u jednom sistemu.',
   metadataBase: new URL('https://odontoa.com'),
   alternates: { canonical: '/' },
   openGraph: {
     title: 'Odontoa je online',
-    description: 'Platforma za upravljanje stomatološkom ordinacijom. Termini, kartoni i tim na jednom mestu.',
+    description: 'Softver za stomatološke ordinacije: zakazivanje, karton, RTG, zubna tehnika, dokumentacija i finansije u jednom sistemu.',
     url: 'https://odontoa.com',
     siteName: 'Odontoa',
     images: [
@@ -105,7 +105,7 @@ const comingSoonMetadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Odontoa je online',
-    description: 'Platforma za upravljanje stomatološkom ordinacijom. Termini, kartoni i tim na jednom mestu.',
+    description: 'Softver za stomatološke ordinacije: zakazivanje, karton, RTG, zubna tehnika, dokumentacija i finansije u jednom sistemu.',
     images: ['/images/Odontoa-New-logo-pack-2026/horiyotal_color.png'],
   },
   robots: { index: true, follow: true },

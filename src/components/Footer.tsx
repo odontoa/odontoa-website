@@ -1,21 +1,52 @@
 'use client';
 
-import { Button } from "@/components/ui/button";
 import { Mail, MapPin, Facebook, Instagram, Linkedin } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { businessConfig } from "@/lib/config/business";
+import { isSectionHidden } from "@/lib/config/hidden-sections";
+import { isOpenInComingSoon } from "@/lib/config/site-mode";
 
-const Footer = () => {
+/* Linkovi privremeno sakrivenih sekcija se filtriraju (src/lib/config/hidden-sections.ts). */
+const NAV_LINKS = [
+  { href: '/', label: 'Početna' },
+  { href: '/funkcionalnosti', label: 'Funkcionalnosti' },
+  { href: '/o-nama', label: 'O nama' },
+  { href: '/kontakt', label: 'Kontakt' },
+].filter((link) => !isSectionHidden(link.href));
+
+const RESOURCE_LINKS = [
+  { href: '/blogovi', label: 'Blog' },
+  { href: '/recnik', label: 'Rečnik' },
+  { href: '/alati', label: 'Besplatni alati' },
+].filter((link) => !isSectionHidden(link.href));
+
+const LEGAL_LINKS = [
+  { href: '/kontakt', label: 'Pomoć' },
+  { href: '/politika-privatnosti', label: 'Politika privatnosti' },
+  { href: '/uslovi-koriscenja', label: 'Uslovi korišćenja' },
+  { href: '/gdpr', label: 'GDPR' },
+  { href: '/demo', label: 'Demo' },
+];
+
+/* comingSoon dolazi od serverskog roditelja (isComingSoon()); tada footer prikazuje samo
+   linkove ka stranicama koje su u coming-soon rezimu otvorene. */
+const Footer = ({ comingSoon = false }: { comingSoon?: boolean }) => {
+  const open = <T extends { href: string }>(links: T[]) =>
+    comingSoon ? links.filter((link) => isOpenInComingSoon(link.href)) : links;
+  const navLinks = open(NAV_LINKS);
+  const resourceLinks = open(RESOURCE_LINKS);
+  const legalLinks = open(LEGAL_LINKS);
   return (
     <footer className="w-full bg-white border-t border-border py-16 px-6">
       <div className="max-w-screen-xl mx-auto">
 
         {/* Main columns */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
 
-          {/* Logo and Company Info */}
-          <div className="col-span-1 md:col-span-2">
+          {/* Logo and Company Info. Kad nema kolone Resursi (sve sekcije sakrivene), brend
+              zauzima tri kolone, da Navigacija i Podrska ostanu uz desnu ivicu. */}
+          <div className={resourceLinks.length > 0 ? 'col-span-1 md:col-span-2' : 'col-span-1 md:col-span-3'}>
             <Link href="/" className="flex items-center mb-4 hover:opacity-80 transition-opacity">
               <Image
                 src="/images/Odontoa-New-logo-pack-2026/horiyotal_color.png"
@@ -46,61 +77,38 @@ const Footer = () => {
           <div>
             <h3 className="text-sm font-medium mb-4" style={{ color: '#979fb4' }}>Navigacija</h3>
             <ul className="space-y-3">
-              <li><Link href="/" className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>Početna strana</Link></li>
-              <li><Link href="/o-nama" className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>O nama</Link></li>
-              <li><Link href="/kontakt" className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>Kontakt</Link></li>
+              {navLinks.map((link) => (
+                <li key={link.href}><Link href={link.href} className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>{link.label}</Link></li>
+              ))}
             </ul>
           </div>
 
           {/* Resources */}
-          <div>
-            <h3 className="text-sm font-medium mb-4" style={{ color: '#979fb4' }}>Resursi</h3>
-            <ul className="space-y-3">
-              <li><Link href="/blogovi" className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>Blog</Link></li>
-              <li><Link href="/recnik" className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>Rečnik</Link></li>
-              <li><Link href="/alati" className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>Besplatni alati</Link></li>
-            </ul>
-          </div>
+          {resourceLinks.length > 0 && (
+            <div>
+              <h3 className="text-sm font-medium mb-4" style={{ color: '#979fb4' }}>Resursi</h3>
+              <ul className="space-y-3">
+                {resourceLinks.map((link) => (
+                  <li key={link.href}><Link href={link.href} className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>{link.label}</Link></li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Legal */}
           <div>
             <h3 className="text-sm font-medium mb-4" style={{ color: '#979fb4' }}>Podrška i uslovi</h3>
             <ul className="space-y-3">
-              <li><Link href="/pomoc-i-pravno#pomoc" className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>Pomoć</Link></li>
-              <li><Link href="/politika-privatnosti" className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>Politika privatnosti</Link></li>
-              <li><Link href="/uslovi-koriscenja" className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>Uslovi korišćenja</Link></li>
-              <li><Link href="/gdpr" className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>GDPR</Link></li>
-              <li><Link href="/demo" className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>Demo</Link></li>
+              {legalLinks.map((link) => (
+                <li key={link.label}><Link href={link.href} className="text-sm transition-colors hover:text-foreground" style={{ color: '#363d4f' }}>{link.label}</Link></li>
+              ))}
             </ul>
           </div>
         </div>
 
-        {/* Newsletter */}
-        <div className="border-t border-border pt-8 mb-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div>
-              <h3 className="text-sm font-semibold mb-1" style={{ color: '#060b13' }}>
-                Budite u toku
-              </h3>
-              <p className="text-sm" style={{ color: '#979fb4' }}>
-                Saveti i vesti iz sveta digitalne stomatologije, jednom mesečno.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <input
-                type="email"
-                placeholder="Vaš email"
-                className="flex-1 px-5 py-3 bg-white border border-border rounded-full text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#6e51e0] text-sm shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-colors"
-              />
-              <Button variant="pillAccent" size="pill">
-                Prijavi se
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom bar — copyright left, socials right */}
-        <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
+        {/* Bottom bar: copyright levo, mreze desno. Newsletter je uklonjen za launch
+            (nije imao handler ni listu), pa linija ide direktno iznad ove trake. */}
+        <div className="border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs" style={{ color: '#505a71' }}>
             © 2026 Odontoa. Sva prava zadržana.
           </p>

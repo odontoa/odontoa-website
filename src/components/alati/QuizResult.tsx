@@ -16,6 +16,7 @@ import {
   type ProfileId,
 } from "./quiz-data";
 import { profileToDemoParam, type ScoreResult } from "./scoring";
+import { isSectionHidden } from "@/lib/config/hidden-sections";
 
 interface QuizResultProps {
   score: ScoreResult;
@@ -34,9 +35,10 @@ export default function QuizResult({
   const resourceCategoryId: CategoryId | undefined =
     weakest[0] ??
     [...score.categories].sort((a, b) => a.percent - b.percent)[0]?.id;
-  const resources = resourceCategoryId
-    ? CATEGORY_RESOURCES[resourceCategoryId]
-    : [];
+  /* Linkovi ka privremeno sakrivenim sekcijama (recnik, blog) se ne prikazuju. */
+  const resources = (resourceCategoryId ? CATEGORY_RESOURCES[resourceCategoryId] : []).filter(
+    (r) => !isSectionHidden(r.href)
+  );
   const demoHref = `/demo?source=digital-readiness-tool&profile=${profileToDemoParam(profile)}`;
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export default function QuizResult({
   return (
     <div className="alati-result">
       <header className="alati-result__hero">
-        <p className="alati-result__hero-pill">Vaš rezultat</p>
+        <p className="alati-result__hero-pill">Tvoj rezultat</p>
         <div className="alati-result__score">
           <span className="alati-result__score-value">{score.totalScore}</span>
           <span className="alati-result__score-suffix">/ 100</span>
@@ -121,7 +123,7 @@ export default function QuizResult({
           aria-labelledby="alati-result-resources"
         >
           <h3 id="alati-result-resources" className="alati-result__block-title">
-            Preporučeno za vas
+            Preporučeno za tebe
           </h3>
           <ul className="alati-result__resources">
             {resources.map((r, i) => (
@@ -161,7 +163,7 @@ export default function QuizResult({
             analytics.quizCtaClick("demo", demoHref, score.totalScore)
           }
         >
-          <span>Zakažite Odontoa demo</span>
+          <span>Zakaži Odontoa demo</span>
           <ArrowRight size={16} aria-hidden="true" />
         </Link>
       </section>

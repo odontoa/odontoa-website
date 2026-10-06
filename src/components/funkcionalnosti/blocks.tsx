@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import type { FeatureBlock } from '@/lib/content/funkcionalnosti';
-import Reveal from '@/components/home4/Reveal';
+import Reveal from '@/components/shared/Reveal';
 import StepsFlow from './StepsFlow';
 import {
   BellRing,
@@ -38,8 +38,8 @@ import {
 
 /* ── Identitet sekcije po tipu bloka ───────────────────────────────────────
    tone:  podloga sekcije, 'alt' je --stellar-bg-light
-   align: 'center' je centrirano zaglavlje (eyebrow + H2), kao Home4BigFeatures
-          i Home4Pricing na pocetnoj
+   align: 'center' je centrirano zaglavlje (eyebrow + H2), kao WorkflowSection
+          i PricingSection na pocetnoj
 
    Smenjivanje 'alt'/'white' i 'center'/'left' zajedno daju cik-cak ritam
    umesto pet identicnih sekcija poravnatih levo. */
@@ -76,7 +76,7 @@ export function toneAfterBlocks(blocks: FeatureBlock[]): SectionTone {
    izostavljen kljuc pada na kvacicu, tako da kartica nikad ne ostane bez glifa.
 
    Lucide, jer je vec zavisnost i vec se uvozi u FeaturePage.tsx. Velicina i
-   debljina linije prate home4 konvenciju za ikonice u pločici (18px / 1.75). */
+   debljina linije prate konvenciju sajta za ikonice u pločici (18px / 1.75). */
 
 /**
  * Zub, jedina rucno crtana ikonica u mapi.
@@ -164,7 +164,7 @@ function BenefitIcon({ name }: { name?: string }) {
 function PlusIcon() {
   return (
     <svg
-      className="home4-fp-faq__icon"
+      className="page-faq__icon"
       width="16"
       height="16"
       viewBox="0 0 24 24"
@@ -183,15 +183,15 @@ function PlusIcon() {
 
 function BenefitsBlock({ block }: { block: Extract<FeatureBlock, { type: 'benefits' }> }) {
   return (
-    <div className="home4-fp-benefits">
+    <div className="page-benefits">
       {block.items.map((item, i) => (
         <Reveal key={item.title} delay={i * 0.06} style={{ height: '100%' }}>
-          <div className="home4-fp-benefit">
-            <div className="home4-fp-benefit__icon">
+          <div className="page-benefit">
+            <div className="page-benefit__icon">
               <BenefitIcon name={item.icon} />
             </div>
-            <h3 className="home4-fp-benefit__title">{item.title}</h3>
-            <p className="home4-fp-benefit__desc">{item.desc}</p>
+            <h3 className="page-benefit__title">{item.title}</h3>
+            <p className="page-benefit__desc">{item.desc}</p>
           </div>
         </Reveal>
       ))}
@@ -207,7 +207,7 @@ function StepsBlock({ block }: { block: Extract<FeatureBlock, { type: 'steps' }>
 
 function ProseBlock({ block }: { block: Extract<FeatureBlock, { type: 'prose' }> }) {
   return (
-    <div className="home4-fp-prose">
+    <div className="page-prose">
       {block.paragraphs.map((p) => (
         <p key={p}>{p}</p>
       ))}
@@ -221,14 +221,14 @@ function ProseBlock({ block }: { block: Extract<FeatureBlock, { type: 'prose' }>
  */
 function FaqBlock({ block }: { block: Extract<FeatureBlock, { type: 'faq' }> }) {
   return (
-    <div className="home4-fp-faq">
+    <div className="page-faq">
       {block.items.map((item) => (
-        <details key={item.q} className="home4-fp-faq__item">
-          <summary className="home4-fp-faq__q">
+        <details key={item.q} className="page-faq__item">
+          <summary className="page-faq__q">
             {item.q}
             <PlusIcon />
           </summary>
-          <p className="home4-fp-faq__a">{item.a}</p>
+          <p className="page-faq__a">{item.a}</p>
         </details>
       ))}
     </div>
@@ -256,7 +256,7 @@ function BlockBody({ block }: { block: FeatureBlock }) {
  * Eyebrow nosi accent boju u svaku sekciju tela, koja je do sada bila potpuno
  * siva ispod heroja, i oslobadja H2 da bude tvrdnja umesto etikete.
  *
- * Crtica ide samo na sekcije poravnate levo (obrazac .home4-quote__eyebrow sa
+ * Crtica ide samo na sekcije poravnate levo (obrazac .testimonial-quote__eyebrow sa
  * pocetne): uz centriran tekst visi neuravnotezeno, pa centrirane sekcije nose
  * cist uppercase eyebrow.
  */
@@ -264,13 +264,13 @@ function SectionHeader({ block }: { block: FeatureBlock }) {
   const meta = SECTION_META[block.type];
   return (
     <Reveal>
-      <p className="home4-fp-section__eyebrow">
+      <p className="page-section__eyebrow">
         {meta.align === 'left' && (
-          <span className="home4-fp-section__dash" aria-hidden="true" />
+          <span className="page-section__dash" aria-hidden="true" />
         )}
         {meta.eyebrow}
       </p>
-      <h2 className="home4-fp-section__title">{block.title}</h2>
+      <h2 className="page-section__title">{block.title}</h2>
     </Reveal>
   );
 }
@@ -281,17 +281,17 @@ export default function FeatureBlocks({ blocks }: { blocks: FeatureBlock[] }) {
       {blocks.map((block) => {
         const meta = SECTION_META[block.type];
         const classes = [
-          'home4-fp-section',
-          `home4-fp-section--${block.type}`,
-          meta.tone === 'alt' && 'home4-fp-section--alt',
-          meta.align === 'center' && 'home4-fp-section--center',
+          'page-section',
+          `page-section--${block.type}`,
+          meta.tone === 'alt' && 'page-section--alt',
+          meta.align === 'center' && 'page-section--center',
         ]
           .filter(Boolean)
           .join(' ');
 
         return (
           <section key={`${block.type}-${block.title}`} className={classes}>
-            <div className="home4-fp-section__inner">
+            <div className="page-section__inner">
               <SectionHeader block={block} />
               <BlockBody block={block} />
             </div>

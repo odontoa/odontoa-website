@@ -3,7 +3,7 @@ import { Instrument_Sans } from 'next/font/google';
 import OnboardingWizard from '@/components/register/OnboardingWizard';
 import './register.css';
 
-/* Display font za naslove, scoped na ovu stranicu (isto kao home4). */
+/* Display font za naslove, scoped na ovu stranicu (isto kao pocetna). */
 const displayFont = Instrument_Sans({
   subsets: ['latin', 'latin-ext'],
   weight: ['400', '500', '600', '700'],

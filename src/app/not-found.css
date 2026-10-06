@@ -1,0 +1,88 @@
+/* 404: isti sistem kao ostatak sajta. Tokeni (--stellar-*, --font-display) dolaze sa
+   .site-page wrappera iz site.css; dugmad su .btn-cta i .hero__link. */
+.not-found {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: 96px 24px 40px;
+  background: var(--stellar-bg-light);
+  overflow: hidden;
+}
+
+/* Isti blagi brend sjaj kao iza naslova u hero-u, 8% akcenta */
+.not-found::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 55% 40% at 50% 38%,
+    color-mix(in srgb, var(--stellar-accent) 8%, transparent),
+    transparent 70%
+  );
+}
+
+.not-found__body {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 48px 0;
+}
+
+.not-found__code {
+  font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
+  font-size: clamp(72px, 12vw, 112px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--stellar-accent);
+  margin: 0 0 20px;
+}
+
+.not-found__title {
+  font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
+  font-size: clamp(26px, 3.6vw, 36px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.18;
+  color: var(--stellar-heading);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.not-found__lead {
+  font-size: 16px;
+  line-height: 1.62;
+  color: var(--stellar-body);
+  margin: 14px 0 0;
+  max-width: 440px;
+}
+
+.not-found__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 32px;
+}
+
+@media (max-width: 480px) {
+  .not-found__actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .not-found__actions .btn-cta {
+    width: 100%;
+    justify-content: center;
+  }
+}

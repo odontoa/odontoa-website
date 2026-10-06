@@ -1,5 +1,7 @@
 # SEO, GEO i AI Implementation - Complete Summary
 
+> **Zastarelo:** istorijski dokument. Supabase i Strapi koji se ovde pominju nisu deo trenutne arhitekture (vidi README, „Trenutni stack”).
+
 **Datum:** 2025-01-27  
 **Status:** ✅ Sve pre-launch implementacije završene
 

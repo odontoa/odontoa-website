@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import Reveal from '@/components/home4/Reveal';
+import Reveal from '@/components/shared/Reveal';
 import FeatureBlocks, { toneAfterBlocks } from './blocks';
 import {
   getRelatedFeaturePages,
@@ -14,7 +14,7 @@ import {
  * Sest funkcionalnosti + AI asistent su instance ove komponente sa razlicitim
  * podacima. Dizajn se menja ovde, na jednom mestu.
  *
- * Wrapper .home4-page je obavezan: --stellar-* tokeni i --font-display su
+ * Wrapper .site-page je obavezan: --stellar-* tokeni i --font-display su
  * definisani na njemu, ne na :root. Bez njega stranica ostaje bez boja i fonta.
  */
 
@@ -48,15 +48,15 @@ function BackIcon() {
 
 function FeatureVisual({ visual }: { visual?: FeaturePageData['visual'] }) {
   return (
-    <Reveal delay={0.12} className="home4-fp-visual">
-      <div className="home4-fp-visual__frame">
-        <div className="home4-fp-visual__bar" aria-hidden="true">
-          <span className="home4-fp-visual__dot" />
-          <span className="home4-fp-visual__dot" />
-          <span className="home4-fp-visual__dot" />
+    <Reveal delay={0.12} className="page-visual">
+      <div className="page-visual__frame">
+        <div className="page-visual__bar" aria-hidden="true">
+          <span className="page-visual__dot" />
+          <span className="page-visual__dot" />
+          <span className="page-visual__dot" />
         </div>
         <div
-          className="home4-fp-visual__body"
+          className="page-visual__body"
           /* Uz 'contain' pozadina okvira preuzima boju ivice slike, da se spoj
              ispod slike ne vidi. */
           style={visual?.bg ? { background: visual.bg } : undefined}
@@ -68,8 +68,8 @@ function FeatureVisual({ visual }: { visual?: FeaturePageData['visual'] }) {
             <Image
               className={
                 visual.fit === 'contain'
-                  ? 'home4-fp-visual__img home4-fp-visual__img--contain'
-                  : 'home4-fp-visual__img'
+                  ? 'page-visual__img page-visual__img--contain'
+                  : 'page-visual__img'
               }
               src={visual.src}
               alt={visual.alt}
@@ -80,7 +80,7 @@ function FeatureVisual({ visual }: { visual?: FeaturePageData['visual'] }) {
           ) : (
             /* Placeholder dok ne stignu pravi screenshotovi.
                Kad se popuni polje `visual` u podacima, ova grana nestaje sama. */
-            <div className="home4-fp-visual__placeholder">
+            <div className="page-visual__placeholder">
               <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <rect
                   x="3"
@@ -100,7 +100,7 @@ function FeatureVisual({ visual }: { visual?: FeaturePageData['visual'] }) {
                   strokeLinejoin="round"
                 />
               </svg>
-              <p className="home4-fp-visual__placeholder-label">Prikaz funkcionalnosti</p>
+              <p className="page-visual__placeholder-label">Prikaz funkcionalnosti</p>
             </div>
           )}
         </div>
@@ -118,21 +118,21 @@ export default function FeaturePage({ page }: { page: FeaturePageData }) {
   return (
     <>
       {/* ── Hero stranice ── */}
-      <section className="home4-fp-hero">
-        <div className="home4-fp-hero__inner">
+      <section className="page-hero">
+        <div className="page-hero__inner">
           <Reveal>
-            <Link href="/funkcionalnosti" className="home4-fp-hero__eyebrow">
+            <Link href="/funkcionalnosti" className="page-hero__eyebrow">
               <BackIcon />
               Funkcionalnosti
             </Link>
-            <h1 className="home4-fp-hero__title">{page.title}</h1>
-            <p className="home4-fp-hero__lead">{page.lead}</p>
+            <h1 className="page-hero__title">{page.title}</h1>
+            <p className="page-hero__lead">{page.lead}</p>
             {/* Iste klase kao CTA u heroju pocetne, da dugmad budu identicna. */}
-            <div className="home4-fp-hero__actions">
-              <Link href="/register" className="home4-hero__btn home4-hero__btn--primary">
+            <div className="page-hero__actions">
+              <Link href="/register" className="hero__btn hero__btn--primary">
                 Započni besplatno
               </Link>
-              <Link href="/demo" className="home4-hero__link">
+              <Link href="/demo" className="hero__link">
                 Zakaži demo
                 <ArrowRight size={15} strokeWidth={2} aria-hidden />
               </Link>
@@ -149,24 +149,24 @@ export default function FeaturePage({ page }: { page: FeaturePageData }) {
 
       {/* ── Srodne funkcionalnosti ── */}
       <section
-        className={`home4-fp-section home4-fp-section--related${
-          relatedTone === 'alt' ? ' home4-fp-section--alt' : ''
+        className={`page-section page-section--related${
+          relatedTone === 'alt' ? ' page-section--alt' : ''
         }`}
       >
-        <div className="home4-fp-section__inner">
+        <div className="page-section__inner">
           <Reveal>
-            <p className="home4-fp-section__eyebrow">
-              <span className="home4-fp-section__dash" aria-hidden="true" />
+            <p className="page-section__eyebrow">
+              <span className="page-section__dash" aria-hidden="true" />
               Dalje
             </p>
-            <h2 className="home4-fp-section__title">Ostale funkcionalnosti</h2>
+            <h2 className="page-section__title">Ostale funkcionalnosti</h2>
           </Reveal>
-          <div className="home4-fp-related__grid">
+          <div className="page-related__grid">
             {related.map((item, i) => (
               <Reveal key={item.slug} delay={i * 0.04}>
                 <Link
                   href={`/funkcionalnosti/${item.slug}`}
-                  className="home4-fp-related__card"
+                  className="page-related__card"
                 >
                   {item.navTitle}
                   <ArrowIcon />
@@ -178,20 +178,20 @@ export default function FeaturePage({ page }: { page: FeaturePageData }) {
       </section>
 
       {/* ── Zavrsni CTA ── */}
-      <section className="home4-fp-cta">
-        <div className="home4-fp-cta__inner">
+      <section className="page-cta">
+        <div className="page-cta__inner">
           <Reveal>
-            <h2 className="home4-fp-cta__title">Probaj na svojoj ordinaciji</h2>
-            <p className="home4-fp-cta__lead">
+            <h2 className="page-cta__title">Probaj na svojoj ordinaciji</h2>
+            <p className="page-cta__lead">
               Napravi nalog za nekoliko minuta ili nam se javi, pa da zajedno prođemo kroz
               sistem.
             </p>
-            <div className="home4-fp-cta__actions">
-              <Link href="/register" className="home4-hero__btn home4-hero__btn--primary">
+            <div className="page-cta__actions">
+              <Link href="/register" className="hero__btn hero__btn--primary">
                 Započni besplatno
               </Link>
               {/* Isti par akcija kao hero stranice: primarno /register, sekundarno /demo. */}
-              <Link href="/demo" className="home4-fp-cta__ghost">
+              <Link href="/demo" className="page-cta__ghost">
                 Zakaži demo
               </Link>
             </div>

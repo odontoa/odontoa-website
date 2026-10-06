@@ -16,10 +16,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      /* /home2 i /home3 su arhiva starih varijanti pocetne: nisu linkovane
-         iz nava ni footera, ali su javno dostupne i skoro identicne pocetnoj,
-         pa se drze van indeksa. */
-      disallow: ['/api/', '/studio/', '/home2', '/home3'],
+      /* Stare varijante pocetne (/home2, /home3, /home4, /dizajn-varijante) vode 301
+         na /, pa ih ne blokiramo: crawler treba da vidi preusmerenje. */
+      disallow: ['/api/', '/studio/'],
     },
     sitemap: 'https://odontoa.com/sitemap.xml',
   };

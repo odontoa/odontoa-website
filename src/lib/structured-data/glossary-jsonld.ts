@@ -1,4 +1,4 @@
-import type { SanityGlossaryTerm } from "../sanity.queries";
+import type { RecnikTerm } from "../content/recnik";
 
 /**
  * Builds JSON-LD structured data for glossary terms following Odontoa SEO/LLM rules.
@@ -12,11 +12,10 @@ import type { SanityGlossaryTerm } from "../sanity.queries";
  * - author.url is REQUIRED (fallback to /o-nama)
  * - inLanguage: "sr"
  * - FAQPage only if FAQs exist and are 1:1 in visible content
+ *
+ * Izvor je lokalni recnik (src/lib/content/recnik.ts), ne Sanity.
  */
-export function buildGlossaryJsonLd(
-  term: SanityGlossaryTerm & { coverImageUrl?: string },
-  baseUrl: string
-) {
+export function buildGlossaryJsonLd(term: RecnikTerm, baseUrl: string) {
   const url = `${baseUrl}/recnik/${term.slug}`;
   const title = term.seoTitle || term.term;
   const description = term.metaDescription || term.definition || "";
@@ -26,40 +25,21 @@ export function buildGlossaryJsonLd(
   const dateModified = new Date(term.updatedAt || term.publishedAt).toISOString();
   
   // Image fallback to default OG if not provided
-  const imageUrl = term.coverImageUrl || `${baseUrl}/og/odontoa-default.png`;
+  const imageUrl = term.coverImage ? `${baseUrl}${term.coverImage.src}` : `${baseUrl}/og/odontoa-default.png`;
   
   // Author URL is REQUIRED (fallback to /o-nama)
-  const authorUrl = term.authorUrl || term.authorUrlFromAuthor || `${baseUrl}/o-nama`;
-  const authorName = term.authorName || "Odontoa Tim";
+  const authorUrl = `${baseUrl}/o-nama`;
+  const authorName = term.author || "Odontoa Tim";
 
-  // Build FAQ entities from PortableText (only if FAQs exist)
-  const faqEntities =
-    term.faqs && term.faqs.length > 0
-      ? term.faqs.map((faq) => {
-          // Extract plain text from PortableText blocks
-          const answerText = faq.answer
-            ? faq.answer
-                .map((block: any) => {
-                  if (block._type === "block" && block.children) {
-                    return block.children
-                      .map((child: any) => child.text || "")
-                      .join("");
-                  }
-                  return "";
-                })
-                .join(" ")
-            : "";
-
-          return {
-            "@type": "Question",
-            name: faq.question,
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: answerText,
-            },
-          };
-        })
-      : [];
+  // FAQ entiteti iz istog niza koji se prikazuje na stranici (1:1)
+  const faqEntities = (term.faqs ?? []).map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  }));
 
   // Combined schema array: [WebPage, BreadcrumbList, Article, FAQPage?]
   // @context only on FIRST object

@@ -1,39 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sanityClient } from '@/lib/sanity.client';
-import { groq } from 'next-sanity';
+import { getPublishedTerm } from '@/lib/content/recnik';
 
-export const dynamic = 'force-dynamic';
+/* Povezani termini za stari blog layout (PostLayout). Izvor je lokalni recnik. */
+export function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const terms = searchParams.get('terms');
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const terms = searchParams.get('terms');
-
-    if (!terms) {
-      return NextResponse.json({ error: 'Terms parameter is required' }, { status: 400 });
-    }
-
-    const termSlugs = terms.split(',').map(term => term.trim()).filter(Boolean);
-
-    if (termSlugs.length === 0) {
-      return NextResponse.json([]);
-    }
-
-    // Fetch related glossary terms from Sanity
-    const query = groq`*[_type == "glossaryTerm" && !(_id in path("drafts.**")) && defined(slug.current) && defined(publishedAt) && slug.current in $termSlugs] | order(term asc){
-      _id,
-      term,
-      "slug": slug.current,
-      definition,
-      category
-    }`;
-
-    const data = await sanityClient.fetch(query, { termSlugs });
-
-    return NextResponse.json(data || []);
-
-  } catch (error) {
-    console.error('API error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  if (!terms) {
+    return NextResponse.json({ error: 'Terms parameter is required' }, { status: 400 });
   }
-} 
+
+  const data = terms
+    .split(',')
+    .map((slug) => getPublishedTerm(slug.trim()))
+    .filter((term): term is NonNullable<typeof term> => Boolean(term))
+    .sort((a, b) => a.term.localeCompare(b.term, 'sr'))
+    .map(({ slug, term, definition, category }) => ({ _id: slug, term, slug, definition, category }));
+
+  return NextResponse.json(data);
+}

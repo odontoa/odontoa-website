@@ -443,7 +443,7 @@ article img,
 
 /* Custom Scrollbar
    Brend ljubicasta, isti gradijent kao primarno dugme (--stellar-accent porodica).
-   Vrednosti su literalne jer se --stellar-* tokeni definisu na .home4-page
+   Vrednosti su literalne jer se --stellar-* tokeni definisu na .site-page
    wrapperu, a scrollbar pseudo-element ne nasledjuje od njega. */
 ::-webkit-scrollbar {
   width: 8px;

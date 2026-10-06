@@ -1,0 +1,287 @@
+/* Pravne stranice (politika, uslovi, GDPR, podrska) u dizajnu sajta.
+   Tokeni (--stellar-*, --font-display) dolaze sa .site-page wrappera iz site.css.
+   Sadrzaj se ne stilizuje utility klasama nego kroz .legal__body, da tekst
+   dokumenata ostane cist i da sve stranice citaju isto. */
+
+.legal__inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* Glava: ista svetla povrsina i ritam kao kontakt */
+.legal__hero {
+  padding: 136px 24px 56px;
+  background: var(--stellar-bg-light);
+  border-bottom: 1px solid var(--stellar-border);
+}
+
+.legal__eyebrow {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--stellar-accent);
+  margin: 0 0 14px;
+}
+
+.legal__title {
+  font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
+  font-size: clamp(36px, 5vw, 52px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--stellar-heading);
+  margin: 0;
+}
+
+.legal__lead {
+  font-size: 17px;
+  line-height: 1.62;
+  color: var(--stellar-body);
+  margin: 18px 0 0;
+  max-width: 640px;
+}
+
+.legal__content {
+  padding: 56px 24px var(--section-pad);
+  background: var(--stellar-white);
+}
+
+/* Telo dokumenta */
+.legal__body {
+  color: var(--stellar-body);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.legal__body > section + section {
+  margin-top: 40px;
+}
+
+.legal__body h2,
+.legal__body h3 {
+  font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
+  color: var(--stellar-heading);
+  letter-spacing: -0.015em;
+  margin: 0 0 12px;
+}
+
+.legal__body h2 {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.legal__body h3 {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.legal__body p {
+  margin: 0;
+}
+
+.legal__body p + p,
+.legal__body p + ul,
+.legal__body ul + p,
+.legal__body h3 + ul {
+  margin-top: 12px;
+}
+
+.legal__body ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Tiha ljubicasta tacka umesto default bullet-a */
+.legal__body li {
+  position: relative;
+  padding-left: 20px;
+}
+
+.legal__body li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0.72em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--stellar-accent);
+}
+
+.legal__body strong {
+  color: var(--stellar-heading);
+  font-weight: 600;
+}
+
+.legal__body a {
+  color: var(--stellar-accent);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 150ms ease-out;
+}
+
+.legal__body a:hover {
+  color: var(--stellar-accent-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Datum vazenja na dnu dokumenta */
+.legal__body .legal__meta {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--stellar-border);
+  font-size: 14px;
+  color: var(--stellar-muted);
+}
+
+.legal__meta p + p {
+  margin-top: 4px;
+}
+
+/* Podrska i uslovi: vise dokumenata na jednoj stranici, svaki sa sidrom */
+.legal__body > .legal__doc + .legal__doc {
+  margin-top: 64px;
+  padding-top: 48px;
+  border-top: 1px solid var(--stellar-border);
+}
+
+.legal__doc {
+  scroll-margin-top: 96px;
+}
+
+.legal__doc > h3:first-child {
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+.legal__doc > div + div {
+  margin-top: 28px;
+}
+
+/* Kontakt redovi: isti obrazac oznaka / vrednost kao na kontakt stranici */
+.legal__details {
+  margin: 20px 0;
+  padding: 0;
+  border-top: 1px solid var(--stellar-border);
+}
+
+.legal__detail {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--stellar-border);
+  font-size: 15px;
+}
+
+.legal__detail dt {
+  color: var(--stellar-muted);
+  font-weight: 500;
+}
+
+.legal__detail dd {
+  margin: 0;
+  color: var(--stellar-heading);
+  font-weight: 500;
+  text-align: right;
+}
+
+/* Okvir za adresu i email unutar dokumenta */
+.legal__body .legal__box {
+  margin-top: 4px;
+  padding: 18px 20px;
+  border: 1px solid var(--stellar-border);
+  border-radius: 16px;
+  background: var(--stellar-bg-light);
+}
+
+.legal__box p + p {
+  margin-top: 4px;
+}
+
+/* Ostali dokumenti */
+.legal__related {
+  margin-top: 56px;
+}
+
+.legal__related-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--stellar-heading);
+  margin: 0 0 12px;
+}
+
+.legal__related ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.legal__related a {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid var(--stellar-border);
+  border-radius: 999px;
+  background: var(--stellar-white);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--stellar-body);
+  text-decoration: none;
+  transition: border-color 150ms ease-out, color 150ms ease-out;
+}
+
+.legal__related a:hover {
+  border-color: color-mix(in srgb, var(--stellar-accent) 40%, var(--stellar-border));
+  color: var(--stellar-accent);
+}
+
+@media (max-width: 560px) {
+  .legal__hero {
+    padding: 116px 16px 40px;
+  }
+
+  .legal__lead {
+    font-size: 16px;
+  }
+
+  .legal__content {
+    padding: 40px 16px 72px;
+  }
+
+  .legal__body h2 {
+    font-size: 20px;
+  }
+
+  .legal__doc > h3:first-child {
+    font-size: 23px;
+  }
+
+  .legal__detail {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .legal__detail dd {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .legal__body a,
+  .legal__related a {
+    transition: none;
+  }
+}

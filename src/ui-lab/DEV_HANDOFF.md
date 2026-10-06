@@ -120,7 +120,7 @@ When the real backend is ready, these will be fetched by `patientId` from the AP
 
 ## Backend TODO Checklist
 
-When integrating the real backend (Sanity / REST API / Supabase), replace the following:
+When integrating the real backend (REST API aplikacije), replace the following:
 
 ### Patients
 - [ ] Replace `getPatients()` in `patientsStorage.ts` with `GET /api/patients`

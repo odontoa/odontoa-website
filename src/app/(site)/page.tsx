@@ -1,41 +1,44 @@
-import Home4Hero from '@/components/home4/Home4Hero';
+import Hero from '@/components/homepage/Hero';
 // TrustLogos: placeholder logoi iz template-a; proof traka u heroju je zamena.
-// import Home4TrustLogos from '@/components/home4/Home4TrustLogos';
-import Home4FeatureLeft from '@/components/home4/Home4FeatureLeft';
-import Home4BigFeatures from '@/components/home4/Home4BigFeatures';
-import Home4Finance from '@/components/home4/Home4Finance';
-import Home4FeatureRight from '@/components/home4/Home4FeatureRight';
-import Home4Assistant from '@/components/home4/Home4Assistant';
-import Home4DigitalReadiness from '@/components/home4/Home4DigitalReadiness';
-import Home4Quote from '@/components/home4/Home4Quote';
-import Home4Pricing from '@/components/home4/Home4Pricing';
-// Testimonials: `Home4Testimonials` - vratiti kada budu pravi korisnici (vidi komentar u Home4Testimonials.tsx).
-// import Home4Testimonials from '@/components/home4/Home4Testimonials';
-import Home4Blog from '@/components/home4/Home4Blog';
-import Home4CTA from '@/components/home4/Home4CTA';
+// import TrustLogos from '@/components/homepage/TrustLogos';
+import SystemOverviewSection from '@/components/homepage/SystemOverviewSection';
+import WorkflowSection from '@/components/homepage/WorkflowSection';
+import FinanceSection from '@/components/homepage/FinanceSection';
+import DemoCtaSection from '@/components/homepage/DemoCtaSection';
+import AssistantSection from '@/components/homepage/AssistantSection';
+import ReadinessQuizSection from '@/components/homepage/ReadinessQuizSection';
+import TestimonialQuote from '@/components/homepage/TestimonialQuote';
+import PricingSection from '@/components/homepage/PricingSection';
+// Testimonials: `TestimonialCards` - vratiti kada budu pravi korisnici (vidi komentar u TestimonialCards.tsx).
+// import TestimonialCards from '@/components/homepage/TestimonialCards';
+// Blog: `BlogTeaserSection` - privremeno sakriven do content launcha bloga.
+// import BlogTeaserSection from '@/components/homepage/BlogTeaserSection';
+import ClosingCtaSection from '@/components/homepage/ClosingCtaSection';
 import ComingSoonPage from '@/components/coming-soon/ComingSoonPage';
 import { displayFont } from './display-font';
-import './home4.css';
+import { isSectionHidden } from '@/lib/config/hidden-sections';
+import './site.css';
 
 export default function HomePage() {
   if (process.env.SITE_MODE === 'coming_soon') {
     return <ComingSoonPage />;
   }
   return (
-    <div className={`home4-page min-h-screen bg-white w-full ${displayFont.variable}`}>
-      <Home4Hero />
-      {/* <Home4TrustLogos /> */}
-      <Home4FeatureLeft />
-      <Home4BigFeatures />
-      <Home4Finance />
-      <Home4FeatureRight />
-      <Home4Assistant />
-      <Home4DigitalReadiness />
-      <Home4Quote />
-      <Home4Pricing />
-      {/* <Home4Testimonials /> */}
-      <Home4Blog />
-      <Home4CTA />
+    <div className={`site-page min-h-screen bg-white w-full ${displayFont.variable}`}>
+      <Hero />
+      {/* <TrustLogos /> */}
+      <SystemOverviewSection />
+      <WorkflowSection />
+      <FinanceSection />
+      <DemoCtaSection />
+      <AssistantSection />
+      {/* Sekcija vodi na test u Alatima: prikazuje se samo dok Alati nisu sakriveni. */}
+      {!isSectionHidden('/alati') && <ReadinessQuizSection />}
+      <TestimonialQuote />
+      <PricingSection />
+      {/* <TestimonialCards /> */}
+      {/* <BlogTeaserSection /> */}
+      <ClosingCtaSection />
     </div>
   );
 }

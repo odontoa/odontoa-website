@@ -1,39 +1,52 @@
-import { sanityClient } from "@/lib/sanity.client";
 import {
-  glossaryTermBySlugQuery,
-  type SanityGlossaryTerm,
-} from "@/lib/sanity.queries";
-import { urlFor } from "@/lib/sanity.image";
+  getPublishedTerm,
+  getPublishedTerms,
+  getRelatedTerms,
+} from "@/lib/content/recnik";
 import { buildGlossaryJsonLd } from "@/lib/structured-data/glossary-jsonld";
-import PortableTextRenderer from "@/components/PortableTextRenderer";
+import GlossaryArticle from "@/components/glossary/GlossaryArticle";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { ArrowLeft } from "lucide-react";
 import CopyLinkButton from "@/components/glossary/CopyLinkButton";
-import TermInitialAvatar from "@/components/glossary/TermInitialAvatar";
 import { GlossaryViewTracker } from "@/components/GlossaryViewTracker";
+import { displayFont } from "@/app/(site)/display-font";
+/* Isti sistem kao stranice funkcionalnosti: --stellar-* tokeni sa .site-page,
+   hero/sekcije/FAQ/CTA iz feature-page.css, ostatak u recnik.css. */
+import "@/app/(site)/site.css";
+import "@/app/(site)/funkcionalnosti/feature-page.css";
+import "../recnik.css";
 
-export const revalidate = 3600; // ISR: revalidate every hour
+function BackIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M13 8H3m0 0l4-4M3 8l4 4"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function PlusIcon() {
+  return (
+    <svg className="page-faq__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/* Recnik je lokalni sadrzaj (src/lib/content/recnik.ts): sve stranice se generisu staticki
+   pri build-u, a nepoznat slug je 404. */
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return getPublishedTerms().map((term) => ({ slug: term.slug }));
+}
 
 // Helper function to format date as dd.mm.yyyy
 function formatDateShort(isoString: string): string {
@@ -49,11 +62,7 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const term = await sanityClient.fetch<SanityGlossaryTerm | null>(
-    glossaryTermBySlugQuery,
-    { slug: params.slug },
-    { next: { tags: ['sanity-glossary'] } }
-  );
+  const term = getPublishedTerm(params.slug);
 
   if (!term) {
     return {
@@ -64,7 +73,7 @@ export async function generateMetadata({
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://odontoa.com";
   const coverImageUrl = term.coverImage
-    ? urlFor(term.coverImage).width(1200).height(630).url()
+    ? `${baseUrl}${term.coverImage.src}`
     : `${baseUrl}/og/odontoa-default.png`;
 
   const title = term.seoTitle || term.term;
@@ -101,29 +110,28 @@ export default async function GlossaryTermPage({
 }: {
   params: { slug: string };
 }) {
-  const term = await sanityClient.fetch<SanityGlossaryTerm | null>(
-    glossaryTermBySlugQuery,
-    { slug: params.slug },
-    { next: { tags: ['sanity-glossary'] } }
-  );
+  const term = getPublishedTerm(params.slug);
 
   if (!term) {
     notFound();
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://odontoa.com";
-  const coverImageUrl = term.coverImage
-    ? urlFor(term.coverImage).width(1200).height(630).url()
-    : `${baseUrl}/og/odontoa-default.png`;
 
   // Build JSON-LD schema (strictly follows Odontoa SEO/LLM rules)
-  const jsonLd = buildGlossaryJsonLd(
-    { ...term, coverImageUrl },
-    baseUrl
-  );
+  const jsonLd = buildGlossaryJsonLd(term, baseUrl);
 
   const currentUrl = `${baseUrl}/recnik/${params.slug}`;
   const displayDate = formatDateShort(term.updatedAt || term.publishedAt);
+
+  const relatedTerms = getRelatedTerms(term).slice(0, 8);
+  const faqs = term.faqs ?? [];
+
+  /* Podloge sekcija se smenjuju (bela / siva) bez obzira na to koje sekcije
+     termin ima, da se dve iste podloge ne dodirnu. Clanak je uvek bela. */
+  let tone = 0;
+  const nextTone = () =>
+    tone++ % 2 === 0 ? "page-section" : "page-section page-section--alt";
 
   return (
     <>
@@ -138,169 +146,114 @@ export default async function GlossaryTermPage({
       {/* Glossary view tracking */}
       <GlossaryViewTracker slug={params.slug} term={term.term} />
 
-      <article className="min-h-screen bg-background pt-20">
-        <div className="mx-auto max-w-4xl px-4 py-10">
-          {/* Breadcrumbs */}
-          <Breadcrumb className="mb-6">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="/">Početna</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="/recnik">Rečnik</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{term.term}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+      <article className={`site-page min-h-screen bg-white w-full ${displayFont.variable}`}>
+        {/* ── Hero termina ── */}
+        <header className="page-hero recnik-hero">
+          <div className="page-hero__inner">
+            <Link href="/recnik" className="page-hero__eyebrow">
+              <BackIcon />
+              Rečnik
+            </Link>
+            <h1 className="page-hero__title">{term.term}</h1>
+            {term.definition && <p className="page-hero__lead">{term.definition}</p>}
 
-          {/* Header */}
-          <header className="mb-8">
-            <div className="flex items-baseline justify-between gap-4">
-              <div className="flex items-center gap-4 flex-1">
-                {!term.coverImage && <TermInitialAvatar term={term.term} />}
-                <div className="flex-1">
-                  <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                    {term.term}
-                  </h1>
-                  {term.definition && (
-                    <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed max-w-3xl">
-                      {term.definition}
-                    </p>
-                  )}
-                </div>
-              </div>
+            <div className="recnik-meta">
+              {term.category && <span className="recnik-chip">{term.category}</span>}
+              <span>Ažurirano {displayDate}</span>
               <CopyLinkButton url={currentUrl} />
             </div>
+          </div>
+        </header>
 
-            {/* Meta Row */}
-            <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-              {term.category && (
-                <Badge variant="secondary">{term.category}</Badge>
-              )}
-              <span>{displayDate}</span>
-              <Link href="/recnik">
-                <Button variant="ghost" size="sm" className="h-auto p-0 hover:text-foreground">
-                  <ArrowLeft className="h-3.5 w-3.5 mr-1.5" />
-                  Nazad na Rečnik
-                </Button>
+        {/* ── Ilustracija + clanak ── */}
+        <section className={nextTone()}>
+          <div className="recnik-narrow">
+            {term.coverImage && (
+              <Image
+                src={term.coverImage.src}
+                alt={term.coverImage.alt || term.term}
+                width={term.coverImage.width}
+                height={term.coverImage.height}
+                className="recnik-cover"
+                priority
+              />
+            )}
+
+            {term.article.length > 0 ? (
+              <div className="recnik-article">
+                <GlossaryArticle blocks={term.article} />
+              </div>
+            ) : (
+              <p className="recnik-soon">Detaljno objašnjenje biće dodato uskoro.</p>
+            )}
+          </div>
+        </section>
+
+        {/* ── Povezani termini ── */}
+        {relatedTerms.length > 0 && (
+          <section className={nextTone()}>
+            <div className="recnik-narrow">
+              <p className="page-section__eyebrow">
+                <span className="page-section__dash" aria-hidden="true" />
+                Rečnik
+              </p>
+              <h2 className="page-section__title">Povezani termini</h2>
+              <div className="recnik-tags">
+                {relatedTerms.map((related) => (
+                  <Link key={related.slug} href={`/recnik/${related.slug}`} className="recnik-tag">
+                    {related.term}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ── FAQ: mora da se poklapa sa FAQPage JSON-LD (1:1 sa vidljivim sadrzajem) ── */}
+        {faqs.length > 0 && (
+          <section className={nextTone()}>
+            <div className="recnik-narrow">
+              <p className="page-section__eyebrow">
+                <span className="page-section__dash" aria-hidden="true" />
+                Pitanja
+              </p>
+              <h2 className="page-section__title">Često postavljena pitanja</h2>
+              <div className="page-faq">
+                {faqs.map((faq, index) => (
+                  <details key={index} className="page-faq__item">
+                    <summary className="page-faq__q">
+                      {faq.question}
+                      <PlusIcon />
+                    </summary>
+                    <div className="page-faq__a recnik-faq-answer">
+                      <div className="prose prose-lg max-w-none">
+                        <p className="mb-4 leading-7">{faq.answer}</p>
+                      </div>
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ── Zavrsni CTA ── */}
+        <section className="page-cta">
+          <div className="page-cta__inner">
+            <h2 className="page-cta__title">Vodite ordinaciju bez papira</h2>
+            <p className="page-cta__lead">
+              Zakazivanje, digitalni karton, RTG snimci i finansije, sve u jednom sistemu.
+            </p>
+            <div className="page-cta__actions">
+              <Link href="/register" className="hero__btn hero__btn--primary">
+                Započni besplatno
+              </Link>
+              <Link href="/recnik" className="page-cta__ghost">
+                Nazad na rečnik
               </Link>
             </div>
-          </header>
-
-          {/* Illustration */}
-          {term.coverImage && (
-            <div className="mb-10">
-              <h2 className="text-sm font-medium text-muted-foreground mb-3">
-                Ilustracija
-              </h2>
-              <Card>
-                <CardContent className="p-0">
-                  <Image
-                    src={coverImageUrl}
-                    alt={term.coverImageAlt || term.term}
-                    width={1200}
-                    height={630}
-                    className="w-full object-cover rounded-xl max-h-72"
-                    priority
-                  />
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {/* Full Article Content */}
-          {term.fullArticle ? (
-            <div className="prose prose-slate max-w-none mt-10 prose-headings:mt-8 prose-headings:mb-4 prose-p:my-4 prose-li:my-2">
-              <PortableTextRenderer content={term.fullArticle} />
-            </div>
-          ) : (
-            <div className="mt-10 text-muted-foreground italic">
-              Detaljno objašnjenje biće dodato uskoro.
-            </div>
-          )}
-
-          {/* Related Terms */}
-          {term.relatedTerms && term.relatedTerms.length > 0 && (
-            <>
-              <Separator className="my-10" />
-              <section>
-                <h2 className="text-2xl font-semibold text-foreground mb-6">
-                  Povezani termini
-                </h2>
-                <div className="flex flex-wrap gap-2">
-                  {term.relatedTerms.slice(0, 8).map((related) => (
-                    <Link
-                      key={related.slug}
-                      href={`/recnik/${related.slug}`}
-                    >
-                      <Badge
-                        variant="outline"
-                        className="text-sm px-3 py-1.5 hover:bg-primary/5 hover:border-primary/30 transition-colors"
-                      >
-                        {related.term}
-                      </Badge>
-                    </Link>
-                  ))}
-                </div>
-            </section>
-            </>
-          )}
-
-          {/* Related Blog Posts */}
-          {term.relatedBlogPosts && term.relatedBlogPosts.length > 0 && (
-            <>
-              <Separator className="my-10" />
-              <section>
-                <h2 className="text-2xl font-semibold text-foreground mb-6">
-                  Povezani članci
-                </h2>
-                <div className="flex flex-col gap-2">
-                  {term.relatedBlogPosts.map((post) => (
-                    <Link
-                      key={post.slug}
-                      href={`/blogovi/${post.slug}`}
-                      className="text-primary hover:underline"
-                    >
-                      {post.title}
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            </>
-          )}
-
-          {/* FAQ Section - must match FAQPage JSON-LD (1:1 with visible content) */}
-          {term.faqs && term.faqs.length > 0 && (
-            <>
-              <Separator className="my-10" />
-              <section>
-                <h2 className="text-2xl font-semibold text-foreground mb-6">
-                Često postavljena pitanja
-              </h2>
-                <Accordion type="single" collapsible className="w-full">
-                  {term.faqs.map((faq, index) => (
-                    <AccordionItem key={index} value={`faq-${index}`} className="border-border/60">
-                      <AccordionTrigger className="text-left text-base font-semibold text-foreground">
-                        {faq.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-sm text-muted-foreground">
-                        <PortableTextRenderer content={faq.answer} />
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-            </section>
-            </>
-          )}
-        </div>
+          </div>
+        </section>
       </article>
     </>
   );

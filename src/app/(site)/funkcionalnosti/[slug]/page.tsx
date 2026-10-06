@@ -4,9 +4,9 @@ import FeaturePage from '@/components/funkcionalnosti/FeaturePage';
 import { buildToolJsonLd } from '@/lib/structured-data/tool-jsonld';
 import { FEATURE_PAGES, getFeaturePage } from '@/lib/content/funkcionalnosti';
 import { displayFont } from '../../display-font';
-/* home4.css nosi definiciju --stellar-* tokena na .home4-page wrapperu.
+/* site.css nosi definiciju --stellar-* tokena na .site-page wrapperu.
    Bez njega feature-page.css nema nijednu boju. */
-import '../../home4.css';
+import '../../site.css';
 import '../feature-page.css';
 
 type Params = { params: { slug: string } };
@@ -69,7 +69,7 @@ export default function FunkcionalnostPage({ params }: Params) {
     url,
     baseUrl,
     breadcrumbs: [
-      { name: 'Pocetna', url: baseUrl },
+      { name: 'Početna', url: baseUrl },
       { name: 'Funkcionalnosti', url: `${baseUrl}/funkcionalnosti` },
       { name: page.navTitle, url },
     ],
@@ -77,7 +77,7 @@ export default function FunkcionalnostPage({ params }: Params) {
   });
 
   return (
-    <div className={`home4-page min-h-screen bg-white w-full ${displayFont.variable}`}>
+    <div className={`site-page min-h-screen bg-white w-full ${displayFont.variable}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import type { ReactNode } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { isComingSoon } from "@/lib/config/site-mode";
 
 export const metadata: Metadata = {
   title: 'Kontakt | Odontoa - Digitalna stomatologija',
@@ -30,11 +31,13 @@ export default function ContactLayout({
 }: {
   children: ReactNode
 }) {
+  /* Kontakt je otvoren i u coming-soon rezimu; tada nav i footer ne linkuju zatvorene rute. */
+  const comingSoon = isComingSoon();
   return (
     <div className="min-h-screen flex flex-col">
-      <Navigation />
+      <Navigation comingSoon={comingSoon} />
       <main className="flex-1">{children}</main>
-      <Footer />
+      <Footer comingSoon={comingSoon} />
     </div>
   );
 } 

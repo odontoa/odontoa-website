@@ -109,10 +109,10 @@ export default function DigitalReadinessTool() {
       <section className="alati-tool__intro">
         <p className="alati-tool__intro-pill">Besplatan alat</p>
         <h1 className="alati-tool__intro-title">
-          Koliko je vaša ordinacija digitalno spremna?
+          Koliko je tvoja ordinacija digitalno spremna?
         </h1>
         <p className="alati-tool__intro-subtitle">
-          Odgovorite na 12 kratkih pitanja i saznajte gde vaša ordinacija već
+          Odgovori na 12 kratkih pitanja i saznaj gde tvoja ordinacija već
           radi dobro, a gde gubi vreme i kontrolu.
         </p>
         <div className="alati-tool__intro-cta">

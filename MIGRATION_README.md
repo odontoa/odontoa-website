@@ -1,5 +1,7 @@
 # Odontoa - Next.js 14 Migracija
 
+> **Zastarelo:** istorijski dokument. Supabase i Strapi koji se ovde pominju nisu deo trenutne arhitekture (vidi README, „Trenutni stack”).
+
 ## 🎯 Cilj migracije
 
 Uspešno smo migrirali Odontoa projekat iz React SPA (Vite) u Next.js 14 App Router radi poboljšanja SEO optimizacije, LLM vidljivosti i dugoročne skalabilnosti.

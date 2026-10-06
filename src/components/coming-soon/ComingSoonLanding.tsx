@@ -203,15 +203,15 @@ export default function ComingSoonLanding() {
               <p className="text-sm text-white/60 mb-8">
                 Sajt je u izradi. Za demo i informacije:{' '}
                 <a
-                  href="mailto:info@odontoa.info"
+                  href="mailto:info@odontoa.com"
                   className="text-white/90 underline underline-offset-2 hover:text-white"
                 >
-                  info@odontoa.info
+                  info@odontoa.com
                 </a>
               </p>
 
               <Button asChild variant="pillPrimary" size="pill" className="opacity-100 font-semibold">
-                <a href="mailto:info@odontoa.info">
+                <a href="mailto:info@odontoa.com">
                   <span className="text-nowrap">Zakaži demo</span>
                 </a>
               </Button>

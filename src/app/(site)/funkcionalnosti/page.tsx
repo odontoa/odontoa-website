@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import Reveal from '@/components/home4/Reveal';
+import Reveal from '@/components/shared/Reveal';
 import { buildToolJsonLd } from '@/lib/structured-data/tool-jsonld';
 import { FEATURE_PAGES } from '@/lib/content/funkcionalnosti';
 import { displayFont } from '../display-font';
-/* home4.css nosi --stellar-* tokene na .home4-page wrapperu. */
-import '../home4.css';
+/* site.css nosi --stellar-* tokene na .site-page wrapperu. */
+import '../site.css';
 import './feature-page.css';
 
 const TITLE = 'Funkcionalnosti za stomatološke ordinacije | Odontoa';
@@ -66,19 +66,19 @@ export default function FunkcionalnostiIndexPage() {
   });
 
   return (
-    <div className={`home4-page min-h-screen bg-white w-full ${displayFont.variable}`}>
+    <div className={`site-page min-h-screen bg-white w-full ${displayFont.variable}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
       {/* ── Hero kataloga ── */}
-      <section className="home4-fp-hero home4-fp-hero--plain">
-        <div className="home4-fp-hero__inner">
+      <section className="page-hero page-hero--plain">
+        <div className="page-hero__inner">
           <Reveal>
-            <p className="home4-fp-hero__eyebrow">Funkcionalnosti</p>
-            <h1 className="home4-fp-hero__title">Sve što ordinacija koristi, u jednom sistemu</h1>
-            <p className="home4-fp-hero__lead">
+            <p className="page-hero__eyebrow">Funkcionalnosti</p>
+            <h1 className="page-hero__title">Sve što ordinacija koristi, u jednom sistemu</h1>
+            <p className="page-hero__lead">
               Od zakazivanja i digitalnog kartona do zubne tehnike, dokumentacije i
               finansija. Izaberi funkcionalnost da vidiš kako radi.
             </p>
@@ -87,18 +87,18 @@ export default function FunkcionalnostiIndexPage() {
       </section>
 
       {/* ── Katalog: svih sedam, AI ukljucen ── */}
-      <section className="home4-fp-section home4-fp-section--alt">
-        <div className="home4-fp-section__inner">
-          <div className="home4-fp-index__grid">
+      <section className="page-section page-section--alt">
+        <div className="page-section__inner">
+          <div className="page-index__grid">
             {FEATURE_PAGES.map((page, i) => (
               <Reveal key={page.slug} delay={i * 0.04} style={{ height: '100%' }}>
-                <Link href={`/funkcionalnosti/${page.slug}`} className="home4-fp-index__card">
+                <Link href={`/funkcionalnosti/${page.slug}`} className="page-index__card">
                   {/* Katalog numerise po svom redosledu; za sest iz grida to je
                       isti broj kao na pocetnoj, AI dobija sledeci. */}
-                  <span className="home4-fp-index__num">{`/0${i + 1}`}</span>
-                  <h2 className="home4-fp-index__title">{page.navTitle}</h2>
-                  <p className="home4-fp-index__desc">{page.shortDesc}</p>
-                  <span className="home4-fp-index__more">
+                  <span className="page-index__num">{`/0${i + 1}`}</span>
+                  <h2 className="page-index__title">{page.navTitle}</h2>
+                  <p className="page-index__desc">{page.shortDesc}</p>
+                  <span className="page-index__more">
                     Saznaj više
                     <ArrowIcon />
                   </span>
@@ -110,20 +110,20 @@ export default function FunkcionalnostiIndexPage() {
       </section>
 
       {/* ── Zavrsni CTA ── */}
-      <section className="home4-fp-cta">
-        <div className="home4-fp-cta__inner">
+      <section className="page-cta">
+        <div className="page-cta__inner">
           <Reveal>
-            <h2 className="home4-fp-cta__title">Probaj na svojoj ordinaciji</h2>
-            <p className="home4-fp-cta__lead">
+            <h2 className="page-cta__title">Probaj na svojoj ordinaciji</h2>
+            <p className="page-cta__lead">
               Napravi nalog za nekoliko minuta ili nam se javi, pa da zajedno prođemo kroz
               sistem.
             </p>
-            <div className="home4-fp-cta__actions">
-              <Link href="/register" className="home4-hero__btn home4-hero__btn--primary">
+            <div className="page-cta__actions">
+              <Link href="/register" className="hero__btn hero__btn--primary">
                 Započni besplatno
               </Link>
               {/* Isti par akcija kao hero stranice: primarno /register, sekundarno /demo. */}
-              <Link href="/demo" className="home4-fp-cta__ghost">
+              <Link href="/demo" className="page-cta__ghost">
                 Zakaži demo
               </Link>
             </div>

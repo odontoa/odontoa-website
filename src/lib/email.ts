@@ -301,15 +301,15 @@ export class EmailService {
         </div>
       `;
 
-    /* Jedini mejl koji ide spoljnom korisniku: replyTo na pravo sanduce,
-       jer je posiljalac noreply adresa. */
+    /* Jedini mejl koji ide spoljnom korisniku: replyTo na javni kontakt (info@odontoa.com),
+       jer je posiljalac noreply adresa. Interna kopija (bcc) ostaje na .info sanducetu. */
     await send(
       {
         to: data.email,
         bcc: ['info@odontoa.info'],
         subject: 'Vaš rezultat: Test digitalne spremnosti ordinacije',
         html,
-        replyTo: 'info@odontoa.info',
+        replyTo: 'info@odontoa.com',
       },
       'Failed to send quiz result email'
     );

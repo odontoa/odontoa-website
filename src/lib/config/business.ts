@@ -5,8 +5,10 @@
  */
 export const businessConfig = {
   name: 'Odontoa',
-  email: 'info@odontoa.info',
-  phone: '+381 60 123 4567', // Update with real number when available
+  email: 'info@odontoa.com',
+  /* Javni poslovni broj jos ne postoji. Dok je null, telefon se ne prikazuje nigde
+     (kontakt, llms.txt); kad dobijemo pravi broj, upisuje se samo ovde. */
+  phone: null as string | null,
   address: {
     street: 'Krunska',
     city: 'Beograd',
@@ -21,6 +23,6 @@ export const businessConfig = {
   social: {
     linkedin: 'https://www.linkedin.com/company/odontoa/',
     facebook: 'https://www.facebook.com/profile.php?id=61580254345083',
-    instagram: 'https://www.instagram.com/odontoa.app?igsh=ZmE3N3N6Mjhhamli&utm_source=qr',
+    instagram: 'https://www.instagram.com/odontoa.app/',
   },
 } as const;

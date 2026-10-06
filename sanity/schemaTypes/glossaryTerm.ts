@@ -1,7 +1,12 @@
 import { defineType, defineField } from "sanity";
 
 /**
- * Glossary Term Schema
+ * Glossary Term Schema (LEGACY)
+ *
+ * Od 4. okt 2026 recnik na sajtu NE cita Sanity: izvor istine je src/lib/content/recnik.ts.
+ * Izmene termina ovde se ne vide na sajtu. Sema ostaje samo zato sto blog postovi
+ * (blogPost.relatedGlossaryTerms) referenciraju ove dokumente; ukloniti tek kad blog
+ * predje na lokalne reference.
  * 
  * ⚠️ VAŽNO: Ako menjaš ova polja, OBAVEZNO ažuriraj:
  * - scripts/importGlossaryTerms.ts (interface, validacija, kreiranje)

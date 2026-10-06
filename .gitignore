@@ -58,3 +58,16 @@ odontoa-application-frontend-main-for-components/
 
 # Lokalni HTML mockup, nije deo projekta
 claude-code-test-design.html
+
+# Lokalni dev artefakti (Cursor MCP config sa tokenima, Supabase CLI temp, build logovi).
+# Ne pripadaju projektu; tajne nikad ne idu u git.
+/~/
+.cursor/mcp/
+supabase/.temp/
+supabase 2/
+build.log
+
+# Env fajlovi sa tajnama (primeri ostaju u repou)
+.env
+.env.*
+!.env*.example

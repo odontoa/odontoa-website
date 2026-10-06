@@ -1,0 +1,492 @@
+/* ==========================================================================
+   Rečnik (.recnik-*)
+   --------------------------------------------------------------------------
+   Hero, sekcije, FAQ i CTA dolaze iz feature-page.css (.page-*), isti
+   recept kao stranice funkcionalnosti. Ovde je samo ono sto postoji jedino
+   na recniku: pretraga, abeceda, kolone termina i telo clanka.
+
+   Tokeni (--stellar-*, --section-pad, --font-display) dolaze sa .site-page
+   wrappera. Globalni shadcn tokeni (--primary itd.) se ovde ne koriste, oni
+   su ostatak stare plave teme.
+   ========================================================================== */
+
+/* ── Hero: pretraga + kategorija ───────────────────────────────────────── */
+
+/* Hero bez vizuala, ali sa alatima ispod naslova: manji donji razmak od
+   --plain, jer abeceda vec zatvara blok. */
+.recnik-hero {
+  padding-bottom: clamp(48px, 6vw, 72px);
+}
+
+/* Stranica termina: hero i clanak su oba beli i bez linije izmedju, pa bi
+   pun --section-pad iznad clanka bio duplo razmaka. Hero ga vec zatvara. */
+.recnik-hero + .page-section:not(.page-section--alt) {
+  padding-top: 0;
+}
+
+.recnik-toolbar {
+  display: flex;
+  gap: 12px;
+  max-width: 640px;
+  margin: 36px auto 0;
+}
+
+.recnik-search {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.recnik-search__icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--stellar-muted);
+  pointer-events: none;
+}
+
+.recnik-field {
+  width: 100%;
+  height: 50px;
+  border: 1px solid var(--stellar-border);
+  border-radius: 999px;
+  background: var(--stellar-white);
+  color: var(--stellar-heading);
+  font-size: 15px;
+  font-family: inherit;
+  box-shadow: 0 1px 2px rgba(6, 11, 19, 0.04);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.recnik-field::placeholder {
+  color: var(--stellar-muted);
+}
+
+.recnik-field:hover {
+  border-color: color-mix(in srgb, var(--stellar-accent) 28%, var(--stellar-border));
+}
+
+.recnik-field:focus {
+  outline: none;
+  border-color: var(--stellar-accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--stellar-accent) 14%, transparent);
+}
+
+.recnik-search .recnik-field {
+  padding: 0 20px 0 48px;
+}
+
+/* Nativni select: radi na svakom uredjaju bez portala, strelica je nasa */
+.recnik-select {
+  position: relative;
+  flex-shrink: 0;
+  width: 220px;
+}
+
+.recnik-select .recnik-field {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0 44px 0 20px;
+  cursor: pointer;
+  text-overflow: ellipsis;
+}
+
+.recnik-select__chevron {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--stellar-muted);
+  pointer-events: none;
+}
+
+/* ── Abeceda ───────────────────────────────────────────────────────────── */
+
+.recnik-alpha {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  max-width: 820px;
+  margin: 28px auto 0;
+}
+
+.recnik-alpha__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--stellar-border);
+  background: var(--stellar-white);
+  color: var(--stellar-heading);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.recnik-alpha__btn:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--stellar-accent) 40%, var(--stellar-border));
+  color: var(--stellar-accent);
+}
+
+.recnik-alpha__btn:focus-visible {
+  outline: 2px solid var(--stellar-accent);
+  outline-offset: 2px;
+}
+
+/* Slovo ima termine u trenutnom filteru */
+.recnik-alpha__btn--active {
+  background: color-mix(in srgb, var(--stellar-accent) 8%, var(--stellar-white));
+  border-color: color-mix(in srgb, var(--stellar-accent) 24%, var(--stellar-border));
+  color: var(--stellar-accent);
+}
+
+/* Slovo bez ijednog termina: vidljivo kao deo abecede, ali bez okvira */
+.recnik-alpha__btn:disabled {
+  background: transparent;
+  border-color: transparent;
+  color: color-mix(in srgb, var(--stellar-muted) 70%, var(--stellar-white));
+  cursor: default;
+}
+
+.recnik-count {
+  font-size: 13.5px;
+  color: var(--stellar-muted);
+  text-align: center;
+  margin: 22px 0 0;
+}
+
+/* ── Kolone termina ────────────────────────────────────────────────────── */
+
+.recnik-columns {
+  columns: 3;
+  column-gap: 48px;
+}
+
+.recnik-group {
+  break-inside: avoid;
+  margin-bottom: 48px;
+  /* Fiksni nav: skok sa abecede ne sme da sakrije slovo ispod navigacije */
+  scroll-margin-top: 110px;
+}
+
+.recnik-group__letter {
+  font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  color: var(--stellar-heading);
+  margin: 0;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--stellar-border);
+}
+
+.recnik-group__list {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.recnik-group__link {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--stellar-body);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.recnik-group__link:hover {
+  color: var(--stellar-accent);
+}
+
+.recnik-group__link:focus-visible {
+  outline: 2px solid var(--stellar-accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+.recnik-group__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 16px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--stellar-accent);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.recnik-group__more:hover {
+  opacity: 0.72;
+}
+
+.recnik-empty {
+  text-align: center;
+  padding: 48px 0;
+  color: var(--stellar-body);
+}
+
+.recnik-empty svg {
+  color: var(--stellar-muted);
+  margin: 0 auto 16px;
+}
+
+.recnik-empty__title {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--stellar-heading);
+  margin: 0 0 8px;
+}
+
+.recnik-empty__text {
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Stranica termina: meta red u heroju ──────────────────────────────── */
+
+.recnik-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 14px;
+  margin-top: 26px;
+  font-size: 13.5px;
+  color: var(--stellar-muted);
+}
+
+.recnik-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--stellar-accent) 8%, var(--stellar-white));
+  color: var(--stellar-accent);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.recnik-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--stellar-border);
+  background: var(--stellar-white);
+  color: var(--stellar-body);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.recnik-copy:hover {
+  border-color: color-mix(in srgb, var(--stellar-accent) 40%, var(--stellar-border));
+  color: var(--stellar-accent);
+}
+
+.recnik-copy:focus-visible {
+  outline: 2px solid var(--stellar-accent);
+  outline-offset: 2px;
+}
+
+/* ── Stranica termina: telo ────────────────────────────────────────────── */
+
+.recnik-narrow {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.recnik-cover {
+  display: block;
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  border: 1px solid var(--stellar-border);
+  border-radius: 20px;
+  background: var(--stellar-bg-light);
+}
+
+.recnik-cover + .recnik-article,
+.recnik-cover + .recnik-soon {
+  margin-top: 40px;
+}
+
+/* PortableTextRenderer je deljen sa blogom i nosi svoje Tailwind boje
+   (plavi linkovi, plavi blockquote, sivi tekst). Ovde ih nadjacava scope
+   klasa: (klasa + element) je specificnije od jedne utility klase. */
+.recnik-article {
+  color: var(--stellar-body);
+  font-size: 16.5px;
+  line-height: 1.74;
+}
+
+.recnik-article p,
+.recnik-article li {
+  color: var(--stellar-body);
+}
+
+.recnik-article h1,
+.recnik-article h2,
+.recnik-article h3,
+.recnik-article h4 {
+  font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
+  letter-spacing: -0.022em;
+  line-height: 1.2;
+  color: var(--stellar-heading);
+}
+
+.recnik-article h2 {
+  font-size: clamp(24px, 2.6vw, 30px);
+}
+
+.recnik-article h3 {
+  font-size: 21px;
+}
+
+.recnik-article strong {
+  color: var(--stellar-heading);
+}
+
+.recnik-article a {
+  color: var(--stellar-accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--stellar-accent) 35%, transparent);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.2s;
+}
+
+.recnik-article a:hover {
+  color: var(--stellar-accent-dark);
+  text-decoration-color: currentColor;
+}
+
+.recnik-article blockquote {
+  border-left: 2px solid var(--stellar-accent);
+  color: var(--stellar-heading);
+}
+
+.recnik-article code {
+  background: var(--stellar-bg-light);
+  color: var(--stellar-heading);
+}
+
+.recnik-article figcaption {
+  color: var(--stellar-muted);
+}
+
+.recnik-article li::marker {
+  color: var(--stellar-accent);
+}
+
+.recnik-soon {
+  font-size: 15.5px;
+  font-style: italic;
+  color: var(--stellar-muted);
+  text-align: center;
+  margin: 0;
+}
+
+/* Povezani termini: pilule, isti hover kao kartice */
+.recnik-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.recnik-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--stellar-border);
+  background: var(--stellar-white);
+  color: var(--stellar-heading);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s, transform 0.2s;
+}
+
+.recnik-tag:hover {
+  border-color: color-mix(in srgb, var(--stellar-accent) 40%, var(--stellar-border));
+  color: var(--stellar-accent);
+  transform: translateY(-1px);
+}
+
+.recnik-tag:focus-visible {
+  outline: 2px solid var(--stellar-accent);
+  outline-offset: 2px;
+}
+
+/* FAQ odgovor je PortableText (div sa pasusima), ne jedan <p> */
+.recnik-faq-answer p {
+  margin: 0 0 12px;
+  font-size: 15px;
+  line-height: 1.68;
+  color: var(--stellar-body);
+}
+
+.recnik-faq-answer p:last-child {
+  margin-bottom: 0;
+}
+
+/* ══ Responsive ═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .recnik-columns {
+    columns: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .recnik-toolbar {
+    flex-direction: column;
+  }
+
+  .recnik-select {
+    width: 100%;
+  }
+
+  .recnik-alpha__btn {
+    min-width: 34px;
+    height: 34px;
+    font-size: 13.5px;
+  }
+
+  .recnik-columns {
+    columns: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recnik-tag,
+  .recnik-field,
+  .recnik-alpha__btn {
+    transition: none;
+  }
+
+  .recnik-tag:hover {
+    transform: none;
+  }
+}

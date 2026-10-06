@@ -1,13 +1,14 @@
 import { MetadataRoute } from 'next';
-import { sanityClient } from '@/lib/sanity.client';
-import { allBlogPostsQuery, glossarySitemapQuery } from '@/lib/sanity.queries';
 import { FEATURE_PAGES } from '@/lib/content/funkcionalnosti';
+import { getIndexableTerms } from '@/lib/content/recnik';
+import { isSectionHidden } from '@/lib/config/hidden-sections';
+import { isComingSoon, isOpenInComingSoon } from '@/lib/config/site-mode';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://odontoa.com';
 
-  // Static pages
-  const staticPages: MetadataRoute.Sitemap = [
+  // Static pages (bez privremeno sakrivenih sekcija, src/lib/config/hidden-sections.ts)
+  const allStaticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
@@ -25,12 +26,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/blogovi`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.9,
     },
     {
       url: `${baseUrl}/recnik`,
@@ -96,39 +91,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Blog posts from Sanity
-  let blogPages: MetadataRoute.Sitemap = [];
-  try {
-    const posts = await sanityClient.fetch(allBlogPostsQuery);
-    blogPages = posts
-      .filter((post: any) => !post.noindex)
-      .map((post: any) => ({
-        url: `${baseUrl}/blogovi/${post.slug}`,
-        lastModified: post.updatedAt 
-          ? new Date(post.updatedAt) 
-          : new Date(post.publishedAt),
-        changeFrequency: 'weekly' as const,
-        priority: 0.7,
-      }));
-  } catch (error) {
-    console.error('Error fetching blog posts for sitemap:', error);
+  const staticPages = allStaticPages.filter((page) => !isSectionHidden(new URL(page.url).pathname));
+
+  /* Coming-soon: samo stranice koje su tada stvarno dostupne (ostale vode 302 na "/"). */
+  if (isComingSoon()) {
+    return staticPages.filter((page) => isOpenInComingSoon(new URL(page.url).pathname));
   }
 
-  // Glossary terms from Sanity (using optimized sitemap query with noindex filter)
-  let glossaryPages: MetadataRoute.Sitemap = [];
-  try {
-    const terms = await sanityClient.fetch(glossarySitemapQuery);
-    glossaryPages = terms.map((term: any) => ({
-      url: `${baseUrl}/recnik/${term.slug}`,
-      lastModified: term._updatedAt 
-        ? new Date(term._updatedAt) 
-        : new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.6,
-    }));
-  } catch (error) {
-    console.error('Error fetching glossary terms for sitemap:', error);
-  }
+  /* Blog je privremeno sakriven do content launcha: ni /blogovi ni clanci ne ulaze u sitemap.
+     Vratiti zajedno sa blogom (Sanity: allBlogPostsQuery). */
 
-  return [...staticPages, ...blogPages, ...glossaryPages];
+  // Recnik: lokalni izvor (src/lib/content/recnik.ts), bez neobjavljenih i noindex termina
+  const glossaryPages: MetadataRoute.Sitemap = (isSectionHidden('/recnik') ? [] : getIndexableTerms()).map((term) => ({
+    url: `${baseUrl}/recnik/${term.slug}`,
+    lastModified: new Date(term.updatedAt || term.publishedAt),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }));
+
+  return [...staticPages, ...glossaryPages];
 }

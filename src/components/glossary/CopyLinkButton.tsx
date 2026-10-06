@@ -1,6 +1,5 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { Copy } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -8,6 +7,7 @@ interface CopyLinkButtonProps {
   url: string;
 }
 
+/* Stil (.recnik-copy) je u src/app/recnik/recnik.css, uz ostatak rečnika. */
 export default function CopyLinkButton({ url }: CopyLinkButtonProps) {
   const handleCopy = async () => {
     try {
@@ -19,14 +19,9 @@ export default function CopyLinkButton({ url }: CopyLinkButtonProps) {
   };
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={handleCopy}
-      className="h-8 w-8 text-muted-foreground hover:text-primary"
-      aria-label="Kopiraj link"
-    >
-      <Copy className="h-4 w-4" />
-    </Button>
+    <button type="button" onClick={handleCopy} className="recnik-copy" aria-label="Kopiraj link">
+      <Copy size={13} aria-hidden />
+      Kopiraj link
+    </button>
   );
 }

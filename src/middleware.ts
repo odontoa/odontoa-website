@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { HIDDEN_SECTIONS } from '@/lib/config/hidden-sections'
 
 /**
  * Middleware for optional coming_soon mode and http → https redirect.
@@ -7,8 +8,29 @@ import type { NextRequest } from 'next/server'
  * Coming_soon (SITE_MODE=coming_soon): all routes redirect 302 to "/" except allowlist.
  * Default: http → https (301) in production. Canonical domain (www vs apex) is handled by Vercel Domain settings.
  */
+/* Rute koje u produkciji nisu javne: interni alati (ui-lab, capture stranice, Sanity Studio)
+   i sekcije sakrivene do content launcha (blog, recnik, o nama: src/lib/config/hidden-sections.ts).
+   U developmentu ostaju dostupne. Na preview deploy-u mogu da se ukljuce sa
+   ENABLE_INTERNAL_ROUTES=true. Kod i sadrzaj se ne brisu. */
+const HIDDEN_IN_PRODUCTION = [...HIDDEN_SECTIONS, '/ui-lab', '/dashboard-capture', '/demo-hero', '/studio']
+
+function isHiddenInProduction(pathname: string) {
+  return HIDDEN_IN_PRODUCTION.some((p) => pathname === p || pathname.startsWith(`${p}/`))
+}
+
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
+
+  if (
+    process.env.NODE_ENV === 'production' &&
+    process.env.ENABLE_INTERNAL_ROUTES !== 'true' &&
+    isHiddenInProduction(pathname)
+  ) {
+    // Rewrite na nepostojecu putanju: Next vraca standardnu 404 stranicu sa statusom 404.
+    const response = NextResponse.rewrite(new URL('/__hidden', request.url))
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    return response
+  }
 
   if (process.env.SITE_MODE === 'coming_soon') {
     const allowed =
