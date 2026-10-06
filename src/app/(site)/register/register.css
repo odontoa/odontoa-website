@@ -10,6 +10,8 @@
   --stellar-border: #e9ebf1;
   --stellar-muted: #979fb4;
   --stellar-white: #ffffff;
+  /* Manrope (--font-display) i za tekst forme, kao .site-page na ostatku sajta */
+  font-family: var(--font-display), var(--font-inter), 'Inter', system-ui, sans-serif;
   /* 92px zona fiksne navigacije + 40px razmaka, isto kao hero na pocetnoj */
   padding: 132px 24px 96px;
   background:

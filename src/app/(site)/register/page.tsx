@@ -1,15 +1,9 @@
 import type { Metadata } from 'next';
-import { Instrument_Sans } from 'next/font/google';
 import OnboardingWizard from '@/components/register/OnboardingWizard';
 import './register.css';
 
-/* Display font za naslove, scoped na ovu stranicu (isto kao pocetna). */
-const displayFont = Instrument_Sans({
-  subsets: ['latin', 'latin-ext'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-display',
-  display: 'swap',
-});
+/* Marketing font (Manrope), isti kao na ostatku sajta: display-font.ts. */
+import { displayFont } from '../display-font';
 
 const TITLE = 'Započni besplatno | Odontoa';
 const DESCRIPTION =

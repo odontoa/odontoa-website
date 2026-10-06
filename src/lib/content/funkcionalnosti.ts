@@ -398,8 +398,8 @@ export const FEATURE_PAGES: FeaturePageData[] = [
     },
   },
 
-  /* Osetljiva stranica: namerno bez FAQ i bez opisa kako se sabloni popunjavaju.
-     Detalji ostaju za demo. */
+  /* Osetljiva stranica: bez opisa kako se sabloni popunjavaju (detalji ostaju za demo).
+     Potpis: aplikacija nudi obe opcije, stampu i potpis na tabletu. */
   {
     slug: 'dokumentacija-i-saglasnosti',
     navTitle: 'Dokumentacija i saglasnosti',
@@ -407,7 +407,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
     gridNum: '/05',
     inSystemGrid: true,
     title: 'Saglasnosti i dokumentacija, potpisane digitalno',
-    lead: 'Šabloni saglasnosti, digitalni potpis i elektronska arhiva. Ono što pacijent treba da potpiše spremno je za nekoliko sekundi, bez štampe i bez prekucavanja.',
+    lead: 'Šabloni saglasnosti, potpis na tabletu ili na odštampanom dokumentu i elektronska arhiva. Ono što pacijent treba da potpiše spremno je za nekoliko sekundi, bez prekucavanja.',
     visual: {
       src: '/images/funkcionalnosti/saglasnost-sabloni.png',
       alt: 'Šabloni dokumenata u Odontoi, potvrde, opravdanja i uputi spremni za korišćenje',
@@ -425,9 +425,9 @@ export const FEATURE_PAGES: FeaturePageData[] = [
             desc: 'Saglasnosti i obrasci stoje digitalno u e-arhivi, umesto po fasciklama i fiokama.',
           },
           {
-            title: 'Potpis na ekranu',
+            title: 'Tablet ili papir',
             icon: 'file-signature',
-            desc: 'Pacijent potpisuje na tabletu, a dokument ostaje uz njegov karton.',
+            desc: 'Pacijent potpiše saglasnost na tabletu, ili je odštampaš i potpiše na papiru.',
           },
           {
             title: 'Arhiva koja se pretražuje',
@@ -441,7 +441,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
         title: 'Kako radi',
         items: [
           'Izabereš saglasnost za intervenciju koja sledi.',
-          'Pacijent je pregleda i potpiše na ekranu.',
+          'Pacijent je pregleda i potpiše na tabletu, ili je odštampaš za potpis na papiru.',
           'Dokument ostaje u elektronskoj arhivi ordinacije.',
         ],
       },
@@ -453,11 +453,36 @@ export const FEATURE_PAGES: FeaturePageData[] = [
           'Kada dokumentacija stoji uredno i pretraživo, priprema pred intervenciju je kraća, a ono što ti kasnije zatreba lako se nađe.',
         ],
       },
+      /* Odgovori se oslanjaju samo na ono sto stranica i aplikacija vec pokazuju:
+         podrazumevani i klinicki sabloni ("Dupliraj kao klinički", "Novi šablon"),
+         kategorije sablona, stampa ili potpis na tabletu i arhiva uz karton. */
+      {
+        type: 'faq',
+        title: 'Česta pitanja',
+        items: [
+          {
+            q: 'Mogu li da prilagodim šablone svojoj ordinaciji?',
+            a: 'Da. Podrazumevani šablon dupliraš kao klinički i menjaš ga po svojoj meri, ili napraviš potpuno novi šablon.',
+          },
+          {
+            q: 'Koje dokumente pravim iz šablona?',
+            a: 'Saglasnosti, potvrde, opravdanja i uputi. Podrazumevani šabloni su spremni odmah, a svoje dodaješ po potrebi.',
+          },
+          {
+            q: 'Da li pacijent mora da potpiše na tabletu?',
+            a: 'Ne. Saglasnost možeš da odštampaš i pacijent je potpiše na papiru, ili da je potpiše na tabletu. Biraš kako tvojoj ordinaciji više odgovara.',
+          },
+          {
+            q: 'Gde se čuva dokument potpisan na tabletu?',
+            a: 'U elektronskoj arhivi ordinacije, uz karton pacijenta, pa ga kasnije nađeš po imenu i datumu.',
+          },
+        ],
+      },
     ],
     seo: {
       title: 'Digitalne saglasnosti i dokumentacija za ordinacije | Odontoa',
       description:
-        'Šabloni saglasnosti, digitalni potpis na tabletu i elektronska arhiva. Dokumentacija bez štampe i bez prekucavanja.',
+        'Šabloni saglasnosti, potpis na tabletu ili odštampan dokument i elektronska arhiva. Dokumentacija bez prekucavanja.',
     },
   },
 
@@ -495,7 +520,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
           {
             title: 'Podsetnici koji rade sami',
             icon: 'bell-ring',
-            desc: 'Podsetnik za termin i za neplaćen račun odlazi automatski, u vreme koje ti odrediš.',
+            desc: 'Podsetnik za termin i za neplaćen dug odlazi automatski, u vreme koje ti odrediš.',
           },
         ],
       },
@@ -512,8 +537,27 @@ export const FEATURE_PAGES: FeaturePageData[] = [
         type: 'prose',
         title: 'Novac koji se ne prati, ne naplati se',
         paragraphs: [
-          'Najveći deo nenaplaćenih računa u ordinaciji nije sporan. Jednostavno se zaboravi, jer nema mesta na kom bi bio vidljiv svaki dan.',
+          'Najveći deo nenaplaćenih dugovanja u ordinaciji nije sporan. Jednostavno se zaboravi, jer nema mesta na kom bi bilo vidljivo svaki dan.',
           'Kada dugovanje stoji uz karton, a podsetnik odlazi sam, naplata prestaje da zavisi od toga da li se neko setio. A kada ti je finansijska slika sveža, odluke o ordinaciji donosiš na vreme i na osnovu brojki, ne osećaja.',
+        ],
+      },
+      /* Odontoa ne izdaje fiskalne racune: prvo pitanje to kaze direktno. */
+      {
+        type: 'faq',
+        title: 'Česta pitanja',
+        items: [
+          {
+            q: 'Da li Odontoa izdaje fiskalne račune?',
+            a: 'Ne. Odontoa vodi predračune, evidenciju uplata i dugovanja pacijenata. Fiskalni račun i dalje izdaješ na način na koji to ordinacija radi i sada.',
+          },
+          {
+            q: 'Kako vidim ko mi duguje?',
+            a: 'Dugovanja pacijenata vidiš na jednom ekranu: ko duguje, koliko i od kada.',
+          },
+          {
+            q: 'Kako radi podsetnik za dug?',
+            a: 'Podsetnik odlazi automatski, u vreme koje ti odrediš, bez ručnog pozivanja pacijenta.',
+          },
         ],
       },
     ],
@@ -551,12 +595,12 @@ export const FEATURE_PAGES: FeaturePageData[] = [
           },
           {
             title: 'Zna kontekst ordinacije',
-            icon: 'brain-circuit',
+            icon: 'file-search',
             desc: 'Asistent radi nad tvojom bazom pacijenata, termina i naplate, ne nad opštim znanjem.',
           },
           {
             title: 'Bez učenja novog alata',
-            icon: 'sparkles',
+            icon: 'list-checks',
             desc: 'Nema novih ekrana ni menija koje treba zapamtiti. Pitaš isto kao što bi pitao kolegu.',
           },
         ],
@@ -567,7 +611,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
         items: [
           'Postaviš pitanje običnim jezikom, na primer koliko je pacijenata došlo ovog meseca.',
           'Asistent pročita podatke tvoje ordinacije i sastavi odgovor.',
-          'Iz odgovora odeš pravo na karton, termin ili račun koji te zanima.',
+          'Iz odgovora odeš pravo na karton, termin ili predračun koji te zanima.',
         ],
       },
       {
@@ -588,7 +632,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
           },
           {
             q: 'Šta mogu da ga pitam?',
-            a: 'Pitanja o terminima, pacijentima, terapijama i naplati. Na primer koliko je slobodnih termina ove nedelje ili koji pacijenti imaju neplaćene račune.',
+            a: 'Pitanja o terminima, pacijentima, terapijama i naplati. Na primer koliko je slobodnih termina ove nedelje ili koji pacijenti imaju neplaćena dugovanja.',
           },
         ],
       },
@@ -613,12 +657,9 @@ export function getFeaturePage(slug: string): FeaturePageData | undefined {
 }
 
 /**
- * Ostale funkcionalnosti, za "srodne funkcionalnosti" blok na dnu stranice.
- *
- * Ograniceno na 3, koliko grid ima kolona: svih 6 je bilo dva reda link-kartica
- * neposredno pre CTA, sto je tezina bez vrednosti na tom mestu. Ceo katalog je
- * jedan klik dalje, na /funkcionalnosti.
+ * Ostale funkcionalnosti, za blok "Ostale funkcionalnosti" na dnu stranice:
+ * podrazumevano svih sest, redom iz kataloga, kao tiha lista (ne kartice).
  */
-export function getRelatedFeaturePages(slug: string): FeaturePageData[] {
-  return FEATURE_PAGES.filter((p) => p.slug !== slug).slice(0, 3);
+export function getRelatedFeaturePages(slug: string, count = FEATURE_PAGES.length - 1): FeaturePageData[] {
+  return FEATURE_PAGES.filter((p) => p.slug !== slug).slice(0, count);
 }

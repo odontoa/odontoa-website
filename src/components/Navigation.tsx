@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { isSectionHidden } from "@/lib/config/hidden-sections";
 import { isOpenInComingSoon } from "@/lib/config/site-mode";
+/* Marketing font (Manrope); navigacija stoji van .site-page, pa ga nosi sama. */
+import { displayFont } from "@/app/(site)/display-font";
 
 /* Stavke privremeno sakrivenih sekcija (blog, recnik, o nama) se filtriraju, ne brisu:
    ukljucuju se iz src/lib/config/hidden-sections.ts. */
@@ -45,7 +47,7 @@ const Navigation = ({ comingSoon = false }: { comingSoon?: boolean }) => {
   };
 
   return (
-    <header>
+    <header className={displayFont.className}>
       <nav
         data-state={isMenuOpen && 'active'}
         className="fixed z-20 w-full px-2 pt-1 group">

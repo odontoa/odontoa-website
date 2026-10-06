@@ -16,84 +16,74 @@
   --status-owe-soft: #cf6260;
   /* Jedinstven vertikalni ritam svih sekcija */
   --section-pad: clamp(72px, 9vw, 112px);
+  /* Manrope (--font-display sa display-font.ts) je marketing font i za tekst, ne samo
+     za naslove. Mockupi aplikacije ga vracaju na Inter (vidi kraj fajla). */
+  font-family: var(--font-display), var(--font-inter), 'Inter', system-ui, sans-serif;
 }
 
-/* Zajednicki display H2 svih sekcija (Instrument Sans preko --font-display sa page.tsx) */
+/* Zajednicki display H2 svih sekcija (Manrope preko --font-display). Manrope je siri
+   od ranijeg Instrument Sans-a: 2px manje i tesnji tracking, isti broj redova. */
 .section-title {
   font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
-  font-size: clamp(30px, 4vw, 44px);
+  font-size: clamp(28px, 3.7vw, 42px);
   font-weight: 600;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.03em;
   line-height: 1.14;
   color: var(--stellar-heading);
   margin: 0;
+  /* Bez jedne reci same u poslednjem redu */
+  text-wrap: balance;
 }
 
 /* ── Hero ── */
 .hero {
-  /* Boje iz odobrenog dizajna bez tokena, na jednom mestu */
-  --hero-gold: #f2b01e;
+  /* Boje mockupa bez globalnih tokena, na jednom mestu */
   --hero-green: #12a67a;
-  /* --status-owe-soft je na .site-page (deli ga kartica troska tehnike) */
-  /* Mockup: neutralne tackice u browser baru, linije grafikona, donut track */
-  --hero-dot: #d7dae2;
-  --hero-seg: #f1f3f8;
-  --hero-grid: #f2f4f9;
-  --hero-grid-base: #e9ecf3;
-  --hero-guide: #d9d2f7;
-  --hero-track: #f0f2f7;
-  --hero-aura: rgba(110, 81, 224, 0.14);
-  --hero-aura-net: rgba(18, 166, 122, 0.14);
+  /* Sitan tekst u mockupu: ~5:1 na beloj (raniji #979fb4 je bio ~2,6:1) */
+  --hero-label: #646c84;
+  --hero-axis: #8a92a8;
+  --hero-icon: #8a92a8;
+  --hero-line: #e7e9f0;
+  --hero-hair: #eff1f5;
+  --hero-rail: #fbfbfd;
+  --hero-avatar: #eceef3;
+  --hero-sign: #c3c8d6;
+  --hero-acc-soft: #f3f0fd;
+  --hero-jun: #b9bfce;
+  --hero-grid: #f0f2f6;
+  --hero-grid-base: #e3e6ee;
+  --hero-paid: #0f8a66;
+  --hero-paid-bg: #e9f7f1;
+  --hero-booked-bg: #f1f2f6;
   /* Koliko donjeg dela mockupa ulazi ispod ivice sekcije (rez "nastavlja se") */
-  --hero-cut: 72px;
-  --hero-fade-h: 80px;
+  --hero-cut: 56px;
+  --hero-fade-h: 64px;
   position: relative;
   /* 92px fixed nav zona + 56px razmaka */
   padding: 148px 24px 0;
   overflow: hidden;
-  /* Brend glow iza H1: centar u zoni naslova, a ne iznad ivice sekcije, gde se od
-     njega vidi samo rep koji vec bledi. Alfa 8%, dovoljno da beli hero dobije topao
-     ton, premalo da bude obojen background. Uza elipsa da rep ne dodje do mockupa. */
-  background:
-    radial-gradient(
-      ellipse 52% 34% at 50% 14%,
-      color-mix(in srgb, var(--stellar-accent) 8%, transparent),
-      transparent 70%
-    ),
-    linear-gradient(var(--stellar-white), var(--stellar-white));
+  /* B2: cisto belo gore; dubinu daje svetlosiva ploca iza donjeg dela panela
+     (.hero__panel-wrap::before), bez glow-a i grid teksture. */
+  background: var(--stellar-white);
 }
 
-/* Suptilna grid pozadina sa radial mask fade-om */
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(var(--stellar-border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--stellar-border) 1px, transparent 1px);
-  background-size: 56px 56px;
-  opacity: 0.25;
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%);
-          mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%);
-}
-
-/* Blag fade na rezu: donja ivica mockupa se stapa sa pozadinom sekcije. Overlay, ne
-   mask - mask bi propustio grid pozadinu i senku panela kroz providno dno. */
+/* Fade na rezu: dno panela se stapa sa plocom, koja je iste boje kao sledeca
+   sekcija (SystemOverviewSection, --stellar-bg-light). Overlay, ne mask. */
 .hero::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 2;
   height: var(--hero-fade-h);
   pointer-events: none;
-  background: linear-gradient(to bottom, transparent, var(--stellar-white));
+  background: linear-gradient(to bottom, rgba(247, 248, 250, 0), var(--stellar-bg-light));
   background: linear-gradient(
     to bottom,
     transparent 0%,
-    color-mix(in srgb, var(--stellar-white) 38%, transparent) 62%,
-    var(--stellar-white) 100%
+    color-mix(in srgb, var(--stellar-bg-light) 45%, transparent) 55%,
+    var(--stellar-bg-light) 100%
   );
 }
 
@@ -115,10 +105,10 @@
 
 .hero__title {
   font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
-  font-size: clamp(38px, 5.6vw, 62px);
+  font-size: clamp(34px, 5.2vw, 58px);
   line-height: 1.12;
   font-weight: 600;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
   color: var(--stellar-heading);
   max-width: 820px;
   margin: 0 auto 20px;
@@ -200,38 +190,90 @@
   transform: translateX(2px);
 }
 
-/* ── Hero: panel (browser frame) ── */
-/* Negativan margin skracuje sekciju, pa postojeci overflow: hidden odsece dno
-   panela. translateY bi ostavio rupu u layoutu ispod. */
+/* ── Hero: T2 mikrokopija ispod CTA (samo proverive tvrdnje) ── */
+.hero__micro {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  list-style: none;
+  padding: 0;
+  margin: -44px 0 56px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--hero-label);
+}
+
+.hero__micro li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero__micro svg {
+  color: var(--stellar-accent);
+}
+
+/* ── Hero: panel ── */
+/* Negativan margin skracuje sekciju, pa overflow: hidden odsece dno panela (rez
+   "nastavlja se"). translateY bi ostavio rupu u layoutu ispod. */
 .hero__panel-wrap {
   position: relative;
   max-width: 980px;
   margin: 0 auto calc(-1 * var(--hero-cut));
 }
 
-/* Slojevita senka: kontaktna linija, dve neutralne za formu, dve brend aure za dubinu.
-   Offseti ostaju mali jer overflow: hidden i rez od --hero-cut seku sve nisko;
-   dubina dolazi iz blura i bocnog rasipanja, ne iz spustanja senke nadole.
-   Dupla deklaracija je fallback kao na ::after: bez color-mix senka bi nestala. */
-.hero__browser {
+/* B2: slojevita povrsina. Svetlosiva ploca pocinje ispod gornje trecine panela i
+   prelazi u boju sledece sekcije, pa nema vidljivog sava. Tackice su poseban sloj,
+   da bi mogle da izblede pre dna. 100vw je bezbedan jer .hero ima overflow: hidden. */
+.hero__panel-wrap::before,
+.hero__panel-wrap::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  top: 140px;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.hero__panel-wrap::before {
+  background: var(--stellar-bg-light);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 220px);
+          mask-image: linear-gradient(to bottom, transparent 0, #000 220px);
+}
+
+.hero__panel-wrap::after {
+  background-image: radial-gradient(rgba(6, 11, 19, 0.07) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 220px, #000 55%, transparent 100%);
+          mask-image: linear-gradient(to bottom, transparent 0, #000 220px, #000 55%, transparent 100%);
+}
+
+/* S2: deo aplikacije. Senka je slojevita ali niska: kontakt, dve neutralne i jedna
+   tiha brend aura, bez ljubicastog sjaja oko celog panela. */
+.hero__app {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 60px minmax(0, 1fr);
+  text-align: left;
   background: var(--stellar-white);
-  border: 1px solid var(--stellar-border);
-  border-radius: 20px 20px 0 0;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 1px 2px rgba(6, 11, 19, 0.05),
-    0 6px 14px -4px rgba(6, 11, 19, 0.07),
-    0 18px 40px -12px rgba(6, 11, 19, 0.13),
-    0 40px 80px -24px rgba(110, 81, 224, 0.22),
-    0 8px 110px -20px rgba(110, 81, 224, 0.12);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 1px 2px color-mix(in srgb, var(--stellar-dark) 5%, transparent),
-    0 6px 14px -4px color-mix(in srgb, var(--stellar-dark) 7%, transparent),
-    0 18px 40px -12px color-mix(in srgb, var(--stellar-dark) 13%, transparent),
-    0 40px 80px -24px color-mix(in srgb, var(--stellar-accent) 22%, transparent),
-    0 8px 110px -20px color-mix(in srgb, var(--stellar-accent) 12%, transparent);
+  border: 1px solid var(--hero-line);
+  border-bottom: 0;
+  border-radius: 18px 18px 0 0;
   overflow: hidden;
+  box-shadow:
+    0 1px 2px rgba(6, 11, 19, 0.04),
+    0 12px 28px -14px rgba(6, 11, 19, 0.12),
+    0 40px 80px -40px rgba(6, 11, 19, 0.16),
+    0 56px 110px -56px rgba(110, 81, 224, 0.16);
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--stellar-dark) 4%, transparent),
+    0 12px 28px -14px color-mix(in srgb, var(--stellar-dark) 12%, transparent),
+    0 40px 80px -40px color-mix(in srgb, var(--stellar-dark) 16%, transparent),
+    0 56px 110px -56px color-mix(in srgb, var(--stellar-accent) 16%, transparent);
   animation: hero-rise 0.7s ease both 0.15s;
 }
 
@@ -246,337 +288,307 @@
   }
 }
 
-.hero__browser-bar {
+/* Rail: uproscena glavna navigacija aplikacije, samo ikonice, jedna aktivna. */
+.hero__rail {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 14px;
-  padding: 13px 18px;
-  border-bottom: 1px solid var(--stellar-border);
-  background: var(--stellar-bg-light);
+  gap: 4px;
+  padding: 16px 0 18px;
+  background: var(--hero-rail);
+  border-right: 1px solid var(--hero-hair);
 }
 
-.hero__browser-dots {
-  display: flex;
-  gap: 7px;
+.hero__rail-mark {
+  width: 26px;
+  height: 26px;
+  margin-bottom: 14px;
 }
 
-/* Neutralno sive tackice, bez crveno/zuto/zeleno - manje bucno u heroju. */
-.hero__browser-dots i {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--hero-dot);
-  display: block;
+.hero__rail-item {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: var(--hero-icon);
 }
 
-.hero__browser-url {
+.hero__rail-item.is-active {
+  background: var(--hero-acc-soft);
+  color: var(--stellar-accent);
+}
+
+.hero__rail-spacer {
   flex: 1;
-  max-width: 340px;
-  margin: 0 auto;
-  height: 28px;
+  min-height: 12px;
+}
+
+.hero__rail-avatar {
+  margin-top: 6px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--hero-avatar);
+  color: var(--hero-label);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.hero__main {
+  min-width: 0;
+}
+
+.hero__top {
+  height: 52px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 7px;
-  background: var(--stellar-white);
-  border: 1px solid var(--stellar-border);
-  border-radius: 8px;
-  font-size: 12.5px;
-  font-weight: 500;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 26px;
+  border-bottom: 1px solid var(--hero-hair);
+  font-size: 13px;
+}
+
+.hero__crumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: var(--stellar-muted);
+  white-space: nowrap;
 }
 
-.hero__browser-url svg {
-  opacity: 0.55;
-  flex: none;
+.hero__crumb b {
+  color: var(--stellar-heading);
+  font-weight: 600;
 }
 
-/* Balansira sirinu tackica sa leve strane da URL ostane tacno centriran. */
-.hero__browser-spacer {
-  width: 47px;
+.hero__org {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: var(--hero-label);
+  white-space: nowrap;
+}
+
+.hero__org i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--hero-green);
+  display: block;
 }
 
 /* ── Hero: dashboard ── */
 .hero__dash {
-  padding: 22px 22px 24px;
-  text-align: left;
-  background: linear-gradient(180deg, var(--stellar-bg-light) 0%, var(--stellar-white) 120px);
+  padding: 22px 26px 36px;
 }
 
 .hero__dash-head {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: space-between;
-  margin-bottom: 18px;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 22px;
 }
 
 .hero__dash-title {
-  font-size: 19px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--stellar-heading);
 }
 
-.hero__dash-title small {
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--stellar-muted);
-  margin-top: 2px;
+.hero__dash-sub {
+  font-size: 12.5px;
+  color: var(--hero-label);
+  margin-top: 3px;
 }
 
-/* Segmentni kontroler: siva sina, aktivan tab je bela pilula sa senkom. */
-.hero__dash-tabs {
+/* Tabovi kao tekst sa podvlakom: tise od segmentnog kontrolera */
+.hero__tabs {
   display: flex;
-  gap: 2px;
-  padding: 3px;
-  border-radius: 9px;
-  background: var(--hero-seg);
-}
-
-.hero__dash-tabs span {
+  gap: 18px;
   font-size: 12.5px;
   font-weight: 500;
-  color: var(--stellar-muted);
-  padding: 6px 12px;
-  border-radius: 7px;
+  color: var(--hero-label);
 }
 
-.hero__dash-tabs .is-active {
-  background: var(--stellar-white);
-  color: var(--stellar-accent);
-  font-weight: 600;
-  box-shadow: 0 1px 2px rgba(6, 11, 19, 0.06);
+.hero__tabs span {
+  padding-bottom: 6px;
+  border-bottom: 2px solid transparent;
 }
 
-.hero__kpis {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-bottom: 14px;
-}
-
-.hero__kpi {
-  border: 1px solid var(--stellar-border);
-  border-radius: 14px;
-  padding: 15px 16px;
-  background: var(--stellar-white);
-  box-shadow: 0 1px 2px rgba(6, 11, 19, 0.03);
-}
-
-.hero__kpi label {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--stellar-muted);
-  display: block;
-  margin-bottom: 9px;
-}
-
-.hero__kpi strong {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 7px;
-  row-gap: 2px;
-  font-size: clamp(16px, 2.2vw, 20px);
-  font-weight: 700;
+.hero__tabs .is-active {
   color: var(--stellar-heading);
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  border-color: var(--stellar-accent);
 }
 
-/* Valuta je prigusena da broj nosi tezinu */
-.hero__kpi-cur {
+/* ── K2: bruto − tehnika = neto, bez kartica ── */
+.hero__eq {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr) 34px minmax(0, 1fr);
+  align-items: start;
+  padding: 2px 0 22px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--hero-hair);
+}
+
+.hero__eq-item {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hero__eq-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--hero-label);
+}
+
+/* Znak unutar labele postoji samo za mobilni racun */
+.hero__eq-op {
+  display: none;
   font-style: normal;
+}
+
+.hero__eq-num {
+  margin: 8px 0 7px;
+  font-size: 31px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--stellar-heading);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hero__eq-num i {
+  font-style: normal;
+  margin-left: 5px;
   font-size: 13px;
   font-weight: 600;
+  letter-spacing: 0;
   color: var(--stellar-muted);
 }
 
-.hero__kpi-up {
+/* Neto se izdvaja samo bojom broja: rezultat, ne selektovano stanje */
+.hero__eq-item--net .hero__eq-num {
+  color: var(--stellar-accent);
+}
+
+.hero__eq-note {
   font-size: 12px;
+  color: var(--hero-label);
+  white-space: nowrap;
+}
+
+.hero__eq-note b {
   font-weight: 600;
   color: var(--hero-green);
 }
 
-.hero__kpi--net {
-  border-color: transparent;
-  background: linear-gradient(180deg, rgba(110, 81, 224, 0.07) 0%, rgba(110, 81, 224, 0.02) 100%);
-  box-shadow:
-    inset 0 0 0 1.5px var(--stellar-accent),
-    0 6px 16px -8px rgba(110, 81, 224, 0.35);
+.hero__eq-sign {
+  padding-top: 28px;
+  text-align: center;
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--hero-sign);
 }
 
-.hero__kpi--net strong {
-  color: var(--stellar-accent);
-}
-
-.hero__kpi--net .hero__kpi-cur {
-  color: var(--stellar-accent);
-  opacity: 0.6;
-}
-
-/* Isti 3-kolonski grid i isti gap kao KPI red: leva ivica, dve unutrasnje linije
-   i desna ivica se poklapaju gore i dole. */
-.hero__dash-grid {
+/* ── Telo: grafikon | Danas, razdvojeni hairline linijom ── */
+.hero__body {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+  grid-template-columns: minmax(0, 1.72fr) minmax(0, 1fr);
 }
 
-.hero__card {
-  border: 1px solid var(--stellar-border);
-  border-radius: 14px;
-  padding: 16px 16px 12px;
-  background: var(--stellar-white);
-  box-shadow: 0 1px 2px rgba(6, 11, 19, 0.03);
+.hero__chart-col {
+  min-width: 0;
+  padding-right: 24px;
 }
 
-/* Grafikon nosi 2 od 3 kolone; flex kolona da chart popuni visinu desne kartice. */
-.hero__card--chart {
-  grid-column: span 2;
+.hero__today {
+  min-width: 0;
+  padding-left: 24px;
+  border-left: 1px solid var(--hero-hair);
+}
+
+.hero__box-head {
   display: flex;
-  flex-direction: column;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
-.hero__card h4 {
-  font-size: 13.5px;
+.hero__box-title {
+  font-size: 13px;
   font-weight: 600;
   color: var(--stellar-heading);
-  margin: 0 0 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-}
-
-.hero__card h4 em {
-  font-style: normal;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--stellar-muted);
   white-space: nowrap;
-  text-align: right;
 }
 
-/* ── Hero: area grafikon ── */
-.hero__chart-legend {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 6px;
+.hero__box-meta {
+  font-size: 12px;
+  color: var(--hero-label);
+  white-space: nowrap;
 }
 
-.hero__chart-legend > div {
+.hero__legend {
   display: flex;
+  gap: 14px;
+  font-size: 11.5px;
+  color: var(--hero-label);
+}
+
+.hero__legend > span,
+.hero__tip-row {
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11.5px;
-  font-weight: 500;
-  color: var(--stellar-muted);
 }
 
-/* Zajednicki kvadratic legende (grafikon i donut) */
-.hero__lgd {
-  width: 9px;
-  height: 9px;
-  border-radius: 3px;
+.hero__legend-jul,
+.hero__legend-jun {
+  display: block;
+  width: 14px;
   flex: none;
+  border-top: 2px solid var(--stellar-accent);
 }
 
-.hero__lgd--gross,
-.hero__lgd--cash {
-  background: var(--stellar-accent);
+.hero__legend-jun {
+  border-top: 2px dashed var(--hero-jun);
 }
 
-.hero__lgd--net {
-  background: var(--hero-green);
-}
-
-.hero__lgd--card {
-  background: var(--hero-gold);
-}
-
-/* SVG se razvlaci samo po X, pa je sve sto mora da prati plot izrazeno u procentima
-   viewBox-a: 34/600 i 580/600 po X, 8/170 do 150/170 po Y. */
+/* ── C2: grafikon. SVG se razvlaci samo po X (viewBox 600x200), linije nose
+   non-scaling-stroke; labele, tacke i tooltip su HTML u procentima istog viewBox-a. ── */
 .hero__chart {
-  position: relative;
-  flex: 1;
-  min-height: 170px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 40px;
+  grid-template-rows: minmax(0, 1fr);
+  height: 180px;
 }
 
-.hero__chart-svg {
+.hero__plot {
+  position: relative;
+  min-width: 0;
+}
+
+/* Apsolutno: inace SVG uzima visinu iz odnosa viewBox-a (3:1) i na sirinama
+   razlicitim od 540px prelazi red od 180px, pa datumi upadnu u plot. */
+.hero__plot svg {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
+  overflow: visible;
   animation: hero-fade 0.6s ease both 0.4s;
-}
-
-.hero__chart-grid,
-.hero__chart-base,
-.hero__chart-guide {
-  fill: none;
-}
-
-.hero__chart-grid {
-  stroke: var(--hero-grid);
-}
-
-.hero__chart-base {
-  stroke: var(--hero-grid-base);
-}
-
-/* Isprekidana vodilica do poslednje tacke */
-.hero__chart-guide {
-  stroke: var(--hero-guide);
-  stroke-width: 1.5;
-  stroke-dasharray: 3 4;
-}
-
-.hero__chart-area {
-  stroke: none;
-}
-
-.hero__chart-line {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.hero__chart-line--gross {
-  stroke: var(--stellar-accent);
-  stroke-width: 2.75;
-}
-
-.hero__chart-line--net {
-  stroke: var(--hero-green);
-  stroke-width: 2.5;
-}
-
-/* Krajnje tacke: HTML krug sa belim prstenom i mekom aurom. SVG krug bi se uz
-   razvlacenje po X pretvorio u elipsu. */
-.hero__chart-tip {
-  position: absolute;
-  box-sizing: border-box;
-  left: 96.667%;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 2.5px solid var(--stellar-white);
-  transform: translate(-50%, -50%);
-  animation: hero-fade 0.6s ease both 0.5s;
-}
-
-.hero__chart-tip--gross {
-  top: 17.65%;
-  background: var(--stellar-accent);
-  box-shadow: 0 0 0 5px var(--hero-aura);
-}
-
-.hero__chart-tip--net {
-  top: 56.47%;
-  background: var(--hero-green);
-  box-shadow: 0 0 0 4px var(--hero-aura-net);
 }
 
 @keyframes hero-fade {
@@ -588,271 +600,272 @@
   }
 }
 
-/* Y osa lezi u praznom pojasu levo od plota (prvih 34 od 600 jedinica) */
-.hero__chart-y {
+.hero__grid {
+  stroke: var(--hero-grid);
+  stroke-width: 1;
+}
+
+.hero__grid--base {
+  stroke: var(--hero-grid-base);
+}
+
+.hero__focus-line {
+  stroke: rgba(6, 11, 19, 0.14);
+  stroke-width: 1;
+}
+
+.hero__line-jul {
+  fill: none;
+  stroke: var(--stellar-accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.hero__line-jun {
+  fill: none;
+  stroke: var(--hero-jun);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 4;
+}
+
+.hero__dot {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 26px;
-  height: 100%;
+  box-sizing: border-box;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hero__dot--jul {
+  width: 11px;
+  height: 11px;
+  background: var(--stellar-accent);
+  box-shadow: 0 0 0 2px var(--stellar-white);
+}
+
+.hero__dot--jun {
+  width: 8px;
+  height: 8px;
+  background: var(--stellar-white);
+  border: 1.5px solid var(--hero-jun);
+}
+
+/* Tooltip levo od tacke fokusa (22. u mesecu je na 70% sirine) */
+.hero__tip {
+  position: absolute;
+  box-sizing: border-box;
+  width: 150px;
+  transform: translate(calc(-100% - 14px), -28%);
+  display: grid;
+  gap: 4px;
+  padding: 9px 11px 10px;
+  background: var(--stellar-white);
+  border: 1px solid var(--hero-line);
+  border-radius: 10px;
+  box-shadow: 0 8px 20px -10px rgba(6, 11, 19, 0.18);
+  font-size: 11px;
+  color: var(--stellar-body);
+}
+
+.hero__tip-title {
   font-size: 10.5px;
-  font-weight: 500;
-  color: var(--stellar-muted);
+  font-weight: 600;
+  color: var(--hero-label);
+  margin-bottom: 1px;
+}
+
+.hero__tip-row b {
+  margin-left: auto;
+  font-weight: 600;
+  color: var(--stellar-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.hero__tip-row--diff {
+  padding-top: 4px;
+  border-top: 1px solid var(--hero-hair);
+}
+
+.hero__tip-row--diff b {
+  color: var(--hero-green);
+}
+
+/* Y osa desno od plota, u sopstvenoj koloni od 40px */
+.hero__chart-y {
+  position: relative;
+  font-size: 10.5px;
+  color: var(--hero-axis);
 }
 
 .hero__chart-y span {
   position: absolute;
-  right: 0;
+  left: 10px;
   line-height: 1;
   transform: translateY(-50%);
-}
-
-.hero__chart-y span:nth-child(1) {
-  top: 4.7%;
-}
-
-.hero__chart-y span:nth-child(2) {
-  top: 36.5%;
-}
-
-.hero__chart-y span:nth-child(3) {
-  top: 68.2%;
-}
-
-.hero__chart-y span:nth-child(4) {
-  top: 88.2%;
+  font-variant-numeric: tabular-nums;
 }
 
 .hero__chart-x {
-  display: flex;
-  justify-content: space-between;
-  font-size: 10.5px;
-  font-weight: 500;
-  color: var(--stellar-muted);
-  /* Labele prate plot (34/600 levo, 20/600 desno), ne celu sirinu kartice */
-  padding: 8px 3.33% 0 5.67%;
-}
-
-/* ── Hero: donut ── */
-.hero__donut-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.hero__donut-wrap {
   position: relative;
-  width: 118px;
-  height: 118px;
-  flex: none;
+  height: 22px;
+  margin-right: 40px;
+  font-size: 10.5px;
+  color: var(--hero-axis);
 }
 
-.hero__donut {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.hero__donut circle {
-  fill: none;
-  stroke-width: 14;
-}
-
-.hero__donut-track {
-  stroke: var(--hero-track);
-}
-
-.hero__donut-arc {
-  stroke-linecap: round;
-}
-
-.hero__donut-arc--cash {
-  stroke: var(--stellar-accent);
-}
-
-.hero__donut-arc--card {
-  stroke: var(--hero-gold);
-}
-
-.hero__donut-label {
+.hero__chart-x span {
   position: absolute;
-  inset: 0;
+  top: 8px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.hero__chart-x span:first-child {
+  transform: none;
+}
+
+.hero__chart-x span:last-child {
+  transform: translateX(-100%);
+}
+
+/* ── P5: Danas ── */
+.hero__agenda {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hero__ag {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 9px 0;
+  border-top: 1px solid var(--hero-hair);
+}
+
+.hero__ag:first-child {
+  border-top: 0;
+  padding-top: 2px;
+}
+
+.hero__ag-time {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--stellar-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.hero__ag-who {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--stellar-heading);
-  line-height: 1.15;
 }
 
-.hero__donut-label small {
+.hero__ag-who small {
+  margin-top: 1px;
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--hero-label);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hero__ag-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.hero__ag-status small {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--stellar-heading);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hero__pill {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 6px;
   font-size: 10.5px;
   font-weight: 600;
-  color: var(--stellar-muted);
-}
-
-.hero__legend {
-  display: flex;
-  flex-direction: column;
-  gap: 11px;
-  flex: 1;
-  font-size: 13px;
-}
-
-.hero__legend > div {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-weight: 500;
-  color: var(--stellar-body);
-}
-
-.hero__legend strong {
-  margin-left: auto;
-  font-weight: 700;
-  color: var(--stellar-heading);
-  padding-left: 10px;
-}
-
-/* ── Hero: dugovanja (u istoj kartici kao donut) ── */
-.hero__debt {
-  margin-top: 14px;
-}
-
-/* Naslov ne sme da se lomi; ako ukupno ne stane u kolonu, pada u drugi red. */
-.hero__debt-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 2px 8px;
-  margin-bottom: 10px;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--stellar-heading);
-}
-
-.hero__debt-head span {
   white-space: nowrap;
 }
 
-.hero__debt-head em {
-  font-style: normal;
-  margin-left: auto;
-  font-size: 11.5px;
+.hero__pill--paid {
+  background: var(--hero-paid-bg);
+  color: var(--hero-paid);
+}
+
+.hero__pill--done {
+  background: var(--hero-acc-soft);
+  color: var(--stellar-accent-dark);
+}
+
+/* Uradjeno, a jos nije placeno: iznos je prigusen, nije naplata */
+.hero__pill--done + small {
   font-weight: 500;
-  color: var(--stellar-muted);
-  white-space: nowrap;
+  color: var(--hero-label);
 }
 
-.hero__debt-row {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 9px 0;
-  border-top: 1px solid var(--stellar-border);
+.hero__pill--now {
+  background: var(--stellar-white);
+  color: var(--hero-label);
+  box-shadow: inset 0 0 0 1px var(--hero-line);
 }
 
-.hero__debt-av {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  flex: none;
-  background: rgba(110, 81, 224, 0.10);
-  color: var(--stellar-accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.hero__debt-who {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--stellar-heading);
-}
-
-.hero__debt-sub {
-  font-size: 11px;
-  color: var(--stellar-muted);
-  margin-top: 1px;
-}
-
-.hero__debt-amt {
-  margin-left: auto;
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--status-owe-soft);
-  white-space: nowrap;
-}
-
-/* ── Hero: trust traka (zamena za TrustLogos) - transparentna, bez pilula ── */
-/* Mali gornji razmak: traka je nastavak mockupa, ne zaseban blok.
-   Pozadina nosi prelaz iz bele hero sekcije u svetlosivu sledecu sekciju: gore
-   cisto belo (gde fade dashboarda zavrsava), dole tacno boja SystemOverviewSection-a,
-   pa nijedan od dva sava nije vidljiv. */
-.hero-proof {
-  /* Vazduh iznad trake ide kroz margin, ne padding: padding bi razvukao gradijent
-     ispod (tacke su u procentima) i gurnuo bedzeve u sredinu rampe. */
-  margin-top: clamp(28px, 4vw, 52px);
-  padding: 14px 24px 44px;
-  background: linear-gradient(
-    to bottom,
-    var(--stellar-white) 0%,
-    var(--stellar-white) 34%,
-    var(--stellar-bg-light) 100%
-  );
-}
-
-.hero-proof__list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  /* Umeren razmak, bez space-between: 4 kratke stavke citaju se kao povezan set,
-     a ne kao razvucen niz logotipa. row-gap manji od column-gap: na uskim ekranima
-     se prelomi u 2x2, ne u 4 reda. */
-  column-gap: clamp(24px, 3vw, 48px);
-  row-gap: 14px;
-  /* Isti container kao .feature-split__inner: traka je sira od mockupa (980px) */
-  max-width: 1216px;
-  margin: 0 auto;
-  padding: 0;
-  list-style: none;
-}
-
-.hero-proof__list li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--stellar-muted);
-}
-
-/* Okvir ikonice: 18px glif + 2x10px padding = 38px kvadrat. Inline svg prima padding
-   i pozadinu, pa wrapper element nije potreban. Lucide crta sa currentColor. */
-.hero-proof__list li svg {
-  flex: none;
-  box-sizing: content-box;
-  padding: 10px;
-  border-radius: 10px;
-  color: var(--stellar-accent);
-  /* 8%, tise od .hero__debt-av (10%), da traka ne nadglasa mockup */
-  background: color-mix(in srgb, var(--stellar-accent) 8%, transparent);
+.hero__pill--booked {
+  background: var(--hero-booked-bg);
+  color: var(--hero-label);
 }
 
 /* ── Hero: responsive ── */
+/* Tablet: brojke jednacine se smanjuju, Danas ide ispod grafikona */
+@media (max-width: 960px) {
+  .hero__eq-num {
+    font-size: 25px;
+  }
+
+  .hero__eq-note {
+    white-space: normal;
+  }
+
+  .hero__body {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 18px;
+  }
+
+  .hero__chart-col {
+    padding-right: 0;
+  }
+
+  .hero__today {
+    padding: 16px 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--hero-hair);
+  }
+}
+
 @media (max-width: 720px) {
   .hero {
-    /* 80px fixed nav zona + 28px razmaka */
+    /* 80px fixed nav zona + 28px razmaka. Bez reza dna: na telefonu je panel kratak,
+       pa se vidi ceo, ukljucujuci sva tri statusa u panelu Danas. */
     padding-top: 108px;
-    /* Panel je uzi i visi: plici rez, da ne udje u plot grafikona */
-    --hero-cut: 48px;
-    --hero-fade-h: 56px;
+    padding-bottom: 40px;
+    --hero-cut: 0px;
+  }
+
+  .hero::after {
+    display: none;
   }
 
   /* Vertikalni ritam 20/40/64 iz baze je desktop odluka. Na mobilnom je vertikalni
@@ -869,39 +882,143 @@
     margin-bottom: 40px;
   }
 
-  .hero__kpis {
-    grid-template-columns: 1fr 1fr;
+  .hero__micro {
+    margin: -26px 0 32px;
+    font-size: 12.5px;
   }
 
-  .hero__kpi--net {
-    grid-column: 1 / -1;
+  .hero__panel-wrap::before,
+  .hero__panel-wrap::after {
+    top: 100px;
   }
 
-  .hero__dash-grid {
-    grid-template-columns: 1fr;
+  /* Bez raila: na telefonu je to samo prozor Izvestaja */
+  .hero__app {
+    grid-template-columns: minmax(0, 1fr);
+    border-bottom: 1px solid var(--hero-line);
+    border-radius: 16px;
   }
 
-  .hero__card--chart {
-    grid-column: auto;
+  .hero__rail {
+    display: none;
+  }
+
+  .hero__top {
+    height: 44px;
+    padding: 0 16px;
+    font-size: 12.5px;
   }
 
   .hero__dash {
-    padding: 14px;
+    padding: 16px 16px 8px;
+  }
+
+  .hero__dash-head {
+    margin-bottom: 14px;
+  }
+
+  .hero__dash-title {
+    font-size: 16px;
+  }
+
+  .hero__tabs {
+    display: none;
+  }
+
+  /* K2 kao racun u tri reda: bruto, minus tehnika, jednako neto */
+  .hero__eq {
+    display: block;
+    padding: 0 0 4px;
+    margin-bottom: 18px;
+  }
+
+  .hero__eq-sign,
+  .hero__eq-note {
+    display: none;
+  }
+
+  .hero__eq-item {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid var(--hero-hair);
+  }
+
+  .hero__eq-item:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .hero__eq-item--net {
+    border-top: 1.5px solid var(--stellar-heading);
+  }
+
+  .hero__eq-label {
+    display: inline-flex;
+    gap: 6px;
+  }
+
+  .hero__eq-op {
+    display: inline-block;
+    width: 10px;
+    color: var(--stellar-muted);
+  }
+
+  .hero__eq-item--net .hero__eq-label {
+    color: var(--stellar-heading);
+    font-weight: 600;
+  }
+
+  .hero__eq-num {
+    margin: 0;
+    font-size: 20px;
+  }
+
+  .hero__eq-item--net .hero__eq-num {
+    font-size: 23px;
+  }
+
+  .hero__eq-num i {
+    font-size: 11px;
+  }
+
+  /* Grafikon: bez Y ose i tooltipa, tri datuma */
+  .hero__legend {
+    display: none;
   }
 
   .hero__chart {
-    min-height: 150px;
+    grid-template-columns: minmax(0, 1fr);
+    height: 140px;
   }
 
-  /* Zleb za y osu je 34/600 sirine, na mobilnom svega ~16px: labele bi legle preko
-     grid linija, pa ostaju samo x osa i legenda. */
-  .hero__chart-y {
+  /* Bez tooltipa linija i tacke fokusa nemaju smisla */
+  .hero__chart-y,
+  .hero__tip,
+  .hero__dot,
+  .hero__focus-line {
+    display: none;
+  }
+
+  .hero__chart-x {
+    margin-right: 0;
+  }
+
+  .hero__chart-x span:nth-child(2),
+  .hero__chart-x span:nth-child(4) {
+    display: none;
+  }
+
+  /* Danas: tri reda, po jedan za naplaceno, uradjeno i zakazano */
+  .hero__ag--desktop {
     display: none;
   }
 }
 
 @media (max-width: 440px) {
-  /* 26px: sve tri H1 rečenice staju u po jedan red na 375px */
+  /* 26px: sve tri H1 recenice staju u po jedan red na 375px */
   .hero__title {
     font-size: 26px;
   }
@@ -914,23 +1031,11 @@
   .hero__btn {
     width: 100%;
   }
-
-  /* Traka: jedna kolona. 2x2 ne staje - "Microsoft Azure infrastruktura"
-     se prelomi u dva reda vec na 390px, a na 360px nema sanse.
-     Stavke se poravnavaju levo (okviri ikonica u liniji), a grupa ostaje
-     centrirana preko fit-content + margin: 0 auto. */
-  .hero-proof__list {
-    flex-direction: column;
-    align-items: flex-start;
-    width: fit-content;
-    row-gap: 12px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero__browser,
-  .hero__chart-svg,
-  .hero__chart-tip {
+  .hero__app,
+  .hero__plot svg {
     animation: none;
   }
 
@@ -1219,7 +1324,7 @@
    Leva ivica teksta je ista u sva tri dela: okvir (--finance-inset) + ivica ploce (1px) +
    padding ploce (--finance-pad). Zaglavlje i footer stoje direktno na okviru, pa im je
    bocni padding --finance-pad + 1px. Dupla box-shadow deklaracija je fallback kao na
-   .hero__browser - bez color-mix senka bi nestala. */
+   .hero__app - bez color-mix senka bi nestala. */
 .finance__card {
   --finance-inset: 6px;
   --finance-pad: 18px;
@@ -1921,35 +2026,42 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 13px 16px;
+  padding: 14px 18px;
   border-bottom: 1px solid var(--stellar-border);
-  background: var(--stellar-bg-light);
 }
 
+/* Odontoa znak u okviru, isto kao panel na stranici AI asistenta (bez "iskre"). */
 .assistant__avatar {
-  width: 26px;
-  height: 26px;
-  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
   flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: color-mix(in srgb, var(--stellar-accent) 12%, transparent);
-  color: var(--stellar-accent);
+  border: 1px solid var(--stellar-border);
+  background: var(--stellar-white);
 }
 
 .assistant__panel-title {
-  font-size: 13.5px;
+  display: block;
+  font-size: 14px;
   font-weight: 600;
   color: var(--stellar-heading);
 }
 
+.assistant__panel-sub {
+  display: block;
+  font-size: 11.5px;
+  color: var(--stellar-muted);
+}
+
 /* Veći razmak između parova nego unutar para - razgovor se čita kao tri celine. */
 .assistant__log {
-  padding: 18px 16px 20px;
+  padding: 18px 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 
 .assistant__pair {
@@ -1958,9 +2070,56 @@
   gap: 10px;
 }
 
-.assistant__row {
+/* Poruka = oznaka (ko pita / asistent) + balon. Otkriva se cela, klasom is-in. */
+.assistant__msg {
+  display: grid;
+  gap: 5px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.32s ease,
+    transform 0.32s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.assistant__msg.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+.assistant__msg--q {
+  justify-self: end;
+  justify-items: end;
+  max-width: 84%;
+}
+
+.assistant__msg--a {
+  max-width: 92%;
+}
+
+.assistant__who {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--stellar-muted);
+}
+
+.assistant__who i {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #eceef3;
+  color: var(--stellar-body);
+  font-style: normal;
+  font-size: 8.5px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.assistant__who img {
+  width: 14px;
+  height: 14px;
 }
 
 /* Nosi visinu odgovora od prvog frejma; balon sa tačkicama lebdi iznad njega. */
@@ -1972,38 +2131,62 @@
 .assistant__bubble {
   font-size: 14px;
   line-height: 1.5;
-  padding: 11px 16px;
+  padding: 10px 14px;
   border-radius: 14px;
-  max-width: 84%;
-  opacity: 0;
-  transform: translateY(6px);
-  transition:
-    opacity 0.32s ease,
-    transform 0.32s cubic-bezier(0.2, 0.7, 0.3, 1);
-}
-
-.assistant__bubble.is-in {
-  opacity: 1;
-  transform: none;
 }
 
 .assistant__bubble--q {
-  background: color-mix(in srgb, var(--stellar-accent) 9%, transparent);
-  border: 1px solid color-mix(in srgb, var(--stellar-accent) 16%, transparent);
-  color: var(--stellar-heading);
+  background: var(--stellar-accent);
+  color: var(--stellar-white);
   border-bottom-right-radius: 4px;
 }
 
 .assistant__bubble--a {
-  background: var(--stellar-bg-light);
-  border: 1px solid var(--stellar-border);
-  color: var(--stellar-body);
+  background: #f5f6f9;
+  color: var(--stellar-heading);
   border-bottom-left-radius: 4px;
 }
 
+/* Redovi odgovora: podaci iz ordinacije, iznosi poravnati desno. */
+.assistant__line {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 6px 0 5px;
+  margin-top: 4px;
+  border-top: 1px solid #e8eaf0;
+  font-variant-numeric: tabular-nums;
+}
+
+.assistant__line + .assistant__line {
+  margin-top: 0;
+}
+
+.assistant__line b {
+  font-weight: 600;
+  text-align: right;
+}
+
+.assistant__note {
+  color: var(--stellar-muted);
+}
+
+.assistant__action {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--stellar-accent);
+  background: var(--stellar-white);
+  border: 1px solid color-mix(in srgb, var(--stellar-accent) 28%, transparent);
+  border-radius: 7px;
+  padding: 3px 9px;
+}
+
+/* Tačkice stoje tačno gde će biti balon odgovora (ispod oznake "Odontoa asistent"). */
 .assistant__typing {
   position: absolute;
-  top: 0;
+  top: 21px;
   left: 0;
   display: flex;
   align-items: center;
@@ -2011,8 +2194,7 @@
   padding: 13px 14px;
   border-radius: 14px;
   border-bottom-left-radius: 4px;
-  background: var(--stellar-bg-light);
-  border: 1px solid var(--stellar-border);
+  background: #f5f6f9;
   opacity: 0;
   transition: opacity 0.22s ease;
 }
@@ -2056,8 +2238,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 11px 12px 11px 16px;
-  border-top: 1px solid var(--stellar-border);
+  margin: 0 18px 18px;
+  height: 44px;
+  padding: 0 6px 0 14px;
+  border: 1px solid var(--stellar-border);
+  border-radius: 12px;
 }
 
 .assistant__prompt-text {
@@ -2066,9 +2251,9 @@
 }
 
 .assistant__prompt-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
   flex: none;
   display: flex;
   align-items: center;
@@ -2078,7 +2263,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .assistant__bubble,
+  .assistant__msg,
   .assistant__typing {
     transition: none;
   }
@@ -2108,8 +2293,9 @@
     margin: 0 auto;
   }
 
-  .assistant__bubble {
-    max-width: 90%;
+  .assistant__msg--q,
+  .assistant__msg--a {
+    max-width: 94%;
   }
 }
 
@@ -3152,7 +3338,7 @@
 /* ── Kartica: ugnjezdena ploca ──
    Isti jezik kao kartica troska tehnike (.finance__card): lavanda okvir nosi cenu,
    bela ploca nosi sve sto je ukljuceno. Leva strana je namerno samo cena + CTA.
-   Dupla box-shadow deklaracija je fallback kao na .hero__browser. */
+   Dupla box-shadow deklaracija je fallback kao na .hero__app. */
 .pricing__card {
   max-width: 940px;
   margin: 0 auto;
@@ -3528,4 +3714,14 @@
   .testimonial-quote__avatar--inline {
     display: flex;
   }
+}
+
+/* ── Mockupi aplikacije ostaju na Inter-u ──
+   Font prave aplikacije nije potvrdjen, pa nacrtani UI ne prelazi na marketing font. */
+.hero__app,
+.finance__card,
+.system-overview__illustrations,
+.assistant__panel,
+.readiness__panel {
+  font-family: var(--font-inter), 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }

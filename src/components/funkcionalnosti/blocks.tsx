@@ -1,7 +1,6 @@
 import type { ComponentType } from 'react';
 import type { FeatureBlock } from '@/lib/content/funkcionalnosti';
 import Reveal from '@/components/shared/Reveal';
-import StepsFlow from './StepsFlow';
 import {
   BellRing,
   BrainCircuit,
@@ -164,7 +163,7 @@ function BenefitIcon({ name }: { name?: string }) {
 function PlusIcon() {
   return (
     <svg
-      className="page-faq__icon"
+      className="fp-faq__icon"
       width="16"
       height="16"
       viewBox="0 0 24 24"
@@ -181,17 +180,18 @@ function PlusIcon() {
   );
 }
 
+/* B2: tri kolone vrednosti razdvojene hairline linijama, bez kartica i senki. */
 function BenefitsBlock({ block }: { block: Extract<FeatureBlock, { type: 'benefits' }> }) {
   return (
-    <div className="page-benefits">
+    <div className="fp-values">
       {block.items.map((item, i) => (
-        <Reveal key={item.title} delay={i * 0.06} style={{ height: '100%' }}>
-          <div className="page-benefit">
-            <div className="page-benefit__icon">
+        <Reveal key={item.title} delay={i * 0.06}>
+          <div className="fp-value">
+            <span className="fp-value__icon">
               <BenefitIcon name={item.icon} />
-            </div>
-            <h3 className="page-benefit__title">{item.title}</h3>
-            <p className="page-benefit__desc">{item.desc}</p>
+            </span>
+            <h3 className="fp-value__title">{item.title}</h3>
+            <p className="fp-value__desc">{item.desc}</p>
           </div>
         </Reveal>
       ))}
@@ -199,17 +199,32 @@ function BenefitsBlock({ block }: { block: Extract<FeatureBlock, { type: 'benefi
   );
 }
 
-/* Lista je u klijentskoj komponenti zbog sekvencijalne animacije markera i
-   kicme; ostali blokovi ostaju serverski. Vidi StepsFlow.tsx. */
+/* P1: veliki redni brojevi i citljiv tekst koraka, bez animirane liste. */
 function StepsBlock({ block }: { block: Extract<FeatureBlock, { type: 'steps' }> }) {
-  return <StepsFlow items={block.items} />;
+  return (
+    <ol className="fp-steps">
+      {block.items.map((step, i) => (
+        <li key={step} className="fp-step">
+          <span className="fp-step__n" aria-hidden="true">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <p className="fp-step__text">{step}</p>
+        </li>
+      ))}
+    </ol>
+  );
 }
 
+/* Prvi pasus kao istaknuta izjava, drugi kao mirno objasnjenje. */
 function ProseBlock({ block }: { block: Extract<FeatureBlock, { type: 'prose' }> }) {
+  const [first, ...rest] = block.paragraphs;
   return (
-    <div className="page-prose">
-      {block.paragraphs.map((p) => (
-        <p key={p}>{p}</p>
+    <div className="fp-prose">
+      <p className="fp-prose__lead">{first}</p>
+      {rest.map((p) => (
+        <p key={p} className="fp-prose__p">
+          {p}
+        </p>
       ))}
     </div>
   );
@@ -217,18 +232,19 @@ function ProseBlock({ block }: { block: Extract<FeatureBlock, { type: 'prose' }>
 
 /**
  * FAQ na nativnom <details>: akordeon bez klijentskog JS-a i bez nove zavisnosti.
- * Sadrzaj je u DOM-u i kad je zatvoren, pa ga pretrazivaci citaju.
+ * Sadrzaj je u DOM-u i kad je zatvoren, pa ga pretrazivaci citaju. FAQPage schema
+ * nastaje u [slug]/page.tsx iz istih podataka.
  */
 function FaqBlock({ block }: { block: Extract<FeatureBlock, { type: 'faq' }> }) {
   return (
-    <div className="page-faq">
+    <div className="fp-faq">
       {block.items.map((item) => (
-        <details key={item.q} className="page-faq__item">
-          <summary className="page-faq__q">
+        <details key={item.q} className="fp-faq__item">
+          <summary className="fp-faq__q">
             {item.q}
             <PlusIcon />
           </summary>
-          <p className="page-faq__a">{item.a}</p>
+          <p className="fp-faq__a">{item.a}</p>
         </details>
       ))}
     </div>
@@ -250,27 +266,12 @@ function BlockBody({ block }: { block: FeatureBlock }) {
   }
 }
 
-/**
- * Zaglavlje sekcije: eyebrow iznad naslova.
- *
- * Eyebrow nosi accent boju u svaku sekciju tela, koja je do sada bila potpuno
- * siva ispod heroja, i oslobadja H2 da bude tvrdnja umesto etikete.
- *
- * Crtica ide samo na sekcije poravnate levo (obrazac .testimonial-quote__eyebrow sa
- * pocetne): uz centriran tekst visi neuravnotezeno, pa centrirane sekcije nose
- * cist uppercase eyebrow.
- */
+/** Zaglavlje sekcije: tih eyebrow iznad naslova, poravnato levo (editorijalno). */
 function SectionHeader({ block }: { block: FeatureBlock }) {
-  const meta = SECTION_META[block.type];
   return (
     <Reveal>
-      <p className="page-section__eyebrow">
-        {meta.align === 'left' && (
-          <span className="page-section__dash" aria-hidden="true" />
-        )}
-        {meta.eyebrow}
-      </p>
-      <h2 className="page-section__title">{block.title}</h2>
+      <p className="fp-sec__eyebrow">{SECTION_META[block.type].eyebrow}</p>
+      <h2 className="fp-sec__title">{block.title}</h2>
     </Reveal>
   );
 }
@@ -280,18 +281,10 @@ export default function FeatureBlocks({ blocks }: { blocks: FeatureBlock[] }) {
     <>
       {blocks.map((block) => {
         const meta = SECTION_META[block.type];
-        const classes = [
-          'page-section',
-          `page-section--${block.type}`,
-          meta.tone === 'alt' && 'page-section--alt',
-          meta.align === 'center' && 'page-section--center',
-        ]
-          .filter(Boolean)
-          .join(' ');
-
+        const classes = ['fp-sec', `fp-sec--${block.type}`, meta.tone === 'alt' && 'fp-sec--alt'].filter(Boolean).join(' ');
         return (
           <section key={`${block.type}-${block.title}`} className={classes}>
-            <div className="page-section__inner">
+            <div className="fp-sec__inner">
               <SectionHeader block={block} />
               <BlockBody block={block} />
             </div>

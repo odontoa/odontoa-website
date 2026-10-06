@@ -26,9 +26,10 @@
 
 .legal__title {
   font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
-  font-size: clamp(36px, 5vw, 52px);
+  /* Manrope: 48px i tesnji tracking (siri font od ranijeg) */
+  font-size: clamp(32px, 4.6vw, 48px);
   font-weight: 600;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.032em;
   line-height: 1.1;
   color: var(--stellar-heading);
   margin: 0;

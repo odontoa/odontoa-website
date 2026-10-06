@@ -1,42 +1,60 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
 /*
   Animirana demonstracija asistenta. Sekvenca kreće jednom, kad panel uđe u viewport:
   pitanje (desno) -> tri tačkice (levo) -> odgovor (levo), tri para redom, svi ostaju vidljivi.
+  Izgled prati panel asistenta sa stranice /funkcionalnosti/ai-asistent.
 
   Svi baloni su UVEK u DOM-u i otkrivaju se samo klasom `is-in`, a balon sa tačkicama je
   absolute u svom slotu. Zato panel ima punu visinu od prvog frejma i ništa ispod sekcije
   ne poskakuje tokom animacije.
 */
 
-const ICON_SPARK = (
+const ICON_SEND = (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z" />
-    <path d="M18.4 15.4l.7 1.9 1.9.7-1.9.7-.7 1.9-.7-1.9-1.9-.7 1.9-.7.7-1.9z" />
+    <path d="M3.7 3.3 21 12 3.7 20.7 6.5 12z" />
+    <path d="M6.5 12H13" />
   </svg>
 );
 
-const ICON_ARROW = (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M12 19V5M5 12l7-7 7 7" />
-  </svg>
-);
+const Mark = () => <Image src="/images/Odontoa-New-logo-pack-2026/favicon_color.png" alt="" width={16} height={16} />;
 
-/* Sva tri para su iz ugla vlasnika ordinacije i pokrivaju tri domena: termini, rate, dobavljači. */
-const SCRIPT = [
+/* [levo, desno, desno je opis (ne iznos)] */
+type Line = [string, string, 'note'?];
+
+/*
+  Sva tri para su iz ugla doktorke i pokrivaju tri domena: termini, rate, laboratorija.
+  Isti jezik kao panel na stranici AI asistenta: ko pita, odgovor iz podataka ordinacije,
+  prelaz na postojeci ekran. Imena i iznosi se slazu sa ostatkom pocetne
+  (Marko Petrovic u kalendaru, DentalTeh u Finansijama).
+*/
+const SCRIPT: { q: string; intro: string; lines: Line[]; action: string }[] = [
   {
     q: 'Koliko termina imam sutra?',
-    a: 'Sutra imaš 6 termina, prvi u 09:00, Aleksandra Božić, kontrola.',
+    intro: 'Sutra imaš 6 termina. Prvi:',
+    lines: [['09:00 · Sanja Ilić', 'kontrola', 'note']],
+    action: 'Otvori kalendar',
   },
   {
     q: 'Ko nije isplatio sve rate za fiksni aparat?',
-    a: 'Marko Petrović, ostale 3 od 12 rata, 21.000 RSD.',
+    intro: 'Jedan pacijent, Marko Petrović:',
+    lines: [
+      ['Ostale rate', '3 od 12', 'note'],
+      ['Preostalo', '21.000 RSD'],
+    ],
+    action: 'Otvori karton',
   },
   {
     q: 'Koliko sam platio DentalTeh ovog meseca, a koliko dugujem?',
-    a: 'Plaćeno 39.800 RSD, ostalo dugovanje 2.500 RSD.',
+    intro: 'DentalTeh, jul:',
+    lines: [
+      ['Plaćeno', '39.800 RSD'],
+      ['Ostalo dugovanje', '2.500 RSD'],
+    ],
+    action: 'Otvori tehniku',
   },
 ];
 
@@ -89,8 +107,13 @@ export default function AssistantChat() {
   return (
     <div className="assistant__panel" ref={panelRef}>
       <div className="assistant__panel-head">
-        <span className="assistant__avatar">{ICON_SPARK}</span>
-        <span className="assistant__panel-title">Odontoa asistent</span>
+        <span className="assistant__avatar">
+          <Mark />
+        </span>
+        <span>
+          <span className="assistant__panel-title">Odontoa asistent</span>
+          <span className="assistant__panel-sub">odgovara iz podataka: Centar dentalne medicine Videnta</span>
+        </span>
       </div>
 
       <div className="assistant__log">
@@ -101,19 +124,30 @@ export default function AssistantChat() {
 
           return (
             <div key={pair.q} className="assistant__pair">
-              <div className="assistant__row">
-                <div
-                  className={`assistant__bubble assistant__bubble--q${questionIn ? ' is-in' : ''}`}
-                >
-                  {pair.q}
-                </div>
+              <div className={`assistant__msg assistant__msg--q${questionIn ? ' is-in' : ''}`}>
+                <span className="assistant__who">
+                  <i>JS</i>
+                  dr Jelena Savić
+                </span>
+                <div className="assistant__bubble assistant__bubble--q">{pair.q}</div>
               </div>
 
               <div className="assistant__slot">
-                <div
-                  className={`assistant__bubble assistant__bubble--a${answerIn ? ' is-in' : ''}`}
-                >
-                  {pair.a}
+                <div className={`assistant__msg assistant__msg--a${answerIn ? ' is-in' : ''}`}>
+                  <span className="assistant__who">
+                    <Mark />
+                    Odontoa asistent
+                  </span>
+                  <div className="assistant__bubble assistant__bubble--a">
+                    {pair.intro}
+                    {pair.lines.map(([l, r, note]) => (
+                      <span key={l} className="assistant__line">
+                        <span>{l}</span>
+                        {note ? <span className="assistant__note">{r}</span> : <b>{r}</b>}
+                      </span>
+                    ))}
+                    <span className="assistant__action">{pair.action}</span>
+                  </div>
                 </div>
                 <div
                   className={`assistant__typing${typingIn ? ' is-in' : ''}`}
@@ -131,8 +165,8 @@ export default function AssistantChat() {
 
       {/* Dekorativna traka - nije <input>, pa nije fokusabilna niti obećava interakciju. */}
       <div className="assistant__prompt" aria-hidden="true">
-        <span className="assistant__prompt-text">Pitaj asistenta…</span>
-        <span className="assistant__prompt-btn">{ICON_ARROW}</span>
+        <span className="assistant__prompt-text">Pitaj o pacijentima, terminima ili naplati…</span>
+        <span className="assistant__prompt-btn">{ICON_SEND}</span>
       </div>
     </div>
   );
