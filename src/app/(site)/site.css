@@ -16,18 +16,14 @@
   --status-owe-soft: #cf6260;
   /* Jedinstven vertikalni ritam svih sekcija */
   --section-pad: clamp(72px, 9vw, 112px);
-  /* Manrope (--font-display sa display-font.ts) je marketing font i za tekst, ne samo
-     za naslove. Mockupi aplikacije ga vracaju na Inter (vidi kraj fajla). */
-  font-family: var(--font-display), var(--font-inter), 'Inter', system-ui, sans-serif;
 }
 
-/* Zajednicki display H2 svih sekcija (Manrope preko --font-display). Manrope je siri
-   od ranijeg Instrument Sans-a: 2px manje i tesnji tracking, isti broj redova. */
+/* Zajednicki display H2 svih sekcija (Instrument Sans preko --font-display sa page.tsx) */
 .section-title {
   font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
-  font-size: clamp(28px, 3.7vw, 42px);
+  font-size: clamp(30px, 4vw, 44px);
   font-weight: 600;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
   line-height: 1.14;
   color: var(--stellar-heading);
   margin: 0;
@@ -105,10 +101,10 @@
 
 .hero__title {
   font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
-  font-size: clamp(34px, 5.2vw, 58px);
+  font-size: clamp(38px, 5.6vw, 62px);
   line-height: 1.12;
   font-weight: 600;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.03em;
   color: var(--stellar-heading);
   max-width: 820px;
   margin: 0 auto 20px;
@@ -1319,27 +1315,30 @@
   margin: 0;
 }
 
-/* Kartica: ugnjezdena ploca. Okvir nosi zaglavlje i zbir, bela ploca samo tabelu -
+/* Kartica: beo okvir sa tonalnom plocom. Okvir nosi zaglavlje i zbir, ploca samo tabelu -
    ista logika kao hero mockup (.hero__dash sa belim .hero__card karticama).
-   Leva ivica teksta je ista u sva tri dela: okvir (--finance-inset) + ivica ploce (1px) +
-   padding ploce (--finance-pad). Zaglavlje i footer stoje direktno na okviru, pa im je
-   bocni padding --finance-pad + 1px. Dupla box-shadow deklaracija je fallback kao na
-   .hero__app - bez color-mix senka bi nestala. */
+   Ploca nema ivicu ni senku: dve paralelne ivice na malom razmaku davale su zbijen
+   box-in-box utisak. Leva ivica teksta je ista u sva tri dela, jer zaglavlje, ploca i
+   footer imaju isti bocni padding (--finance-pad). Dupla box-shadow deklaracija je
+   fallback kao na .hero__app - bez color-mix senka bi nestala. */
 .finance__card {
-  --finance-inset: 6px;
-  --finance-pad: 18px;
-  /* Skoro beo sa tragom brend lavande: svetliji od sive sekcije, a dovoljno razlicit od
-     bele ploce da se vide tri nivoa (sekcija -> okvir -> tabela). Siv okvir se utapao. */
-  background: color-mix(in srgb, var(--stellar-accent) 3%, var(--stellar-white));
+  --finance-inset: 16px;
+  --finance-pad: 28px;
+  --finance-col: 28px;
+  --finance-row: 17px;
+  /* Sekundarni tekst (zaglavlja kolona, broj naloga). --stellar-muted je na beloj oko
+     2.6:1, premalo za 10.5px; mesavina postojecih tokena daje oko 4.8:1. */
+  --finance-muted-strong: color-mix(in srgb, var(--stellar-muted) 55%, var(--stellar-body));
+  background: var(--stellar-white);
   border: 1px solid var(--stellar-border);
-  border-radius: 22px;
+  border-radius: 30px;
   padding: var(--finance-inset);
   box-shadow:
     0 1px 2px rgba(6, 11, 19, 0.04),
-    0 20px 44px -22px rgba(110, 81, 224, 0.14);
+    0 28px 56px -32px rgba(110, 81, 224, 0.16);
   box-shadow:
     0 1px 2px color-mix(in srgb, var(--stellar-dark) 4%, transparent),
-    0 20px 44px -22px color-mix(in srgb, var(--stellar-accent) 14%, transparent);
+    0 28px 56px -32px color-mix(in srgb, var(--stellar-accent) 16%, transparent);
   animation: hero-rise 0.7s ease both 0.15s;
 }
 
@@ -1348,7 +1347,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px calc(var(--finance-pad) + 1px) 12px;
+  padding: 8px var(--finance-pad) 18px;
 }
 
 .finance__card-head h4 {
@@ -1363,7 +1362,7 @@
 .finance__card-sub {
   font-size: 12px;
   font-weight: 500;
-  color: var(--stellar-muted);
+  color: var(--finance-muted-strong);
   margin-top: 2px;
 }
 
@@ -1389,14 +1388,12 @@
   color: var(--stellar-muted);
 }
 
-/* Bela ploca sa tabelom. Radius 16 = 22 okvira minus 6 razmaka, pa su uglovi koncentricni. */
+/* Tonalna ploca sa tabelom: trag brend lavande na sivoj, bez ivice i bez senke.
+   Radius 14 = 30 okvira minus 16 razmaka, pa su uglovi koncentricni. */
 .finance__card-body {
-  padding: 0 var(--finance-pad) 6px;
-  background: var(--stellar-white);
-  border: 1px solid var(--stellar-border);
-  border-radius: 16px;
-  box-shadow: 0 1px 2px rgba(6, 11, 19, 0.04);
-  box-shadow: 0 1px 2px color-mix(in srgb, var(--stellar-dark) 4%, transparent);
+  padding: 6px var(--finance-pad) 8px;
+  background: color-mix(in srgb, var(--stellar-accent) 3.5%, var(--stellar-bg-light));
+  border-radius: 14px;
 }
 
 .finance__table {
@@ -1410,22 +1407,23 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--stellar-muted);
-  padding: 13px 0 9px;
-  border-bottom: 1px solid var(--stellar-border);
+  color: var(--finance-muted-strong);
+  padding: 16px 0 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--stellar-accent) 9%, var(--stellar-border));
 }
 
 .finance__table th.is-right,
 .finance__table td.is-right {
   text-align: right;
-  padding-left: 12px;
+  padding-left: var(--finance-col);
 }
 
-/* Separatori redova su tanji od ivice ispod zaglavlja tabele. */
+/* Separatori redova su tanji od ivice ispod zaglavlja tabele. Obe linije nose isti trag
+   lavande kao ploca, da se ne bi videle kao siva mreza na obojenoj povrsini. */
 .finance__table td {
-  padding: 14px 0;
+  padding: var(--finance-row) 0;
   font-size: 13.5px;
-  border-bottom: 1px solid color-mix(in srgb, var(--stellar-border) 62%, var(--stellar-white));
+  border-bottom: 1px solid color-mix(in srgb, var(--stellar-accent) 5%, var(--stellar-border));
   color: var(--stellar-body);
 }
 
@@ -1470,7 +1468,7 @@
 .finance__table-sub {
   font-size: 11.5px;
   font-weight: 400;
-  color: var(--stellar-muted);
+  color: var(--finance-muted-strong);
   margin-top: 2px;
 }
 
@@ -1496,7 +1494,7 @@
   gap: 5px;
   font-size: 12.5px;
   font-weight: 500;
-  color: var(--stellar-muted);
+  color: var(--finance-muted-strong);
   white-space: nowrap;
 }
 
@@ -1518,7 +1516,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 12px calc(var(--finance-pad) + 1px) 8px;
+  padding: 20px var(--finance-pad) 6px;
 }
 
 .finance__foot-label {
@@ -1565,8 +1563,11 @@
     order: 2;
   }
 
+  .finance__card {
+    --finance-row: 15px;
+  }
+
   .finance__table td {
-    padding: 12px 0;
     font-size: 13px;
   }
 }
@@ -1578,23 +1579,32 @@
     display: none;
   }
 
-  /* Okvir + ploca trose 14px vise od obicne kartice, a tabela ima fiksnu min sirinu
-     (nazivi kolona, "izmireno" sa kvacicom). Na 375px kolona bi bila 359px u sekciji od
-     327px, pa se razmaci ovde smanjuju. Poravnanje ostaje jer ga racunaju iste promenljive. */
-  /* Radius 20 = 16 ploce + 4 razmaka, uglovi ostaju koncentricni. */
+  /* Tabela ima fiksnu min sirinu (nazivi kolona, "izmireno" sa kvacicom), pa desktop
+     razmaci ovde ne staju u sekciju od 327px. Poravnanje ostaje jer ga racunaju iste
+     promenljive. Radius 22 = 14 ploce + 8 razmaka, uglovi ostaju koncentricni. */
   .finance__card {
-    --finance-inset: 4px;
+    --finance-inset: 8px;
     --finance-pad: 12px;
-    border-radius: 20px;
+    --finance-col: 8px;
+    --finance-row: 14px;
+    border-radius: 22px;
+  }
+
+  .finance__card-head {
+    padding: 8px var(--finance-pad) 14px;
+  }
+
+  .finance__card-body {
+    padding: 2px var(--finance-pad) 6px;
   }
 
   .finance__table th {
     letter-spacing: 0.04em;
+    padding: 12px 0 10px;
   }
 
-  .finance__table th.is-right,
-  .finance__table td.is-right {
-    padding-left: 8px;
+  .finance__foot {
+    padding: 14px var(--finance-pad) 6px;
   }
 }
 
@@ -3466,7 +3476,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Dve nezavisne kolone po 7: sirina po sadrzaju, pa najduza stavka staje u jedan red */
+/* Dve nezavisne kolone po 8: sirina po sadrzaju, pa najduza stavka staje u jedan red */
 .pricing__features {
   display: grid;
   grid-template-columns: auto auto;
@@ -3498,6 +3508,25 @@
   display: flex;
   margin-top: 1px;
   color: var(--stellar-accent);
+}
+
+/* Funkcionalnosti u izradi: prigusena ikona + oznaka "Uskoro" */
+.pricing__feature--soon .pricing__feature-icon {
+  color: var(--stellar-muted);
+}
+
+.pricing__soon {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--stellar-accent) 8%, var(--stellar-white));
+  color: var(--stellar-accent);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.6;
+  vertical-align: 1px;
+  white-space: nowrap;
 }
 
 /* ── Vise ordinacija ── */

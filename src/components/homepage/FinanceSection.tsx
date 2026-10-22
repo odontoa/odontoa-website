@@ -154,7 +154,7 @@ export default function FinanceSection() {
                   </tbody>
                 </table>
               </div>
-              {/* Zbirna traka na okviru kartice, ispod bele ploce sa tabelom. */}
+              {/* Zbirna traka na okviru kartice, ispod tonalne ploce sa tabelom. */}
               <div className="finance__foot">
                 <span className="finance__foot-label">Ukupno dugovanje tehnici</span>
                 <span className="finance__foot-value">

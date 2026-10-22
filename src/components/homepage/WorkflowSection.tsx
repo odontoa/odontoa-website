@@ -61,7 +61,7 @@ export default function WorkflowSection() {
                   Zakazivanje
                 </span>
               </div>
-              <h3 style={{ fontSize: 26, fontWeight: 700, letterSpacing: '-0.025em', color: 'var(--stellar-heading)', margin: '0 0 10px' }}>
+              <h3 style={{ fontFamily: 'var(--font-display), var(--font-inter), Inter, sans-serif', fontSize: 26, fontWeight: 600, letterSpacing: '-0.025em', color: 'var(--stellar-heading)', margin: '0 0 10px' }}>
                 Zakazivanje termina
               </h3>
               <p style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--stellar-body)', margin: '0 0 28px' }}>
@@ -122,7 +122,7 @@ export default function WorkflowSection() {
                   Karton
                 </span>
               </div>
-              <h3 style={{ fontSize: 26, fontWeight: 700, letterSpacing: '-0.025em', color: '#fff', margin: '0 0 10px' }}>
+              <h3 style={{ fontFamily: 'var(--font-display), var(--font-inter), Inter, sans-serif', fontSize: 26, fontWeight: 600, letterSpacing: '-0.025em', color: '#fff', margin: '0 0 10px' }}>
                 Karton i terapija
               </h3>
               <p style={{ fontSize: 14, lineHeight: 1.6, color: '#b8bcc8', margin: '0 0 28px' }}>
@@ -185,7 +185,7 @@ export default function WorkflowSection() {
                   Naplata
                 </span>
               </div>
-              <h3 style={{ fontSize: 26, fontWeight: 700, letterSpacing: '-0.025em', color: 'var(--stellar-heading)', margin: '0 0 10px' }}>
+              <h3 style={{ fontFamily: 'var(--font-display), var(--font-inter), Inter, sans-serif', fontSize: 26, fontWeight: 600, letterSpacing: '-0.025em', color: 'var(--stellar-heading)', margin: '0 0 10px' }}>
                 Naplata i administracija
               </h3>
               <p style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--stellar-body)', margin: '0 0 28px' }}>

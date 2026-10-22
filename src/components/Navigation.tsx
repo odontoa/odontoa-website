@@ -7,8 +7,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { isSectionHidden } from "@/lib/config/hidden-sections";
 import { isOpenInComingSoon } from "@/lib/config/site-mode";
-/* Marketing font (Manrope); navigacija stoji van .site-page, pa ga nosi sama. */
-import { displayFont } from "@/app/(site)/display-font";
+import LoginChoiceDialog from "@/components/LoginChoiceDialog";
 
 /* Stavke privremeno sakrivenih sekcija (blog, recnik, o nama) se filtriraju, ne brisu:
    ukljucuju se iz src/lib/config/hidden-sections.ts. */
@@ -47,7 +46,7 @@ const Navigation = ({ comingSoon = false }: { comingSoon?: boolean }) => {
   };
 
   return (
-    <header className={displayFont.className}>
+    <header>
       <nav
         data-state={isMenuOpen && 'active'}
         className="fixed z-20 w-full px-2 pt-1 group">
@@ -113,11 +112,12 @@ const Navigation = ({ comingSoon = false }: { comingSoon?: boolean }) => {
                 </ul>
               </div>
               <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                <a
-                  href="https://app.odontoa.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <LoginChoiceDialog trigger={
+                <button
+                  type="button"
+                  className="cursor-pointer"
                   style={{
+                    border: 'none',
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -135,7 +135,8 @@ const Navigation = ({ comingSoon = false }: { comingSoon?: boolean }) => {
                   }}
                 >
                   Prijavi se
-                </a>
+                </button>
+                } />
               </div>
             </div>
           </div>

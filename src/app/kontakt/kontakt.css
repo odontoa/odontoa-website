@@ -27,13 +27,14 @@
 
 .contact__title {
   font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
-  /* Manrope: 48px i tesnji tracking; isti naslov nosi i duzi H1 na /demo */
-  font-size: clamp(32px, 4.6vw, 48px);
+  font-size: clamp(36px, 5vw, 52px);
   font-weight: 600;
-  letter-spacing: -0.032em;
+  letter-spacing: -0.025em;
   line-height: 1.1;
   color: var(--stellar-heading);
   margin: 0;
+  /* Bez jedne reci same u poslednjem redu (duzi H1 na /demo) */
+  text-wrap: balance;
 }
 
 .contact__lead {

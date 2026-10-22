@@ -97,8 +97,8 @@ export default function FeaturePage({ page }: { page: FeaturePageData }) {
         </div>
       </section>
 
-      {/* ── Zavrsni CTA: ugnjezdena ploca, u nastavku sekcije iznad ── */}
-      <ClosingCta tone={relatedTone === 'alt' ? 'alt' : 'white'} />
+      {/* ── Zavrsni CTA: tamna traka preko cele sirine ── */}
+      <ClosingCta />
     </>
   );
 }

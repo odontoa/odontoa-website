@@ -10,9 +10,16 @@ const ICON_CHECK = (
   </svg>
 );
 
-/* Sve trenutno dostupne funkcionalnosti su ukljucene u cenu. 14 stavki, prikazane kao
-   dve nezavisne kolone po 7: visina reda u jednoj koloni ne utice na drugu, pa je
-   razmak izmedju svih redova isti i nijedna stavka ne ostaje sama. */
+const ICON_SOON = (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 7v5l3 2" />
+  </svg>
+);
+
+/* Sve trenutno dostupne funkcionalnosti su ukljucene u cenu. 14 dostupnih + 2 u izradi,
+   prikazane kao dve nezavisne kolone po 8: visina reda u jednoj koloni ne utice na drugu,
+   pa je razmak izmedju svih redova isti i nijedna stavka ne ostaje sama. */
 const FEATURES = [
   'Neograničeno doktora',
   'Neograničeno pacijenata',
@@ -30,9 +37,14 @@ const FEATURES = [
   'Azure infrastruktura',
 ];
 
+/* U izradi: idu na kraj liste sa oznakom "Uskoro", ne ulaze u broj funkcionalnosti */
+const SOON_FEATURES = ['Portal za pacijente', 'Online zakazivanje'];
+
+const ALL_FEATURES = [...FEATURES, ...SOON_FEATURES];
+
 const FEATURE_COLUMNS = [
-  FEATURES.slice(0, Math.ceil(FEATURES.length / 2)),
-  FEATURES.slice(Math.ceil(FEATURES.length / 2)),
+  ALL_FEATURES.slice(0, Math.ceil(ALL_FEATURES.length / 2)),
+  ALL_FEATURES.slice(Math.ceil(ALL_FEATURES.length / 2)),
 ];
 
 export default function PricingSection() {
@@ -81,12 +93,18 @@ export default function PricingSection() {
               <div className="pricing__features">
                 {FEATURE_COLUMNS.map((column, i) => (
                   <ul key={i} className="pricing__feature-list">
-                    {column.map((feature) => (
-                      <li key={feature} className="pricing__feature">
-                        <span className="pricing__feature-icon">{ICON_CHECK}</span>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
+                    {column.map((feature) => {
+                      const soon = SOON_FEATURES.includes(feature);
+                      return (
+                        <li key={feature} className={soon ? 'pricing__feature pricing__feature--soon' : 'pricing__feature'}>
+                          <span className="pricing__feature-icon">{soon ? ICON_SOON : ICON_CHECK}</span>
+                          <span>
+                            {feature}
+                            {soon && <span className="pricing__soon">Uskoro</span>}
+                          </span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 ))}
               </div>

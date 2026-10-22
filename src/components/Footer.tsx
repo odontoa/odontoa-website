@@ -6,8 +6,6 @@ import Image from "next/image";
 import { businessConfig } from "@/lib/config/business";
 import { isSectionHidden } from "@/lib/config/hidden-sections";
 import { isOpenInComingSoon } from "@/lib/config/site-mode";
-/* Marketing font (Manrope); footer stoji van .site-page, pa ga nosi sam. */
-import { displayFont } from "@/app/(site)/display-font";
 
 /* Linkovi privremeno sakrivenih sekcija se filtriraju (src/lib/config/hidden-sections.ts). */
 const NAV_LINKS = [
@@ -40,7 +38,7 @@ const Footer = ({ comingSoon = false }: { comingSoon?: boolean }) => {
   const resourceLinks = open(RESOURCE_LINKS);
   const legalLinks = open(LEGAL_LINKS);
   return (
-    <footer className={`${displayFont.className} w-full bg-white border-t border-border py-16 px-6`}>
+    <footer className="w-full bg-white border-t border-border py-16 px-6">
       <div className="max-w-screen-xl mx-auto">
 
         {/* Main columns */}

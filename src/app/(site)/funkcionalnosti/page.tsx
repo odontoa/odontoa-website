@@ -71,7 +71,7 @@ export default function FunkcionalnostiIndexPage() {
         </div>
       </section>
 
-      {/* ── Zavrsni CTA: ugnjezdena ploca, isti kao na stranicama funkcionalnosti ── */}
+      {/* ── Zavrsni CTA: tamna traka, isti kao na stranicama funkcionalnosti ── */}
       <ClosingCta />
     </div>
   );

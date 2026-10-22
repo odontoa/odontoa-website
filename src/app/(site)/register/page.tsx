@@ -3,7 +3,7 @@ import OnboardingWizard from '@/components/register/OnboardingWizard';
 import { pageMetadata } from '@/lib/seo/metadata';
 import './register.css';
 
-/* Marketing font (Manrope), isti kao na ostatku sajta: display-font.ts. */
+/* Display font za naslove (Instrument Sans), deljen sa ostatkom sajta: display-font.ts. */
 import { displayFont } from '../display-font';
 
 const TITLE = 'Započni besplatno | Odontoa';
