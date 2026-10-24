@@ -1,7 +1,7 @@
 'use client';
 
 import { Menu, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -40,6 +40,30 @@ const Navigation = ({ comingSoon = false }: { comingSoon?: boolean }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  /* Otvoren mobilni meni: Esc i tap van menija ga zatvaraju, stranica ispod ne skroluje. */
+  const navRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMenuOpen(false);
+    };
+    const onPointer = (e: PointerEvent) => {
+      if (!navRef.current?.contains(e.target as Node)) setIsMenuOpen(false);
+    };
+    /* Na <html>, ne na <body>: html ima overflow-x: clip, pa se overflow sa body-ja
+       ne prenosi na viewport i stranica bi i dalje skrolovala. */
+    const root = document.documentElement;
+    const prevOverflow = root.style.overflow;
+    root.style.overflow = 'hidden';
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onPointer);
+    return () => {
+      root.style.overflow = prevOverflow;
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('pointerdown', onPointer);
+    };
+  }, [isMenuOpen]);
+
   const handleHomeClick = (e: React.MouseEvent) => {
     e.preventDefault();
     window.location.href = '/';
@@ -48,6 +72,7 @@ const Navigation = ({ comingSoon = false }: { comingSoon?: boolean }) => {
   return (
     <header>
       <nav
+        ref={navRef}
         data-state={isMenuOpen && 'active'}
         className="fixed z-20 w-full px-2 pt-1 group">
         <div
@@ -61,7 +86,7 @@ const Navigation = ({ comingSoon = false }: { comingSoon?: boolean }) => {
             <div className="flex w-full items-center justify-between lg:w-auto lg:items-start">
               <Link
                 href="/"
-                aria-label="home"
+                aria-label="Odontoa, početna"
                 onClick={handleHomeClick}
                 className="flex items-center space-x-2">
                 <Logo />
@@ -69,14 +94,16 @@ const Navigation = ({ comingSoon = false }: { comingSoon?: boolean }) => {
 
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                aria-label={isMenuOpen == true ? 'Close Menu' : 'Open Menu'}
+                aria-label={isMenuOpen ? 'Zatvori meni' : 'Otvori meni'}
+                aria-expanded={isMenuOpen}
+                aria-controls="glavni-meni"
                 className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden">
                 <Menu className="in-data-[state=active]:rotate-180 group-data-[state=active]:scale-0 group-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
                 <X className="group-data-[state=active]:rotate-0 group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
               </button>
             </div>
 
-            <div className="bg-background group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:flex-row lg:h-8 lg:items-center lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
+            <div id="glavni-meni" className="bg-background group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:flex-row lg:h-8 lg:items-center lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
               {/* Desktop nav links: right-aligned row, only on lg+ */}
               <ul className={cn('hidden lg:flex lg:items-center text-sm', 'lg:gap-7')}>
                 {menuItems.map((item, index) => (

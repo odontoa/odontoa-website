@@ -8,9 +8,14 @@ export function isComingSoon(): boolean {
   return process.env.SITE_MODE === 'coming_soon';
 }
 
-/* Stranice dostupne u coming-soon rezimu. Jedina lista: middleware, sitemap, navigacija
-   i footer citaju odavde. */
+/* Javne stranice dostupne u coming-soon rezimu. Middleware, sitemap, navigacija i footer
+   citaju odavde (skrivene stranice su u COMING_SOON_UNLISTED_PAGES ispod). */
 export const COMING_SOON_OPEN_PAGES = ['/', '/kontakt', '/politika-privatnosti'] as const;
+
+/* Skrivene stranice (noindex, samo direktan URL ili QR) koje rade i u coming-soon rezimu.
+   Citaju se SAMO u isPathAllowedInComingSoon (middleware), nikad u isOpenInComingSoon,
+   pa ne ulaze u sitemap, navigaciju ni footer. */
+const COMING_SOON_UNLISTED_PAGES = ['/klub100'] as const;
 
 /* Tehnicke putanje koje moraju da rade i u coming-soon rezimu (asseti, SEO fajlovi). */
 const COMING_SOON_OPEN_PREFIXES = ['/api', '/_next', '/images', '/assets'] as const;
@@ -24,6 +29,7 @@ export function isOpenInComingSoon(href: string): boolean {
 export function isPathAllowedInComingSoon(pathname: string): boolean {
   return (
     isOpenInComingSoon(pathname) ||
+    (COMING_SOON_UNLISTED_PAGES as readonly string[]).includes(pathname) ||
     (COMING_SOON_OPEN_FILES as readonly string[]).includes(pathname) ||
     COMING_SOON_OPEN_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`))
   );

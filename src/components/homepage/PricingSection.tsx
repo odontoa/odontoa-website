@@ -10,6 +10,12 @@ const ICON_CHECK = (
   </svg>
 );
 
+const ICON_CHECK_SM = (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M20 6 9 17l-5-5" />
+  </svg>
+);
+
 const ICON_SOON = (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
     <circle cx="12" cy="12" r="9" />
@@ -67,16 +73,28 @@ export default function PricingSection() {
             <div className="pricing__side">
               <span className="pricing__badge">
                 <span className="pricing__badge-dot" aria-hidden />
-                Cena za rani pristup
+                Jedan paket
               </span>
 
               <p className="pricing__price">
-                <span className="pricing__amount">{pricing.monthly} {pricing.currencySymbol}</span>
+                {/* Nelomljiv razmak: iznos i valuta nikad ne idu u dva reda */}
+                <span className="pricing__amount">{`${pricing.monthly}\u00a0${pricing.currencySymbol}`}</span>
                 <span className="pricing__per">/ mesečno</span>
               </p>
-              <p className="pricing__billing">
-                <span>{pricing.yearly} {pricing.currencySymbol} godišnje ·</span> <span>naplata jednom godišnje</span>
-              </p>
+              {/* Uslovi placanja: tiha lista ispod cene, ne takmice se sa iznosom */}
+              <ul className="pricing__terms">
+                <li>
+                  {ICON_CHECK_SM}
+                  {/* Lomi se samo posle tačke, nikad usred "u više rata" */}
+                  <span className="pricing__term-text">
+                    <span>Godišnja pretplata ·</span> <span>mogućnost plaćanja u više rata</span>
+                  </span>
+                </li>
+                <li>
+                  {ICON_CHECK_SM}
+                  Prvih {pricing.trialDays} dana besplatno
+                </li>
+              </ul>
 
               <Link href="/register" className="btn-cta pricing__cta">
                 <span>Započni besplatno</span>
@@ -84,7 +102,10 @@ export default function PricingSection() {
               </Link>
             </div>
 
-            {/* Desna ploca je dokaz vrednosti */}
+            {/* Jedina granica izmedju cene i liste: hairline, bez unutrasnje kartice */}
+            <div className="pricing__rule" aria-hidden="true" />
+
+            {/* Desna strana je dokaz vrednosti */}
             <div className="pricing__plate">
               <div className="pricing__plate-head">
                 <h3 className="pricing__plate-title">Uključeno u cenu</h3>

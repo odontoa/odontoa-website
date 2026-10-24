@@ -32,7 +32,7 @@ const PILLARS = [
   {
     icon: ICON_NET,
     title: 'Ulazi u tvoj neto',
-    desc: 'Trošak tehnike se automatski oduzima od prihoda, pa vidiš pravu zaradu.',
+    desc: 'Automatski se oduzima, pa vidiš šta ti ostaje nakon troška tehnike.',
   },
 ];
 

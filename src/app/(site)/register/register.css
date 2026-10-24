@@ -12,14 +12,29 @@
   --stellar-white: #ffffff;
   /* 92px zona fiksne navigacije + 40px razmaka, isto kao hero na pocetnoj */
   padding: 132px 24px 96px;
+  /* Bar visina ekrana: <main> se u layoutu rasteze do dna, pa bi ispod kratke
+     kartice inace provirila siva pozadina body-ja izmedju stranice i footera. */
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   background:
     radial-gradient(ellipse 60% 40% at 50% -5%, rgba(110, 81, 224, 0.04), transparent 70%),
     linear-gradient(var(--stellar-white), var(--stellar-white));
   color: var(--stellar-body);
 }
 
+/* Kratke kartice (dobrodoslica, hvala) stoje na sredini visine ekrana umesto da
+   ispod njih ostane prazna bela zona. Koraci wizarda ostaju gore, da ne skacu. */
+.register-page:has(> .register-card--center) {
+  justify-content: center;
+}
+
 /* ── Kartica wizarda ── */
 .register-card {
+  /* width 100%: u flex koloni margin auto bi inace suzio karticu na sadrzaj */
+  width: 100%;
+  box-sizing: border-box;
   max-width: 640px;
   margin: 0 auto;
   background: var(--stellar-white);
@@ -35,6 +50,11 @@
 .register-card--center {
   text-align: center;
   padding: 48px 32px;
+}
+
+/* Kartica dobija fokus samo programski (promena koraka), nije kontrola: bez prstena. */
+.register-card:focus {
+  outline: none;
 }
 
 /* ── Welcome i Success ── */
@@ -55,10 +75,43 @@
   margin: 0 0 28px;
 }
 
-.register-welcome__micro {
-  font-size: 13px;
-  color: var(--stellar-muted);
-  margin: 16px 0 0;
+/* Dobrodoslica: sira i mirnija kartica, u porodici kartice cena na pocetnoj
+   (radius 28, senka sa tragom brend lavande, blag sjaj na vrhu). */
+.register-card--welcome {
+  max-width: 720px;
+  padding: 64px 56px 60px;
+  border-radius: 28px;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 0%, rgba(110, 81, 224, 0.07), transparent 70%),
+    var(--stellar-white);
+  box-shadow:
+    0 1px 2px rgba(6, 11, 19, 0.04),
+    0 28px 64px -30px rgba(6, 11, 19, 0.13),
+    0 40px 90px -44px rgba(110, 81, 224, 0.22);
+}
+
+.register-welcome__eyebrow {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--stellar-accent);
+  margin: 0 0 16px;
+}
+
+.register-card--welcome .register-welcome__title {
+  font-size: clamp(32px, 4.6vw, 48px);
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  margin-bottom: 14px;
+}
+
+.register-welcome__accent {
+  color: var(--stellar-accent);
+}
+
+.register-card--welcome .register-welcome__sub {
+  margin-bottom: 32px;
 }
 
 /* ── Indikator koraka ── */
@@ -341,6 +394,7 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 16px;
+  min-width: 0;
   font-size: 13.5px;
 }
 
@@ -348,11 +402,31 @@
   color: var(--stellar-muted);
 }
 
+/* Duge vrednosti bez razmaka (email, adresa) se lome unutar reda, ne sire karticu. */
 .register-review__list dd {
   margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
   color: var(--stellar-heading);
   font-weight: 500;
   text-align: right;
+}
+
+/* Na uskom telefonu oznaka ide iznad vrednosti: vrednost dobija celu sirinu reda. */
+@media (max-width: 420px) {
+  .register-review__list {
+    gap: 10px;
+  }
+
+  .register-review__list > div {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1px;
+  }
+
+  .register-review__list dd {
+    text-align: left;
+  }
 }
 
 /* ── Dugmad, vrednosti prepisane iz hero dugmadi na pocetnoj ── */
@@ -460,6 +534,11 @@
 
   .register-card--center {
     padding: 36px 20px;
+  }
+
+  .register-card--welcome {
+    padding: 48px 22px 44px;
+    border-radius: 24px;
   }
 
   .register-step__row {

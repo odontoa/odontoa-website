@@ -27,6 +27,9 @@ export type IndexItem = {
  * Nazivi, opisi i linkovi svih sedam su u server HTML-u; JS dodaje samo prikaze.
  * details[slug] su detalji proizvoda renderovani na serveru.
  */
+/* Visina fiksnog nav-a + malo vazduha: otvoren red ne sme da ostane ispod nav-a. */
+const NAV_OFFSET = 96;
+
 export default function ProductIndex({ items, details }: { items: IndexItem[]; details: Record<string, ReactNode> }) {
   const [active, setActive] = useState(items[0].slug);
   const [open, setOpen] = useState<string | null>(items[0].slug);
@@ -81,7 +84,15 @@ export default function ProductIndex({ items, details }: { items: IndexItem[]; d
                 className="pi-sum"
                 onClick={(e) => {
                   e.preventDefault();
+                  const summary = e.currentTarget;
                   setOpen(isOpen ? null : it.slug);
+                  if (isOpen) return;
+                  /* Zatvaranje panela iznad pomeri ovaj red nagore, cesto ispod fiksnog
+                     nav-a (80px). Posle rendera red se vraca odmah ispod nav-a. */
+                  requestAnimationFrame(() => {
+                    const top = summary.getBoundingClientRect().top;
+                    if (top < NAV_OFFSET) window.scrollBy(0, top - NAV_OFFSET);
+                  });
                 }}
               >
                 <span className="pi-row__n" aria-hidden="true">

@@ -4,13 +4,16 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
 /*
-  Animirana demonstracija asistenta. Sekvenca kreće jednom, kad panel uđe u viewport:
-  pitanje (desno) -> tri tačkice (levo) -> odgovor (levo), tri para redom, svi ostaju vidljivi.
+  Demonstracija asistenta: jedan razgovor + predlozi pitanja. Kad panel uđe u viewport,
+  podrazumevano pitanje (termini sutra) se odigra: pitanje (desno) -> tri tačkice -> odgovor.
+  Klik na predlog odigra to pitanje umesto aktivnog; aktivno pitanje izlazi iz predloga.
   Izgled prati panel asistenta sa stranice /funkcionalnosti/ai-asistent.
 
-  Svi baloni su UVEK u DOM-u i otkrivaju se samo klasom `is-in`, a balon sa tačkicama je
-  absolute u svom slotu. Zato panel ima punu visinu od prvog frejma i ništa ispod sekcije
-  ne poskakuje tokom animacije.
+  Svi parovi su UVEK u DOM-u, naslagani u istu ćeliju grida, a vidljiv je samo aktivni.
+  Ćelija zato ima visinu najdužeg para od prvog frejma, pa se ništa ispod sekcije ne
+  pomera ni tokom animacije ni kad se promeni pitanje. Svaki odgovor ima tačno dva
+  podatka, pa su parovi iste visine; poravnati su gore, a eventualni višak (pitanje u
+  dva reda na telefonu) ostaje ispod odgovora.
 */
 
 const ICON_SEND = (
@@ -20,87 +23,107 @@ const ICON_SEND = (
   </svg>
 );
 
+/* Strelica "pošalji ovo pitanje" na predlogu */
+const ICON_ASK = (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M7 7v6a3 3 0 0 0 3 3h9" />
+    <path d="m15 12 4 4-4 4" />
+  </svg>
+);
+
 const Mark = () => <Image src="/images/Odontoa-New-logo-pack-2026/favicon_color.png" alt="" width={16} height={16} />;
 
-/* [levo, desno, desno je opis (ne iznos)] */
-type Line = [string, string, 'note'?];
+/* [oznaka, vrednost] */
+type Fact = [string, string];
 
 /*
-  Sva tri para su iz ugla doktorke i pokrivaju tri domena: termini, rate, laboratorija.
-  Isti jezik kao panel na stranici AI asistenta: ko pita, odgovor iz podataka ordinacije,
-  prelaz na postojeci ekran. Imena i iznosi se slazu sa ostatkom pocetne
-  (Marko Petrovic u kalendaru, DentalTeh u Finansijama).
+  Sva tri para su iz ugla doktorke i pokrivaju tri domena: termini, laboratorija, rate.
+  Redosled je i redosled predloga ispod razgovora. Imena i iznosi se slazu sa ostatkom
+  pocetne (Marko Petrovic u kalendaru, DentalTeh u Finansijama). Pitanja su dovoljno
+  kratka da na desktopu stanu u jedan red balona.
 */
-const SCRIPT: { q: string; intro: string; lines: Line[]; action: string }[] = [
+const SCRIPT: { q: string; intro: string; facts: [Fact, Fact]; action: string }[] = [
   {
     q: 'Koliko termina imam sutra?',
-    intro: 'Sutra imaš 6 termina. Prvi:',
-    lines: [['09:00 · Sanja Ilić', 'kontrola', 'note']],
+    intro: 'Sutra imaš 6 termina.',
+    facts: [
+      ['Prvi termin', '09:00 · Sanja Ilić'],
+      ['Tretman', 'Kontrola'],
+    ],
     action: 'Otvori kalendar',
+  },
+  {
+    q: 'Koliko dugujem DentalTehu ovog meseca?',
+    intro: 'DentalTeh, jul:',
+    facts: [
+      ['Plaćeno', '39.800 RSD'],
+      ['Dugovanje', '2.500 RSD'],
+    ],
+    action: 'Otvori tehniku',
   },
   {
     q: 'Ko nije isplatio sve rate za fiksni aparat?',
     intro: 'Jedan pacijent, Marko Petrović:',
-    lines: [
-      ['Ostale rate', '3 od 12', 'note'],
+    facts: [
+      ['Neplaćene rate', '3 od 12'],
       ['Preostalo', '21.000 RSD'],
     ],
     action: 'Otvori karton',
   },
-  {
-    q: 'Koliko sam platio DentalTeh ovog meseca, a koliko dugujem?',
-    intro: 'DentalTeh, jul:',
-    lines: [
-      ['Plaćeno', '39.800 RSD'],
-      ['Ostalo dugovanje', '2.500 RSD'],
-    ],
-    action: 'Otvori tehniku',
-  },
 ];
 
-const TOTAL_STEPS = SCRIPT.length * 3;
+/* Faze aktivnog para: 0 ništa, 1 pitanje, 2 tačkice, 3 odgovor */
+const DONE = 3;
 
-/* Ritam u ms: [pitanje, tačkice, odgovor] po paru. Ukupno ~4,3s - dovoljno da se pročita
-   kao razgovor, dovoljno kratko da se ne čeka između poruka. */
-const DELAYS = [340, 300, 780, 380, 300, 780, 380, 300, 780];
+/* Ritam u ms do [pitanja, tačkica, odgovora]. Prvi prolaz čeka da se sekcija smiri,
+   klik na predlog kreće odmah. */
+const FIRST_RUN = [340, 640, 1420];
+const ON_ASK = [60, 360, 1140];
 
 export default function AssistantChat() {
   const panelRef = useRef<HTMLDivElement>(null);
-  const [step, setStep] = useState(0);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const reducedMotion = useRef(false);
+  const [active, setActive] = useState(0);
+  const [phase, setPhase] = useState(0);
+
+  const play = (index: number, delays: number[]) => {
+    /* Isti niz se prazni na mestu, da ga cleanup efekta uvek vidi. */
+    timers.current.forEach(clearTimeout);
+    timers.current.length = 0;
+    setActive(index);
+
+    /* Reduced motion: odgovor odmah, tačkice se nikad ne prikažu. */
+    if (reducedMotion.current) {
+      setPhase(DONE);
+      return;
+    }
+
+    setPhase(0);
+    delays.forEach((ms, i) => {
+      timers.current.push(setTimeout(() => setPhase(i + 1), ms));
+    });
+  };
 
   useEffect(() => {
     const node = panelRef.current;
     if (!node) return;
-
-    /* Reduced motion: konačno stanje odmah, tačkice se nikad ne prikažu. */
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setStep(TOTAL_STEPS);
-      return;
-    }
-
-    let timer: ReturnType<typeof setTimeout> | undefined;
-
-    const play = (next: number) => {
-      if (next > TOTAL_STEPS) return;
-      timer = setTimeout(() => {
-        setStep(next);
-        play(next + 1);
-      }, DELAYS[next - 1]);
-    };
+    reducedMotion.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const observer = new IntersectionObserver(
       (entries) => {
         if (!entries[0].isIntersecting) return;
         observer.disconnect();
-        play(1);
+        play(0, FIRST_RUN);
       },
       { threshold: 0.35 },
     );
     observer.observe(node);
 
+    const pending = timers.current;
     return () => {
       observer.disconnect();
-      if (timer) clearTimeout(timer);
+      pending.forEach(clearTimeout);
     };
   }, []);
 
@@ -112,18 +135,19 @@ export default function AssistantChat() {
         </span>
         <span>
           <span className="assistant__panel-title">Odontoa asistent</span>
-          <span className="assistant__panel-sub">odgovara iz podataka: Centar dentalne medicine Videnta</span>
+          <span className="assistant__panel-sub">Odgovara iz podataka ordinacije</span>
         </span>
       </div>
 
-      <div className="assistant__log">
+      <div className="assistant__log" aria-live="polite">
         {SCRIPT.map((pair, i) => {
-          const questionIn = step >= 3 * i + 1;
-          const typingIn = step === 3 * i + 2;
-          const answerIn = step >= 3 * i + 3;
+          const isActive = i === active;
+          const questionIn = isActive && phase >= 1;
+          const typingIn = isActive && phase === 2;
+          const answerIn = isActive && phase >= DONE;
 
           return (
-            <div key={pair.q} className="assistant__pair">
+            <div key={pair.q} className={`assistant__pair${isActive ? ' is-active' : ''}`}>
               <div className={`assistant__msg assistant__msg--q${questionIn ? ' is-in' : ''}`}>
                 <span className="assistant__who">
                   <i>JS</i>
@@ -140,12 +164,14 @@ export default function AssistantChat() {
                   </span>
                   <div className="assistant__bubble assistant__bubble--a">
                     {pair.intro}
-                    {pair.lines.map(([l, r, note]) => (
-                      <span key={l} className="assistant__line">
-                        <span>{l}</span>
-                        {note ? <span className="assistant__note">{r}</span> : <b>{r}</b>}
-                      </span>
-                    ))}
+                    <span className="assistant__facts">
+                      {pair.facts.map(([label, value]) => (
+                        <span key={label} className="assistant__fact">
+                          <small>{label}</small>
+                          <b>{value}</b>
+                        </span>
+                      ))}
+                    </span>
                     <span className="assistant__action">{pair.action}</span>
                   </div>
                 </div>
@@ -161,6 +187,29 @@ export default function AssistantChat() {
             </div>
           );
         })}
+      </div>
+
+      {/* Predlozi su pravi <button>-i: klik odigra to pitanje u panelu iznad. Za svako
+          aktivno pitanje postoji jedan set predloga, svi u istoj ćeliji grida (kao parovi),
+          pa kraći set ne skraćuje panel. Skriveni setovi (visibility) nisu u tab redosledu. */}
+      <div className="assistant__suggest">
+        {SCRIPT.map((_, set) => (
+          <div key={set} className={`assistant__chips${set === active ? ' is-active' : ''}`}>
+            {SCRIPT.map((pair, i) =>
+              i === set ? null : (
+                <button
+                  key={pair.q}
+                  type="button"
+                  className="assistant__chip"
+                  onClick={() => play(i, ON_ASK)}
+                >
+                  {ICON_ASK}
+                  <span>{pair.q}</span>
+                </button>
+              ),
+            )}
+          </div>
+        ))}
       </div>
 
       {/* Dekorativna traka - nije <input>, pa nije fokusabilna niti obećava interakciju. */}

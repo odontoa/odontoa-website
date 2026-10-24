@@ -51,7 +51,7 @@ export default function ContactPage() {
     {
       id: 'item-6',
       question: 'Koliko košta Odontoa sistem?',
-      answer: `Cena za rani pristup je ${pricing.monthly} ${pricing.currencySymbol} mesečno, uz godišnju naplatu od ${pricing.yearly} ${pricing.currencySymbol} (naplata jednom godišnje). U cenu su uključene sve trenutno dostupne funkcionalnosti, bez naplate po stolici i bez doplate za pojedinačne module. Prvih ${pricing.trialDays} dana koristiš besplatno.`,
+      answer: `Cena je ${pricing.monthly} ${pricing.currencySymbol} mesečno, uz godišnju pretplatu i mogućnost plaćanja u više rata. U cenu su uključene sve trenutno dostupne funkcionalnosti, bez naplate po stolici i bez doplate za pojedinačne module. Prvih ${pricing.trialDays} dana koristiš besplatno.`,
       icon: DollarSign
     },
     {

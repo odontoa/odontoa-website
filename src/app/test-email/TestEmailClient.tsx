@@ -102,7 +102,7 @@ export default function TestEmailClient() {
             {testType === 'contact' ? (
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  Test the contact form email functionality. This will send an email to info@odontoa.info and ognjen.drinic31@gmail.com
+                  Test the contact form email functionality. This will send an email to the CONTACT_TO_EMAIL recipients (info@odontoa.com, ognjen.drinic31@gmail.com)
                 </p>
                 <Button 
                   onClick={testContactForm}
@@ -115,7 +115,7 @@ export default function TestEmailClient() {
             ) : (
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  Test the demo form email functionality. This will send an email to info@odontoa.info and ognjen.drinic31@gmail.com
+                  Test the demo form email functionality. This will send an email to the CONTACT_TO_EMAIL recipients (info@odontoa.com, ognjen.drinic31@gmail.com)
                 </p>
                 <Button 
                   onClick={testDemoForm}
@@ -141,8 +141,8 @@ export default function TestEmailClient() {
           <div className="bg-card border border-border rounded-lg p-6">
             <h3 className="text-lg font-semibold mb-4">Setup Instructions</h3>
             <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-              <li>Create a Resend account at resend.com</li>
-              <li>Verify the odontoa.info domain under Domains</li>
+              <li>Use the existing Resend account (see RESEND_SETUP.md)</li>
+              <li>Sending domain notify.odontoa.com must be Verified under Domains</li>
               <li>Create an API key with Sending access</li>
               <li>Set RESEND_API_KEY and RESEND_FROM_EMAIL in .env.local (see RESEND_SETUP.md)</li>
               <li>Test the email functionality using the buttons above</li>

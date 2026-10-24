@@ -60,7 +60,10 @@ export default function TermsOfServicePage() {
       {/* Section 4 */}
       <section>
         {/* ZA PRAVNI REVIEW PRE/ODMAH POSLE LAUNCHA: ceo §4 je nova formulacija.
-            - Cena za rani pristup, bez naplate po stolici; cena namerno nije upisana brojem.
+            - Godisnja pretplata, cena po mesecnom iznosu sa sajta; bez naplate po stolici.
+              Cena namerno nije upisana brojem. Placanje jednokratno ili u ratama, po ponudi.
+            - LEGAL FOLLOW-UP: otkaz "u bilo kom trenutku" uz godisnju obavezu i rate
+              (sudbina preostalih rata, povracaj) jos nije poslovno definisan.
             - Probni period 30 dana bez automatske naplate: trenutno nema billing sistema,
               registracija je lead forma i ne trazi platnu karticu.
             - Automatsko obnavljanje uklonjeno: ne postoji sistem koji ga sprovodi.
@@ -68,13 +71,13 @@ export default function TermsOfServicePage() {
               ne postoji u aplikaciji. */}
         <h2>4. Pretplate, cene i obnavljanje</h2>
         <p>
-          Odontoa se naplaćuje kao jedinstvena pretplata koja uključuje sve funkcionalnosti dostupne u trenutku korišćenja, bez obzira na broj stolica, doktora ili pacijenata, i bez doplate za pojedinačne module. Pretplata se plaća godišnje, unapred, po ceni objavljenoj na sajtu odontoa.com u trenutku zaključenja pretplate.
+          Odontoa se naplaćuje kao jedinstvena pretplata koja uključuje sve funkcionalnosti dostupne u trenutku korišćenja, bez obzira na broj stolica, doktora ili pacijenata, i bez doplate za pojedinačne module. Pretplata se ugovara na period od godinu dana. Cena se određuje prema mesečnom iznosu objavljenom na sajtu odontoa.com u trenutku zaključenja pretplate i obračunava za ugovoreni period. Iznos se može platiti jednokratno ili u više rata, u skladu sa ponudom koju korisnik prihvati.
         </p>
         <p>
           Novi korisnici mogu da koriste Odontou besplatno tokom probnog perioda od 30 dana. Za probni period nije potrebna platna kartica i po njegovom isteku se ne vrši automatska naplata. Pretplata počinje tek kada je korisnik izričito zaključi.
         </p>
         <p>
-          Pretplata traje godinu dana od dana uplate i ne produžava se automatski. O produženju pretplate korisnik se dogovara sa Odontoa timom pre isteka tekućeg perioda. Korisnik može otkazati pretplatu u bilo kom trenutku.
+          Pretplata traje godinu dana od dana zaključenja pretplate i ne produžava se automatski. O produženju pretplate korisnik se dogovara sa Odontoa timom pre isteka tekućeg perioda. Korisnik može otkazati pretplatu u bilo kom trenutku.
         </p>
         <p>
           Po otkazivanju pretplate, podaci ordinacije se čuvaju i obrađuju u skladu sa Politikom privatnosti.

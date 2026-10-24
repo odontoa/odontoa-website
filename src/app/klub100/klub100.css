@@ -1,0 +1,624 @@
+/* Klub 100 promo stranica. Samostalan stil (bez site.css): vrednosti tokena su iste kao
+   --stellar-* paleta sajta, ali scoped na .k100 da stranica ne zavisi od homepage CSS-a. */
+.k100 {
+  --k100-heading: #060b13;
+  --k100-body: #363d4f;
+  --k100-soft: #5d6577;
+  --k100-accent: #6e51e0;
+  --k100-accent-dark: #5a3ec7;
+  --k100-accent-deep: #4630a8;
+  --k100-accent-tint: rgba(110, 81, 224, 0.1);
+  --k100-bg: #f7f8fa;
+  --k100-border: #e9ebf1;
+  --k100-input-border: #dcdfe8;
+  --k100-white: #ffffff;
+  --k100-error: #c62f2f;
+  --k100-radius: 28px;
+
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow-x: clip;
+  color: var(--k100-body);
+  background:
+    radial-gradient(1100px 520px at 50% -180px, rgba(110, 81, 224, 0.13), transparent 70%),
+    linear-gradient(180deg, var(--k100-bg) 0%, var(--k100-white) 62%);
+  -webkit-font-smoothing: antialiased;
+}
+
+.k100 a:focus-visible,
+.k100 button:focus-visible {
+  outline: 2px solid var(--k100-accent);
+  outline-offset: 3px;
+}
+
+/* ── Logo ── */
+.k100__top {
+  display: flex;
+  justify-content: center;
+  padding: 28px 24px 0;
+}
+
+.k100__logo {
+  display: inline-flex;
+  border-radius: 8px;
+}
+
+.k100__logo img {
+  width: 118px;
+  height: auto;
+}
+
+.k100__main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px 64px;
+}
+
+/* ── Hero ── */
+.k100__hero {
+  padding-top: 44px;
+  text-align: center;
+}
+
+.k100__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--k100-accent-tint);
+  color: var(--k100-accent-dark);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.k100__title {
+  margin-top: 18px;
+  font-family: var(--font-display), var(--font-inter), system-ui, sans-serif;
+  font-size: clamp(36px, 5.4vw, 60px);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  color: var(--k100-heading);
+  text-wrap: balance;
+}
+
+.k100__lead {
+  max-width: 600px;
+  margin: 20px auto 0;
+  font-size: 18px;
+  line-height: 1.6;
+  text-wrap: balance;
+}
+
+.k100__lead p + p {
+  margin-top: 10px;
+}
+
+/* ── Offer kartica ──
+   Mobile: cena (ljubicasto), forma, pogodnosti, jedno ispod drugog, pa su cena i CTA
+   brzo vidljivi. Desktop: leva ljubicasta kolona (cena + pogodnosti) kao fizicka
+   kartica, desno forma. Ljubicasta pozadina leve kolone je ::before, da cena i
+   pogodnosti dele jedan gradijent bez spoja. */
+.k100__offer {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'price'
+    'form'
+    'perks';
+  margin-top: 44px;
+  overflow: hidden;
+  border: 1px solid var(--k100-border);
+  border-radius: var(--k100-radius);
+  background: var(--k100-white);
+  box-shadow:
+    0 1px 2px rgba(6, 11, 19, 0.04),
+    0 28px 64px -28px rgba(54, 34, 140, 0.32);
+}
+
+.k100__price {
+  grid-area: price;
+  position: relative;
+  z-index: 1;
+  padding: 32px 28px 28px;
+  color: var(--k100-white);
+  background:
+    radial-gradient(420px 260px at 0% 0%, rgba(255, 255, 255, 0.16), transparent 70%),
+    linear-gradient(150deg, #7f51f2 0%, var(--k100-accent) 45%, var(--k100-accent-deep) 100%);
+}
+
+.k100__watermark {
+  grid-area: price;
+  align-self: start;
+  justify-self: end;
+  z-index: 1;
+  margin: -18px -12px 0 0;
+  font-family: var(--font-display), var(--font-inter), system-ui, sans-serif;
+  font-size: 150px;
+  font-weight: 700;
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  color: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+  user-select: none;
+}
+
+.k100__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.k100__badge-mark {
+  width: 24px;
+  height: 24px;
+}
+
+.k100__amount {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-top: 28px;
+}
+
+.k100__amount-value {
+  font-family: var(--font-display), var(--font-inter), system-ui, sans-serif;
+  font-size: 64px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.k100__amount-unit {
+  font-size: 19px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.k100__amount-sub {
+  margin-top: 8px;
+  font-size: 17px;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.k100__regular {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.k100__form {
+  grid-area: form;
+  padding: 32px 28px;
+}
+
+.k100__perks {
+  grid-area: perks;
+  position: relative;
+  z-index: 1;
+  padding: 26px 28px 28px;
+  border-top: 1px solid var(--k100-border);
+  background: var(--k100-bg);
+}
+
+.k100__perks-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--k100-accent-dark);
+}
+
+.k100__perks-list {
+  margin-top: 16px;
+  list-style: none;
+  padding: 0;
+}
+
+.k100__perks-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--k100-heading);
+}
+
+.k100__perks-list li + li {
+  margin-top: 12px;
+}
+
+.k100__perk-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--k100-accent-tint);
+  color: var(--k100-accent);
+}
+
+@media (min-width: 768px) {
+  .k100__offer {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'price form'
+      'perks form';
+  }
+
+  .k100__offer::before {
+    content: '';
+    grid-area: 1 / 1 / 3 / 2;
+    background:
+      radial-gradient(460px 300px at 0% 0%, rgba(255, 255, 255, 0.16), transparent 70%),
+      linear-gradient(160deg, #7f51f2 0%, var(--k100-accent) 42%, var(--k100-accent-deep) 100%);
+  }
+
+  .k100__price {
+    padding: 40px 40px 0;
+    background: none;
+  }
+
+  /* Gore desno, pored cene, da ne prelazi preko liste pogodnosti. */
+  .k100__watermark {
+    grid-area: 1 / 1 / 3 / 2;
+    margin: -22px -16px 0 0;
+    font-size: 180px;
+  }
+
+  .k100__perks {
+    padding: 28px 40px 40px;
+    border-top: 0;
+    background: none;
+  }
+
+  .k100__perks-title {
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .k100__perks-list li {
+    color: var(--k100-white);
+  }
+
+  .k100__perk-icon {
+    background: rgba(255, 255, 255, 0.16);
+    color: var(--k100-white);
+  }
+
+  .k100__form {
+    align-self: center;
+    padding: 44px 40px;
+  }
+}
+
+/* ── Forma ── */
+.k100-form__title {
+  font-family: var(--font-display), var(--font-inter), system-ui, sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--k100-heading);
+}
+
+.k100-form__title:focus {
+  outline: none;
+}
+
+.k100-form__body {
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.k100-form__label {
+  display: block;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--k100-heading);
+}
+
+.k100-form__input {
+  display: block;
+  width: 100%;
+  height: 56px;
+  padding: 0 20px;
+  border: 1px solid var(--k100-input-border);
+  border-radius: 999px;
+  background: var(--k100-white);
+  /* 16px+ da iOS Safari ne zumira na fokus. */
+  font-size: 17px;
+  color: var(--k100-heading);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.k100-form__input::placeholder {
+  color: #9aa1b2;
+}
+
+.k100-form__input:focus {
+  outline: none;
+  border-color: var(--k100-accent);
+  box-shadow: 0 0 0 4px rgba(110, 81, 224, 0.16);
+}
+
+.k100-form__input[aria-invalid='true'] {
+  border-color: var(--k100-error);
+}
+
+.k100-form__input[aria-invalid='true']:focus {
+  box-shadow: 0 0 0 4px rgba(198, 47, 47, 0.14);
+}
+
+.k100-form__error {
+  margin-top: 8px;
+  padding: 0 4px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--k100-error);
+}
+
+.k100-form__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 56px;
+  margin-top: 14px;
+  padding: 0 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: linear-gradient(135deg, #7f51f2 0%, var(--k100-accent) 50%, var(--k100-accent-dark) 100%);
+  color: var(--k100-white);
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 1px 2px rgba(6, 11, 19, 0.06),
+    0 8px 20px -6px rgba(110, 81, 224, 0.45);
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.k100-form__submit:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.k100-form__submit:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.k100-form__submit:disabled {
+  cursor: progress;
+  opacity: 0.75;
+}
+
+.k100-form__spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: var(--k100-white);
+  border-radius: 999px;
+  animation: k100-spin 0.7s linear infinite;
+}
+
+@keyframes k100-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .k100-form__spinner {
+    animation-duration: 2s;
+  }
+}
+
+.k100-form__help {
+  margin-top: 14px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--k100-soft);
+}
+
+.k100-form__privacy {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.k100-form__privacy a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: var(--k100-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.k100-form__privacy a:hover {
+  color: var(--k100-accent-dark);
+}
+
+.k100-form--done {
+  padding: 8px 0;
+}
+
+.k100-form__done-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 18px;
+  border-radius: 999px;
+  background: var(--k100-accent-tint);
+  color: var(--k100-accent);
+}
+
+/* ── Ispod kartice ── */
+.k100__terms {
+  max-width: 520px;
+  margin: 18px auto 0;
+  font-size: 15px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--k100-soft);
+  text-wrap: balance;
+}
+
+.k100__product {
+  max-width: 640px;
+  margin: 76px auto 0;
+  text-align: center;
+}
+
+.k100__product-title {
+  font-family: var(--font-display), var(--font-inter), system-ui, sans-serif;
+  font-size: clamp(26px, 3.4vw, 34px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--k100-heading);
+  text-wrap: balance;
+}
+
+.k100__product-copy {
+  margin-top: 14px;
+  font-size: 17px;
+  line-height: 1.6;
+  text-wrap: balance;
+}
+
+.k100__secondary {
+  max-width: 640px;
+  margin: 56px auto 0;
+  padding-top: 32px;
+  border-top: 1px solid var(--k100-border);
+  text-align: center;
+  font-size: 16px;
+}
+
+.k100__secondary-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-top: 6px;
+  padding: 0 6px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: var(--k100-accent-dark);
+}
+
+.k100__secondary-link svg {
+  transition: transform 0.15s ease;
+}
+
+.k100__secondary-link:hover svg {
+  transform: translateX(3px);
+}
+
+/* ── Telefon (QR) ── */
+@media (max-width: 480px) {
+  .k100__top {
+    padding-top: 20px;
+  }
+
+  .k100__logo img {
+    width: 104px;
+  }
+
+  .k100__main {
+    padding: 0 20px 48px;
+  }
+
+  .k100__hero {
+    padding-top: 28px;
+  }
+
+  .k100__title {
+    margin-top: 14px;
+  }
+
+  .k100__lead {
+    margin-top: 16px;
+    font-size: 16.5px;
+    line-height: 1.55;
+  }
+
+  .k100__offer {
+    margin-top: 28px;
+    border-radius: 24px;
+  }
+
+  .k100__price {
+    padding: 26px 22px 24px;
+  }
+
+  .k100__amount {
+    margin-top: 22px;
+  }
+
+  .k100__amount-value {
+    font-size: 56px;
+  }
+
+  .k100__regular {
+    margin-top: 18px;
+    padding-top: 14px;
+  }
+
+  .k100__form {
+    padding: 26px 22px 28px;
+  }
+
+  .k100-form__title {
+    font-size: 24px;
+  }
+
+  .k100__perks {
+    padding: 24px 22px 26px;
+  }
+
+  .k100__product {
+    margin-top: 52px;
+  }
+
+  .k100__product-copy {
+    font-size: 16.5px;
+  }
+
+  .k100__secondary {
+    margin-top: 40px;
+    padding-top: 28px;
+  }
+}
+
+@media (max-width: 360px) {
+  .k100__main {
+    padding: 0 16px 40px;
+  }
+
+  .k100__price,
+  .k100__form,
+  .k100__perks {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}

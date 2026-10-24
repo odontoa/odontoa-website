@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useReducer, useState } from 'react';
+import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import StepClinic from './StepClinic';
@@ -30,6 +30,9 @@ type StepNumber = 1 | 2 | 3 | 4;
 type Screen = 'welcome' | StepNumber | 'review' | 'success';
 
 const TOTAL_STEPS = 4;
+
+const SEND_ERROR =
+  'Slanje nije uspelo. Pokušajte ponovo ili nam pišite na info@odontoa.com.';
 
 /* Prefiks greske po koraku; korak 3 je u celini opcion, pa nema prefiks. */
 const STEP_ERROR_PREFIX: Record<StepNumber, string | null> = {
@@ -108,6 +111,9 @@ function reducer(state: WizardData, action: Action): WizardData {
   }
 }
 
+/* Fiksni nav (80px) + vazduh: vrh novog koraka ne sme da ostane ispod nav-a. */
+const NAV_OFFSET = 96;
+
 export default function OnboardingWizard() {
   const [screen, setScreen] = useState<Screen>('welcome');
   const [data, dispatch] = useReducer(reducer, undefined, initialData);
@@ -116,6 +122,25 @@ export default function OnboardingWizard() {
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const errors = useMemo(() => collectErrors(data), [data]);
+
+  /* Posle promene ekrana fokus ide na karticu (citac ekrana i tastatura krecu od
+     vrha koraka). Na telefonu je dugme "Dalje" ispod kraja dugog koraka, pa se
+     stranica jos poravna tako da novi korak pocne odmah ispod fiksnog nav-a.
+     Desktop se ne skroluje. */
+  const cardRef = useRef<HTMLDivElement>(null);
+  const isFirstScreen = useRef(true);
+  useEffect(() => {
+    if (isFirstScreen.current) {
+      isFirstScreen.current = false;
+      return;
+    }
+    const card = cardRef.current;
+    if (!card) return;
+    card.focus({ preventScroll: true });
+    if (!window.matchMedia('(max-width: 767px)').matches) return;
+    const top = card.getBoundingClientRect().top;
+    if (top < NAV_OFFSET || top > window.innerHeight) window.scrollBy(0, top - NAV_OFFSET);
+  }, [screen]);
 
   /* Greske obaveznih polja se prikazuju kada korisnik napusti polje.
      Greske radnog vremena se prikazuju odmah, jer su podrazumevane
@@ -169,19 +194,19 @@ export default function OnboardingWizard() {
       const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
+        /* 400 nosi konkretnu gresku validacije; sve ostalo (slanje mejla, server)
+           dobija poruku sa adresom, da prijava ne propadne bez alternative. */
         setSubmitError(
-          typeof result.error === 'string'
+          response.status === 400 && typeof result.error === 'string'
             ? result.error
-            : 'Greška pri slanju prijave. Pokušajte ponovo kasnije.'
+            : SEND_ERROR
         );
         return;
       }
 
       setScreen('success');
     } catch {
-      setSubmitError(
-        'Nema veze sa serverom. Proverite internet konekciju i pokušajte ponovo.'
-      );
+      setSubmitError(SEND_ERROR);
     } finally {
       setIsSubmitting(false);
     }
@@ -189,8 +214,11 @@ export default function OnboardingWizard() {
 
   if (screen === 'welcome') {
     return (
-      <div className="register-card register-card--center">
-        <h1 className="register-welcome__title">Dobrodošli u Odontoa</h1>
+      <div ref={cardRef} tabIndex={-1} className="register-card register-card--center register-card--welcome">
+        <p className="register-welcome__eyebrow">Podešavanje ordinacije</p>
+        <h1 className="register-welcome__title">
+          Dobrodošli u <span className="register-welcome__accent">Odontoa</span>
+        </h1>
         <p className="register-welcome__sub">
           Podesimo tvoju ordinaciju za par minuta.
         </p>
@@ -202,16 +230,13 @@ export default function OnboardingWizard() {
           <span>Krenimo</span>
           <ArrowRight size={16} aria-hidden />
         </button>
-        <p className="register-welcome__micro">
-          30 dana besplatno · Bez kreditne kartice · Uvoz pacijenata na nama
-        </p>
       </div>
     );
   }
 
   if (screen === 'success') {
     return (
-      <div className="register-card register-card--center">
+      <div ref={cardRef} tabIndex={-1} className="register-card register-card--center">
         <h1 className="register-welcome__title">Hvala.</h1>
         <p className="register-welcome__sub">
           Javljamo se u roku od jednog radnog dana i uvozimo tvoje pacijente.
@@ -226,7 +251,7 @@ export default function OnboardingWizard() {
   const progress = typeof screen === 'number' ? (screen / TOTAL_STEPS) * 100 : 100;
 
   return (
-    <div className="register-card">
+    <div ref={cardRef} tabIndex={-1} className="register-card">
       <div className="register-progress">
         <div className="register-progress__head">
           <span>

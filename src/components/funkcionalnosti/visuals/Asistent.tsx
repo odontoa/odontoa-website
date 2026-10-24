@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { SendHorizontal, X } from 'lucide-react';
 import { CalendarScreen } from './Calendar';
-import { CLINIC, DEBTORS, DEBTORS_TOTAL, DOCTOR, fmt } from './data';
+import { DEBTORS, DEBTORS_TOTAL, DOCTOR, fmt } from './data';
 
 /** Pozadina: kalendar u aplikaciji (asistent se otvara iz aplikacije, ne kao zaseban chat). */
 export function AsistentScreen() {
@@ -24,7 +24,7 @@ export function AsistentPanel() {
         </span>
         <div>
           <b>Odontoa asistent</b>
-          <small>odgovara iz podataka: {CLINIC}</small>
+          <small>Odgovara iz podataka ordinacije</small>
         </div>
         <X size={16} className="pv-muted pv-ml" />
       </div>

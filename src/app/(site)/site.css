@@ -186,30 +186,6 @@
   transform: translateX(2px);
 }
 
-/* ── Hero: T2 mikrokopija ispod CTA (samo proverive tvrdnje) ── */
-.hero__micro {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 6px 18px;
-  list-style: none;
-  padding: 0;
-  margin: -44px 0 56px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--hero-label);
-}
-
-.hero__micro li {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.hero__micro svg {
-  color: var(--stellar-accent);
-}
-
 /* ── Hero: panel ── */
 /* Negativan margin skracuje sekciju, pa overflow: hidden odsece dno panela (rez
    "nastavlja se"). translateY bi ostavio rupu u layoutu ispod. */
@@ -878,11 +854,6 @@
     margin-bottom: 40px;
   }
 
-  .hero__micro {
-    margin: -26px 0 32px;
-    font-size: 12.5px;
-  }
-
   .hero__panel-wrap::before,
   .hero__panel-wrap::after {
     top: 100px;
@@ -1240,11 +1211,12 @@
   }
 }
 
-/* ── Finansije (Kontrola nad novcem) ── */
+/* ── Finansije (Kontrola nad novcem) ──
+   Bela, izmedju sive Pregled sistema iznad i sivog Asistenta ispod. Donju ivicu nosi
+   border-top Asistenta. */
 .finance {
-  background: var(--stellar-bg-light);
+  background: var(--stellar-white);
   border-top: 1px solid var(--stellar-border);
-  border-bottom: 1px solid var(--stellar-border);
   padding: var(--section-pad) 24px;
 }
 
@@ -1548,8 +1520,9 @@
 }
 
 @media (max-width: 820px) {
+  /* minmax(0, ...) da min sirina tabele ne siri kolonu (i tekst iznad nje) preko ekrana */
   .finance__split {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 28px;
   }
 
@@ -1605,6 +1578,15 @@
 
   .finance__foot {
     padding: 14px var(--finance-pad) 6px;
+  }
+}
+
+/* Ispod 400px cetiri kolone ne staju bez rezanja. "Uradjeno" ide; placeno, dugovanje i
+   zbir dugovanja nose poruku sekcije. */
+@media (max-width: 400px) {
+  .finance__table th:nth-child(2),
+  .finance__table td:nth-child(2) {
+    display: none;
   }
 }
 
@@ -1948,8 +1930,8 @@
   padding: var(--section-pad) 24px;
   /* Ista podloga kao .finance, da ritam sekcija ostane siva/bela naizmenicno.
      --stellar-bg-light je samo oko 3% tamnija od bele, pa gornja ivica nosi razdvajanje
-     od bele feature-right sekcije iznad (isti razlog zbog kog je .finance ima).
-     Donja ivica ne treba, ispod je skoro crna Readiness sekcija. */
+     od bele sekcije Finansija iznad. Ispod je bela demo sekcija, kao posle Pregleda
+     sistema, bez ivice. */
   background: var(--stellar-bg-light);
   border-top: 1px solid var(--stellar-border);
 }
@@ -1959,11 +1941,12 @@
   margin: 0 auto;
 }
 
-/* Isti split kao Finansije sekcija: tekst levo, vizual desno. */
+/* Tekst levo, vizual desno kao Finansije, ali chat ima fiksnu sirinu: jedan razgovor
+   ne treba sirinu tabele, pa bi siri panel ostavio praznu desnu polovinu. */
 .assistant__split {
   display: grid;
-  grid-template-columns: 1fr 1.1fr;
-  gap: 48px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 480px);
+  gap: clamp(40px, 5vw, 72px);
   align-items: center;
 }
 
@@ -2036,7 +2019,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 18px;
+  padding: 12px 16px;
   border-bottom: 1px solid var(--stellar-border);
 }
 
@@ -2066,18 +2049,24 @@
   color: var(--stellar-muted);
 }
 
-/* Veći razmak između parova nego unutar para - razgovor se čita kao tri celine. */
+/* Svi parovi su u istoj ćeliji grida: log ima visinu najdužeg para, vidljiv je samo
+   aktivni. Poravnati su gore, odmah ispod zaglavlja; višak (ako ga ima) ide ispod. */
 .assistant__log {
-  padding: 18px 18px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  padding: 16px 16px 18px;
+  display: grid;
 }
 
 .assistant__pair {
+  grid-area: 1 / 1;
+  align-self: start;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  visibility: hidden;
+}
+
+.assistant__pair.is-active {
+  visibility: visible;
 }
 
 /* Poruka = oznaka (ko pita / asistent) + balon. Otkriva se cela, klasom is-in. */
@@ -2102,8 +2091,9 @@
   max-width: 84%;
 }
 
+/* Odgovor je kartica podataka preko cele sirine loga: desno ne ostaje prazna traka. */
 .assistant__msg--a {
-  max-width: 92%;
+  width: 100%;
 }
 
 .assistant__who {
@@ -2157,33 +2147,40 @@
   border-bottom-left-radius: 4px;
 }
 
-/* Redovi odgovora: podaci iz ordinacije, iznosi poravnati desno. */
-.assistant__line {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 6px 0 5px;
-  margin-top: 4px;
-  border-top: 1px solid #e8eaf0;
+/* Dva podatka iz ordinacije kao dve bele celije u balonu (oznaka iznad vrednosti).
+   Na uskom panelu postaju redovi, oznaka levo i vrednost desno. */
+.assistant__facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.assistant__fact {
+  display: grid;
+  gap: 1px;
+  padding: 7px 10px 8px;
+  border-radius: 10px;
+  background: var(--stellar-white);
+  box-shadow: 0 0 0 1px #eceef3;
   font-variant-numeric: tabular-nums;
 }
 
-.assistant__line + .assistant__line {
-  margin-top: 0;
+.assistant__fact small {
+  font-size: 11.5px;
+  line-height: 1.3;
+  color: #6b7184;
 }
 
-.assistant__line b {
+.assistant__fact b {
+  font-size: 14px;
   font-weight: 600;
-  text-align: right;
-}
-
-.assistant__note {
-  color: var(--stellar-muted);
+  line-height: 1.35;
 }
 
 .assistant__action {
   display: inline-block;
-  margin-top: 6px;
+  margin-top: 8px;
   font-size: 11.5px;
   font-weight: 600;
   color: var(--stellar-accent);
@@ -2243,19 +2240,83 @@
   }
 }
 
+/* Predlozi pitanja: pravi dugmići, radius kao input ispod jer dugo pitanje
+   na telefonu ide u dva reda. */
+.assistant__suggest {
+  display: grid;
+  padding: 0 16px 12px;
+}
+
+/* Setovi predloga u istoj ćeliji, uz input; vidljiv je samo set aktivnog pitanja. */
+.assistant__chips {
+  grid-area: 1 / 1;
+  align-self: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  visibility: hidden;
+}
+
+.assistant__chips.is-active {
+  visibility: visible;
+}
+
+.assistant__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px 7px 10px;
+  border: 1px solid var(--stellar-border);
+  border-radius: 12px;
+  background: var(--stellar-white);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--stellar-body);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background-color 0.15s;
+}
+
+.assistant__chip svg {
+  flex: none;
+  color: var(--stellar-accent);
+}
+
+.assistant__chip:hover {
+  border-color: color-mix(in srgb, var(--stellar-accent) 40%, var(--stellar-border));
+  color: var(--stellar-heading);
+  background: color-mix(in srgb, var(--stellar-accent) 3%, var(--stellar-white));
+}
+
+.assistant__chip:focus-visible {
+  outline: 2px solid var(--stellar-accent);
+  outline-offset: 2px;
+}
+
 .assistant__prompt {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin: 0 18px 18px;
+  margin: 0 16px 16px;
   height: 44px;
   padding: 0 6px 0 14px;
   border: 1px solid var(--stellar-border);
   border-radius: 12px;
 }
 
+/* flex-basis 0: tekst u jednom redu ne sme da odredi min sirinu panela */
 .assistant__prompt-text {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-size: 13.5px;
   color: var(--stellar-muted);
 }
@@ -2285,7 +2346,7 @@
 
 @media (max-width: 820px) {
   .assistant__split {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 32px;
   }
 
@@ -2303,9 +2364,44 @@
     margin: 0 auto;
   }
 
-  .assistant__msg--q,
-  .assistant__msg--a {
+  .assistant__msg--q {
     max-width: 94%;
+  }
+}
+
+@media (max-width: 440px) {
+  /* Dve celije bi lomile "09:00 · Sanja Ilić" i iznose; redovi su gusci i ostaju
+     iste visine za sva tri odgovora. */
+  .assistant__facts {
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin-top: 6px;
+    border-radius: 10px;
+    background: var(--stellar-white);
+    box-shadow: 0 0 0 1px #eceef3;
+  }
+
+  .assistant__fact {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 7px 10px;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .assistant__fact + .assistant__fact {
+    border-top: 1px solid #eceef3;
+  }
+
+  .assistant__fact small {
+    font-size: 12.5px;
+  }
+
+  .assistant__fact b {
+    text-align: right;
   }
 }
 
@@ -2412,21 +2508,91 @@
 }
 
 /* ── CTA ── */
+/* Zavrsni CTA pocetne: tamna traka iste palete kao .fp-cta u feature-page.css, ali
+   centrirana izjava (copy i dugme na jednoj osi), sa sjajem ispod dugmeta umesto u
+   gornjem desnom uglu. .fp-cta na stranicama funkcionalnosti ostaje split. */
 .closing-cta {
-  padding: var(--section-pad) 24px;
-  background: var(--stellar-white);
-  border-top: 1px solid var(--stellar-border);
-  position: relative;
-  overflow: hidden;
+  padding: clamp(72px, 8vw, 96px) 24px;
+  background:
+    radial-gradient(ellipse 42% 70% at 50% 100%, rgba(110, 81, 224, 0.2), transparent 70%),
+    linear-gradient(170deg, #050910 0%, var(--stellar-heading) 50%, #0b1220 100%);
+  color: var(--stellar-white);
 }
 
 .closing-cta__inner {
-  max-width: 1120px;
+  max-width: 760px;
   margin: 0 auto;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  gap: 80px;
+  gap: 32px;
+  text-align: center;
+}
+
+.closing-cta__eyebrow {
+  font-size: 14px;
+  font-weight: 500;
+  color: #c5baf3;
+  margin: 0 0 14px;
+}
+
+.closing-cta__title {
+  font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.06;
+  color: var(--stellar-white);
+  margin: 0 auto;
+  max-width: 13em;
+  text-wrap: balance;
+}
+
+.closing-cta__lead {
+  font-size: 17px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 18px 0 0;
+  text-wrap: balance;
+}
+
+.closing-cta__action {
+  flex: none;
+}
+
+/* Strelica uz tekst dugmeta; sjaj jaci nego u heroju jer je dugme jedini svetao element */
+.closing-cta__btn {
+  gap: 8px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 8px 28px rgba(110, 81, 224, 0.4);
+}
+
+/* Telefon: ista centrirana logika; dugme preko sirine kolone, ali ne sire od 360px */
+@media (max-width: 720px) {
+  .closing-cta {
+    padding: 60px 20px;
+  }
+
+  .closing-cta__inner {
+    gap: 28px;
+  }
+
+  .closing-cta__title {
+    font-size: 32px;
+  }
+
+  .closing-cta__lead {
+    font-size: 15.5px;
+    margin-top: 14px;
+  }
+
+  .closing-cta__action {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .closing-cta__action .hero__btn {
+    width: 100%;
+  }
 }
 
 .closing-cta__form {
@@ -2689,13 +2855,15 @@
   box-shadow: 0 24px 64px rgba(6, 11, 19, 0.10), 0 4px 16px rgba(6, 11, 19, 0.05);
 }
 
-/* Prozor: rail sa svih sest modula + prikazan modul. Senka iz porodice kartica sa
-   brend aurom (kao .finance__card), sa fallbackom bez color-mix. */
+/* Prozor: rail sa svih sest modula + prikazan modul, ispred kalendara. Desna ivica
+   (430px) ostaje levo od cetvrtka u kalendaru (od 474px), pa Markov termin nije pokriven;
+   top 188 ostavlja ceo red 11:00 vidljiv. Senka iz porodice kartica sa brend aurom
+   (kao .finance__card), sa fallbackom. */
 .system-overview__window {
   position: absolute;
-  top: 20px;
+  top: 188px;
   left: 0;
-  width: 546px;
+  width: 430px;
   display: flex;
   overflow: hidden;
   z-index: 2;
@@ -2758,26 +2926,164 @@
   min-width: 0;
 }
 
-/* Kalendar preklapa donji desni ugao prozora i izlazi 38px van njega: drugi modul istog
-   sistema (termin u 11:00 je pacijent iz kartona). top 262 pada ispod poslednjeg
-   tretmana u prozoru, pa nista ne sece. */
-.system-overview__float {
+/* Kalendar u pozadini: nedeljni prikaz kao u aplikaciji (kolona vremena, kolone dana,
+   satne i cetvrtsatne linije), bez toolbara i legende. Dva sloja istog grida: zamucen
+   sloj sa svim terminima i ostar sloj sa jedinim zakazanim terminom (Marko, 11:00), pa
+   se termin poklapa sa svojom celijom u piksel. Boje statusa prate legendu aplikacije:
+   zakazano plavo, zavrseno zeleno. */
+.system-overview__cal {
+  --cal-time: 48px;
+  --cal-head: 36px;
+  --cal-q: 16px;
+  --cal-line: #ececf2;
+  --cal-zakazano: #3b6ef5;
   position: absolute;
-  top: 262px;
-  left: 300px;
-  width: 284px;
-  padding: 16px 18px;
-  z-index: 3;
-  border-radius: 16px;
+  top: 0;
+  left: 80px;
+  width: 504px;
+  height: 356px;
+  animation: hero-rise 0.7s ease both 0.25s;
+}
+
+.system-overview__cal-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: var(--cal-time) repeat(4, minmax(0, 1fr));
+  /* 09:00-14:00: 20 redova po 15 min popunjavaju visinu bez prazne trake na dnu */
+  grid-template-rows: var(--cal-head) repeat(20, var(--cal-q));
+  border: 1px solid transparent;
+  border-radius: 18px;
+}
+
+.system-overview__cal-grid--muted {
+  overflow: hidden;
+  background: var(--stellar-white);
+  border-color: #e8e8f0;
+  filter: blur(1.2px) saturate(0.92);
+  opacity: 0.9;
+}
+
+/* Ostar sloj ne hvata pokazivac i nema pozadinu: vidi se samo Markov termin. */
+.system-overview__cal-grid--focus {
+  pointer-events: none;
+}
+
+.system-overview__cal-col {
+  grid-row: 1 / -1;
+  border-left: 1px solid var(--cal-line);
+}
+
+.system-overview__cal-col.is-focus {
+  background: color-mix(in srgb, var(--stellar-accent) 5%, var(--stellar-white));
+}
+
+/* Satne linije pune, cetvrtsatne svetlije, preko kolona dana */
+.system-overview__cal-lines {
+  grid-column: 2 / -1;
+  grid-row: 2 / -1;
+  background-image:
+    repeating-linear-gradient(to bottom, var(--cal-line) 0 1px, transparent 1px calc(var(--cal-q) * 4)),
+    repeating-linear-gradient(to bottom, #f3f3f7 0 1px, transparent 1px var(--cal-q));
+}
+
+.system-overview__cal-day {
+  grid-row: 1;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-left: 10px;
+  border-bottom: 1px solid var(--cal-line);
+  font-size: 10px;
+  color: #5d6475;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.system-overview__cal-day b {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--stellar-heading);
+}
+
+.system-overview__cal-day.is-focus,
+.system-overview__cal-day.is-focus b {
+  color: var(--stellar-accent-dark);
+}
+
+.system-overview__cal-day.is-focus {
+  background: color-mix(in srgb, var(--stellar-accent) 10%, var(--stellar-white));
+}
+
+.system-overview__cal-time {
+  grid-column: 1;
+  padding: 3px 0 0 10px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--stellar-heading);
+}
+
+.system-overview__cal-event {
+  margin: 2px 4px;
+  padding: 4px 7px;
+  overflow: hidden;
+  border-radius: 8px;
+  border-left: 3px solid var(--status-done);
+  background: color-mix(in srgb, var(--status-done) 9%, var(--stellar-white));
+  font-size: 9.5px;
+  line-height: 1.3;
+  color: #4b5265;
+}
+
+.system-overview__cal-event b {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--stellar-heading);
+  white-space: nowrap;
+}
+
+/* Jedini ostar element kalendara: blago izdignut, ljubicast prsten kao red
+   "Kontrola posle vadjenja" u kartonu ispred. */
+.system-overview__cal-marko {
+  margin: -2px 1px;
+  padding: 4px 8px;
+  border-radius: 9px;
+  background: var(--stellar-white);
+  border: 1px solid color-mix(in srgb, var(--stellar-accent) 26%, var(--stellar-white));
+  border-left: 3px solid var(--cal-zakazano);
   box-shadow:
-    0 1px 2px rgba(6, 11, 19, 0.05),
-    0 14px 28px -12px rgba(6, 11, 19, 0.14),
-    0 36px 64px -28px rgba(110, 81, 224, 0.22);
-  box-shadow:
-    0 1px 2px color-mix(in srgb, var(--stellar-dark) 5%, transparent),
-    0 14px 28px -12px color-mix(in srgb, var(--stellar-dark) 14%, transparent),
-    0 36px 64px -28px color-mix(in srgb, var(--stellar-accent) 22%, transparent);
-  animation: hero-rise 0.7s ease both 0.3s;
+    0 0 0 3px color-mix(in srgb, var(--stellar-accent) 14%, transparent),
+    0 12px 24px -10px color-mix(in srgb, var(--stellar-accent) 45%, transparent);
+  font-size: 10px;
+  line-height: 1.3;
+  color: #4b5265;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.system-overview__cal-marko b {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 650;
+  color: var(--stellar-heading);
+}
+
+/* Red u kartonu koji je isti termin kao istaknuti slot u kalendaru. Tri klase: jaci od
+   .system-card__item:last-child, koji inace skida donji padding poslednjem redu. */
+.system-overview__window .system-card__item.system-card__item--linked {
+  margin: 6px -8px 0;
+  padding: 9px 8px;
+  border-bottom: none;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--stellar-accent) 6%, var(--stellar-white));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--stellar-accent) 16%, transparent);
+}
+
+.system-card__item--linked .system-card__item-date {
+  background: var(--stellar-white);
+  border-color: color-mix(in srgb, var(--stellar-accent) 24%, var(--stellar-white));
 }
 
 /* Kartica 1: Karton pacijenta */
@@ -2918,92 +3224,9 @@
   background: rgba(110, 81, 224, 0.09);
 }
 
-/* Kartica 2: Kalendar termina */
-.system-card__cal-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.system-card__cal-head b {
-  font-size: 13px;
-  font-weight: 650;
-  color: var(--stellar-heading);
-}
-
-.system-card__cal-head b small {
-  display: block;
-  font-size: 10.5px;
-  font-weight: 500;
-  color: var(--stellar-muted);
-  margin-top: 1px;
-}
-
-/* Stolica je metadata, ne status: neutralan chip, da se ne mesa sa ljubicastim
-   "Zakazano". Ivica ima tek trag lavande da chip pripada istoj porodici. */
-.system-card__cal-chip {
-  font-size: 10.5px;
-  font-weight: 600;
-  color: var(--stellar-body);
-  background: var(--stellar-bg-light);
-  border: 1px solid color-mix(in srgb, var(--stellar-accent) 8%, var(--stellar-border));
-  border-radius: 999px;
-  padding: 3px 10px;
-}
-
-.system-card__cal-slot {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 8px;
-}
-
-.system-card__cal-slot:last-child {
-  margin-bottom: 0;
-}
-
-.system-card__cal-time {
-  flex: none;
-  width: 36px;
-  font-size: 10.5px;
-  font-weight: 600;
-  color: var(--stellar-muted);
-  padding-top: 8px;
-}
-
-.system-card__cal-event {
-  flex: 1;
-  min-width: 0;
-  border-radius: 10px;
-  padding: 8px 11px;
-  border: 1px solid var(--stellar-border);
-  border-left: 3px solid var(--stellar-accent);
-  background: rgba(110, 81, 224, 0.05);
-  font-size: 11.5px;
-}
-
-.system-card__cal-event b {
-  display: block;
-  font-weight: 600;
-  color: var(--stellar-heading);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.system-card__cal-event span {
-  font-size: 10.5px;
-  color: var(--stellar-muted);
-}
-
-.system-card__cal-event--done {
-  border-left-color: var(--status-done);
-  background: rgba(26, 158, 110, 0.05);
-}
-
 @media (prefers-reduced-motion: reduce) {
   .system-overview__window,
-  .system-overview__float {
+  .system-overview__cal {
     animation: none;
   }
 }
@@ -3025,35 +3248,376 @@
   align-items: center;
 }
 
-.demo-cta__illustrations {
+/* Product stage: ton ploce iz Finansija (.finance__card-body), tackasta mreza utisana
+   maskom. Telefon je odsecen donjom ivicom, isti rez kao hero mockup. */
+.demo-cta__stage {
+  --stage-bg: color-mix(in srgb, var(--stellar-accent) 4%, var(--stellar-bg-light));
   position: relative;
-  min-height: 510px;
-  z-index: 1;
-  overflow: visible;
+  height: 500px;
+  border-radius: 30px;
+  overflow: hidden;
+  background: var(--stage-bg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--stellar-heading) 5%, transparent);
 }
 
-/* Telefon u CTA sekciji. Desktop: zarotiran, apsolutno preko glow kruga.
-   Visina 510px se poklapa sa min-height kontejnera, pa skaliranje 0.65 na
-   tabletu (height 332px) i dalje odgovara. */
-.demo-cta__phone {
+.demo-cta__stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(110, 81, 224, 0.16) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 65% at 50% 40%, #000 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 65% at 50% 40%, #000 20%, transparent 75%);
+}
+
+/* Scena je tacno telefon (260 x 540) na osi ploce; na telefonu se skalira kao celina. */
+.demo-cta__scene {
+  position: absolute;
+  left: 50%;
+  top: 52px;
+  width: 260px;
+  height: 540px;
+  transform: translateX(-50%) scale(var(--scene-scale, 1));
+  transform-origin: top center;
+}
+
+/* ── Telefon (DemoPhone): ravan, uspravan, 260 x 540 ── */
+.demo-phone {
+  position: relative;
+  width: 260px;
+  height: 540px;
+  padding: 9px;
+  border-radius: 46px;
+  background: #0e1118;
+  box-shadow:
+    inset 0 0 0 1.5px #2a2f3a,
+    0 44px 80px -34px rgba(6, 11, 19, 0.42),
+    0 24px 50px -28px rgba(110, 81, 224, 0.35);
+}
+
+.demo-phone::before {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: 120px;
+  width: 3px;
+  height: 54px;
+  border-radius: 2px;
+  background: #1b1f29;
+}
+
+/* Gornja margina ekrana ostavlja rasirenom ostrvu (do 47px) 11px vazduha iznad pozdrava. */
+.demo-phone__screen {
+  position: relative;
+  height: 100%;
+  border-radius: 37px;
+  overflow: hidden;
+  background: #f6f7fa;
+  padding: 58px 14px 0;
+}
+
+/* Ostrvo: u mirovanju 78 x 22 kao na uredjaju; .is-open ga siri u pilulu sa porukom
+   (iOS live activity). Raste iz svog centra, pa ostaje na osi telefona. */
+.demo-phone__island {
+  position: absolute;
+  z-index: 2;
+  top: 11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 78px;
+  height: 22px;
+  border-radius: 22px;
+  background: #0b0d12;
+  overflow: hidden;
+  transition:
+    width 0.62s cubic-bezier(0.32, 0.72, 0, 1),
+    height 0.62s cubic-bezier(0.32, 0.72, 0, 1),
+    top 0.62s cubic-bezier(0.32, 0.72, 0, 1),
+    box-shadow 0.62s ease;
+}
+
+.demo-phone.is-open .demo-phone__island {
+  top: 7px;
+  width: 222px;
+  height: 40px;
+  box-shadow: 0 6px 16px -8px rgba(6, 11, 19, 0.45);
+}
+
+/* Sadrzaj pilule ima konacnu sirinu od starta, pa se tekst ne prelama dok ostrvo raste. */
+.demo-phone__notice {
   position: absolute;
   top: 0;
-  left: 40%;
+  left: 50%;
+  width: 222px;
+  height: 40px;
+  transform: translateX(-50%) scale(0.92);
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 9px;
+  padding: 0 11px 0 7px;
+  opacity: 0;
+  white-space: nowrap;
+  transition:
+    opacity 0.28s ease,
+    transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.demo-phone.is-open .demo-phone__notice {
+  opacity: 1;
   transform: translateX(-50%);
-  z-index: 2;
+  transition-delay: 0.24s;
 }
 
-/* Klase su po ulozi (breakpoint), ne po obliku telefona, jer se koja je slika
-   u kom slotu menja jednim komentarom u DemoCtaSection.tsx. */
-.demo-cta__phone-desktop {
+.demo-phone__app {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: var(--stellar-white);
+}
+
+.demo-phone__notice-text {
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.demo-phone__notice-text b {
   display: block;
-  width: 306px;
-  height: 510px;
-  object-fit: contain;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--stellar-white);
 }
 
-.demo-cta__phone-mobile {
-  display: none;
+.demo-phone__notice-text small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.62);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Potvrda slanja u iOS zelenoj */
+.demo-phone__sent {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #30d158;
+  color: #0b0d12;
+}
+
+.demo-phone__status {
+  position: absolute;
+  top: 14px;
+  left: 22px;
+  right: 22px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--stellar-heading);
+  transition: opacity 0.2s ease;
+}
+
+/* Rasirena pilula pokriva statusnu traku, kao na uredjaju */
+.demo-phone.is-open .demo-phone__status {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-phone__island,
+  .demo-phone__notice,
+  .demo-phone__status {
+    transition: none;
+  }
+}
+
+.demo-phone__greet {
+  display: block;
+  padding: 14px 12px 13px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--stellar-accent) 12%, var(--stellar-white));
+}
+
+.demo-phone__greet b {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--stellar-heading);
+}
+
+.demo-phone__greet > span {
+  display: block;
+  font-size: 11px;
+  color: var(--stellar-body);
+  margin-top: 2px;
+}
+
+.demo-phone__greet .demo-phone__btns {
+  display: flex;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.demo-phone__btns i {
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--stellar-heading);
+  background: var(--stellar-white);
+  border-radius: 999px;
+  padding: 4px 8px;
+  box-shadow: 0 1px 2px rgba(6, 11, 19, 0.06);
+}
+
+.demo-phone__stats {
+  display: grid;
+  gap: 11px;
+  padding: 16px 4px 14px;
+}
+
+.demo-phone__stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.demo-phone__ic {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: var(--stellar-accent);
+  color: var(--stellar-white);
+}
+
+.demo-phone__ic--dark {
+  background: var(--stellar-heading);
+}
+
+.demo-phone__stat small {
+  display: block;
+  font-size: 9.5px;
+  color: var(--stellar-muted);
+}
+
+.demo-phone__stat b {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--stellar-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.demo-phone__sched {
+  background: var(--stellar-white);
+  border-radius: 14px;
+  padding: 11px 12px 4px;
+  box-shadow: 0 1px 2px rgba(6, 11, 19, 0.04);
+}
+
+.demo-phone__sched-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.demo-phone__sched-head b {
+  font-size: 11.5px;
+  color: var(--stellar-heading);
+}
+
+.demo-phone__sched-head span {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--stellar-white);
+  background: var(--stellar-accent);
+  border-radius: 999px;
+  padding: 3px 8px;
+}
+
+.demo-phone__row {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  gap: 6px;
+  align-items: baseline;
+  padding: 7px 0;
+  border-top: 1px solid #eef0f4;
+  font-size: 10.5px;
+  color: var(--stellar-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.demo-phone__sched-head + .demo-phone__row {
+  border-top: 0;
+}
+
+.demo-phone__row span:first-child,
+.demo-phone__row em {
+  color: var(--stellar-muted);
+}
+
+.demo-phone__row em {
+  font-style: normal;
+  font-size: 9.5px;
+}
+
+.demo-phone__row.is-done {
+  opacity: 0.55;
+}
+
+.demo-phone__fab {
+  position: absolute;
+  right: 14px;
+  bottom: 16px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--stellar-accent);
+  color: var(--stellar-white);
+  box-shadow: 0 8px 18px -6px rgba(110, 81, 224, 0.6);
+}
+
+/* Tekst: isti eyebrow i lead kao ostale sekcije pocetne */
+.demo-cta__eyebrow {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--stellar-accent);
+  margin: 0 0 14px;
+}
+
+.demo-cta__lead {
+  font-size: 16px;
+  line-height: 1.62;
+  color: var(--stellar-muted);
+  max-width: 460px;
+  margin: 16px 0 0;
+}
+
+.demo-cta__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  margin-top: 30px;
+}
+
+.demo-cta__note {
+  font-size: 14px;
+  color: var(--stellar-muted);
 }
 
 /* ── Responsive — general sections ── */
@@ -3075,11 +3639,6 @@
 
   .blog-teasers__grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .closing-cta__inner {
-    flex-direction: column;
-    text-align: center;
   }
 
   .closing-cta__checks {
@@ -3179,22 +3738,74 @@
 }
 
 @media (max-width: 640px) {
-  /* Prozor i kalendar se stack-uju jedan ispod drugog, u punoj sirini */
+  /* Telefon: nije umanjen desktop. Kalendar je isecak jednog dana (cetvrtak) preko
+     cele sirine, mutniji; karton ide ispod i preklapa njegov donji deo. */
   .system-overview__illustrations {
     transform: none;
     height: auto !important;
     width: 100%;
   }
 
-  .system-overview__window,
-  .system-overview__float {
-    position: static;
+  .system-overview__cal {
+    --cal-time: 46px;
+    position: relative;
+    left: 0;
     width: 100%;
+    height: 292px;
   }
 
-  /* Uzi rail da karton ima mesta na telefonu */
+  .system-overview__cal-grid {
+    grid-template-columns: var(--cal-time) repeat(3, 0) minmax(0, 1fr);
+    border-radius: 16px;
+  }
+
+  .system-overview__cal-grid--muted {
+    filter: blur(1.8px) saturate(0.9);
+    opacity: 0.86;
+  }
+
+  .system-overview__cal-other {
+    display: none;
+  }
+
+  .system-overview__cal-day {
+    font-size: 11px;
+  }
+
+  .system-overview__cal-day b {
+    font-size: 12px;
+  }
+
+  .system-overview__cal-event {
+    margin: 2px 8px;
+    font-size: 10.5px;
+  }
+
+  .system-overview__cal-event b {
+    font-size: 11.5px;
+  }
+
+  .system-overview__cal-marko {
+    margin: -3px 5px;
+    padding: 5px 10px;
+    font-size: 10.5px;
+  }
+
+  .system-overview__cal-marko b {
+    font-size: 12px;
+  }
+
+  /* 72px preklopa: Markov termin (164-196px) ostaje iznad kartona (od 220px) */
+  .system-overview__window {
+    position: relative;
+    top: auto;
+    width: 100%;
+    margin-top: -72px;
+  }
+
+  /* Bez raila na telefonu: karton je fokus, a sirina ide naslovima tretmana */
   .system-overview__rail {
-    width: 48px;
+    display: none;
   }
 
   /* Podnaslov tretmana u jednom redu, da redovi kartona budu iste visine */
@@ -3204,9 +3815,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+}
 
-  .system-overview__float {
-    margin-top: 16px;
+/* Najuzi telefoni: naziv tretmana prelazi u drugi red umesto "Kontr…", da veza sa
+   istaknutim terminom u kalendaru ostane citljiva. */
+@media (max-width: 400px) {
+  .system-overview__window .system-card__item-what b {
+    white-space: normal;
   }
 }
 
@@ -3215,67 +3830,42 @@
 ───────────────────────────────────── */
 @media (max-width: 1024px) {
   .demo-cta__inner {
-    grid-template-columns: 1fr !important;
-    gap: 48px !important;
+    grid-template-columns: 1fr;
+    gap: 40px;
   }
-  /* On tablet, illustrations come after text (reverse grid order visually) */
+  /* Na tabletu i telefonu tekst ide prvi, ploca ispod */
   .demo-cta__visual-wrap {
     order: 2;
   }
-  .demo-cta__illustrations {
-    order: 2;
-    transform: scale(0.65);
-    transform-origin: top left;
-    height: 332px !important; /* 510 * 0.65 */
-  }
-  .demo-cta__inner > div:last-child {
+  .demo-cta__text {
     order: 1;
-    max-width: 560px;
-    width: 100%;
-    margin: 0 auto;
+    max-width: 600px;
+  }
+  .demo-cta__stage {
+    height: 460px;
   }
 }
 
 @media (max-width: 640px) {
-  /* Telefon se VIDI na mobilnom, ali ispod teksta. Redosled (tekst order 1,
-     ilustracija order 2) dolazi iz pravila za <=1024px. */
-  .demo-cta__visual-wrap,
-  .demo-cta__illustrations {
-    display: block !important;
+  .demo-cta__stage {
+    height: 380px;
+    border-radius: 24px;
   }
 
-  /* Gasi desktop skaliranje i fiksnu visinu, telefon ulazi u normalan tok */
-  .demo-cta__illustrations {
-    transform: none;
-    height: auto !important;
-    min-height: 0;
+  /* Telefon 260 * 0.84 = 218px: staje i u kolonu od 272px na 320, a tekst u piluli
+     ostaje citljiv (11.5px * 0.84 = 9.7px). Ploca prikazuje gornju polovinu telefona. */
+  .demo-cta__scene {
+    --scene-scale: 0.84;
+    top: 32px;
   }
 
-  /* relative, a ne static: z-index deluje samo na pozicionirane elemente, pa bi
-     sa static telefon izgubio z-index 2 iz osnovnog pravila i glow krug
-     (absolute, z-index 0) bi se slikao preko njega. top/left se moraju vratiti
-     na auto, jer bi left: 40% iz osnovnog pravila pomerilo telefon udesno. */
-  .demo-cta__phone {
-    position: relative;
-    top: auto;
-    left: auto;
-    transform: none;
-    margin: 0 auto;
-    width: 280px;
-  }
-
-  .demo-cta__phone-desktop {
-    display: none;
-  }
-
-  .demo-cta__phone-mobile {
-    display: block;
-    width: 280px;
-    height: auto;
+  .demo-cta__actions .btn-cta {
+    width: 100%;
+    justify-content: center;
   }
 }
 
-/* ── Cenovnik (jedan paket, cena za rani pristup) ── */
+/* ── Cenovnik (jedan paket, javna standardna cena) ── */
 .pricing {
   padding: var(--section-pad) 24px;
   background: var(--stellar-white);
@@ -3345,36 +3935,46 @@
   margin: 16px 0 0;
 }
 
-/* ── Kartica: ugnjezdena ploca ──
-   Isti jezik kao kartica troska tehnike (.finance__card): lavanda okvir nosi cenu,
-   bela ploca nosi sve sto je ukljuceno. Leva strana je namerno samo cena + CTA.
+/* ── Kartica: jedna ploca + hairline ──
+   Jedna bela povrsina, bez unutrasnje kartice: levo cena + CTA, desno sve sto je
+   ukljuceno, izmedju samo vertikalni hairline koji ne dodiruje ivice.
    Dupla box-shadow deklaracija je fallback kao na .hero__app. */
 .pricing__card {
-  max-width: 940px;
+  max-width: 1000px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-  gap: 8px;
-  padding: 8px;
-  border-radius: 26px;
-  background: color-mix(in srgb, var(--stellar-accent) 3%, var(--stellar-white));
+  grid-template-columns: minmax(0, 2fr) 1px minmax(0, 3fr);
+  border-radius: 28px;
+  background: var(--stellar-white);
   border: 1px solid var(--stellar-border);
   box-shadow:
     0 1px 2px rgba(6, 11, 19, 0.04),
-    0 28px 64px -28px rgba(6, 11, 19, 0.14),
-    0 40px 90px -40px rgba(110, 81, 224, 0.24);
+    0 28px 64px -30px rgba(6, 11, 19, 0.13),
+    0 40px 90px -44px rgba(110, 81, 224, 0.22);
   box-shadow:
     0 1px 2px color-mix(in srgb, var(--stellar-dark) 4%, transparent),
-    0 28px 64px -28px color-mix(in srgb, var(--stellar-dark) 14%, transparent),
-    0 40px 90px -40px color-mix(in srgb, var(--stellar-accent) 24%, transparent);
+    0 28px 64px -30px color-mix(in srgb, var(--stellar-dark) 13%, transparent),
+    0 40px 90px -44px color-mix(in srgb, var(--stellar-accent) 22%, transparent);
 }
 
-/* Poravnato gore, ne centrirano: padding-top 23px stavlja sredinu badge-a u ravan sa
-   naslovom ploce (1px ivica + 22px padding + pola reda naslova). */
+/* Poravnato gore, ne centrirano: sredina badge-a (40px + pola visine 33px) je u ravni
+   sa sredinom naslova liste (45px + pola reda od 22px). */
 .pricing__side {
   display: flex;
   flex-direction: column;
-  padding: 23px 30px 26px;
+  padding: 40px 44px;
+}
+
+/* Hairline se gasi ka krajevima, pa ne deluje kao ivica unutrasnje kartice */
+.pricing__rule {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--stellar-border) 18%,
+    var(--stellar-border) 82%,
+    transparent
+  );
+  margin-block: 32px;
 }
 
 .pricing__badge {
@@ -3390,7 +3990,7 @@
   font-size: 12.5px;
   font-weight: 600;
   letter-spacing: -0.01em;
-  margin-bottom: 26px;
+  margin-bottom: 28px;
 }
 
 .pricing__badge-dot {
@@ -3400,15 +4000,18 @@
   background: var(--stellar-accent);
 }
 
+/* Ako je kolona uska, "/ mesecno" prelazi u novi red; iznos se nikad ne lomi. */
 .pricing__price {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  gap: 8px;
+  gap: 4px 8px;
   margin: 0;
 }
 
-/* Jedina velika cifra na sekciji */
+/* Jedina velika cifra na sekciji. Mora da stane i dvocifrena cena (npr. 49 €). */
 .pricing__amount {
+  white-space: nowrap;
   font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
   font-size: 76px;
   font-weight: 600;
@@ -3424,42 +4027,58 @@
   color: var(--stellar-muted);
 }
 
-/* Na uskom ekranu red se lomi na tacki, ne usred "jednom godisnje" */
-.pricing__billing {
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--stellar-muted);
-  margin: 14px 0 0;
-  font-variant-numeric: tabular-nums;
+/* Uslovi placanja ispod cene: male stavke sa kvacicom, tise od liste funkcionalnosti */
+.pricing__terms {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
 }
 
-.pricing__billing span {
+.pricing__terms li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: #6b7184;
+}
+
+.pricing__terms svg {
+  flex: none;
+  color: var(--stellar-accent);
+}
+
+.pricing__term-text > span {
   white-space: nowrap;
+}
+
+/* Na najuzim ekranima drugi deo ne staje u red: obican prelom */
+@media (max-width: 400px) {
+  .pricing__term-text > span {
+    white-space: normal;
+  }
 }
 
 .pricing__cta {
   width: 100%;
   justify-content: center;
-  margin-top: 26px;
+  margin-top: 30px;
 }
 
+/* Lista nije kartica: bez pozadine, ivice i senke, samo vazduh i hairline levo. */
 .pricing__plate {
-  background: var(--stellar-white);
-  border: 1px solid var(--stellar-border);
-  border-radius: 18px;
-  padding: 22px 28px 24px;
-  box-shadow: 0 1px 2px rgba(6, 11, 19, 0.04);
-  box-shadow: 0 1px 2px color-mix(in srgb, var(--stellar-dark) 4%, transparent);
+  padding: 45px 44px 42px;
 }
 
 .pricing__plate-head {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 14px;
-  margin-bottom: 18px;
-  border-bottom: 1px solid var(--stellar-border);
+  gap: 4px 12px;
+  margin-bottom: 22px;
 }
 
 .pricing__plate-title {
@@ -3471,6 +4090,7 @@
 }
 
 .pricing__plate-count {
+  white-space: nowrap;
   font-size: 12.5px;
   color: var(--stellar-muted);
   font-variant-numeric: tabular-nums;
@@ -3488,7 +4108,7 @@
 .pricing__feature-list {
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 14px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -3557,39 +4177,92 @@
   color: var(--stellar-accent-dark);
 }
 
-/* Ispod 760px kolone bi bile preuske: cena gore, ploca ispod. */
-@media (max-width: 760px) {
+/* Tablet: dve kolone bi lomile cenu i listu. Cena i CTA gore u jednom redu,
+   horizontalni hairline, lista u dve kolone ispod. */
+@media (max-width: 900px) {
   .pricing__card {
     grid-template-columns: 1fr;
-    border-radius: 22px;
-    padding: 6px;
+  }
+
+  .pricing__side {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 32px;
+    align-items: end;
+  }
+
+  .pricing__side > * {
+    grid-column: 1;
+  }
+
+  .pricing__badge {
+    justify-self: start;
+  }
+
+  .pricing__side > .pricing__cta {
+    grid-column: 2;
+    grid-row: 2 / span 2;
+    width: auto;
+    margin-top: 0;
+    padding-inline: 32px;
+  }
+
+  .pricing__rule {
+    height: 1px;
+    margin: 0 44px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--stellar-border) 12%,
+      var(--stellar-border) 88%,
+      transparent
+    );
+  }
+
+  .pricing__plate {
+    padding-top: 34px;
+  }
+
+  .pricing__features {
+    justify-content: start;
+    column-gap: 72px;
   }
 }
 
 @media (max-width: 560px) {
+  .pricing__card {
+    border-radius: 24px;
+  }
+
+  /* Nazad na kolonu; align-items vraca levo poravnanje koje tablet grid menja u end */
   .pricing__side {
-    padding: 22px 18px 24px;
+    display: flex;
+    align-items: stretch;
+    padding: 28px 22px 26px;
   }
 
   .pricing__amount {
     font-size: 60px;
   }
 
-  .pricing__cta {
+  .pricing__side > .pricing__cta {
+    width: 100%;
     margin-top: 24px;
   }
 
+  .pricing__rule {
+    margin: 0 22px;
+  }
+
   .pricing__plate {
-    padding: 22px 18px;
-    border-radius: 16px;
+    padding: 28px 22px 28px;
   }
 
   .pricing__features {
     grid-template-columns: 1fr;
-    row-gap: 13px;
+    row-gap: 14px;
   }
 }
-
 /* ─────────────────────────────────────
    Quote (jedno iskustvo, pilot ordinacija)
 ───────────────────────────────────── */
@@ -3751,6 +4424,7 @@
 .finance__card,
 .system-overview__illustrations,
 .assistant__panel,
-.readiness__panel {
+.readiness__panel,
+.demo-cta__stage {
   font-family: var(--font-inter), 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }

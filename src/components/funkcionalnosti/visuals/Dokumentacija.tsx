@@ -1,6 +1,6 @@
 import { CheckCircle2, Copy, Lock, Plus, Printer, Search, Tablet } from 'lucide-react';
 import { AppFrame, Pill } from './AppFrame';
-import { CLINIC, CLINIC_INFO, DOCTOR, TEMPLATES } from './data';
+import { CLINIC_INFO, CLINIC_SHORT, DOCTOR, TEMPLATES } from './data';
 
 /** Pozadina: sabloni dokumenata, kao u aplikaciji. */
 export function DokumentacijaScreen() {
@@ -137,7 +137,7 @@ export function SaglasnostDoc() {
           <div className="pv-doc-brand">
             <ClinicLogo />
             <div>
-              <b>VIDENTA</b>
+              <b>{CLINIC_SHORT.toUpperCase()}</b>
               <small>Centar dentalne medicine</small>
             </div>
           </div>

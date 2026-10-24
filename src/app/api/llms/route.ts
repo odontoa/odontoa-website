@@ -70,7 +70,7 @@ export async function GET() {
     llmsContent += `\n`;
 
     llmsContent += `## Cena\n`;
-    llmsContent += `Cena za rani pristup: ${pricing.monthly} ${pricing.currencySymbol} mesečno, uz godišnju naplatu od ${pricing.yearly} ${pricing.currencySymbol} (naplata jednom godišnje). Sve funkcionalnosti su uključene, bez naplate po stolici i bez doplate za pojedinačne module. Prvih ${pricing.trialDays} dana je besplatno.\n\n`;
+    llmsContent += `Cena: ${pricing.monthly} ${pricing.currencySymbol} mesečno, uz godišnju pretplatu i mogućnost plaćanja u više rata. Sve funkcionalnosti su uključene, bez naplate po stolici i bez doplate za pojedinačne module. Prvih ${pricing.trialDays} dana je besplatno.\n\n`;
 
     llmsContent += `## Ključni linkovi\n`;
     llmsContent += `${absoluteUrl('/')}\n`;

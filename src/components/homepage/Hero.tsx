@@ -6,7 +6,6 @@ import {
   BookOpen,
   Building2,
   CalendarDays,
-  Check,
   FlaskConical,
   LayoutDashboard,
   Settings,
@@ -35,9 +34,6 @@ const RAIL = [
 ];
 
 const TABS = ['Ovaj mesec', 'Prošli mesec', 'Ova godina', 'Period'];
-
-/* T2: samo proverive tvrdnje, kao mikrokopija ispod CTA. */
-const MICRO = ['30 dana besplatno', 'Uvoz pacijenata'];
 
 export default function Hero() {
   const { gross, lab, net, labOrders, labShare, grossVsJun, netVsJun } = HERO_TOTALS;
@@ -73,15 +69,6 @@ export default function Hero() {
           </Link>
         </div>
 
-        <ul className="hero__micro">
-          {MICRO.map((label) => (
-            <li key={label}>
-              <Check size={14} strokeWidth={2.25} aria-hidden />
-              {label}
-            </li>
-          ))}
-        </ul>
-
         {/* ── Panel: deo aplikacije (rail + Finansije / Izveštaji), ne izolovan widget ── */}
         <div className="hero__panel-wrap">
           <div className="hero__app">
@@ -112,7 +99,7 @@ export default function Hero() {
                 </div>
                 <div className="hero__org">
                   <i aria-hidden />
-                  Videnta
+                  Aura Dent
                 </div>
               </div>
 

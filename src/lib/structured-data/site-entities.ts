@@ -46,7 +46,8 @@ export function websiteNode(): JsonLdNode {
   };
 }
 
-/* Proizvod. Cena je godisnja naplata iz pricing config-a. */
+/* Proizvod. Cena je mesecni iznos iz pricing config-a (po mesecu, UN/CEFACT MON);
+   billingDuration P1Y kaze da je pretplata ugovorena na godinu dana. */
 export function softwareApplicationNode(): JsonLdNode {
   return {
     '@type': 'SoftwareApplication',
@@ -61,12 +62,13 @@ export function softwareApplicationNode(): JsonLdNode {
     offers: {
       '@type': 'Offer',
       url: absoluteUrl('/register'),
-      price: String(pricing.yearly),
+      price: String(pricing.monthly),
       priceCurrency: pricing.currency,
       priceSpecification: {
         '@type': 'UnitPriceSpecification',
-        price: pricing.yearly,
+        price: pricing.monthly,
         priceCurrency: pricing.currency,
+        referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitCode: 'MON' },
         billingDuration: 'P1Y',
       },
     },

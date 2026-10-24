@@ -1,15 +1,14 @@
 /**
  * Jedan dummy svet za sve prikaze proizvoda na stranicama funkcionalnosti.
  *
- * Ustanova: Centar dentalne medicine Videnta (kratko: Videnta), dr Jelena Savić.
+ * Ustanova: Aura Dent · Centar dentalne medicine (u UI-ju samo „Aura Dent"), dr Jelena Savić.
  * Danas je petak 31.07.2026, sada 12:10 (isto kao "Danas" u heroju pocetne).
  * Aleksandra Božić (P021) je ista pacijentkinja u kartonu, predracunu i odgovoru
  * asistenta; njen dug je svuda 98.800 RSD. Laboratorije su izmisljene, iste kao na
  * pocetnoj. Brojke su izmisljene, ali se medjusobno slazu.
  */
 
-export const CLINIC = 'Centar dentalne medicine Videnta';
-export const CLINIC_SHORT = 'Videnta';
+export const CLINIC_SHORT = 'Aura Dent';
 export const DOCTOR = 'dr Jelena Savić';
 /* Izmisljeni podaci ustanove za zaglavlje dokumenata (nisu podaci postojece firme). */
 export const CLINIC_INFO = { address: 'Njegoševa 18, 11000 Beograd', mb: '21734589', pib: '112458736' };

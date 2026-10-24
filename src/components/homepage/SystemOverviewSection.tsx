@@ -8,22 +8,43 @@ import { SYSTEM_GRID_PAGES } from '@/lib/content/funkcionalnosti';
    i H1 stranice ne mogu da se raziju. SYSTEM_GRID_PAGES je vec bez AI asistenta:
    on ima svoju stranicu, ali se ne pojavljuje u ovom gridu. */
 
-/* Modul oznacen u listi i u railu (zakazivanje). Prozor desno ne prikazuje jedan ekran
-   nego povezan sistem: karton pacijenta otvoren iz kalendara, a kalendar izlazi iz
-   prozora. Redovi liste su linkovi ka stranicama modula. */
+/* Modul oznacen u listi i u railu (zakazivanje). Desno nije jedan ekran nego povezan
+   sistem: karton pacijenta ispred, pravi nedeljni kalendar iza njega. Redovi liste su
+   linkovi ka stranicama modula. */
 const SHOWN_MODULE = '/01';
 
 const TREATMENTS = [
-  { day: '16', month: 'jul', title: 'Hirurško vađenje zuba', meta: 'Dr Marko Marković · Stolica 1', status: 'done', statusLabel: 'Završeno' },
-  { day: '17', month: 'jul', title: 'Definitivno punjenje kanala', meta: 'Dr Marko Marković · Stolica 1', status: 'plan', statusLabel: 'Zakazano' },
+  { day: '9', month: 'jul', title: 'Hirurško vađenje zuba', meta: 'Dr Marko Marković · Stolica 1', status: 'done', statusLabel: 'Završeno', linked: false },
+  /* Isti termin kao istaknuti slot u kalendaru iza (cetvrtak 16. jul, 11:00). */
+  { day: '16', month: 'jul', title: 'Kontrola posle vađenja', meta: 'Čet, 16. jul · 11:00 · Stolica 1', status: 'plan', statusLabel: 'Zakazano', linked: true },
 ] as const;
 
-const CALENDAR_SLOTS = [
-  { time: '09:00', name: 'Jelena Nikolić', meta: 'Intervencija · Završeno', done: true },
-  { time: '10:00', name: 'Aleksandra Božić', meta: 'Punjenje 2 kanala · Završeno', done: true },
-  /* Isti pacijent kao karton koji izlazi iz prozora: kalendar i karton su povezani. */
-  { time: '11:00', name: 'Marko Petrović', meta: 'Kontrola · Zakazano', done: false },
+/* Kalendar u pozadini: nedelja 13–16. jul, cetvrtak je dan iz kartona. Svi prikazani
+   termini su zavrseni; jedini zakazan je Markov, koji se crta posebno, ostar. */
+const CAL_DAYS = [
+  { name: 'Ponedeljak', date: '13.07', focus: false },
+  { name: 'Utorak', date: '14.07', focus: false },
+  { name: 'Sreda', date: '15.07', focus: false },
+  { name: 'Četvrtak', date: '16.07', focus: true },
 ] as const;
+
+const CAL_HOURS = ['09:00', '10:00', '11:00', '12:00', '13:00'];
+
+/* day = indeks u CAL_DAYS; start/end u satima. Grid ima red po 15 min od 09:00. */
+const CAL_EVENTS = [
+  { day: 0, start: 9, end: 9.75, name: 'Ana Tasić', what: 'Kontrola' },
+  { day: 1, start: 10, end: 11, name: 'Ivan Radić', what: 'Punjenje kanala' },
+  /* Rano u danu: posle 11h su prve tri kolone ispod kartona, pa termin tu ne bi bio ceo */
+  { day: 2, start: 9.5, end: 10.25, name: 'Jovana Janković', what: 'Plomba' },
+  { day: 3, start: 9, end: 9.75, name: 'Jelena Nikolić', what: 'Intervencija' },
+  { day: 3, start: 10, end: 10.75, name: 'Aleksandra Božić', what: 'Punjenje 2 kanala' },
+] as const;
+
+const MARKO = { day: 3, start: 11, end: 11.5 };
+
+/* Prvi red grida je zaglavlje dana, pa red za vreme t pocinje na (t - 9) * 4 + 2. */
+const calRow = (start: number, end: number) => `${(start - 9) * 4 + 2} / ${(end - 9) * 4 + 2}`;
+const calCol = (day: number) => day + 2;
 
 /* Ikonice raila, istim redom kao lista /01-/06. */
 const RAIL_ICONS: Record<string, ReactNode> = {
@@ -110,7 +131,7 @@ export default function SystemOverviewSection() {
               marginBottom: 30,
             }}
           >
-            Digitalni kartoni, zakazivanje i dokumentacija. Sve što koristiš svakodnevno, u jednom sistemu, bez prebacivanja između alata.
+            Tretman, trošak tehnike i uplata ostaju povezani sa terminom. Kalendar, karton, RTG i dokumentacija su u jednom sistemu, bez prebacivanja između alata.
           </p>
 
           {/* Lista modula: svaki red je link ka stranici funkcionalnosti */}
@@ -146,11 +167,61 @@ export default function SystemOverviewSection() {
         {/* ── Right illustration column ── */}
         {/*
           Relativne pozicije u kontejneru 584x488:
-          - Prozor aplikacije (rail + karton): top=20,  left=0,   width 546
-          - Kalendar termina:                  top=262, left=300, width 284 (izlazi 38px van prozora)
+          - Kalendar (pozadina):               top=0,   left=80, 504 x 356
+          - Prozor aplikacije (rail + karton): top=188, left=0,  width 430
+          Cetvrtak je poslednja kolona kalendara, desno od prozora, pa Markov termin
+          (11:00) ostaje vidljiv iznad i desno od kartona.
         */}
         <Reveal delay={0.12} style={{ flex: 1, minWidth: 0, width: '100%' }}>
         <div className="system-overview__illustrations">
+          {/* Kalendar iza: zamucen sloj + ostar sloj istog grida, u kom je samo Markov
+              termin, pa se poklapaju u piksel. */}
+          <div className="system-overview__cal" aria-hidden="true">
+            <div className="system-overview__cal-grid system-overview__cal-grid--muted">
+              {CAL_DAYS.map((d, i) => (
+                <span
+                  key={`col-${d.date}`}
+                  className={`system-overview__cal-col${d.focus ? ' is-focus' : ' system-overview__cal-other'}`}
+                  style={{ gridColumn: calCol(i) }}
+                />
+              ))}
+              <span className="system-overview__cal-lines" />
+              {CAL_DAYS.map((d, i) => (
+                <span
+                  key={`head-${d.date}`}
+                  className={`system-overview__cal-day${d.focus ? ' is-focus' : ' system-overview__cal-other'}`}
+                  style={{ gridColumn: calCol(i) }}
+                >
+                  <b>{d.name}</b> {d.date}
+                </span>
+              ))}
+              {CAL_HOURS.map((h, i) => (
+                <span key={h} className="system-overview__cal-time" style={{ gridRow: i * 4 + 2 }}>
+                  {h}
+                </span>
+              ))}
+              {CAL_EVENTS.map((e) => (
+                <span
+                  key={e.name}
+                  className={`system-overview__cal-event${CAL_DAYS[e.day].focus ? '' : ' system-overview__cal-other'}`}
+                  style={{ gridColumn: calCol(e.day), gridRow: calRow(e.start, e.end) }}
+                >
+                  <b>{e.name}</b>
+                  {e.what}
+                </span>
+              ))}
+            </div>
+            <div className="system-overview__cal-grid system-overview__cal-grid--focus">
+              <span
+                className="system-overview__cal-marko"
+                style={{ gridColumn: calCol(MARKO.day), gridRow: calRow(MARKO.start, MARKO.end) }}
+              >
+                <b>Marko Petrović</b>
+                <span>11:00 · Kontrola</span>
+              </span>
+            </div>
+          </div>
+
           {/* Prozor aplikacije: rail sa svih sest modula + karton pacijenta */}
           <div className="system-card system-overview__window">
             <div className="system-overview__rail" aria-hidden>
@@ -199,7 +270,10 @@ export default function SystemOverviewSection() {
               <div className="system-card__list">
                 <h5>Istorija tretmana</h5>
                 {TREATMENTS.map((t) => (
-                  <div key={`${t.day}-${t.title}`} className="system-card__item">
+                  <div
+                    key={`${t.day}-${t.title}`}
+                    className={t.linked ? 'system-card__item system-card__item--linked' : 'system-card__item'}
+                  >
                     <div className="system-card__item-date">
                       {t.day}
                       <small>{t.month}</small>
@@ -215,32 +289,6 @@ export default function SystemOverviewSection() {
                 ))}
               </div>
             </div>
-          </div>
-
-          {/* Kalendar termina: drugi modul istog sistema, izlazi iz prozora */}
-          <div className="system-card system-overview__float">
-            <div className="system-card__cal-head">
-              <b>
-                Kalendar termina
-                <small>četvrtak, 16. jul</small>
-              </b>
-              <span className="system-card__cal-chip">Stolica 1</span>
-            </div>
-            {CALENDAR_SLOTS.map((slot) => (
-              <div key={slot.time} className="system-card__cal-slot">
-                <div className="system-card__cal-time">{slot.time}</div>
-                <div
-                  className={
-                    slot.done
-                      ? 'system-card__cal-event system-card__cal-event--done'
-                      : 'system-card__cal-event'
-                  }
-                >
-                  <b>{slot.name}</b>
-                  <span>{slot.meta}</span>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
         </Reveal>

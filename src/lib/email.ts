@@ -16,7 +16,8 @@ function getClient(): Resend {
   return client;
 }
 
-/* Pošiljalac mora biti na domenu verifikovanom u Resend-u (odontoa.info). */
+/* Pošiljalac mora biti na domenu verifikovanom u Resend-u (notify.odontoa.com);
+   vrednost je samo u env-u, vidi RESEND_SETUP.md. */
 function getFrom(): string {
   const from = process.env.RESEND_FROM_EMAIL;
   if (!from) {
@@ -26,9 +27,9 @@ function getFrom(): string {
 }
 
 /* Interni primaoci obaveštenja o formama. Env je lista razdvojena zarezom;
-   fallback je stanje pre migracije, da forme rade i ako varijabla izostane. */
+   fallback su isti primaoci kao u RESEND_SETUP.md, da forme rade i ako varijabla izostane. */
 const DEFAULT_INTERNAL_RECIPIENTS = [
-  'info@odontoa.info',
+  'info@odontoa.com',
   'ognjen.drinic31@gmail.com',
 ];
 
@@ -55,6 +56,10 @@ export interface DemoFormData {
   name: string;
   email: string;
   phone: string;
+}
+
+export interface Klub100LeadData {
+  email: string;
 }
 
 export interface QuizResultCategory {
@@ -230,6 +235,40 @@ export class EmailService {
   }
 
   /**
+   * Send email for Klub 100 lead submissions (/klub100)
+   */
+  static async sendKlub100LeadEmail(data: Klub100LeadData): Promise<void> {
+    const html = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #060b13;">
+          <h2 style="color: #6e51e0; border-bottom: 2px solid #6e51e0; padding-bottom: 10px;">
+            Nova Klub 100 prijava
+          </h2>
+
+          <div style="background-color: #f7f8fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
+            <p><strong>Izvor:</strong> Klub 100</p>
+          </div>
+
+          <div style="background-color: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 20px;">
+            <p style="margin: 0; color: #64748b; font-size: 14px;">
+              Ova prijava je poslata sa Klub 100 stranice (/klub100). Odgovor ide direktno korisniku.
+            </p>
+          </div>
+        </div>
+      `;
+
+    await send(
+      {
+        to: getInternalRecipients(),
+        subject: 'Nova Klub 100 prijava',
+        html,
+        replyTo: sanitizeAddress(data.email),
+      },
+      'Failed to send Klub 100 lead email'
+    );
+  }
+
+  /**
    * Send a copy of the digital readiness quiz result to the user's email.
    */
   static async sendQuizResultEmail(data: QuizResultEmailData): Promise<void> {
@@ -303,11 +342,11 @@ export class EmailService {
       `;
 
     /* Jedini mejl koji ide spoljnom korisniku: replyTo na javni kontakt (info@odontoa.com),
-       jer je posiljalac noreply adresa. Interna kopija (bcc) ostaje na .info sanducetu. */
+       jer je posiljalac adresa za forme. Interna kopija (bcc) ide na isti javni kontakt. */
     await send(
       {
         to: data.email,
-        bcc: ['info@odontoa.info'],
+        bcc: ['info@odontoa.com'],
         subject: 'Vaš rezultat: Test digitalne spremnosti ordinacije',
         html,
         replyTo: 'info@odontoa.com',

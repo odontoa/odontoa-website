@@ -2,7 +2,9 @@ import Hero from '@/components/homepage/Hero';
 // TrustLogos: placeholder logoi iz template-a; proof traka u heroju je zamena.
 // import TrustLogos from '@/components/homepage/TrustLogos';
 import SystemOverviewSection from '@/components/homepage/SystemOverviewSection';
-import WorkflowSection from '@/components/homepage/WorkflowSection';
+// Workflow ("U praksi"): sklonjen sa pocetne. Ponavljao je Pregled sistema (zakazivanje,
+// karton) i Finansije (naplata) odmah ispod njega.
+// import WorkflowSection from '@/components/homepage/WorkflowSection';
 import FinanceSection from '@/components/homepage/FinanceSection';
 import DemoCtaSection from '@/components/homepage/DemoCtaSection';
 import AssistantSection from '@/components/homepage/AssistantSection';
@@ -64,11 +66,13 @@ export default function HomePage() {
       <JsonLd data={homeJsonLd(false)} />
       <Hero />
       {/* <TrustLogos /> */}
+      {/* Tok: proizvod -> finansije/tehnika (diferencijator) -> AI -> demo uzivo -> cena.
+          Pozadine se smenjuju: siva, bela, siva, bela. */}
       <SystemOverviewSection />
-      <WorkflowSection />
+      {/* <WorkflowSection /> */}
       <FinanceSection />
-      <DemoCtaSection />
       <AssistantSection />
+      <DemoCtaSection />
       {/* Sekcija vodi na test u Alatima: prikazuje se samo dok Alati nisu sakriveni. */}
       {!isSectionHidden('/alati') && <ReadinessQuizSection />}
       <TestimonialQuote />
