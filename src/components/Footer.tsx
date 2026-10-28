@@ -85,7 +85,8 @@ const Footer = ({ comingSoon = false }: { comingSoon?: boolean }) => {
               />
             </Link>
             <p className="text-sm leading-relaxed mb-6 max-w-xs" style={{ color: '#363d4f' }}>
-              Softver za stomatološke ordinacije.
+              {/* nowrap: na uskom telefonu "ordinacije." ne ostaje sama u redu */}
+              Softver za vođenje <span className="whitespace-nowrap">stomatološke ordinacije.</span>
               <span className="block">Zakazano. Urađeno. Naplaćeno.</span>
             </p>
             <div className="space-y-2">
