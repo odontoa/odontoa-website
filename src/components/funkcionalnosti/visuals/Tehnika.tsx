@@ -22,7 +22,7 @@ export function TehnikaScreen() {
       </div>
       <div className="pv-card">
         <div className="pv-card-h">
-          Radni nalozi ({ORDERS.length})<small>jul–avgust 2026</small>
+          Radni nalozi ({ORDERS.length})<small>jul-avgust 2026</small>
         </div>
         <table className="pv-table">
           <thead>

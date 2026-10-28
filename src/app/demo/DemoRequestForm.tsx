@@ -115,8 +115,8 @@ export default function DemoRequestForm() {
         )}
 
         <p className="demo__privacy">
-          Tvoji podaci su zaštićeni u skladu sa GDPR regulativom.{' '}
-          <Link href="/politika-privatnosti">Politika privatnosti</Link>
+          Podatke koristimo samo da bismo te kontaktirali u vezi sa demo pozivom.{' '}
+          <Link href="/politika-privatnosti" className="whitespace-nowrap">Politika privatnosti</Link>
         </p>
       </form>
     </div>

@@ -21,7 +21,7 @@ export async function GET() {
   ensureRecnikValid();
   const terms = getIndexableTerms();
 
-  let body = `# Odontoa — Stomatološki rečnik\n\n`;
+  let body = `# Odontoa - Stomatološki rečnik\n\n`;
   body += `Objavljeni pojmovi sa kratkim definicijama. Indeks: ${absoluteUrl('/recnik')}\n`;
   body += `Broj pojmova: ${terms.length}\n\n`;
 

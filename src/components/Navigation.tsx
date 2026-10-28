@@ -71,6 +71,14 @@ const Navigation = ({ comingSoon = false }: { comingSoon?: boolean }) => {
 
   return (
     <header>
+      {/* Otvoren mobilni meni: stranica iza se zamuti, da se meni (i njegov CTA) ne mesa
+          sa sadrzajem ispod. Tap na zamucen deo zatvara meni (onPointer gore). */}
+      {isMenuOpen && (
+        <div
+          aria-hidden
+          className="fixed inset-0 z-[19] bg-white/40 backdrop-blur-md animate-in fade-in-0 duration-200 lg:hidden"
+        />
+      )}
       <nav
         ref={navRef}
         data-state={isMenuOpen && 'active'}

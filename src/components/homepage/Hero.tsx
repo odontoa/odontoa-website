@@ -107,7 +107,7 @@ export default function Hero() {
                 <div className="hero__dash-head">
                   <div>
                     <div className="hero__dash-title">Finansijski pregled</div>
-                    <div className="hero__dash-sub">1–31. jul 2026</div>
+                    <div className="hero__dash-sub">1-31. jul 2026</div>
                   </div>
                   <div className="hero__tabs" aria-hidden>
                     {TABS.map((tab, i) => (

@@ -51,7 +51,7 @@ export async function GET() {
     const showGlossary = isGlossaryPublic();
     const glossaryTerms = showGlossary ? getIndexableTerms() : [];
 
-    let llmsContent = `# Odontoa — CRM i platforma za upravljanje stomatološkom ordinacijom (SaaS)\n\n`;
+    let llmsContent = `# Odontoa - CRM i platforma za upravljanje stomatološkom ordinacijom (SaaS)\n\n`;
 
     llmsContent += `## Šta je Odontoa?\n`;
     llmsContent += `Odontoa je softver za stomatološke ordinacije u Srbiji i regionu. Zakazivanje, karton i odontogram, RTG snimci, zubna tehnika, dokumentacija i finansije su u jednom sistemu.\n\n`;

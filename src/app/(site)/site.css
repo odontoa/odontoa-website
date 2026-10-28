@@ -830,9 +830,11 @@
 @media (max-width: 720px) {
   .hero {
     /* 80px fixed nav zona + 28px razmaka. Bez reza dna: na telefonu je panel kratak,
-       pa se vidi ceo, ukljucujuci sva tri statusa u panelu Danas. */
+       pa se vidi ceo, ukljucujuci sva tri statusa u panelu Danas. Bez padding-bottom:
+       panel se zavrsava na ivici sekcije, a razmak do sledece daje njen padding-top
+       (inace ostaje prazan pojas sa presecenom senkom panela). */
     padding-top: 108px;
-    padding-bottom: 40px;
+    padding-bottom: 0;
     --hero-cut: 0px;
   }
 

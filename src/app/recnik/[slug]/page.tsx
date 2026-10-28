@@ -85,11 +85,11 @@ function breadcrumbsOf(term: RecnikTerm): BreadcrumbItem[] {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const term = getPublishedTermBySlug(params.slug);
   if (!term) {
-    return { title: "Termin nije pronađen – Odontoa Rečnik", robots: { index: false, follow: false } };
+    return { title: "Termin nije pronađen - Odontoa Rečnik", robots: { index: false, follow: false } };
   }
 
   return pageMetadata({
-    title: `${term.seo.seoTitle} – Odontoa Rečnik`,
+    title: `${term.seo.seoTitle} - Odontoa Rečnik`,
     description: term.seo.metaDescription || term.shortDefinition,
     socialTitle: term.seo.seoTitle,
     path: getTermPath(term),

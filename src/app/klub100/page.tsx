@@ -119,7 +119,7 @@ export default function Klub100Page() {
           </h2>
           <p className="k100__product-copy">
             Zakazivanje termina, kartoni pacijenata, odontogram, finansije, zubna tehnika,
-            dokumentacija, podsetnici i AI asistent – na jednom mestu.
+            dokumentacija, podsetnici i AI asistent - na jednom mestu.
           </p>
         </section>
 

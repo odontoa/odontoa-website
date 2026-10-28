@@ -56,7 +56,7 @@ export async function generateMetadata({
 
   if (!post) {
     return {
-      title: "Članak nije pronađen – Odontoa",
+      title: "Članak nije pronađen - Odontoa",
       description: "Traženi članak trenutno nije dostupan.",
     };
   }
@@ -70,7 +70,7 @@ export async function generateMetadata({
   const description = post.seoDescription || post.excerpt || "";
 
   return {
-    title: `${title} – Odontoa`,
+    title: `${title} - Odontoa`,
     description,
     openGraph: {
       title,

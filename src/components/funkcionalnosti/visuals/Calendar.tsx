@@ -117,7 +117,7 @@ export function CalendarScreen({ days = [0, 1, 2, 3, 4], from = 8, to = 16, hour
           <span>Mesec</span>
         </div>
         <ChevronLeft size={15} className="pv-muted" />
-        <b className="pv-ink">27.07 – 31.07. jul 2026</b>
+        <b className="pv-ink">27.07 - 31.07. jul 2026</b>
         <ChevronRight size={15} className="pv-muted" />
         <span className="pv-btn pv-btn--sm pv-accent">Danas</span>
         <span className="pv-btn pv-btn--sm">

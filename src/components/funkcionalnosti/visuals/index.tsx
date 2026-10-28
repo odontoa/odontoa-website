@@ -24,7 +24,7 @@ const STD = { height: 700, back: [40, 40, 0.8] as [number, number, number], back
 
 export const FEATURE_VISUALS: Record<string, FeatureVisualSpec> = {
   'zakazivac-termina': {
-    label: 'Kalendar termina u Odontoi: nedelja 27–31. jul, termini po statusu i termin pomeren na 13:15 uz obaveštenje pacijentu.',
+    label: 'Kalendar termina u Odontoi: nedelja 27-31. jul, termini po statusu i termin pomeren na 13:15 uz obaveštenje pacijentu.',
     back: () => <CalendarScreen />,
     front: () => <CalendarDetail />,
     layout: { ...STD, frontWidth: 620, frontHeight: 440, focusX: 1 },

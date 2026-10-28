@@ -28,7 +28,7 @@ function AboutHeroSection() {
                 Zašto postoji Odontoa?
               </h1>
               <p className="text-lg md:text-xl leading-relaxed text-muted-foreground max-w-xl">
-                Od digitalnog kalendara do sigurnog vođenja kartona – razvili smo platformu koja stomatolozima štedi vreme i donosi više fokusa na pacijente.
+                Od digitalnog kalendara do sigurnog vođenja kartona - razvili smo platformu koja stomatolozima štedi vreme i donosi više fokusa na pacijente.
               </p>
             </motion.div>
 

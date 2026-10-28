@@ -64,7 +64,7 @@ export default function PomocIPravnoPage() {
               <ul>
                 <li><strong>Podaci korisnika aplikacije:</strong> ime, prezime, email adresa, broj telefona, lozinka, IP adresa i tehnički podaci o uređaju.</li>
                 <li><strong>Podaci o pacijentima koje unose ordinacije:</strong> ime i prezime, datum rođenja, kontakt podaci, medicinska istorija, stomatološki karton, rendgenski snimci, fotografije, plan terapije.</li>
-                <li><strong>Podaci o plaćanjima:</strong> ako se koriste plaćene funkcionalnosti, prikupljaju se podaci o transakcijama (putem trećih lica – procesora plaćanja).</li>
+                <li><strong>Podaci o plaćanjima:</strong> ako se koriste plaćene funkcionalnosti, prikupljaju se podaci o transakcijama (putem trećih lica - procesora plaćanja).</li>
               </ul>
             </div>
 
@@ -86,7 +86,7 @@ export default function PomocIPravnoPage() {
                 <li>Izvršenja ugovora između Odontoa i korisnika (član 12. ZZPL).</li>
                 <li>Zakonske obaveze (npr. čuvanje medicinske dokumentacije).</li>
                 <li>Legitimnog interesa (unapređenje bezbednosti i funkcionalnosti sistema).</li>
-                <li>Saglasnosti (za marketinške poruke i newsletter – opciono).</li>
+                <li>Saglasnosti (za marketinške poruke i newsletter - opciono).</li>
               </ul>
             </div>
 

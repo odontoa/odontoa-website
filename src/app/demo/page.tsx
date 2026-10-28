@@ -30,10 +30,11 @@ export default function DemoPage() {
               <p className="contact__eyebrow">Demo</p>
               <h1 className="contact__title">Prođi kroz Odontou sa nama za 15 minuta.</h1>
               <p className="contact__lead">
-                Na pozivu ti pokažemo zakazivanje, karton i finansije na primeru tvoje ordinacije.
+                Za 15 minuta prolazimo kroz ono što ti je najvažnije: termine, kartone i
+                naplatu, pa pokazujemo kako bi to izgledalo u tvojoj&nbsp;ordinaciji.
               </p>
 
-              <p className="contact__details-title">Kako izgleda demo</p>
+              <p className="contact__details-title">Šta možeš da očekuješ</p>
               <dl className="contact__details">
                 <div className="contact__detail">
                   <dt>Trajanje</dt>

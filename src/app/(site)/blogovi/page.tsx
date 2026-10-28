@@ -24,7 +24,7 @@ export const revalidate = 0;
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
-    title: "Blogovi – Odontoa",
+    title: "Blogovi - Odontoa",
     description:
       "Digitalizacija stomatološke ordinacije: saveti o organizaciji pacijenata, zalihama i zakazivanju termina.",
     socialDescription: "Saveti i praksa iz ordinacije: pacijenti, zalihe, zakazivanje, analitika.",

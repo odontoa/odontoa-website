@@ -37,12 +37,12 @@ function descriptionOf(title: string, count: number) {
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const category = getCategoryBySlug(params.slug);
-  if (!category) return { title: "Kategorija nije pronađena – Odontoa Rečnik", robots: { index: false, follow: false } };
+  if (!category) return { title: "Kategorija nije pronađena - Odontoa Rečnik", robots: { index: false, follow: false } };
 
   const indexable = isCategoryIndexable(category);
   const count = getPublishedTermsByCategory(category.id).length;
   return pageMetadata({
-    title: indexable ? category.seoTitle! : `${category.title} – Odontoa Rečnik`,
+    title: indexable ? category.seoTitle! : `${category.title} - Odontoa Rečnik`,
     description: indexable ? category.metaDescription! : descriptionOf(category.title, count),
     path: getCategoryPath(category),
     noindex: !indexable,
