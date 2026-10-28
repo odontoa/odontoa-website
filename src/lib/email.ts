@@ -126,6 +126,101 @@ function sanitizeAddress(value: string): string | undefined {
   return clean.length > 0 ? clean : undefined;
 }
 
+/* ── Zajednicki izgled internih mejlova sa formi ──
+   Email-safe: tabele, inline stilovi, bez slika i bez linkova osim mailto/tel, pa je
+   poruka mala i pretezno tekst. Identitet nose tipografija, razmak i Odontoa boje.
+   width="600" je za Outlook (ne cita max-width), max-width za Gmail i telefone. */
+const EMAIL_FONT = "-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif";
+
+interface EmailField {
+  label: string;
+  /* Vec escapovan HTML (tekst ili link) */
+  valueHtml: string;
+}
+
+const textValue = (value: string) => escapeHtml(value);
+
+const emailLink = (email: string) =>
+  `<a href="mailto:${escapeHtml(email)}" style="color: #5a3ec7; text-decoration: none;">${escapeHtml(email)}</a>`;
+
+const phoneLink = (phone: string) =>
+  `<a href="tel:${escapeHtml(phone.replace(/[^\d+]/g, ''))}" style="color: #5a3ec7; text-decoration: none;">${escapeHtml(phone)}</a>`;
+
+/* Oznaka iznad vrednosti: kratke forme (demo, kontakt, Klub 100) */
+function stackedRows(fields: EmailField[]): string {
+  return fields
+    .map(
+      (f, i) => `
+        <tr>
+          <td style="padding: 11px 0;${i < fields.length - 1 ? ' border-bottom: 1px solid #ebe8f7;' : ''}">
+            <div style="font-size: 12px; line-height: 16px; color: #6b7184;">${escapeHtml(f.label)}</div>
+            <div style="font-size: 15px; line-height: 22px; color: #060b13; font-weight: 600; margin-top: 2px;">${f.valueHtml}</div>
+          </td>
+        </tr>`
+    )
+    .join('');
+}
+
+/* Oznaka levo, vrednost desno: duga prijava (/register), da bude pregledna */
+function pairRows(fields: EmailField[]): string {
+  return fields
+    .map(
+      (f, i) => `
+        <tr>
+          <td valign="top" width="44%" style="padding: 9px 12px 9px 0; font-size: 13px; line-height: 19px; color: #6b7184;${i < fields.length - 1 ? ' border-bottom: 1px solid #ebe8f7;' : ''}">${escapeHtml(f.label)}</td>
+          <td valign="top" style="padding: 9px 0; font-size: 14px; line-height: 20px; color: #060b13; font-weight: 600;${i < fields.length - 1 ? ' border-bottom: 1px solid #ebe8f7;' : ''}">${f.valueHtml}</td>
+        </tr>`
+    )
+    .join('');
+}
+
+function dataCard(rowsHtml: string, title?: string): string {
+  return `
+    ${title ? `<div style="font-size: 11px; line-height: 16px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5a3ec7; margin: 0 0 8px;">${escapeHtml(title)}</div>` : ''}
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; background-color: #f8f7fd; border: 1px solid #ebe8f7; border-radius: 12px; margin: 0 0 16px;">
+      <tr>
+        <td style="padding: 6px 20px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%;">${rowsHtml}</table>
+        </td>
+      </tr>
+    </table>`;
+}
+
+function internalEmail(args: { title: string; badge?: string; body: string }): string {
+  return `
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; background-color: #ffffff;">
+  <tr>
+    <td align="center" style="padding: 24px 12px;">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width: 600px; background-color: #ffffff; border: 1px solid #ececf2; border-radius: 16px; font-family: ${EMAIL_FONT};">
+        <tr>
+          <td style="padding: 28px 32px 0;">
+            <div style="font-size: 16px; line-height: 20px; font-weight: 700; letter-spacing: -0.01em; color: #6e51e0;">Odontoa</div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 22px 32px 22px;">
+            ${args.badge ? `<div style="margin: 0 0 10px;"><span style="display: inline-block; padding: 3px 9px; border-radius: 999px; background-color: #efebfc; color: #5a3ec7; font-size: 11px; line-height: 16px; font-weight: 700; letter-spacing: 0.06em;">${escapeHtml(args.badge)}</span></div>` : ''}
+            <h1 style="margin: 0; font-size: 22px; line-height: 28px; font-weight: 700; color: #060b13; letter-spacing: -0.01em;">${escapeHtml(args.title)}</h1>
+            <p style="margin: 4px 0 0; font-size: 13px; line-height: 18px; color: #6b7184;">Odontoa web sajt</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 0 32px 4px;">${args.body}</td>
+        </tr>
+        <tr>
+          <td style="padding: 0 32px 28px;">
+            <div style="border-top: 1px solid #ececf2; padding-top: 16px; font-size: 12px; line-height: 18px; color: #6b7184;">
+              Automatska poruka sa Odontoa web sajta.<br>
+              Odgovor na ovaj email ide direktno korisniku.
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>`;
+}
+
 interface SendArgs {
   to: string | string[];
   subject: string;
@@ -158,33 +253,25 @@ export class EmailService {
    * Send email for contact form submissions
    */
   static async sendContactFormEmail(data: ContactFormData): Promise<void> {
-    const html = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">
-            Nova kontakt forma - Odontoa
-          </h2>
+    /* Poruka u belom unutrasnjem polju, obicna tezina: duzi tekst se lakse cita */
+    const messageHtml = `
+      <div style="margin-top: 6px; padding: 12px 14px; background-color: #ffffff; border: 1px solid #ebe8f7; border-radius: 10px; font-size: 14px; line-height: 21px; font-weight: 400; color: #1d2130;">
+        ${escapeHtml(data.message).replace(/\n/g, '<br>')}
+      </div>`;
 
-          <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #1e293b; margin-top: 0;">Detalji forme:</h3>
-            <p><strong>Tip forme:</strong> Kontakt forma</p>
-            <p><strong>Ime i prezime:</strong> ${escapeHtml(data.name)}</p>
-            <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
-            <p><strong>Telefon:</strong> ${escapeHtml(data.phone)}</p>
-            <p><strong>Naziv ordinacije:</strong> ${escapeHtml(data.clinic)}</p>
-            <p><strong>Predmet:</strong> ${escapeHtml(data.subject)}</p>
-            <p><strong>Poruka:</strong></p>
-            <div style="background-color: white; padding: 15px; border-radius: 4px; border-left: 4px solid #2563eb;">
-              ${escapeHtml(data.message).replace(/\n/g, '<br>')}
-            </div>
-          </div>
-
-          <div style="background-color: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 20px;">
-            <p style="margin: 0; color: #64748b; font-size: 14px;">
-              Ova poruka je automatski generisana sa Odontoa web sajta.
-            </p>
-          </div>
-        </div>
-      `;
+    const html = internalEmail({
+      title: 'Nova poruka sa kontakt forme',
+      body: dataCard(
+        stackedRows([
+          { label: 'Ime i prezime', valueHtml: textValue(data.name) },
+          { label: 'Email', valueHtml: emailLink(data.email) },
+          { label: 'Telefon', valueHtml: phoneLink(data.phone) },
+          { label: 'Naziv ordinacije', valueHtml: textValue(data.clinic) },
+          { label: 'Predmet', valueHtml: textValue(data.subject) },
+          { label: 'Poruka', valueHtml: messageHtml },
+        ])
+      ),
+    });
 
     await send(
       {
@@ -201,27 +288,16 @@ export class EmailService {
    * Send email for demo form submissions
    */
   static async sendDemoFormEmail(data: DemoFormData): Promise<void> {
-    const html = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">
-            Novi zahtev za demo - Odontoa
-          </h2>
-
-          <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #1e293b; margin-top: 0;">Detalji forme:</h3>
-            <p><strong>Tip forme:</strong> Demo forma</p>
-            <p><strong>Ime i prezime:</strong> ${escapeHtml(data.name)}</p>
-            <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
-            <p><strong>Telefon:</strong> ${escapeHtml(data.phone)}</p>
-          </div>
-
-          <div style="background-color: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 20px;">
-            <p style="margin: 0; color: #64748b; font-size: 14px;">
-              Ova poruka je automatski generisana sa Odontoa web sajta.
-            </p>
-          </div>
-        </div>
-      `;
+    const html = internalEmail({
+      title: 'Novi zahtev za demo',
+      body: dataCard(
+        stackedRows([
+          { label: 'Ime i prezime', valueHtml: textValue(data.name) },
+          { label: 'Email', valueHtml: emailLink(data.email) },
+          { label: 'Telefon', valueHtml: phoneLink(data.phone) },
+        ])
+      ),
+    });
 
     await send(
       {
@@ -238,24 +314,16 @@ export class EmailService {
    * Send email for Klub 100 lead submissions (/klub100)
    */
   static async sendKlub100LeadEmail(data: Klub100LeadData): Promise<void> {
-    const html = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #060b13;">
-          <h2 style="color: #6e51e0; border-bottom: 2px solid #6e51e0; padding-bottom: 10px;">
-            Nova Klub 100 prijava
-          </h2>
-
-          <div style="background-color: #f7f8fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
-            <p><strong>Izvor:</strong> Klub 100</p>
-          </div>
-
-          <div style="background-color: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 20px;">
-            <p style="margin: 0; color: #64748b; font-size: 14px;">
-              Ova prijava je poslata sa Klub 100 stranice (/klub100). Odgovor ide direktno korisniku.
-            </p>
-          </div>
-        </div>
-      `;
+    const html = internalEmail({
+      title: 'Nova Klub 100 prijava',
+      badge: 'KLUB 100',
+      body: dataCard(
+        stackedRows([
+          { label: 'Email', valueHtml: emailLink(data.email) },
+          { label: 'Izvor', valueHtml: textValue('Klub 100') },
+        ])
+      ),
+    });
 
     await send(
       {
@@ -359,69 +427,42 @@ export class EmailService {
    * Send email for onboarding wizard submissions (/register)
    */
   static async sendOnboardingEmail(data: OnboardingFormData): Promise<void> {
-    const row = (label: string, value: string) => `
-      <tr>
-        <td style="padding: 8px 12px; border-bottom: 1px solid #e9ebf1; color: #6b7388; width: 45%;">${escapeHtml(
-          label
-        )}</td>
-        <td style="padding: 8px 12px; border-bottom: 1px solid #e9ebf1; color: #060b13; font-weight: 600;">${escapeHtml(
-          value
-        )}</td>
-      </tr>
-    `;
+    /* Isti podaci kao ranije, svaki red; grupisani u cetiri kartice */
+    const t = (label: string, value: string): EmailField => ({ label, valueHtml: textValue(value) });
 
-    const section = (title: string, rows: string) => `
-      <h3 style="color: #060b13; margin: 24px 0 8px; font-size: 16px;">${escapeHtml(
-        title
-      )}</h3>
-      <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;">
-        <tbody>${rows}</tbody>
-      </table>
-    `;
-
-    const html = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #060b13;">
-          <h2 style="color: #6e51e0; border-bottom: 2px solid #6e51e0; padding-bottom: 10px;">
-            Nova prijava ordinacije
-          </h2>
-
-          ${section(
-            'Ordinacija',
-            row('Naziv ordinacije', data.clinicName) +
-              row('Ulica i broj', data.street) +
-              row('Poštanski broj', data.zip) +
-              row('Grad', data.city) +
-              row('Država', data.country)
-          )}
-
-          ${section(
-            'Radno vreme',
-            data.hours.map((h) => row(h.label, h.value)).join('')
-          )}
-
-          ${section(
-            'Tim i trenutni sistem',
-            row('Broj stolica', data.chairs) +
-              row('Broj doktora / članova tima', data.members) +
-              row('Trenutno koriste', data.currentSystems) +
-              row('Okvirno pacijenata', data.patientVolume)
-          )}
-
-          ${section(
-            'Glavni korisnik',
-            row('Ime i prezime', `${data.firstName} ${data.lastName}`) +
-              row('Email', data.email) +
-              row('Telefon', data.phone) +
-              row('Kako su saznali za nas', data.source)
-          )}
-
-          <div style="background-color: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 24px;">
-            <p style="margin: 0; color: #64748b; font-size: 14px;">
-              Ova prijava je poslata sa onboarding forme na /register.
-            </p>
-          </div>
-        </div>
-      `;
+    const html = internalEmail({
+      title: 'Nova prijava ordinacije',
+      body:
+        dataCard(
+          pairRows([
+            t('Naziv ordinacije', data.clinicName),
+            t('Ulica i broj', data.street),
+            t('Poštanski broj', data.zip),
+            t('Grad', data.city),
+            t('Država', data.country),
+          ]),
+          'Ordinacija'
+        ) +
+        dataCard(pairRows(data.hours.map((h) => t(h.label, h.value))), 'Radno vreme') +
+        dataCard(
+          pairRows([
+            t('Broj stolica', data.chairs),
+            t('Broj doktora / članova tima', data.members),
+            t('Trenutno koriste', data.currentSystems),
+            t('Okvirno pacijenata', data.patientVolume),
+          ]),
+          'Tim i trenutni sistem'
+        ) +
+        dataCard(
+          pairRows([
+            t('Ime i prezime', `${data.firstName} ${data.lastName}`),
+            { label: 'Email', valueHtml: emailLink(data.email) },
+            { label: 'Telefon', valueHtml: phoneLink(data.phone) },
+            t('Kako su saznali za nas', data.source),
+          ]),
+          'Glavni korisnik'
+        ),
+    });
 
     await send(
       {
