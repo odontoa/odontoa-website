@@ -3,13 +3,19 @@ import { z } from 'zod';
 import { EmailService } from '@/lib/email';
 
 /* Lead sa /klub100. Izvor se ne cita iz tela zahteva: ruta je jedini ulaz za Klub 100,
-   pa je izvor uvek "klub100" (u mejlu kao "Izvor: Klub 100"). */
+   pa je izvor uvek "klub100" (u mejlu kao "Izvor: Klub 100"). Telefon je opcion, bez
+   provere formata; prazan string se tretira kao da nije poslat. */
 const bodySchema = z.object({
   email: z
     .string({ required_error: 'Unesite email adresu', invalid_type_error: 'Unesite email adresu' })
     .trim()
     .email('Neispravan format email adrese')
     .max(320),
+  phone: z
+    .string({ invalid_type_error: 'Neispravan broj telefona' })
+    .trim()
+    .max(40, 'Broj telefona je predugačak')
+    .optional(),
 });
 
 export const dynamic = 'force-dynamic';
@@ -33,7 +39,10 @@ export async function POST(request: Request) {
   }
 
   try {
-    await EmailService.sendKlub100LeadEmail({ email: parsed.data.email });
+    await EmailService.sendKlub100LeadEmail({
+      email: parsed.data.email,
+      phone: parsed.data.phone || undefined,
+    });
     return NextResponse.json({ ok: true }, { status: 200, headers });
   } catch (error) {
     /* Bez email adrese u logu: licni podatak. */

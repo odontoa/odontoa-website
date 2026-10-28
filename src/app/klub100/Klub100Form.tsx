@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Check } from 'lucide-react';
 import { trackEvent } from '@/lib/analytics/events';
 
-/* Lead za Klub 100: samo email. Izvor "klub100" postavlja ruta na serveru
+/* Lead za Klub 100: email (obavezan) i telefon (opciono). Izvor "klub100" postavlja ruta na serveru
    (src/app/api/klub100/route.ts); ovde sluzi samo za GA. Uspeh se prikazuje tek
    kad ruta potvrdi da je interni mejl poslat. */
 const ENDPOINT = '/api/klub100';
@@ -14,11 +14,15 @@ const SOURCE = 'klub100';
 /* Isti regex kao u API rutama (src/app/api/demo/route.ts). */
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/* Telefon je opcion i ne validira se po formatu; samo razumna duzina (isto na serveru). */
+const PHONE_MAX = 40;
+
 const SEND_ERROR =
   'Slanje nije uspelo. Pokušajte ponovo ili nam pišite na info@odontoa.com.';
 
 export default function Klub100Form() {
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   /* Greska polja (field) oznacava input kao neispravan; greska slanja (mreza, server) ne. */
   const [error, setError] = useState<{ text: string; field: boolean } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,6 +45,9 @@ export default function Klub100Form() {
       return;
     }
 
+    /* Prazan telefon se ne salje: polje je opciono i ne blokira prijavu. */
+    const phoneValue = phone.trim();
+
     inFlight.current = true;
     setIsSubmitting(true);
     setError(null);
@@ -48,7 +55,7 @@ export default function Klub100Form() {
       const response = await fetch(ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: value }),
+        body: JSON.stringify(phoneValue ? { email: value, phone: phoneValue } : { email: value }),
       });
       if (response.ok) {
         trackEvent('generate_lead', { lead_source: SOURCE, page_path: '/klub100' });
@@ -115,6 +122,25 @@ export default function Klub100Form() {
           {error.text}
         </p>
       )}
+
+      <label htmlFor="k100-phone" className="k100-form__label">
+        Telefon <span className="k100-form__optional">(opciono)</span>
+      </label>
+      <input
+        id="k100-phone"
+        type="tel"
+        inputMode="tel"
+        autoComplete="tel"
+        placeholder="+381 6x xxx xxxx"
+        maxLength={PHONE_MAX}
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+        aria-describedby="k100-phone-help"
+        className="k100-form__input"
+      />
+      <p id="k100-phone-help" className="k100-form__field-help">
+        Ako ostavite broj, možemo Vam se javiti brže.
+      </p>
 
       <button type="submit" className="k100-form__submit" disabled={isSubmitting}>
         {isSubmitting ? (

@@ -347,6 +347,21 @@
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
+/* "(opciono)" uz oznaku polja: tise od same oznake */
+.k100-form__optional {
+  font-weight: 500;
+  color: var(--k100-soft);
+}
+
+/* Kratko objasnjenje ispod polja (telefon), isti ritam kao poruka o gresci */
+.k100-form__field-help {
+  margin-top: 8px;
+  padding: 0 4px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--k100-soft);
+}
+
 .k100-form__input::placeholder {
   color: #9aa1b2;
 }

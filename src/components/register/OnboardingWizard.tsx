@@ -239,7 +239,7 @@ export default function OnboardingWizard() {
       <div ref={cardRef} tabIndex={-1} className="register-card register-card--center">
         <h1 className="register-welcome__title">Hvala.</h1>
         <p className="register-welcome__sub">
-          Javljamo se u roku od jednog radnog dana i uvozimo tvoje pacijente.
+          Javljamo ti se u roku od jednog radnog dana sa sledećim koracima.
         </p>
         <Link href="/" className="register-btn register-btn--secondary">
           Vrati se na sajt

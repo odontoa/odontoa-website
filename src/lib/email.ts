@@ -60,6 +60,8 @@ export interface DemoFormData {
 
 export interface Klub100LeadData {
   email: string;
+  /* Opciono; red se u mejlu prikazuje samo kad je unet */
+  phone?: string;
 }
 
 export interface QuizResultCategory {
@@ -320,6 +322,7 @@ export class EmailService {
       body: dataCard(
         stackedRows([
           { label: 'Email', valueHtml: emailLink(data.email) },
+          ...(data.phone ? [{ label: 'Telefon', valueHtml: phoneLink(data.phone) }] : []),
           { label: 'Izvor', valueHtml: textValue('Klub 100') },
         ])
       ),
