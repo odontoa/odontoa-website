@@ -10,10 +10,14 @@ export default function AssistantSection() {
           <div className="assistant__text">
             <Reveal>
               <p className="assistant__eyebrow">Ugrađeni asistent</p>
-              <h2 className="section-title">Pomoćnik koji radi u sistemu, ne pored njega.</h2>
+              <h2 className="section-title section-title--split">
+                <span className="section-title__line">Pitaj bilo šta o ordinaciji.</span>{' '}
+                <span className="section-title__line section-title__line--muted">
+                  Odgovor stiže iz tvojih podataka.
+                </span>
+              </h2>
               <p className="assistant__lead">
-                Pitaj bilo šta o pacijentima, terminima i finansijama. Asistent zna tvoju bazu
-                i odgovara odmah, bez traženja po menijima.
+                Asistent zna tvoje pacijente, termine i finansije. Bez traženja po menijima.
               </p>
               {/* Stoji u tekstualnoj koloni, pa ne dira chat animaciju u koloni pored. */}
               <Link href="/funkcionalnosti/ai-asistent" className="assistant__more">

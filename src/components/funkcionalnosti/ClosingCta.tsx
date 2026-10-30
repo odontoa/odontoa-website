@@ -3,7 +3,7 @@ import { Check } from 'lucide-react';
 import Reveal from '@/components/shared/Reveal';
 
 /* Samo tvrdnje koje vec postoje na sajtu (pocetna, /register). */
-const FACTS = ['Nalog za nekoliko minuta', 'Pacijente uvozimo mi', '30 dana besplatno'];
+const FACTS = ['Nalog za nekoliko minuta', 'Mogućnost uvoza postojećih pacijenata', '30 dana besplatno'];
 
 /**
  * Zavrsni CTA (V4, tamna traka): puna sirina, isti tamni gradijent i purpurni sjaj kao

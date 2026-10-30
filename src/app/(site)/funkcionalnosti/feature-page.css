@@ -288,8 +288,7 @@
 }
 
 /* Zaobljeni kvadrat, ne krug: konvencija sajta za ikonicu u pločici je
-   36-38px / radius 10 (.finance__pillar-icon,
-   .hero-proof). Krug od 34px na 12% tinte je bio najbledji ikon-tretman
+   36-38px / radius 10 (.hero-proof). Krug od 34px na 12% tinte je bio najbledji ikon-tretman
    u sistemu, i jedini krug te familije. */
 .page-benefit__icon {
   width: 38px;

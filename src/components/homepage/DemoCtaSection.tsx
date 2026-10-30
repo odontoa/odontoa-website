@@ -19,9 +19,16 @@ export default function DemoCtaSection() {
         <div className="demo-cta__text">
           <Reveal>
             <p className="demo-cta__eyebrow">Pogledaj uživo</p>
-            <h2 className="section-title">Prođi kroz Odontou sa nama za 15 minuta.</h2>
+            <h2 className="section-title section-title--split">
+              <span className="section-title__line">Prođi kroz Odontou sa nama.</span>{' '}
+              <span className="section-title__line section-title__line--muted">
+                Za 15 minuta, na&nbsp;primeru tvoje ordinacije.
+              </span>
+            </h2>
+            {/* Trajanje i "tvoja ordinacija" su u drugom redu naslova, lead ih ne ponavlja */}
             <p className="demo-cta__lead">
-              Na pozivu ti pokažemo zakazivanje, karton i finansije na primeru tvoje ordinacije.
+              Pokazaćemo ti kako Odontoa radi u praksi: zakazivanje, kartoni, finansije i još
+              mnogo toga.
             </p>
 
             <div className="demo-cta__actions">
@@ -29,7 +36,6 @@ export default function DemoCtaSection() {
               <Link href="/demo" className="btn-cta">
                 Zakaži demo
               </Link>
-              <span className="demo-cta__note">Bez obaveze i bez pripreme.</span>
             </div>
           </Reveal>
         </div>

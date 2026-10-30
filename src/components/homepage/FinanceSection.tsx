@@ -1,36 +1,17 @@
 import Reveal from '@/components/shared/Reveal';
 
-const ICON_LAB = (
-  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
-    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-  </svg>
-);
-
-const ICON_FLASK = (
-  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M10 2v7.31M14 9.3V1.99M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0M5.58 16.5h12.85" />
-  </svg>
-);
-
-const ICON_NET = (
-  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M4 10h12M4 14h9M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2" />
-  </svg>
-);
-
+/* Stubovi su numerisani (01-03), ne ikonicama: isti monospace broj kao lista modula u
+   Pregledu sistema (.system-overview__row-num). */
 const PILLARS = [
   {
-    icon: ICON_LAB,
     title: 'Trošak po svakom nalogu',
     desc: 'Koliko košta svaki rad poslat laboratoriji, vezano za pacijenta i termin.',
   },
   {
-    icon: ICON_FLASK,
     title: 'Dugovanja po laboratoriji',
     desc: 'Ko od tehničara je plaćen, a kome i koliko još duguješ, uvek sabrano.',
   },
   {
-    icon: ICON_NET,
     title: 'Ulazi u tvoj neto',
     desc: 'Automatski se oduzima, pa vidiš šta ti ostaje nakon troška tehnike.',
   },
@@ -75,16 +56,22 @@ export default function FinanceSection() {
           <div className="finance__text">
             <Reveal>
             <p className="finance__eyebrow">Kontrola nad novcem</p>
-            <h2 className="section-title">Znaš li koliko te tehnika košta svakog meseca?</h2>
+            {/* Pitanje tamno, odgovor u drugom tonu; "svaki mesec" je preseljen u lead */}
+            <h2 className="section-title section-title--split">
+              <span className="section-title__line">Koliko te tehnika košta?</span>{' '}
+              <span className="section-title__line section-title__line--muted">Odontoa to sabira umesto tebe.</span>
+            </h2>
             <p className="finance__lead">
-              Odontoa ti pokazuje tačno: šta je urađeno, šta plaćeno i šta još duguješ svakoj
-              laboratoriji. Bez Excela i nagađanja na kraju meseca.
+              Šta je urađeno, šta plaćeno i šta još duguješ svakoj laboratoriji, za svaki mesec.
+              Bez Excela i nagađanja.
             </p>
 
             <div className="finance__pillars">
-              {PILLARS.map((pillar) => (
+              {PILLARS.map((pillar, i) => (
                 <div key={pillar.title} className="finance__pillar">
-                  <span className="finance__pillar-icon">{pillar.icon}</span>
+                  <span className="finance__pillar-num" aria-hidden>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
                   <div>
                     <h5>{pillar.title}</h5>
                     <p>{pillar.desc}</p>

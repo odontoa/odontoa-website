@@ -42,7 +42,7 @@ export default function Hero() {
   return (
     <section className="hero">
       <div className="hero__inner">
-        <p className="hero__eyebrow">Softver za vođenje ordinacije</p>
+        <p className="hero__eyebrow">Softver za vođenje stomatološke ordinacije</p>
 
         <h1 className="hero__title">
           Znaš šta je zakazano.

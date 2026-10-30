@@ -23,9 +23,9 @@ const ICON_SOON = (
   </svg>
 );
 
-/* Sve trenutno dostupne funkcionalnosti su ukljucene u cenu. 14 dostupnih + 2 u izradi,
-   prikazane kao dve nezavisne kolone po 8: visina reda u jednoj koloni ne utice na drugu,
-   pa je razmak izmedju svih redova isti i nijedna stavka ne ostaje sama. */
+/* Sve trenutno dostupne funkcionalnosti su ukljucene u cenu. 15 dostupnih + 2 u izradi,
+   prikazane kao dve nezavisne kolone (9 i 8): visina reda u jednoj koloni ne utice na
+   drugu, pa je razmak izmedju svih redova isti. */
 const FEATURES = [
   'Neograničeno doktora',
   'Neograničeno pacijenata',
@@ -36,6 +36,7 @@ const FEATURES = [
   'RTG i slike',
   'Zubna tehnika',
   'Finansije',
+  'Kontrolna tabla i analitika',
   'SMS i email obaveštenja i podsetnici',
   'AI asistent',
   'Šabloni dokumenata',

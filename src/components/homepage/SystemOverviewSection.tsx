@@ -113,10 +113,9 @@ export default function SystemOverviewSection() {
         <div className="system-overview__text" style={{ flex: '0 0 488px' }}>
           <Reveal>
           {/* Heading */}
-          <h2 className="section-title" style={{ marginBottom: 20 }}>
-            Jedan sistem za{' '}
-            <span style={{ color: 'var(--stellar-accent)' }}>celu</span>{' '}
-            ordinaciju
+          <h2 className="section-title section-title--split">
+            <span className="section-title__line">Jedan sistem za celu ordinaciju.</span>{' '}
+            <span className="section-title__line section-title__line--muted">Od termina do naplate.</span>
           </h2>
 
           {/* Podnaslov */}
@@ -124,14 +123,15 @@ export default function SystemOverviewSection() {
             style={{
               fontSize: 16,
               fontWeight: 400,
-              lineHeight: 1.62,
+              lineHeight: 1.6,
               letterSpacing: '-0.011em',
-              color: 'var(--stellar-body)',
+              color: 'var(--stellar-lead)',
+              maxWidth: '30em',
               margin: 0,
               marginBottom: 30,
             }}
           >
-            Tretman, trošak tehnike i uplata ostaju povezani sa terminom. Kalendar, karton, RTG i dokumentacija su u jednom sistemu, bez prebacivanja između alata.
+            Kalendar, karton, RTG, tehnika i dokumentacija rade zajedno. Tretman, trošak i uplata ostaju vezani za termin.
           </p>
 
           {/* Lista modula: svaki red je link ka stranici funkcionalnosti */}
