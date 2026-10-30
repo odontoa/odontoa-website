@@ -117,7 +117,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
         items: [
           'Izabereš doktora, stolicu i vreme u kalendaru.',
           'Sistem sam pošalje potvrdu pacijentu i upiše termin u karton.',
-          'Dan pre termina odlazi podsetnik, a ti vidiš ko je potvrdio dolazak.',
+          'Dan pre termina pacijentu se šalje podsetnik.',
         ],
       },
       {
@@ -255,7 +255,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
         title: 'Šta dobijaš',
         items: [
           {
-            title: 'Sve uz pacijenta',
+            title: 'Snimci u kartonu',
             icon: 'images',
             desc: 'Snimak se otvara iz kartona, na istom mestu gde je i terapija zbog koje je snimljen.',
           },
@@ -348,7 +348,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
           {
             title: 'Jasna komunikacija',
             icon: 'messages-square',
-            desc: 'Specifikacija rada, boja i rok stoje uz nalog, isto za tebe i za laboratoriju.',
+            desc: 'Specifikacija rada, boja i rok stoje uz nalog, pa i ordinacija i laboratorija vide iste podatke.',
           },
         ],
       },
@@ -432,7 +432,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
           {
             title: 'Arhiva koja se pretražuje',
             icon: 'file-search',
-            desc: 'Svaki potpisan dokument nađeš kasnije za nekoliko sekundi, po imenu i datumu.',
+            desc: 'Svaki potpisan dokument se kasnije nalazi za nekoliko sekundi, po imenu i datumu.',
           },
         ],
       },
@@ -450,7 +450,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
         title: 'Manje papira, mirniji rad',
         paragraphs: [
           'Papirologija u ordinaciji raste neprimetno: saglasnosti, obrasci, potvrde, arhiva. Kada se sve to vodi na papiru, dokument koji ti treba retko je tu kada treba, a arhiviranje uzima vreme koje bi radije proveo sa pacijentom.',
-          'Kada dokumentacija stoji uredno i pretraživo, priprema pred intervenciju je kraća, a ono što ti kasnije zatreba lako se nađe.',
+          'Kada je dokumentacija uredna i lako pretraživa, priprema pred intervenciju je kraća, a ono što ti kasnije zatreba lako se nađe.',
         ],
       },
       /* Odgovori se oslanjaju samo na ono sto stranica i aplikacija vec pokazuju:
@@ -495,7 +495,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
     gridNum: '/06',
     inSystemGrid: true,
     title: 'Finansije ordinacije, jasne u svakom trenutku',
-    lead: 'Naplate, dugovanja pacijenata i troškovi u istom pregledu, uz automatske podsetnike. U svakom trenutku znaš kako ordinacija posluje, bez čekanja knjigovođe i bez ručnih tabela.',
+    lead: 'Naplate, dugovanja pacijenata i troškovi na jednom ekranu, uz automatske podsetnike. U svakom trenutku znaš kako ordinacija posluje, bez čekanja knjigovođe i bez ručnih tabela.',
     visual: {
       src: '/images/funkcionalnosti/finansije.png',
       alt: 'Finansijski izveštaji u Odontoi, promet, uplate i način plaćanja po mesecu',
@@ -508,7 +508,7 @@ export const FEATURE_PAGES: FeaturePageData[] = [
         title: 'Šta dobijaš',
         items: [
           {
-            title: 'Dugovanja na jednom ekranu',
+            title: 'Dugovanja pod kontrolom',
             icon: 'wallet',
             desc: 'Ko duguje, koliko i od kada, bez sabiranja po sveskama.',
           },
@@ -581,8 +581,8 @@ export const FEATURE_PAGES: FeaturePageData[] = [
        Ako se menja tekst kartice za AI, menja se ovde. */
     shortDesc: 'Pitaj bilo šta o pacijentima, terminima i finansijama, odgovor stiže odmah.',
     inSystemGrid: false,
-    title: 'Pomoćnik koji radi u sistemu, ne pored njega',
-    lead: 'Pitaš bilo šta o pacijentima, terminima i finansijama. Asistent zna tvoju bazu i odgovara odmah, bez traženja po menijima i bez izveštaja koje neko mora da sastavi.',
+    title: 'Asistent koji poznaje tvoju ordinaciju',
+    lead: 'Pitaj bilo šta o pacijentima, terminima i finansijama. Asistent zna tvoju bazu i odgovara odmah, bez traženja po menijima i bez izveštaja koje neko mora da sastavi.',
     body: [
       {
         type: 'benefits',

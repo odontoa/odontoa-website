@@ -8,25 +8,32 @@ export function AsistentScreen() {
   return <CalendarScreen days={[1, 2, 3, 4]} from={9} to={15} hour={62} />;
 }
 
-const Mark = () => <Image src="/images/Odontoa-New-logo-pack-2026/favicon_color.png" alt="" width={18} height={18} />;
+const Mark = ({ size = 18 }: { size?: number }) => (
+  <Image src="/images/Odontoa-New-logo-pack-2026/favicon_color.png" alt="" width={size} height={size} />
+);
+
+const Arrow = () => (
+  <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden>
+    <path d="M3 8h10m0 0l-4-4m4 4l-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
 
 /**
- * Prednji plan: panel asistenta. Odmah se vidi ko pita (doktor) i da odgovor dolazi
- * iz podataka ordinacije: imena i iznosi su isti kao u kartonu i predracunu.
- * Akcije su samo prelazi na postojece ekrane (karton, dugovanja, kalendar).
+ * Prednji plan: panel asistenta, isti vizuelni jezik kao asistent na pocetnoj
+ * (tihi baloni za pitanja, odgovor kao tekst pored Odontoa znaka). Odmah se vidi ko pita
+ * (doktor) i da odgovor dolazi iz podataka ordinacije: imena i iznosi su isti kao u
+ * kartonu i predracunu. Akcije su samo prelazi na postojece ekrane (karton, dugovanja, kalendar).
  */
 export function AsistentPanel() {
   return (
-    <div className="pv-ai pv-surface">
+    <div className="pv-ai">
       <div className="pv-ai-h">
-        <span className="pv-ai-mark">
-          <Mark />
-        </span>
+        <Mark />
         <div>
           <b>Odontoa asistent</b>
           <small>Odgovara iz podataka ordinacije</small>
         </div>
-        <X size={16} className="pv-muted pv-ml" />
+        <X size={16} className="pv-ai-x pv-ml" />
       </div>
       <div className="pv-ai-b">
         <div className="pv-ai-q">
@@ -37,58 +44,61 @@ export function AsistentPanel() {
           <div>Koji pacijenti duguju više od 20.000 RSD?</div>
         </div>
         <div className="pv-ai-a">
-          <small>
-            <Mark />
-            Odontoa asistent
-          </small>
+          <Mark size={20} />
           <div>
-            Dva pacijenta:
-            {DEBTORS.map((d) => (
-              <div key={d.name} className="pv-ai-ln">
-                <span>{d.name}</span>
-                <b>{fmt(d.amount)} RSD</b>
+            <p>Dva pacijenta:</p>
+            <div className="pv-ai-rows">
+              {DEBTORS.map((d) => (
+                <div key={d.name} className="pv-ai-ln">
+                  <span>{d.name}</span>
+                  <b>{fmt(d.amount)} RSD</b>
+                </div>
+              ))}
+              <div className="pv-ai-ln pv-ai-ln--sum">
+                <span>Ukupno</span>
+                <b>{fmt(DEBTORS_TOTAL)} RSD</b>
               </div>
-            ))}
-            <div className="pv-ai-ln">
-              <span className="pv-muted">Ukupno</span>
-              <b>{fmt(DEBTORS_TOTAL)} RSD</b>
             </div>
             <div className="pv-ai-acts">
-              <span>Otvori dugovanja</span>
-              <span>Otvori karton</span>
+              <span>
+                Otvori dugovanja
+                <Arrow />
+              </span>
+              <span>
+                Otvori karton
+                <Arrow />
+              </span>
             </div>
           </div>
         </div>
         <div className="pv-ai-q">
-          <small>
-            <i>JS</i>
-            {DOCTOR}
-          </small>
           <div>Ko dolazi sutra pre podne?</div>
         </div>
         <div className="pv-ai-a">
-          <small>
-            <Mark />
-            Odontoa asistent
-          </small>
+          <Mark size={20} />
           <div>
-            Subota, 1. avgust:
-            <div className="pv-ai-ln">
-              <span>09:00 · Sanja Ilić</span>
-              <span className="pv-muted">kontrola</span>
-            </div>
-            <div className="pv-ai-ln">
-              <span>10:30 · Marko Nikolić</span>
-              <span className="pv-muted">kompozitna plomba</span>
+            <p>Subota, 1. avgust:</p>
+            <div className="pv-ai-rows">
+              <div className="pv-ai-ln">
+                <span>09:00 · Sanja Ilić</span>
+                <span className="pv-ai-sub">kontrola</span>
+              </div>
+              <div className="pv-ai-ln">
+                <span>10:30 · Marko Nikolić</span>
+                <span className="pv-ai-sub">kompozitna plomba</span>
+              </div>
             </div>
             <div className="pv-ai-acts">
-              <span>Otvori kalendar</span>
+              <span>
+                Otvori kalendar
+                <Arrow />
+              </span>
             </div>
           </div>
         </div>
       </div>
       <div className="pv-ai-in">
-        Pitaj o pacijentima, terminima ili naplati…
+        <span>Pitaj o pacijentima, terminima ili naplati…</span>
         <i>
           <SendHorizontal size={14} />
         </i>

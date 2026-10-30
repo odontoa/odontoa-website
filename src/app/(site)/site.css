@@ -1340,55 +1340,77 @@
   margin: 0;
 }
 
-/* Kartica: beo okvir sa tonalnom plocom. Okvir nosi zaglavlje i zbir, ploca samo tabelu -
-   ista logika kao hero mockup (.hero__dash sa belim .hero__card karticama).
-   Ploca nema ivicu ni senku: dve paralelne ivice na malom razmaku davale su zbijen
-   box-in-box utisak. Leva ivica teksta je ista u sva tri dela, jer zaglavlje, ploca i
-   footer imaju isti bocni padding (--finance-pad). Dupla box-shadow deklaracija je
-   fallback kao na .hero__app - bez color-mix senka bi nestala. */
+/* Vizual: deo ekrana "Trošak tehnike" iz aplikacije, ravan. Jedna povrsina, bez ploce u
+   kartici i bez znakova laboratorija: traka sa nazivom ekrana i ordinacijom, red sa
+   periodom i iznosom za uplatu, pa tabela. Leva ivica teksta je ista u svim redovima
+   (--finance-pad). Boje su lokalne, kao u hero mockupu (.hero). */
 .finance__card {
-  --finance-inset: 16px;
-  --finance-pad: 28px;
-  --finance-col: 28px;
-  --finance-row: 17px;
-  /* Sekundarni tekst (zaglavlja kolona, broj naloga). --stellar-muted je na beloj oko
-     2.6:1, premalo za 10.5px; mesavina postojecih tokena daje oko 4.8:1. */
-  --finance-muted-strong: color-mix(in srgb, var(--stellar-muted) 55%, var(--stellar-body));
+  --finance-pad: 24px;
+  --finance-col: 16px;
+  --finance-row: 14px;
+  /* Sekundarni tekst: oko 4.8:1 na beloj (--stellar-muted je 2.6:1, premalo za 11.5px) */
+  --finance-label: #6b7387;
+  --finance-unit: #8a92a8;
+  --finance-line: #eceef3;
+  --finance-hair: #f0f1f5;
+  --finance-tint: #fbfbfd;
+  /* Dugovanje: tamnija od --status-owe-soft (4.0:1), da i 13.5px prolazi 4.5:1 */
+  --finance-owe: #c4524f;
+  --finance-org: #12a67a;
   background: var(--stellar-white);
-  border: 1px solid var(--stellar-border);
-  border-radius: 30px;
-  padding: var(--finance-inset);
+  border: 1px solid #e3e6ee;
+  border-radius: 14px;
+  overflow: hidden;
   box-shadow:
     0 1px 2px rgba(6, 11, 19, 0.04),
-    0 28px 56px -32px rgba(110, 81, 224, 0.16);
-  box-shadow:
-    0 1px 2px color-mix(in srgb, var(--stellar-dark) 4%, transparent),
-    0 28px 56px -32px color-mix(in srgb, var(--stellar-accent) 16%, transparent);
+    0 24px 48px -30px rgba(6, 11, 19, 0.14);
   animation: hero-rise 0.7s ease both 0.15s;
 }
 
-.finance__card-head {
+/* Traka: naziv ekrana levo, ordinacija desno (isto kao "Aura Dent" u hero panelu) */
+.finance__card-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 8px var(--finance-pad) 18px;
+  height: 46px;
+  padding: 0 var(--finance-pad);
+  border-bottom: 1px solid #e7e9f0;
+  background: var(--finance-tint);
 }
 
-.finance__card-head h4 {
-  font-size: 15px;
+.finance__card-bar h4 {
+  margin: 0;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--stellar-heading);
-  margin: 0;
-  line-height: 1.25;
 }
 
-.finance__card-sub {
-  font-size: 12px;
+.finance__org {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
   font-weight: 500;
-  color: var(--finance-muted-strong);
-  margin-top: 2px;
+  color: var(--stellar-body);
+  white-space: nowrap;
+}
+
+.finance__org i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--finance-org);
+}
+
+/* Period levo, iznos za uplatu desno: kljucni broj vizuala */
+.finance__card-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px var(--finance-pad) 18px;
 }
 
 /* Period kao u aplikaciji. Staticki prikaz: bez hover stanja i bez kursora za klik. */
@@ -1397,12 +1419,10 @@
   align-items: center;
   gap: 6px;
   flex: none;
-  padding: 5px 8px 5px 10px;
-  border: 1px solid var(--stellar-border);
-  border-radius: 8px;
-  background: var(--stellar-white);
-  box-shadow: 0 1px 1px rgba(6, 11, 19, 0.03);
-  box-shadow: 0 1px 1px color-mix(in srgb, var(--stellar-dark) 3%, transparent);
+  height: 26px;
+  padding: 0 7px 0 9px;
+  border: 1px solid #e3e6ee;
+  border-radius: 6px;
   font-size: 12px;
   font-weight: 500;
   color: var(--stellar-body);
@@ -1410,160 +1430,110 @@
 }
 
 .finance__period svg {
-  color: var(--stellar-muted);
+  color: var(--finance-unit);
 }
 
-/* Tonalna ploca sa tabelom: trag brend lavande na sivoj, bez ivice i bez senke.
-   Radius 14 = 30 okvira minus 16 razmaka, pa su uglovi koncentricni. */
-.finance__card-body {
-  padding: 6px var(--finance-pad) 8px;
-  background: color-mix(in srgb, var(--stellar-accent) 3.5%, var(--stellar-bg-light));
-  border-radius: 14px;
+.finance__due {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.finance__due-label {
+  display: block;
+  font-size: 11.5px;
+  color: var(--finance-label);
+}
+
+.finance__due-value {
+  display: block;
+  margin-top: 2px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--finance-owe);
+  white-space: nowrap;
+}
+
+.finance__due-unit {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--finance-unit);
 }
 
 .finance__table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 13.5px;
+  font-variant-numeric: tabular-nums;
 }
 
 .finance__table th {
   text-align: left;
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--finance-muted-strong);
-  padding: 16px 0 12px;
-  border-bottom: 1px solid color-mix(in srgb, var(--stellar-accent) 9%, var(--stellar-border));
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--finance-label);
+  padding-top: 10px;
+  padding-bottom: 9px;
+  border-top: 1px solid var(--finance-line);
+  border-bottom: 1px solid var(--finance-line);
+  background: var(--finance-tint);
 }
 
-.finance__table th.is-right,
-.finance__table td.is-right {
-  text-align: right;
-  padding-left: var(--finance-col);
-}
-
-/* Separatori redova su tanji od ivice ispod zaglavlja tabele. Obe linije nose isti trag
-   lavande kao ploca, da se ne bi videle kao siva mreza na obojenoj povrsini. */
 .finance__table td {
-  padding: var(--finance-row) 0;
-  font-size: 13.5px;
-  border-bottom: 1px solid color-mix(in srgb, var(--stellar-accent) 5%, var(--stellar-border));
+  padding-top: var(--finance-row);
+  padding-bottom: var(--finance-row);
   color: var(--stellar-body);
+  border-bottom: 1px solid var(--finance-hair);
 }
 
 .finance__table tr:last-child td {
   border-bottom: none;
+  padding-bottom: calc(var(--finance-row) + 2px);
 }
 
-/* Prva kolona: znak laboratorije + naziv i broj naloga ispod. */
-.finance__lab {
-  display: flex;
-  align-items: center;
-  gap: 11px;
+.finance__table th:first-child,
+.finance__table td:first-child {
+  padding-left: var(--finance-pad);
 }
 
-.finance__avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Beo tile sa ivicom: logo partnera, ne UI ikonica (one su na accent 10% podlozi). */
-  background: var(--stellar-white);
-  border: 1px solid var(--stellar-border);
-  color: var(--stellar-accent);
+.finance__table th:last-child,
+.finance__table td:last-child {
+  padding-right: var(--finance-pad);
 }
 
-/* Rez izmedju lica znaka mora biti u boji podloge tile-a. */
-.finance__cut {
-  stroke: var(--stellar-white);
-  stroke-linejoin: round;
+.finance__table .is-right {
+  text-align: right;
+  padding-left: var(--finance-col);
 }
 
-.finance__table .finance__table-name {
-  font-weight: 600;
-  letter-spacing: -0.005em;
+.finance__table-name {
+  font-weight: 500;
   color: var(--stellar-heading);
-  line-height: 1.2;
 }
 
 .finance__table-sub {
-  font-size: 11.5px;
-  font-weight: 400;
-  color: var(--finance-muted-strong);
   margin-top: 2px;
-}
-
-/* Hijerarhiju kolona nosi tezina i ton, ne boja: uradjeno u boji teksta, placeno u boji
-   naslova, dugovanje jedino obojeno (meksa crvena). */
-.finance__table .finance__num {
-  font-variant-numeric: tabular-nums;
-  font-weight: 500;
-}
-
-.finance__table .finance__paid {
-  color: var(--stellar-heading);
+  font-size: 11.5px;
+  color: var(--finance-label);
 }
 
 .finance__table .finance__owe {
-  color: var(--status-owe-soft);
   font-weight: 600;
+  color: var(--finance-owe);
 }
 
-.finance__ok {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+/* Izmirena laboratorija ide poslednja i utisana: paznja ostaje na dugovanjima */
+.finance__table .finance__row--settled td {
+  color: var(--finance-label);
+}
+
+.finance__row--settled .finance__table-name {
+  color: var(--stellar-lead);
+}
+
+.finance__settled {
   font-size: 12.5px;
-  font-weight: 500;
-  color: var(--finance-muted-strong);
-  white-space: nowrap;
-}
-
-.finance__ok-icon {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: color-mix(in srgb, var(--status-done) 11%, transparent);
-  color: var(--status-done);
-}
-
-/* Zbirna traka na okviru, ispod ploce - bez sopstvene povrsine i bez ivice. */
-.finance__foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 20px var(--finance-pad) 6px;
-}
-
-.finance__foot-label {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--stellar-body);
-}
-
-.finance__foot-value {
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--status-owe-soft);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.finance__foot-unit {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0;
-  color: var(--stellar-muted);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1590,7 +1560,7 @@
   }
 
   .finance__card {
-    --finance-row: 15px;
+    --finance-row: 13px;
   }
 
   .finance__table td {
@@ -1598,44 +1568,21 @@
   }
 }
 
-/* Cetiri kolone plus 41px avatar bloka guse prvu kolonu na uzim ekranima.
-   Avatar je jedini dekorativan element, pa on ide - naziv i broj naloga ostaju. */
+/* Uzi razmaci: cetiri kolone staju u sekciju od 327px */
 @media (max-width: 560px) {
-  .finance__avatar {
-    display: none;
-  }
-
-  /* Tabela ima fiksnu min sirinu (nazivi kolona, "izmireno" sa kvacicom), pa desktop
-     razmaci ovde ne staju u sekciju od 327px. Poravnanje ostaje jer ga racunaju iste
-     promenljive. Radius 22 = 14 ploce + 8 razmaka, uglovi ostaju koncentricni. */
   .finance__card {
-    --finance-inset: 8px;
-    --finance-pad: 12px;
-    --finance-col: 8px;
-    --finance-row: 14px;
-    border-radius: 22px;
+    --finance-pad: 16px;
+    --finance-col: 10px;
   }
 
   .finance__card-head {
-    padding: 8px var(--finance-pad) 14px;
-  }
-
-  .finance__card-body {
-    padding: 2px var(--finance-pad) 6px;
-  }
-
-  .finance__table th {
-    letter-spacing: 0.04em;
-    padding: 12px 0 10px;
-  }
-
-  .finance__foot {
-    padding: 14px var(--finance-pad) 6px;
+    padding-top: 16px;
+    padding-bottom: 14px;
   }
 }
 
 /* Ispod 400px cetiri kolone ne staju bez rezanja. "Uradjeno" ide; placeno, dugovanje i
-   zbir dugovanja nose poruku sekcije. */
+   iznos za uplatu nose poruku sekcije. */
 @media (max-width: 400px) {
   .finance__table th:nth-child(2),
   .finance__table td:nth-child(2) {
@@ -2053,79 +2000,51 @@
 }
 
 /* ── Asistent: chat panel (familija hero panela / fin kartice) ── */
+/* Jedan razgovor, puno vazduha: pitanje u tihom balonu, odgovor kao obican tekst pored
+   Odontoa znaka (ne kartica podataka), jedna akcija i polje za unos. Ista povrsina kao
+   kartica Finansija: tanka ivica, radius 16, niska senka. */
 .assistant__panel {
+  /* Sekundarni tekst oko 4.8:1 na beloj, kao u kartici Finansija */
+  --assistant-label: #6b7387;
+  --assistant-line: #eceef3;
   background: var(--stellar-white);
-  border: 1px solid var(--stellar-border);
-  border-radius: 20px;
+  border: 1px solid #e3e6ee;
+  border-radius: 16px;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 32px 80px rgba(6, 11, 19, 0.12),
-    0 4px 16px rgba(6, 11, 19, 0.05);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 32px 80px color-mix(in srgb, var(--stellar-dark) 12%, transparent),
-    0 4px 16px color-mix(in srgb, var(--stellar-dark) 5%, transparent);
+    0 1px 2px rgba(6, 11, 19, 0.04),
+    0 28px 56px -34px rgba(6, 11, 19, 0.16);
   overflow: hidden;
 }
 
 .assistant__panel-head {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--stellar-border);
+  gap: 9px;
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--assistant-line);
 }
 
-/* Odontoa znak u okviru, isto kao panel na stranici AI asistenta (bez "iskre"). */
-.assistant__avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--stellar-border);
-  background: var(--stellar-white);
+.assistant__panel-head img {
+  width: 18px;
+  height: 18px;
 }
 
 .assistant__panel-title {
-  display: block;
   font-size: 14px;
   font-weight: 600;
   color: var(--stellar-heading);
 }
 
-.assistant__panel-sub {
-  display: block;
-  font-size: 11.5px;
-  color: var(--stellar-muted);
-}
-
-/* Svi parovi su u istoj ćeliji grida: log ima visinu najdužeg para, vidljiv je samo
-   aktivni. Poravnati su gore, odmah ispod zaglavlja; višak (ako ga ima) ide ispod. */
 .assistant__log {
-  padding: 16px 16px 18px;
-  display: grid;
-}
-
-.assistant__pair {
-  grid-area: 1 / 1;
-  align-self: start;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  visibility: hidden;
+  gap: 28px;
+  padding: 36px 28px 44px;
 }
 
-.assistant__pair.is-active {
-  visibility: visible;
-}
-
-/* Poruka = oznaka (ko pita / asistent) + balon. Otkriva se cela, klasom is-in. */
-.assistant__msg {
-  display: grid;
-  gap: 5px;
+/* Pitanje i odgovor se otkrivaju klasom is-in. */
+.assistant__q,
+.assistant__a {
   opacity: 0;
   transform: translateY(6px);
   transition:
@@ -2133,128 +2052,67 @@
     transform 0.32s cubic-bezier(0.2, 0.7, 0.3, 1);
 }
 
-.assistant__msg.is-in {
+.assistant__q.is-in,
+.assistant__a.is-in {
   opacity: 1;
   transform: none;
 }
 
-.assistant__msg--q {
-  justify-self: end;
-  justify-items: end;
-  max-width: 84%;
+.assistant__q {
+  align-self: flex-end;
+  max-width: 80%;
+  padding: 9px 14px;
+  border-radius: 14px;
+  background: #f1f2f6;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--stellar-heading);
 }
 
-/* Odgovor je kartica podataka preko cele sirine loga: desno ne ostaje prazna traka. */
-.assistant__msg--a {
-  width: 100%;
-}
-
-.assistant__who {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: var(--stellar-muted);
-}
-
-.assistant__who i {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #eceef3;
-  color: var(--stellar-body);
-  font-style: normal;
-  font-size: 8.5px;
-  font-weight: 700;
-  display: grid;
-  place-items: center;
-}
-
-.assistant__who img {
-  width: 14px;
-  height: 14px;
-}
-
-/* Nosi visinu odgovora od prvog frejma; balon sa tačkicama lebdi iznad njega. */
+/* Nosi visinu odgovora od prvog frejma; tačkice stoje na mestu odgovora. */
 .assistant__slot {
   position: relative;
+}
+
+.assistant__a {
   display: flex;
+  align-items: flex-start;
+  gap: 12px;
 }
 
-.assistant__bubble {
-  font-size: 14px;
-  line-height: 1.5;
-  padding: 10px 14px;
-  border-radius: 14px;
+.assistant__mark {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
 }
 
-.assistant__bubble--q {
-  background: var(--stellar-accent);
-  color: var(--stellar-white);
-  border-bottom-right-radius: 4px;
-}
-
-.assistant__bubble--a {
-  background: #f5f6f9;
+.assistant__a-text {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.6;
   color: var(--stellar-heading);
-  border-bottom-left-radius: 4px;
 }
 
-/* Dva podatka iz ordinacije kao dve bele celije u balonu (oznaka iznad vrednosti).
-   Na uskom panelu postaju redovi, oznaka levo i vrednost desno. */
-.assistant__facts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.assistant__fact {
-  display: grid;
-  gap: 1px;
-  padding: 7px 10px 8px;
-  border-radius: 10px;
-  background: var(--stellar-white);
-  box-shadow: 0 0 0 1px #eceef3;
-  font-variant-numeric: tabular-nums;
-}
-
-.assistant__fact small {
-  font-size: 11.5px;
-  line-height: 1.3;
-  color: #6b7184;
-}
-
-.assistant__fact b {
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.35;
-}
-
+/* Akcija iz odgovora: tekstualni link, ne dugme. Na sajtu je samo prikaz. */
 .assistant__action {
-  display: inline-block;
-  margin-top: 8px;
-  font-size: 11.5px;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 13.5px;
+  font-weight: 500;
   color: var(--stellar-accent);
-  background: var(--stellar-white);
-  border: 1px solid color-mix(in srgb, var(--stellar-accent) 28%, transparent);
-  border-radius: 7px;
-  padding: 3px 9px;
 }
 
-/* Tačkice stoje tačno gde će biti balon odgovora (ispod oznake "Odontoa asistent"). */
 .assistant__typing {
   position: absolute;
-  top: 21px;
+  top: 0;
   left: 0;
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 13px 14px;
-  border-radius: 14px;
-  border-bottom-left-radius: 4px;
-  background: #f5f6f9;
+  gap: 12px;
+  height: 26px;
   opacity: 0;
   transition: opacity 0.22s ease;
 }
@@ -2263,7 +2121,12 @@
   opacity: 1;
 }
 
-.assistant__typing i {
+.assistant__dots {
+  display: flex;
+  gap: 4px;
+}
+
+.assistant__dots i {
   width: 5px;
   height: 5px;
   border-radius: 50%;
@@ -2272,11 +2135,11 @@
   animation: assistant-dot 1.05s ease-in-out infinite;
 }
 
-.assistant__typing i:nth-child(2) {
+.assistant__dots i:nth-child(2) {
   animation-delay: 0.15s;
 }
 
-.assistant__typing i:nth-child(3) {
+.assistant__dots i:nth-child(3) {
   animation-delay: 0.3s;
 }
 
@@ -2293,73 +2156,15 @@
   }
 }
 
-/* Predlozi pitanja: pravi dugmići, radius kao input ispod jer dugo pitanje
-   na telefonu ide u dva reda. */
-.assistant__suggest {
-  display: grid;
-  padding: 0 16px 12px;
-}
-
-/* Setovi predloga u istoj ćeliji, uz input; vidljiv je samo set aktivnog pitanja. */
-.assistant__chips {
-  grid-area: 1 / 1;
-  align-self: end;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  visibility: hidden;
-}
-
-.assistant__chips.is-active {
-  visibility: visible;
-}
-
-.assistant__chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 13px 7px 10px;
-  border: 1px solid var(--stellar-border);
-  border-radius: 12px;
-  background: var(--stellar-white);
-  font: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1.35;
-  color: var(--stellar-body);
-  text-align: left;
-  cursor: pointer;
-  transition:
-    border-color 0.15s,
-    color 0.15s,
-    background-color 0.15s;
-}
-
-.assistant__chip svg {
-  flex: none;
-  color: var(--stellar-accent);
-}
-
-.assistant__chip:hover {
-  border-color: color-mix(in srgb, var(--stellar-accent) 40%, var(--stellar-border));
-  color: var(--stellar-heading);
-  background: color-mix(in srgb, var(--stellar-accent) 3%, var(--stellar-white));
-}
-
-.assistant__chip:focus-visible {
-  outline: 2px solid var(--stellar-accent);
-  outline-offset: 2px;
-}
-
 .assistant__prompt {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin: 0 16px 16px;
-  height: 44px;
-  padding: 0 6px 0 14px;
-  border: 1px solid var(--stellar-border);
+  margin: 0 22px 22px;
+  height: 46px;
+  padding: 0 7px 0 15px;
+  border: 1px solid #e3e6ee;
   border-radius: 12px;
 }
 
@@ -2371,9 +2176,10 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   font-size: 13.5px;
-  color: var(--stellar-muted);
+  color: var(--assistant-label);
 }
 
+/* Tiho dugme: blaga lavanda umesto pune ljubicaste */
 .assistant__prompt-btn {
   width: 32px;
   height: 32px;
@@ -2382,17 +2188,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--stellar-accent);
-  color: var(--stellar-white);
+  background: #f3f0fd;
+  color: var(--stellar-accent);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .assistant__msg,
+  .assistant__q,
+  .assistant__a,
   .assistant__typing {
     transition: none;
   }
 
-  .assistant__typing i {
+  .assistant__dots i {
     animation: none;
   }
 }
@@ -2416,45 +2223,28 @@
     max-width: 480px;
     margin: 0 auto;
   }
-
-  .assistant__msg--q {
-    max-width: 94%;
-  }
 }
 
 @media (max-width: 440px) {
-  /* Dve celije bi lomile "09:00 · Sanja Ilić" i iznose; redovi su gusci i ostaju
-     iste visine za sva tri odgovora. */
-  .assistant__facts {
-    grid-template-columns: 1fr;
-    gap: 0;
-    margin-top: 6px;
-    border-radius: 10px;
-    background: var(--stellar-white);
-    box-shadow: 0 0 0 1px #eceef3;
+  .assistant__log {
+    gap: 22px;
+    padding: 28px 18px 32px;
   }
 
-  .assistant__fact {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 12px;
-    padding: 7px 10px;
-    border-radius: 0;
-    background: none;
-    box-shadow: none;
+  .assistant__q {
+    max-width: 92%;
   }
 
-  .assistant__fact + .assistant__fact {
-    border-top: 1px solid #eceef3;
+  .assistant__a-text {
+    font-size: 15px;
   }
 
-  .assistant__fact small {
-    font-size: 12.5px;
+  .assistant__panel-head {
+    padding: 14px 18px;
   }
 
-  .assistant__fact b {
-    text-align: right;
+  .assistant__prompt {
+    margin: 0 18px 18px;
   }
 }
 
@@ -3306,7 +3096,7 @@
   align-items: center;
 }
 
-/* Product stage: ton ploce iz Finansija (.finance__card-body), tackasta mreza utisana
+/* Product stage: blaga lavanda na sivoj (accent 4%), tackasta mreza utisana
    maskom. Telefon je odsecen donjom ivicom, isti rez kao hero mockup. */
 .demo-cta__stage {
   --stage-bg: color-mix(in srgb, var(--stellar-accent) 4%, var(--stellar-bg-light));

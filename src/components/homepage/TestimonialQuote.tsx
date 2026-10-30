@@ -18,6 +18,15 @@ const QUOTES: Quote[] = [
     photo: '/images/testimonials/dr-zeljko-sladoje.png',
     initials: 'ŽS',
   },
+  /* Odobren citat, tekst je njen (jedina izmena: „App-u“ -> „aplikaciju“). Ne prikazuje se
+     dok ne stigne fotografija: sekcija renderuje samo QUOTES[0], a bez slike bi otišli inicijali. */
+  {
+    text: 'Na aplikaciju smo se, čini mi se, navikli svi u ordinaciji u jednom danu. Jednostavno je i brzo, a završava mnogo dodatnog posla sa papirima i štedi vreme. Često mi se desi da me pacijent pozove dok nisam u ordinaciji i mnogo znači što mogu odmah sa telefona da pogledam raspored i zakažem termin, umesto da negde zapisujem pa posle prepisujem.',
+    name: 'Dr Bojana Radošević',
+    practice: 'Stomatološka ordinacija Dental Centar BP',
+    photo: null,
+    initials: 'BR',
+  },
 ];
 
 /*
