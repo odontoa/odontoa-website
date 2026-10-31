@@ -149,6 +149,12 @@ export default function PrivacyPolicyPage() {
         <p>
           Koristimo kolačiće za login, sigurnost sesije i osnovnu analitiku, bez prodaje ili targetiranog oglašavanja.
         </p>
+        <p>
+          Za razumevanje korišćenja sajta koristimo analitičke tehnologije (Google Analytics). Trenutno analitika na sajtu radi bez postavljanja analitičkih kolačića na Vašem uređaju, bez oglašavanja i bez personalizacije oglasa.
+        </p>
+        <p>
+          Ako u budućnosti uvedemo neesencijalne analitičke ili marketinške kolačiće, omogućićemo Vam odgovarajuće kontrole za njihovo prihvatanje ili odbijanje.
+        </p>
       </section>
 
       {/* Section 11 */}

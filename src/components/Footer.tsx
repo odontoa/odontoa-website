@@ -6,6 +6,7 @@ import Image from "next/image";
 import { businessConfig } from "@/lib/config/business";
 import { isSectionHidden } from "@/lib/config/hidden-sections";
 import { isOpenInComingSoon } from "@/lib/config/site-mode";
+import { CONSENT_UI_ENABLED, GA_MEASUREMENT_ID, openConsentSettings } from "@/lib/analytics/consent";
 
 /* Isti redosled, slugovi i nazivi kao FEATURE_PAGES (src/lib/content/funkcionalnosti.ts).
    Lista je ovde, a ne import, da client footer ne povlaci ceo sadrzaj stranica u bundle. */
@@ -142,6 +143,14 @@ const Footer = ({ comingSoon = false }: { comingSoon?: boolean }) => {
               {legalLinks.map((link) => (
                 <li key={link.label}><Link href={link.href} className={LINK_CLASS} style={{ color: '#363d4f' }}>{link.label}</Link></li>
               ))}
+              {/* Samo uz GA i uključen consent UI: ponovo otvara izbor za analitičke kolačiće */}
+              {GA_MEASUREMENT_ID && CONSENT_UI_ENABLED && (
+                <li>
+                  <button type="button" onClick={openConsentSettings} className={`${LINK_CLASS} text-left`} style={{ color: '#363d4f' }}>
+                    Podešavanja kolačića
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
         </div>

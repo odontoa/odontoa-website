@@ -4107,7 +4107,7 @@
   }
 }
 /* ─────────────────────────────────────
-   Quote (jedno iskustvo, pilot ordinacija)
+   Quote (iskustva pilot ordinacija, jedno vidljivo)
 ───────────────────────────────────── */
 .testimonial-quote {
   padding: var(--section-pad) 24px;
@@ -4133,7 +4133,81 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--stellar-accent);
+  margin: 0;
+}
+
+/* Eyebrow levo, izbor citata desno: kontrola je na fiksnom mestu, iznad citata */
+.testimonial-quote__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin: 0 0 18px;
+}
+
+/* Prethodno / sledece: tanke strelice bez kruga i pozadine; tap zona 44px */
+.testimonial-quote__nav {
+  display: flex;
+  margin: -14px -14px -14px 0;
+}
+
+.testimonial-quote__nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: #6b7387;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.testimonial-quote__nav-btn:hover {
+  color: var(--stellar-accent);
+  background: color-mix(in srgb, var(--stellar-accent) 6%, transparent);
+}
+
+.testimonial-quote__nav-btn:focus-visible {
+  outline: 2px solid var(--stellar-accent);
+  outline-offset: -4px;
+}
+
+/* Svi citati u istoj celiji: visina najduzeg, kraci je vertikalno centriran */
+.testimonial-quote__slides {
+  display: grid;
+}
+
+.testimonial-quote__slide,
+.testimonial-quote__media-item {
+  grid-area: 1 / 1;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.testimonial-quote__slide {
+  position: relative;
+  align-self: center;
+}
+
+.testimonial-quote__slide.is-active,
+.testimonial-quote__media-item.is-active {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease, visibility 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .testimonial-quote__slide,
+  .testimonial-quote__media-item,
+  .testimonial-quote__nav-btn {
+    transition: none;
+  }
 }
 
 .testimonial-quote__dash {
@@ -4145,12 +4219,14 @@
 
 .testimonial-quote__text {
   font-family: var(--font-display), var(--font-inter), 'Inter', sans-serif;
-  font-size: clamp(24px, 3.2vw, 32px);
+  /* 28px: dva citata razlicite duzine dele istu celiju, pa duzi (oko 330 znakova) ne
+     sme da naduva sekciju */
+  font-size: clamp(21px, 2.4vw, 28px);
   font-weight: 500;
-  line-height: 1.32;
+  line-height: 1.36;
   letter-spacing: -0.02em;
   color: var(--stellar-heading);
-  max-width: 560px;
+  max-width: 600px;
   margin: 0;
 }
 
@@ -4185,6 +4261,8 @@
   line-height: 1.5;
   color: var(--stellar-muted);
   margin: 2px 0 0;
+  /* Bez jedne reci (npr. "BP") same u drugom redu na telefonu */
+  text-wrap: balance;
 }
 
 /* Avatar bez fotografije: krug u accent tintu (color-mix da prati token) */
@@ -4226,8 +4304,32 @@
 }
 
 .testimonial-quote__media {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  justify-items: center;
+}
+
+/* Desktop: fotografija i identitet osobe kao jedna celina */
+.testimonial-quote__media-item {
+  align-self: start;
+  width: 100%;
+  text-align: center;
+}
+
+.testimonial-quote__media-item .testimonial-quote__name {
+  margin-top: 20px;
+}
+
+/* Desktop: potpis uz citat je samo za citac ekrana (vidljiv je ispod fotografije) */
+@media (min-width: 821px) {
+  .testimonial-quote__attribution {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
 }
 
 /* Fotografija: isti prostor i isti krug kao fallback sa inicijalima */
@@ -4245,6 +4347,12 @@
   border-radius: 999px;
 }
 
+/* Mala fotografija pored imena (samo mobilni): sama, bez okvira avatara, pravi krug 56px */
+.testimonial-quote__photo--inline {
+  display: none;
+  flex-shrink: 0;
+}
+
 /* Mobilni: jedna kolona, levo poravnato, avatar u redu sa imenom ispod citata */
 @media (max-width: 820px) {
   .testimonial-quote__inner {
@@ -4258,6 +4366,15 @@
 
   .testimonial-quote__avatar--inline {
     display: flex;
+  }
+
+  .testimonial-quote__photo--inline {
+    display: block;
+  }
+
+  /* Kraci citat pocinje odmah ispod "Iskustva"; visak visine ostaje na dnu */
+  .testimonial-quote__slide {
+    align-self: start;
   }
 }
 
