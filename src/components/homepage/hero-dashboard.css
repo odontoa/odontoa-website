@@ -1,0 +1,689 @@
+/* Hero vizual: ekran kontrolne table aplikacije (HeroDashboard).
+   Platno je 1610x1200 px, kao ekran aplikacije sa uzanim sidebarom, i skalira se na sirinu
+   hero panela (--hd-s, tacnu vrednost postavlja komponenta; ovde su priblizne vrednosti
+   pre hidracije). Boje su fiksne kao u aplikaciji, sve klase su pod hd- prefiksom. */
+
+.hd {
+  --hd-s: 0.6075;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1610 / 1200;
+  overflow: hidden;
+}
+
+@media (max-width: 1027px) {
+  .hd { --hd-s: 0.5957; }
+}
+
+@media (max-width: 720px) {
+  .hd { --hd-s: 0.2118; }
+}
+
+@media (max-width: 380px) {
+  .hd { --hd-s: 0.2025; }
+}
+
+@media (max-width: 359px) {
+  .hd { --hd-s: 0.1683; }
+}
+
+.hd__canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1610px;
+  height: 1200px;
+  transform: scale(var(--hd-s));
+  transform-origin: 0 0;
+  background: #fbfbfc;
+  color: #111118;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hd__canvas *,
+.hd__canvas *::before,
+.hd__canvas *::after {
+  box-sizing: border-box;
+}
+
+/* Nulta specificnost: margine pojedinacnih elemenata ispod je pobeđuju */
+:where(.hd__canvas) :where(p, h2, h3) {
+  margin: 0;
+}
+
+/* ── Sidebar: Odontoa znak i ikonice modula, bez teksta; dve grupe razdvaja samo razmak ── */
+.hd-rail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 84px;
+  height: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 21px;
+}
+
+.hd-rail__mark {
+  width: 32px;
+  height: 32px;
+}
+
+.hd-rail__nav {
+  margin-top: 39px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hd-rail__nav + .hd-rail__nav {
+  margin-top: 20px;
+}
+
+.hd-rail__item {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: #74747c;
+}
+
+.hd-rail__item.is-active {
+  background: #eeebff;
+  color: #7a68f0;
+}
+
+/* ── Zaglavlje i avatari ── */
+.hd-top {
+  position: absolute;
+  left: 88px;
+  right: 21px;
+  top: 17px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hd-top__title {
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #111118;
+}
+
+.hd-avatar {
+  position: relative;
+  flex: none;
+  display: block;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #eeeef1;
+  border: 1px solid #e3e3e8;
+}
+
+.hd-avatar--ring {
+  border: 2px solid #ffffff;
+}
+
+/* Kadar na lice: fotografije su portreti, lice je u gornjoj polovini */
+.hd-avatar__img {
+  object-fit: cover;
+  transform: scale(1.6);
+  transform-origin: 50% 32%;
+}
+
+/* ── Glavni panel ── */
+.hd-main {
+  position: absolute;
+  left: 84px;
+  top: 74px;
+  width: 1508px;
+  height: 1076px;
+  padding: 20px;
+  border-radius: 20px;
+  background: #f4f4f6;
+  border: 1px solid #ececf0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.hd-greet {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 96px;
+  padding: 0 22px;
+  border-radius: 16px;
+  background: #eef0ff;
+  border: 1px solid #e0e3fb;
+}
+
+.hd-greet__who {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.hd-greet__title {
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #111118;
+}
+
+.hd-greet__sub {
+  margin-top: 7px;
+  font-size: 16px;
+  color: #55576f;
+}
+
+.hd-greet__sub strong {
+  font-weight: 600;
+  color: #111118;
+}
+
+.hd-greet__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.hd-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 46px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.hd-btn--primary {
+  padding: 0 20px;
+  background: #8a78f7;
+  color: #ffffff;
+  font-size: 16px;
+}
+
+.hd-btn--secondary {
+  padding: 0 18px;
+  border: 1px solid #d9dbe8;
+  background: #ffffff;
+  color: #111118;
+  font-size: 15.5px;
+}
+
+/* ── KPI ── */
+.hd-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.hd-kpi {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 104px;
+  padding: 0 24px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e7e7ec;
+}
+
+.hd-kpi__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 11px;
+  background: #f2f2f5;
+  color: #3c3c46;
+  display: grid;
+  place-items: center;
+}
+
+.hd-kpi__label {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: #6b6b74;
+}
+
+.hd-kpi__value {
+  margin-top: 3px;
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  color: #111118;
+}
+
+.hd-kpi__value span {
+  font-size: 17px;
+  letter-spacing: 0;
+  color: #8a8a93;
+}
+
+/* Nenaplaceno: svetla prasnjava ruza, tamni ruz samo na ikoni i iznosu */
+.hd-kpi--due {
+  background: #fdf6f6;
+  border-color: #efd8db;
+}
+
+.hd-kpi--due .hd-kpi__icon {
+  background: #f9e3e6;
+  color: #b13348;
+}
+
+.hd-kpi--due .hd-kpi__label {
+  color: #85575d;
+}
+
+.hd-kpi--due .hd-kpi__value {
+  color: #b13348;
+}
+
+.hd-kpi--due .hd-kpi__value span {
+  color: #b0838a;
+}
+
+/* ── Kartice ── */
+.hd-card {
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e7e7ec;
+}
+
+.hd-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
+}
+
+.hd-card__head h3 {
+  font-size: 17.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #111118;
+}
+
+.hd-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #6a58e0;
+}
+
+/* ── Raspored ── */
+.hd-schedule {
+  padding: 18px 0 4px;
+}
+
+.hd-schedule .hd-card__head {
+  height: 28px;
+  padding: 0 22px;
+}
+
+.hd-table__row {
+  display: grid;
+  grid-template-columns: 132px 370px 310px 320px minmax(0, 1fr) 52px;
+  align-items: center;
+  height: 58px;
+  padding-left: 22px;
+  border-bottom: 1px solid #f1f1f4;
+  font-size: 16px;
+}
+
+.hd-table__row:last-child {
+  border-bottom: 0;
+}
+
+.hd-table__row--head {
+  margin-top: 13px;
+  height: 36px;
+  border-top: 1px solid #efeff3;
+  border-bottom: 1px solid #efeff3;
+  background: #fafafb;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7c7c85;
+}
+
+.hd-strong {
+  font-weight: 600;
+  color: #111118;
+}
+
+.hd-muted {
+  color: #55555e;
+}
+
+.hd-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: #3a3a44;
+}
+
+.hd-status i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #8a78f7;
+}
+
+.hd-chevron {
+  color: #b4b4bb;
+}
+
+/* ── Finansije i uplate ── */
+.hd-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
+  gap: 18px;
+}
+
+.hd-finance,
+.hd-payments {
+  height: 436px;
+  padding: 18px 22px;
+}
+
+.hd-finance {
+  position: relative;
+}
+
+.hd-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 11px;
+  border: 1px solid #e3e3e8;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #2b2b33;
+}
+
+.hd-finance__summary {
+  margin-top: 14px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.hd-finance__label {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #6b6b74;
+}
+
+.hd-finance__total {
+  margin-top: 3px;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #111118;
+}
+
+.hd-finance__total span {
+  font-size: 16px;
+  letter-spacing: 0;
+  color: #8a8a93;
+}
+
+.hd-legend {
+  display: flex;
+  padding-bottom: 3px;
+}
+
+.hd-legend > div {
+  padding: 0 18px;
+}
+
+.hd-legend > div + div {
+  border-left: 1px solid #efeff3;
+}
+
+.hd-legend > div:last-child {
+  padding-right: 0;
+}
+
+.hd-legend p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #6b6b74;
+}
+
+.hd-legend i {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+
+.hd-legend b {
+  display: block;
+  margin-top: 3px;
+  font-size: 15.5px;
+  font-weight: 600;
+}
+
+.hd-legend__bruto { background: #9281ff; }
+.hd-legend__lab { background: #2a2c4c; }
+.hd-legend .hd-legend__net { background: #2fbf71; border-radius: 50%; }
+
+.hd-chart {
+  position: absolute;
+  left: 66px;
+  right: 22px;
+  top: 150px;
+  height: 236px;
+}
+
+.hd-chart__grid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid #f1f1f4;
+}
+
+.hd-chart__grid.is-base {
+  border-top-color: #dcdce2;
+}
+
+.hd-chart__y {
+  position: absolute;
+  left: -54px;
+  width: 42px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 500;
+  color: #8a8a93;
+}
+
+.hd-chart__x {
+  position: absolute;
+  top: 246px;
+  width: 50px;
+  margin-left: -25px;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #6b6b74;
+}
+
+.hd-bar {
+  position: absolute;
+  bottom: 0;
+  transform-origin: 50% 100%;
+}
+
+.hd-bar--bruto {
+  width: 28px;
+  border-radius: 4px 4px 0 0;
+  background: #9281ff;
+}
+
+.hd-bar--lab {
+  width: 11px;
+  border-radius: 3px 3px 0 0;
+  background: #2a2c4c;
+}
+
+.hd-chart__net {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+
+.hd-net {
+  fill: none;
+  stroke: #2fbf71;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.hd-net-dot {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 2px solid #2fbf71;
+  background: #ffffff;
+}
+
+.hd-payments__list {
+  margin-top: 14px;
+}
+
+.hd-payment {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 84px;
+  border-bottom: 1px solid #f1f1f4;
+}
+
+.hd-payment:last-child {
+  border-bottom: 0;
+}
+
+.hd-payment__who {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.hd-payment__who p {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111118;
+}
+
+.hd-payment__who span {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #7c7c85;
+}
+
+.hd-payment b {
+  font-size: 16.5px;
+  font-weight: 600;
+  color: #111118;
+}
+
+.hd-footer {
+  position: absolute;
+  left: 84px;
+  width: 1508px;
+  top: 1166px;
+  text-align: center;
+  font-size: 13px;
+  color: #7c7c85;
+}
+
+.hd-chat {
+  position: absolute;
+  right: 15px;
+  bottom: 12px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #8a78f7;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+}
+
+/* Na desktopu hero sece i utapa dno panela, pa je dugme podignuto na granicu treceg i
+   cetvrtog reda uplata, izmedju iznosa. Na telefonu (bez reza) ostaje u uglu. */
+@media (min-width: 721px) {
+  .hd-chat {
+    bottom: auto;
+    top: 969px;
+  }
+}
+
+/* ── Animacija: KPI, pa stubci (rastu od nule s levo nadesno), pa Neto linija ──
+   is-armed postavlja komponenta pre prvog crtanja (samo bez prefers-reduced-motion),
+   is-in kad panel udje u viewport; odigra se jednom. */
+@keyframes hdIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes hdGrow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes hdDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes hdFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.hd.is-armed .hd-anim-kpi { opacity: 0; transform: translateY(4px); }
+.hd.is-armed .hd-bar { transform: scaleY(0); }
+.hd.is-armed .hd-net { stroke-dashoffset: var(--hd-net-len); }
+.hd.is-armed .hd-net-dot { opacity: 0; }
+
+.hd.is-in .hd-anim-kpi { animation: hdIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.hd.is-in .hd-bar { animation: hdGrow 620ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.hd.is-in .hd-net {
+  stroke-dashoffset: var(--hd-net-len);
+  animation: hdDraw 950ms cubic-bezier(0.5, 1, 0.89, 1) 1050ms forwards;
+}
+.hd.is-in .hd-net-dot { animation: hdFade 260ms ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hd .hd-anim-kpi,
+  .hd .hd-bar,
+  .hd .hd-net,
+  .hd .hd-net-dot {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+}
